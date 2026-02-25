@@ -1,0 +1,220 @@
+# module_taxonomy.yaml
+# ─────────────────────────────────────────────────────────
+# Complete taxonomy of all modules/entities discovered from
+# AutomaterSelenium repo (823 Java files, 250+ module paths)
+# Used by the Planner Agent to map feature descriptions to modules.
+# ─────────────────────────────────────────────────────────
+
+product: "Zoho ServiceDesk Plus (SDP) - ITSM Application"
+
+top_level_modules:
+  requests:
+    description: "IT Help Desk - Incident and Service Requests"
+    entities:
+      - request         # Incidents & Service Requests
+      - task            # Tasks under Requests
+      - worklog         # Time tracking on Requests
+      - reminder        # Reminders on Requests
+
+  problems:
+    description: "Problem Management (ITIL)"
+    entities:
+      - problem
+      - task
+      - worklog
+      - reminder
+      - note
+
+  changes:
+    description: "Change Management (ITIL)"
+    entities:
+      - change
+      - change_task
+      - change_task_worklog
+      - change_worklog
+      - change_reminder
+      - change_conversations
+      - downtime
+
+  releases:
+    description: "Release Management"
+    entities:
+      - release
+      - release_task
+      - release_task_worklog
+      - release_worklog
+      - release_reminder
+      - release_conversation
+      - release_downtime
+      - release_checklist
+
+  assets:
+    description: "Asset Management (ITAM)"
+    entities:
+      - asset
+      - consumables
+      - software
+      - software_license_agreements
+
+  cmdb:
+    description: "Configuration Management Database"
+    entities:
+      - cmdb
+
+  projects:
+    description: "Project Management"
+    entities:
+      - project
+      - milestone
+      - project_task
+      - project_milestone_task
+      - project_task_worklog
+
+  contracts:
+    description: "Contract Management"
+    entities:
+      - contract
+
+  purchase_orders:
+    description: "Purchase Order Management"
+    entities:
+      - purchase_order
+
+  solutions:
+    description: "Knowledge Base / Solutions"
+    entities:
+      - solution
+
+  maintenance:
+    description: "Maintenance Window"
+    entities:
+      - maintenance
+
+  general:
+    description: "General / Cross-module"
+    entities:
+      - dashboard
+      - task
+
+  admin:
+    description: "Admin configuration panel"
+    sub_modules:
+      automation:
+        entities:
+          - business_rules
+          - sla
+          - triggers
+          - workflows
+          - closure_rules
+          - notification_rules
+          - custom_actions
+      customization:
+        entities:
+          - additional_fields
+          - helpdesk_category
+          - helpdesk_subcategory
+          - helpdesk_item
+          - helpdesk_status
+          - helpdesk_priority
+          - helpdesk_urgency
+          - helpdesk_impact
+          - helpdesk_mode
+          - helpdesk_request_type
+          - helpdesk_closure_code
+          - helpdesk_task_type
+          - helpdesk_worklog_type
+          - change_stage
+          - change_type
+          - change_risk
+          - change_closure_code
+          - change_reason_for_change
+          - change_cab
+          - release_stage
+          - release_role
+          - release_closure_code
+          - release_downtime_type
+          - problem_closure_code
+          - project_role
+          - project_status
+          - project_type
+          - asset_product
+          - asset_vendor
+          - contract_type
+          - contract_configuration
+          - purchase_gl_code
+          - purchase_cost_center
+          - cmdb_relationship_type
+      templates_and_forms:
+        entities:
+          - incident_template
+          - change_template
+          - release_template
+          - problem_template
+          - task_template
+          - project_template
+          - solution_template
+          - reply_template
+          - resolution_template
+          - service_category
+          - purchase_order_template
+          - custom_scripts
+      users_and_permissions:
+        entities:
+          - technician
+          - group
+      instance_configurations:
+        entities:
+          - site
+          - region
+          - operational_hours
+      general_settings:
+        entities:
+          - requester_portal_settings
+          - requester_portal_customization
+          - advanced_portal_settings
+      developer_space:
+        entities:
+          - custom_module
+          - custom_menu
+      zia:
+        entities:
+          - zia_settings
+
+# Keyword → module mapping for feature doc analysis
+feature_keyword_map:
+  "incident": ["requests/request/incident"]
+  "service request": ["requests/request/service"]
+  "request": ["requests/request"]
+  "task": ["requests/task", "general/task", "changes/changetask", "releases/releasetask", "problems/task"]
+  "worklog": ["requests/worklog", "changes/changeworklog", "releases/releaseworklog"]
+  "problem": ["problems/problem"]
+  "change": ["changes/change"]
+  "release": ["releases/release"]
+  "checklist": ["releasechecklist/releasechecklist"]
+  "asset": ["assets/asset"]
+  "software": ["assets/software"]
+  "cmdb": ["cmdb/cmdb"]
+  "project": ["projects/project"]
+  "milestone": ["projects/milestone"]
+  "contract": ["contracts/contract"]
+  "purchase order": ["purchaseorders/purchaseorder"]
+  "solution": ["solutions/solution"]
+  "knowledge": ["solutions/solution"]
+  "sla": ["admin/automation/sla"]
+  "trigger": ["admin/automation/triggers"]
+  "business rule": ["admin/automation/businessrules"]
+  "notification": ["admin/automation/notificationrules"]
+  "workflow": ["admin/automation/workflows"]
+  "category": ["admin/customization/helpdesk/category"]
+  "technician": ["admin/usersandpermissions/technician"]
+  "group": ["admin/usersandpermissions/group", "admin/group"]
+  "site": ["admin/instanceconfigurations/site"]
+  "template": ["admin/templatesandforms"]
+  "custom field": ["admin/customization/additionalfields"]
+  "dashboard": ["general/dashboard"]
+  "approval": ["admin/automation/customactions"]
+  "portal": ["admin/generalsettings/requesterportal"]
+  "maintenance": ["maintenance/maintenance"]
+  "downtime": ["changes/downtime", "releases/releasedowntime"]
+  "vendor": ["assets"]
+  "product": ["assets"]

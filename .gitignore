@@ -1,0 +1,37 @@
+# ── Java Selenium modules (managed separately via Mercurial) ──────────────────
+AutomaterSelenium/
+AutomaterSeleniumFramework/
+
+# ── Python environment ────────────────────────────────────────────────────────
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Secrets & credentials ────────────────────────────────────────────────────
+.env
+
+# ── Runtime artifacts ────────────────────────────────────────────────────────
+logs/
+reports/
+generated/
+
+# ── Knowledge base binaries & generated data ──────────────────────────────────
+knowledge_base/chroma_db/
+knowledge_base/raw/
+knowledge_base/scout_snapshots/
+
+# ── Playwright ────────────────────────────────────────────────────────────────
+.playwright-mcp/
+
+# ── VS Code ───────────────────────────────────────────────────────────────────
+.vscode/
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

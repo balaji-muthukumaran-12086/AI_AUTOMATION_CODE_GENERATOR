@@ -1,0 +1,198 @@
+# framework_grammar.yaml
+# ─────────────────────────────────────────────────────────
+# Defines the complete DSL grammar of AutomaterSeleniumFramework.
+# Used by the Coder Agent and Reviewer Agent to validate and
+# generate correct test code.
+# ─────────────────────────────────────────────────────────
+
+annotations:
+  AutomaterSuite:
+    target: CLASS
+    required_fields:
+      - name: role
+        type: String
+        description: "Role constant from <Module>Role class (e.g. RequestsRole.SDADMIN)"
+      - name: owner
+        type: String
+        description: "Owner constant from OwnerConstants class"
+    optional_fields:
+      - name: tags
+        type: String[]
+        description: "String array of tag names"
+        default: "{ }"
+
+  AutomaterScenario:
+    target: METHOD
+    required_fields:
+      - name: id
+        type: String
+        pattern: "SDP_[A-Z]+_[A-Z]+_[A-Z0-9]+"
+        description: "Unique test ID, e.g. SDP_REQ_LS_AAA001"
+      - name: group
+        type: String
+        description: "Execution group name (empty = NoPreprocess)"
+      - name: description
+        type: String
+        description: "Human-readable test description"
+      - name: dataIds
+        type: String[]
+        description: "Keys referencing JSON data in DataConstants"
+    optional_fields:
+      - name: priority
+        type: enum
+        values: [HIGH, MEDIUM, LOW]
+        default: MEDIUM
+      - name: tags
+        type: String[]
+        default: "{ }"
+        known_values: [RELEASE_CHECKLIST, SMOKE, REGRESSION, E2E]
+      - name: switchOn
+        type: enum
+        values: [BEFORE_PRE_PROCESS, AFTER_PRE_PROCESS]
+        default: AFTER_PRE_PROCESS
+      - name: owner
+        type: String
+        description: "OwnerConstants value"
+      - name: runType
+        type: enum
+        values: [PORTAL_BASED, USER_BASED]
+        default: PORTAL_BASED
+
+  AutomaterCase:
+    target: METHOD
+    required_fields:
+      - name: description
+        type: String
+
+base_classes:
+  EntityCase:
+    package: com.zoho.automater.selenium.base
+    abstract: true
+    key_fields:
+      - name: actions
+        type: ClientFrameworkActions
+        description: "All Selenium actions (click, fill, validate, navigate)"
+      - name: report
+        type: AutomaterReport
+        description: "Report builder (addCaseFlow, addSuccessReport, addFailureReport)"
+      - name: restAPI
+        type: RestAPI
+        description: "HTTP REST API helper"
+      - name: failure
+        type: FailureTemplates
+        description: "Failure reporting helpers"
+    abstract_methods:
+      - getEntityConfigurationName()
+      - run(ScenarioDetails)
+      - preProcess(String, String[])
+      - assignPermission(String)
+
+  Entity:
+    package: com.zoho.automater.selenium.base
+    extends: EntityCase
+    key_methods:
+      - getRole()
+      - getModuleName()
+      - getTestCaseData(TestCaseData)
+      - isClientFramework()
+
+per_module_files:
+  # Every module/entity has this set of supporting files
+  SCENARIO:
+    pattern: "<EntityName>.java"
+    extends: "Entity or module-level base class"
+    must_have:
+      - "@AutomaterSuite annotation"
+      - "constructor(WebDriver, StringBuffer)"
+      - "getEntityConfigurationName() override"
+  FIELDS:
+    pattern: "<Entity>Fields.java"
+    description: "Static FieldDetails constants for all entity fields"
+    field_constructor: "new FieldDetails(apiName, dataPath, displayName, FieldType, isMandatory, isHidden)"
+  DATA_CONSTANTS:
+    pattern: "<Entity>DataConstants.java"
+    description: "References to JSON test data entries"
+    data_constructor: "new TestCaseData(dataKey, PATH)"
+  LOCATORS:
+    pattern: "<Entity>Locators.java"
+    description: "CSS/XPath locator string constants grouped by view"
+  CONSTANTS:
+    pattern: "<Entity>Constants.java"
+    description: "All UI string constants (button labels, column names, etc.)"
+  UTILS:
+    pattern: "<Entity>APIUtil.java or <Entity>ActionsUtils.java"
+    description: "Helper methods for API calls and common UI actions"
+
+field_types:
+  - INPUT        # Text input
+  - SELECT       # Dropdown
+  - MULTISELECT  # Multi-value dropdown
+  - TEXTAREA     # Long text
+  - HTML         # Rich text / HTML editor
+  - DATETIME     # Date+time picker
+  - CHECKBOX     # Boolean checkbox
+  - RADIO        # Radio button group
+  - FILE         # File upload
+
+run_types:
+  PORTAL_BASED: "Runs in portal/admin context only"
+  USER_BASED: "Switches to end-user session during execution"
+
+switch_on_values:
+  BEFORE_PRE_PROCESS: "Switch to user session before pre-processing"
+  AFTER_PRE_PROCESS: "Switch to user session after pre-processing (default)"
+
+group_conventions:
+  "":               "No pre-processing needed"
+  "NoPreprocess":   "Explicitly no pre-processing"
+  "create":         "Pre-process creates a record via API"
+  "BulkCreate":     "Pre-process creates multiple records"
+  "multipleCreate": "Pre-process creates split/linked records"
+  "<custom>":       "Module-specific group name"
+
+report_methods:
+  addSuccessReport: "Log a success step"
+  addFailureReport: "Log a failure with reason"
+  addReport:        "Decide success/failure from failureMessage state"
+  addCaseFlow:      "Add a narrative step to the report"
+
+actions_api:
+  navigate:
+    toModule(moduleName):    "Navigate to a module list view"
+    toGlobalActionInListview(actionName): "Click a toolbar action"
+    toDetailsView(id):       "Open a details view by record ID"
+  validate:
+    textContent(locator, expectedText): "Assert text equals expected"
+    isElementPresent(locator):          "Check element existence"
+    isElementVisible(locator):          "Check element visibility"
+  clickByName(name):   "Click an element by its visible text"
+  waitForAjaxComplete(): "Wait for all AJAX calls to finish"
+  captureScreenshot():  "Take a screenshot"
+
+test_case_code_template: |
+  @AutomaterScenario(
+      group = "{group}",
+      priority = Priority.{priority},
+      dataIds = {{{data_ids}}},
+      tags = {{{tags}}},
+      description = "{description}",
+      owner = OwnerConstants.{owner},
+      id = "{id}",
+      runType = ScenarioRunType.{run_type}
+  )
+  public void {method_name}() {{
+      report.startMethodFlowInStepsToReproduce(AutomaterVariables.SCENARIO_START.apply(getMethodName()));
+      try {{
+          // Step 1: Navigate
+          actions.navigate.toModule(getModuleName());
+          // Step 2: Perform action
+          {action_steps}
+          // Step 3: Validate
+          {validation_steps}
+          addSuccessReport("{success_message}");
+      }} catch (Exception exception) {{
+          addFailureReport("{failure_message}", exception.getMessage());
+      }} finally {{
+          report.endMethodFlowInStepsToReproduce();
+      }}
+  }}
