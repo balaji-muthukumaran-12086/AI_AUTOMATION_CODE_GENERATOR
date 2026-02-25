@@ -57,12 +57,12 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
     runner    = RunnerAgent(
                     base_dir=str(base),
                     deps_dir="/home/balaji-12086/Desktop/Workspace/Zide/dependencies",
-                    pre_compiled_bin_dir="/home/balaji-12086/Desktop/Workspace/Zide/AutomaterSelenium_Latest/bin",
+                    pre_compiled_bin_dir="/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/AutomaterSelenium/bin",
                 )
     healer    = HealerAgent(
                     base_dir=str(base),
                     deps_dir="/home/balaji-12086/Desktop/Workspace/Zide/dependencies",
-                    pre_compiled_bin_dir="/home/balaji-12086/Desktop/Workspace/Zide/AutomaterSelenium_Latest/bin",
+                    pre_compiled_bin_dir="/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/AutomaterSelenium/bin",
                     headless=True,
                 )
     scout     = UIScoutAgent(
