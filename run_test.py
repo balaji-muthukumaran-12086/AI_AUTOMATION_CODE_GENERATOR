@@ -21,25 +21,29 @@ import os
 # Make sure project root is on path
 sys.path.insert(0, os.path.dirname(__file__))
 
+from config.project_config import PROJECT_NAME, PROJECT_BIN, BASE_DIR as _BASE_DIR, DEPS_DIR as _DEPS_DIR
+
 # ── Configure here ────────────────────────────────────────────────────────
 
 # Set to True to go through the full agents pipeline (Planner→Coder→Runner)
 # Set to False to invoke RunnerAgent directly (same as before)
-USE_PIPELINE = True
+USE_PIPELINE = False
 
 # Feature description used by the pipeline to generate code (only when USE_PIPELINE=True)
 FEATURE_DESCRIPTION = """
-Create a new Solution in ServiceDesk Plus and verify its detail page.
+Copy an existing Problem record in ServiceDesk Plus and verify the copied problem
+appears in the Problems listview.
 
-Scenario: A user navigates to the Solutions module, opens the New Solution form,
-fills in a title, selects a template, adds a description, and clicks Add.
-After submission, the detail view should load and display the correct solution title.
-The solution should be created as Unapproved by default.
+Scenario: A technician navigates to the Problems module, searches for a specific
+problem by title, clicks the row action gear icon, selects "Copy Problem", confirms
+in the popup by clicking the submit button, and then verifies that the new copied
+problem appears in the detail view with the expected title. The test also verifies
+the copied problem is searchable in the Problems listview.
 """
 
 RUN_CONFIG = {
-    "entity_class":  "Solution",
-    "method_name":   "createUnapprovedSolutionWithCustomTopicRevDateExpDate",
+    "entity_class":  "IncidentRequestNotes",
+    "method_name":   "createIncidentRequestAndAddNotes",
     "url":           "https://sdpodqa-auto1.csez.zohocorpin.com:9090/",
     "admin_mail_id": "jaya.kumar+org1admin1t0@zohotest.com",
     "email_id":      "jaya.kumar+org1admin1t0@zohotest.com",
@@ -47,9 +51,9 @@ RUN_CONFIG = {
     "skip_compile":  True,   # keep True — full compile is broken
 }
 
-DEPS_DIR            = "/home/balaji-12086/Desktop/Workspace/Zide/dependencies"
-PRE_COMPILED_BIN    = "/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/AutomaterSelenium/bin"
-BASE_DIR            = "/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa"
+DEPS_DIR            = _DEPS_DIR           # from config/project_config.py → dependencies17
+PRE_COMPILED_BIN    = PROJECT_BIN          # from config/project_config.py → PROJECT_NAME/bin
+BASE_DIR            = _BASE_DIR            # from config/project_config.py
 
 # ─────────────────────────────────────────────────────────────────────────
 

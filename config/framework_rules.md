@@ -13,6 +13,43 @@
 #                PREFERRED rules are best-practice defaults.
 ---
 
+## SECTION 0 — MODULE PLACEMENT (REQUIRED — check before any other rule)
+
+### 0.1 Derive the target module from the use-case description, never from the active file
+
+Before writing a single line of code, map the **entity noun in the scenario description** to
+the correct module directory:
+
+| Use-case noun | Module path | Typical leaf class(es) |
+|---|---|---|
+| incident request / IR / notes on IR | `modules/requests/request/` | `IncidentRequest`, `IncidentRequestNotes`, `RequestNotes` |
+| service request / SR / notes on SR | `modules/requests/request/` | `ServiceRequest`, `ServiceRequestNotes` |
+| solution | `modules/solutions/solution/` | `Solution`, `SolutionBase` |
+| problem | `modules/problems/problem/` | `Problem`, `ProblemBase` |
+| change | `modules/changes/change/` | `Change`, `ChangeBase` |
+| task | `modules/tasks/task/` | `Task`, `TaskBase` |
+
+### 0.2 Check for an existing leaf class before creating a new one (REQUIRED)
+
+1. List files under `modules/<module>/`.
+2. If a matching `*Notes.java`, `*DetailView.java`, etc. already exists → **add the scenario there**.
+3. Only create a new file if no suitable class exists.
+
+### 0.3 FORBIDDEN — cross-module placement
+
+```java
+// WRONG — incident-request scenario placed in SolutionBase.java
+public void createIncidentRequestAndAddNotes() { ... }   // inside SolutionBase
+
+// CORRECT — placed in RequestNotes.java / IncidentRequestNotes.java
+public void createIncidentRequestAndAddNotes() { ... }   // inside RequestNotes
+```
+
+> **Root cause guard**: The currently open file is NOT a valid signal for target module.
+> The use-case description is the only valid signal.
+
+---
+
 ## SECTION 1 — CLASS ARCHITECTURE (two-layer pattern)
 
 ### 1.1 Two-layer structure (REQUIRED)
@@ -314,7 +351,7 @@ SwitchToUserSession.NEVER               // ordinal 2
 ### 7.2 How to find the next available ID
 ```bash
 # Example for Solutions ListView:
-grep -rn 'id = "SDPOD_AUTO_SOL_LV' AutomaterSelenium/src/ | \
+grep -rn 'id = "SDPOD_AUTO_SOL_LV' SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/ | \
   sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
 # → SDPOD_AUTO_SOL_LV_179  →  next = SDPOD_AUTO_SOL_LV_180
 ```
@@ -927,3 +964,125 @@ Long dt = PlaceholderUtil.getDateTimeInMilliSeconds(int minutes, int hours, int 
 // Usage:
 actions.formBuilder.fillDateField(EntityConstants.REVIEW_DATE, PlaceholderUtil.getDateInMilliSeconds(30, 0, 0, true));
 ```
+
+---
+
+## SECTION 20 — CRITICAL RUNTIME GOTCHAS (from real debugging)
+
+### 20.1 `isClientFramework=false` = ENTIRE form fill is silently skipped (FORBIDDEN trap)
+`fillInputForAnEntity(boolean isClientFramework, ...)` has this guard at line 46:
+```java
+if(isClientFramework) {
+    // all form-fill logic inside here
+}
+```
+If `isClientFramework=false`, the method is a **complete no-op** — nothing is filled, no error thrown.
+**Always check** `entity/conf/<module>/<entity>.json` for `"is_client_framework": true/false` before trusting form fill.
+- Problem module: `"is_client_framework": true` → form fill WILL execute
+- If missing or false → all `fillInputForAnEntity` calls silently do nothing
+
+### 20.2 `default: break` in `fillInputForFieldInClientFW()` = silent skip for unknown field_type
+The switch statement in `FormBuilder` handles: `input`, `select`, `multiselect`, `html`, `date`, `datetime`, `textarea`, `criteria`, `picklist`, `attachment`.
+**Any field with a missing or unrecognized `field_type` hits `default: break`** → silently skipped.
+Known affected fields in `problem.json`:
+- `"note"` — no `field_type` → never filled by `fillInputForAnEntity`
+- `"known_error_details-is_known_error"` — no `field_type` → never filled
+These MUST be handled manually via explicit `actions.click(locator)` or `actions.type(locator, value)`.
+
+### 20.3 Checkbox/boolean fields — NEVER rely on `fillInputForAnEntity` (REQUIRED)
+No `boolean` or `checkbox` case exists in the switch statement.
+`getValueAsStringFromInputUsingAPIPath()` returns `null` for JSON booleans → field is silently skipped.
+**Rule:** ALL checkbox interactions must be done explicitly:
+```java
+actions.click(SolutionLocators.SolutionCreateForm.SOLUTION_IS_PUBLIC_1);  // explicit click
+```
+Never put `"is_public": true` in entity conf and expect it to be toggled by `fillInputForAnEntity`.
+
+### 20.4 `actions.click(locator)` already calls `waitForAjaxComplete()` BEFORE clicking
+No need to add a manual `waitForAjaxComplete()` after clicking. Adding it creates a double-wait.
+The wait happens BEFORE the click, not after — page transition happens after the click.
+If the next action fails, add `Thread.sleep(1000)` not `waitForAjaxComplete()`.
+
+### 20.5 `actions.getText(locator)` has a 3-second timeout (PREFERRED)
+`getText` calls `waitForAnElementToAppear` with a 3-second timeout internally.
+On slow-loading pages, this can miss content. If content is not found, add `Thread.sleep(2000)` before `getText`.
+
+### 20.6 preProcess runs in ADMIN session; test method body runs in USER session (REQUIRED)
+Session context during test lifecycle:
+1. `initializeAdminSession()` → browser is logged in as **admin**
+2. `preProcess(group, dataIds)` → REST API calls run **in admin session** (correct permissions)
+3. `switchToUserSession()` → browser switches to scenario user
+4. `process(method)` → test method body runs **in user session**
+
+**CRITICAL:** Any API call (e.g., `createSolutionTemplateAndGetName()`) placed INSIDE the test method
+body runs in the user session. Regular users cannot create templates/configs → `sdpAPICall` returns
+null → NPE. ALL prerequisite API calls MUST be in the `preProcess` group method, NOT the test body.
+
+### 20.7 `preProcess` exception handling varies by module
+- `Solution.java`: `catch(Exception) { return false; }` — **silently swallows all exceptions**. If preProcess fails, test is skipped with zero visibility.
+- `ProblemsCommonBase.java`: calls `addFailureReport(...)` before `return false` — visible in report.
+Always use `addFailureReport()` in preProcess catch blocks, never silent swallow.
+
+### 20.8 Locator ambiguity — `button[contains(text(),'X')]` vs `normalize-space(text())='X'`
+Using `contains(text())` for action/submit buttons matches multiple buttons on the same page.
+**REQUIRED:** For submit/action buttons, always use `normalize-space(text())='ExactText'`:
+```java
+// WRONG — may match "Add And Approve" button too
+By.xpath("//button[contains(text(),'Add')]")
+
+// CORRECT — exact match only
+By.xpath("//button[normalize-space(text())='Add']")
+```
+High-risk locator patterns found in codebase (potential false-positive matches):
+| File | Locator | Risk |
+|------|---------|------|
+| `ReleaseTaskLocators.java` | `//button[contains(text(),'X')]` | Generic match anywhere on page |
+| `ProjectLocators.java` | `//button[contains(text(),'Delete')]` | Matches any Delete button |
+| `ProblemLocators.java` | `//button[contains(text(),'Add Note')]` | Could match "Add Note Template" |
+Scoped containers are acceptable: `//div[@id='X']/descendant::button[contains(text(),'Y')]` is OK.
+
+### 20.9 Problem module `Actions` dropdown — key action strings
+The "Actions" dropdown in Problem detail view (`ProblemLocators.Detailview.ACTIONS_MENU`) uses:
+```java
+ProblemConstants.Actions.ADD_NOTE      = "Add Note"
+ProblemConstants.Actions.ADD_TASK      = "Add Task"
+ProblemConstants.Actions.DELETE_PROBLEM = "Delete Problem"
+ProblemConstants.Actions.MARK_KNOWN_ERROR = "Mark as Known Error"
+```
+Access via: `actions.click(ProblemLocators.Detailview.ACTIONS_MENU.apply(ProblemConstants.Actions.ADD_NOTE))`
+
+### 20.10 `SOLUTION_ADD` / action button disambiguation — real bug that was fixed
+`SOLUTION_ADD` locator was `//button[contains(text(),'Add')]` → matched "Add And Approve" button.
+Fix: changed to `//button[normalize-space(text())='Add']` — this exact fix was applied in Feb 2026.
+Pattern: whenever a page has two buttons where one is a substring of the other, ALWAYS use
+`normalize-space(text())='ExactName'` for the shorter-named button.
+
+### 20.11 Problem `ACTIONS_MENU` locator (detail view actions dropdown)
+```java
+// In ProblemLocators.Detailview:
+public static final Function<String, Locator> ACTIONS_MENU =
+    (action) -> new Locator(By.xpath("//div[@class='search-menu']/descendant::a[text()='" + action + "']"), action + " action in details page");
+```
+This uses `text()='exact'` (already exact-match safe) — no ambiguity issue here.
+
+### 20.12 Copy Problem flow — how to trigger copy in Problem detailview
+The "Copy Problem" action is NOT in `ProblemConstants.Actions` (Actions dropdown).
+It is triggered from the **listview row action gear**:
+```java
+// Step 1: Search for the problem in listview
+actions.listView.columnSearch(ProblemConstants.ListviewColumns.TITLE, LocalStorage.getAsString("uniqueString"));
+// Step 2: Click action gear for the row (by entity ID)
+actions.click(ProblemLocators.Listview.ACTIONGEAR_DATAROWID.apply(getEntityId()));
+// Step 3: Click "Copy Problem" option
+actions.click(ProblemLocators.Listview.ACTIONGEAR_OPTIONS.apply("Copy Problem"));
+// Step 4: Submit the copy popup
+actions.click(ProblemLocators.Detailview.COPY_PROBLEM_SUBMIT);
+// Step 5: Verify the copied problem title in detail view
+```
+The copy popup submit button ID is `submitCopy` (same pattern as Request/Project modules).
+
+### 20.13 `SolutionAPIUtil` vs `ProblemAPIUtil` — different patterns
+- `SolutionAPIUtil.createSolutionTemplateAndGetName(path, data)` → creates template, stores in LocalStorage
+- `ProblemAPIUtil.storeProblemModuleId()` → stores module ID — called at top of every preProcess
+- `ProblemAPIUtil.addNotestoProblem(entityId, data)` → adds note to problem via REST API
+Key: `ProblemAPIUtil` is available as `problemAPIUtil` field in `ProblemsCommonBase`.

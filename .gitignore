@@ -1,6 +1,7 @@
 # ── Java Selenium modules (managed separately via Mercurial) ──────────────────
 AutomaterSelenium/
 AutomaterSeleniumFramework/
+SDPLIVE_LATEST_AUTOMATER_SELENIUM/
 
 # ── Python environment ────────────────────────────────────────────────────────
 .venv/

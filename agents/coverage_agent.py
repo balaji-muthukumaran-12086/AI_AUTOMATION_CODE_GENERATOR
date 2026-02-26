@@ -39,10 +39,10 @@ class CoverageAgent:
         if self.store.scenario_count == 0:
             return {'status': 'new', 'similar': [], 'score': 0.0}
 
-        results = self.store.search_scenarios(description, top_k=3, module_filter=module_path)
+        results = self.store.search_scenarios(description, top_k=5, module_filter=module_path)
         if not results:
             # try without module filter
-            results = self.store.search_scenarios(description, top_k=3)
+            results = self.store.search_scenarios(description, top_k=5)
 
         if not results:
             return {'status': 'new', 'similar': [], 'score': 0.0}

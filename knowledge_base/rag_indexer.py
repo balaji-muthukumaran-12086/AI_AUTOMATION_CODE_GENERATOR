@@ -1,9 +1,9 @@
 """
 rag_indexer.py
 --------------
-Module-aware RAG Indexer for AutomaterSelenium source files.
+Module-aware RAG Indexer for SDPLIVE_LATEST_AUTOMATER_SELENIUM source files.
 
-Crawls every entity under AutomaterSelenium/src/modules/, identifies each file
+Crawls every entity under SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/modules/, identifies each file
 by its role in the skeleton (Locators, Fields, DataConstants, Constants, Base,
 Entity, APIUtil, ActionsUtil, data JSON, conf JSON), chunks the content, and
 stores it in the `automater_source_files` ChromaDB collection — tagged with:
@@ -39,11 +39,15 @@ import os
 from pathlib import Path
 from typing import Optional
 
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from config.project_config import PROJECT_NAME
 
-MODULES_ROOT_GLOB = "AutomaterSelenium/src/com/zoho/automater/selenium/modules"
-SKELETON_ROOT     = "AutomaterSelenium/src/com/zoho/automater/selenium/base/skeleton"
-RESOURCES_ROOT    = "AutomaterSelenium/resources/entity"
-SKELETON_RES_ROOT = "AutomaterSelenium/resources/skeleton"
+
+MODULES_ROOT_GLOB = f"{PROJECT_NAME}/src/com/zoho/automater/selenium/modules"
+SKELETON_ROOT     = f"{PROJECT_NAME}/src/com/zoho/automater/selenium/base/skeleton"
+RESOURCES_ROOT    = f"{PROJECT_NAME}/resources/entity"
+SKELETON_RES_ROOT = f"{PROJECT_NAME}/resources/skeleton"
 
 # ── File type detection ────────────────────────────────────────────────────────
 
@@ -182,7 +186,7 @@ class RagIndexer:
         self.skeleton_root= self.base / SKELETON_ROOT
         self.resources_root = self.base / RESOURCES_ROOT
         self.skeleton_res   = self.base / SKELETON_RES_ROOT
-        self.src_root       = self.base / "AutomaterSelenium/src"
+        self.src_root       = self.base / PROJECT_NAME / "src"
         self.kb_raw         = self.base / "knowledge_base/raw"
 
     def run(self, reset_source_files: bool = False, reset_scenarios: bool = False,

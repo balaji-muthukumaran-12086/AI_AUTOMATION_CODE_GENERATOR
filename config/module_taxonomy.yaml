@@ -1,20 +1,27 @@
 # module_taxonomy.yaml
 # ─────────────────────────────────────────────────────────
 # Complete taxonomy of all modules/entities discovered from
-# AutomaterSelenium repo (823 Java files, 250+ module paths)
+# SDPLIVE_LATEST_AUTOMATER_SELENIUM (1426 Java files, 210 module paths)
 # Used by the Planner Agent to map feature descriptions to modules.
+# Last updated: 2026-02-26 (synced to SDPLIVE_LATEST_AUTOMATER_SELENIUM)
 # ─────────────────────────────────────────────────────────
 
 product: "Zoho ServiceDesk Plus (SDP) - ITSM Application"
 
 top_level_modules:
+
   requests:
     description: "IT Help Desk - Incident and Service Requests"
     entities:
-      - request         # Incidents & Service Requests
-      - task            # Tasks under Requests
-      - worklog         # Time tracking on Requests
-      - reminder        # Reminders on Requests
+      - request              # Base: all request types
+      - request/incident     # Incident Request sub-module
+      - request/service      # Service Request sub-module
+      - request_checklist    # Checklist on a request
+      - request_approvals    # Approval workflows on requests
+      - service_request      # Service Request resource sub-module
+      - task                 # Tasks under Requests
+      - worklog              # Time tracking on Requests
+      - reminder             # Reminders on Requests
 
   problems:
     description: "Problem Management (ITIL)"
@@ -54,7 +61,8 @@ top_level_modules:
       - asset
       - consumables
       - software
-      - software_license_agreements
+      - software_license              # Software license records
+      - software_license_agreements   # License agreement documents
 
   cmdb:
     description: "Configuration Management Database"
@@ -88,17 +96,57 @@ top_level_modules:
   maintenance:
     description: "Maintenance Window"
     entities:
-      - maintenance
+      - request_maintenance   # Maintenance window for Requests
+      - change_maintenance    # Maintenance window for Changes
+
+  activities:
+    description: "Activity tracking across entities"
+    entities:
+      - activity
+
+  askzia:
+    description: "Ask ZIA — AI-powered conversational assistant"
+    entities:
+      - askzia
+
+  customers:
+    description: "Customer / Account Management (ESM)"
+    entities:
+      - customer
+
+  esmdirectory:
+    description: "ESM (Enterprise Service Management) Directory"
+    entities:
+      - esmdirectory
+
+  reports:
+    description: "Reporting and Analytics"
+    entities:
+      - report
+
+  releasechecklist:
+    description: "Standalone Release Checklist"
+    entities:
+      - releasechecklist
 
   general:
-    description: "General / Cross-module"
+    description: "General / Cross-module features"
     entities:
       - dashboard
       - task
+      - announcement
+      - downtime
+      - feedback
+      - personalization
+      - requester_home
+      - tech_availability_chart
+      - user_panel
+      - worklog
 
   admin:
     description: "Admin configuration panel"
     sub_modules:
+
       automation:
         entities:
           - business_rules
@@ -108,42 +156,70 @@ top_level_modules:
           - closure_rules
           - notification_rules
           - custom_actions
-      customization:
+          - cdetection              # Change detection rules
+          - technician_auto_assign  # Auto-assignment rules for technicians
+
+      app_addons:
         entities:
-          - additional_fields
-          - helpdesk_category
-          - helpdesk_subcategory
-          - helpdesk_item
-          - helpdesk_status
-          - helpdesk_priority
-          - helpdesk_urgency
-          - helpdesk_impact
-          - helpdesk_mode
-          - helpdesk_request_type
-          - helpdesk_closure_code
-          - helpdesk_task_type
-          - helpdesk_worklog_type
+          - chatgpt_integration     # ChatGPT / AI integration
+          - jira_integration        # Jira integration
+
+      customization:
+        helpdesk:
+          - category
+          - subcategory
+          - item
+          - status
+          - priority
+          - urgency
+          - impact
+          - mode
+          - request_type
+          - closure_code
+          - task_type
+          - worklog_type
+          - level
+        change_management:
           - change_stage
           - change_type
           - change_risk
           - change_closure_code
           - change_reason_for_change
           - change_cab
+        release_management:
           - release_stage
           - release_role
           - release_closure_code
           - release_downtime_type
+        problem_management:
           - problem_closure_code
+        project_management:
           - project_role
           - project_status
           - project_type
-          - asset_product
-          - asset_vendor
+        asset_management:
+          - product
+          - vendor
+          - product_type            # Asset product type
+          - software_license_type   # License type classification
+          - software_manufacturer   # Manufacturer records
+          - asset_acknowledgement   # Asset acknowledgement config
+        contract_management:
           - contract_type
           - contract_configuration
-          - purchase_gl_code
-          - purchase_cost_center
-          - cmdb_relationship_type
+        purchase_management:
+          - gl_code
+          - cost_center
+        cmdb_management:
+          - relationship_types      # CI relationship types
+          - ci_states               # CI state definitions
+          - ci_types                # CI type definitions
+          - sync_rules              # CMDB sync rules
+        additional_fields:
+          - additional_fields
+        subform_types:
+          - subform_types
+
       templates_and_forms:
         entities:
           - incident_template
@@ -155,45 +231,86 @@ top_level_modules:
           - solution_template
           - reply_template
           - resolution_template
+          - announcement_template   # Announcement templates
           - service_category
           - purchase_order_template
           - custom_scripts
+          - form_rules              # Form rules / dynamic forms
+
       users_and_permissions:
         entities:
           - technician
           - group
+          - users                   # User management (requester + technician)
+          - user_groups             # User group management
+          - fine_grained_access     # Fine-grained permission control
+
       instance_configurations:
         entities:
           - site
           - region
-          - operational_hours
+          - operational_hour        # (renamed from operational_hours)
+          - currency                # Multi-currency support
+          - department              # Department management
+          - holiday_sets            # Holiday set configuration
+          - org_role                # Org-level role configuration
+
       general_settings:
         entities:
           - requester_portal_settings
           - requester_portal_customization
           - advanced_portal_settings
+          - navigation_and_footer_settings  # Navigation bar & footer
+
       developer_space:
         entities:
           - custom_module
           - custom_menu
+          - custom_function         # Deluge custom functions
+          - custom_widgets          # Custom dashboard widgets
+
+      data_administration:
+        entities:
+          - export_data             # Data export configuration
+          - import_data             # Data import (CSV/Excel)
+          - system_log              # System activity/audit log
+
+      probes_and_discovery:
+        entities:
+          - credential              # Discovery credential management
+
+      group:
+        entities:
+          - group                   # Admin-level group management
+
       zia:
         entities:
           - zia_settings
+          - artificial_intelligence # AI configuration (Zia AI)
+          - zia_chatbot             # Zia chatbot setup
+
 
 # Keyword → module mapping for feature doc analysis
 feature_keyword_map:
   "incident": ["requests/request/incident"]
-  "service request": ["requests/request/service"]
+  "service request": ["requests/request/service", "requests/servicerequest"]
   "request": ["requests/request"]
+  "request approval": ["requests/requestapprovals"]
+  "request checklist": ["requests/request/RequestChecklist"]
   "task": ["requests/task", "general/task", "changes/changetask", "releases/releasetask", "problems/task"]
-  "worklog": ["requests/worklog", "changes/changeworklog", "releases/releaseworklog"]
+  "worklog": ["requests/worklog", "changes/changeworklog", "releases/releaseworklog", "general/worklog"]
   "problem": ["problems/problem"]
   "change": ["changes/change"]
   "release": ["releases/release"]
-  "checklist": ["releasechecklist/releasechecklist"]
+  "checklist": ["releasechecklist/releasechecklist", "requests/request/RequestChecklist"]
   "asset": ["assets/asset"]
   "software": ["assets/software"]
+  "software license": ["assets/software/softwarelicense", "assets/software/licenseagreements"]
   "cmdb": ["cmdb/cmdb"]
+  "ci type": ["admin/customization/cmdbmanagement/citypes"]
+  "ci state": ["admin/customization/cmdbmanagement/cistates"]
+  "relationship type": ["admin/customization/cmdbmanagement/relationshiptypes"]
+  "sync rule": ["admin/customization/cmdbmanagement/syncrules"]
   "project": ["projects/project"]
   "milestone": ["projects/milestone"]
   "contract": ["contracts/contract"]
@@ -202,19 +319,60 @@ feature_keyword_map:
   "knowledge": ["solutions/solution"]
   "sla": ["admin/automation/sla"]
   "trigger": ["admin/automation/triggers"]
-  "business rule": ["admin/automation/businessrules"]
+  "business rule": ["admin/automation/businessrules/requests", "admin/automation/businessrules/changes"]
   "notification": ["admin/automation/notificationrules"]
   "workflow": ["admin/automation/workflows"]
+  "closure rule": ["admin/automation/closurerules"]
+  "auto assign": ["admin/automation/technicianautoassign"]
+  "change detection": ["admin/automation/cdetection"]
   "category": ["admin/customization/helpdesk/category"]
-  "technician": ["admin/usersandpermissions/technician"]
+  "technician": ["admin/usersandpermissions/users/technician"]
   "group": ["admin/usersandpermissions/group", "admin/group"]
+  "user": ["admin/usersandpermissions/users"]
+  "user group": ["admin/usersandpermissions/usergroups"]
+  "fine grained": ["admin/usersandpermissions/finegrainedaccess"]
   "site": ["admin/instanceconfigurations/site"]
+  "department": ["admin/instanceconfigurations/department"]
+  "currency": ["admin/instanceconfigurations/currency"]
+  "holiday": ["admin/instanceconfigurations/holidaysets"]
+  "operational hour": ["admin/instanceconfigurations/operationalhour"]
   "template": ["admin/templatesandforms"]
+  "form rule": ["admin/templatesandforms/formrules"]
+  "announcement template": ["admin/templatesandforms/announcementtemplate"]
   "custom field": ["admin/customization/additionalfields"]
+  "subform": ["admin/customization/subformtypes"]
   "dashboard": ["general/dashboard"]
-  "approval": ["admin/automation/customactions"]
+  "approval": ["admin/automation/customactions/approvals", "requests/requestapprovals"]
   "portal": ["admin/generalsettings/requesterportal"]
-  "maintenance": ["maintenance/maintenance"]
-  "downtime": ["changes/downtime", "releases/releasedowntime"]
-  "vendor": ["assets"]
-  "product": ["assets"]
+  "navigation": ["admin/generalsettings/navigationandfootersettings"]
+  "maintenance": ["maintenance/requestmaintenance", "maintenance/changemaintenance"]
+  "downtime": ["changes/downtime", "releases/releasedowntime", "general/downtime"]
+  "vendor": ["admin/customization/assetmanagement/vendor"]
+  "product": ["admin/customization/assetmanagement/product"]
+  "product type": ["admin/customization/assetmanagement/producttype"]
+  "manufacturer": ["admin/customization/assetmanagement/softwaremanufacturer"]
+  "custom function": ["admin/developerspace/customfunction"]
+  "custom widget": ["admin/developerspace/customwidgets"]
+  "custom module": ["admin/developerspace/custommodule"]
+  "custom menu": ["admin/developerspace/custommenu"]
+  "export": ["admin/dataAdministration/exportdata"]
+  "import": ["admin/dataAdministration/importdata"]
+  "system log": ["admin/dataAdministration/systemlog"]
+  "discovery": ["admin/probesanddiscovery/credential"]
+  "credential": ["admin/probesanddiscovery/credential"]
+  "chatgpt": ["admin/appaddons/integrations/chatgpt"]
+  "jira": ["admin/appaddons/integrations/jira"]
+  "zia": ["admin/zia", "askzia/askzia"]
+  "ask zia": ["askzia/askzia"]
+  "chatbot": ["admin/zia/ziachatbot"]
+  "ai": ["admin/zia/artificialintelligence", "admin/appaddons/integrations/chatgpt"]
+  "activity": ["activities/activity"]
+  "customer": ["customers/customer"]
+  "esm": ["esmdirectory/esmdirectory", "customers/customer"]
+  "report": ["reports/report"]
+  "announcement": ["general/announcement"]
+  "feedback": ["general/feedback"]
+  "personalization": ["general/personalization"]
+  "requester home": ["general/requesterhome"]
+  "tech availability": ["general/techavailabilitychart"]
+  "user panel": ["general/userpanel"]

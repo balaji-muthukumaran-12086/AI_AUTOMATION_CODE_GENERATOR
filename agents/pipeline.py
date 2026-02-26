@@ -39,6 +39,7 @@ from agents.healer_agent import HealerAgent
 from agents.ui_scout_agent import UIScoutAgent
 from knowledge_base.vector_store import VectorStore
 from knowledge_base.context_builder import ContextBuilder
+from config.project_config import PROJECT_NAME, BASE_DIR
 
 
 def build_pipeline(base_dir: str = None) -> StateGraph:
@@ -57,12 +58,12 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
     runner    = RunnerAgent(
                     base_dir=str(base),
                     deps_dir="/home/balaji-12086/Desktop/Workspace/Zide/dependencies",
-                    pre_compiled_bin_dir="/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/AutomaterSelenium/bin",
+                    pre_compiled_bin_dir=str(Path(BASE_DIR) / PROJECT_NAME / 'bin'),
                 )
     healer    = HealerAgent(
                     base_dir=str(base),
                     deps_dir="/home/balaji-12086/Desktop/Workspace/Zide/dependencies",
-                    pre_compiled_bin_dir="/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/AutomaterSelenium/bin",
+                    pre_compiled_bin_dir=str(Path(BASE_DIR) / PROJECT_NAME / 'bin'),
                     headless=True,
                 )
     scout     = UIScoutAgent(

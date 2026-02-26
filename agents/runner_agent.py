@@ -30,15 +30,16 @@ from datetime import datetime
 from typing import Optional
 
 from agents.state import AgentState
+from config.project_config import PROJECT_NAME, DEPS_DIR as _DEFAULT_DEPS_DIR
 
 
 # ── Constants ──────────────────────────────────────────────────────────────
 
 STANDALONE_DEFAULT_PATH = (
-    "AutomaterSelenium/src/com/zoho/automater/selenium/standalone/StandaloneDefault.java"
+    f"{PROJECT_NAME}/src/com/zoho/automater/selenium/standalone/StandaloneDefault.java"
 )
 MAIN_CLASS_PATH = (
-    "AutomaterSelenium/src/com/zoho/automater/selenium/standalone/AutomaterSeleniumMain.java"
+    f"{PROJECT_NAME}/src/com/zoho/automater/selenium/standalone/AutomaterSeleniumMain.java"
 )
 
 # Known entity class → fully-qualified import mapping
@@ -115,12 +116,12 @@ class RunnerAgent:
 
     def __init__(self, base_dir: str = None, deps_dir: str = None, pre_compiled_bin_dir: str = None):
         self.base = Path(base_dir) if base_dir else Path(__file__).resolve().parents[1]
-        self.automater_root = self.base / "AutomaterSelenium"
+        self.automater_root = self.base / PROJECT_NAME
         self.bin_dir = Path(pre_compiled_bin_dir) if pre_compiled_bin_dir else self.automater_root / "bin"
         self.src_dir = self.automater_root / "src"
         self.resources_dir = self.automater_root / "resources"
         # deps_dir: folder containing all runtime *.jar files
-        self.deps_dir = Path(deps_dir) if deps_dir else Path("/home/balaji-12086/Desktop/Workspace/Zide/dependencies")
+        self.deps_dir = Path(deps_dir) if deps_dir else Path(_DEFAULT_DEPS_DIR)
 
         self._standalone_default = self.base / STANDALONE_DEFAULT_PATH
         self._main_class = self.base / MAIN_CLASS_PATH
@@ -153,18 +154,15 @@ class RunnerAgent:
         print(f"[RunnerAgent] Target URL: {url}")
 
         try:
-            # 1. Backup original files
-            main_backup = self._backup(self._main_class)
+            # 1. Backup StandaloneDefault.java only (AutomaterSeleniumMain is no longer patched —
+            #    entity class and method name are passed as command-line args instead)
             default_backup = self._backup(self._standalone_default)
 
             try:
                 # 2. Patch StandaloneDefault.java with the provided URL / credentials
                 self._patch_standalone_default(url, email_id, portal_name, admin_mail_id)
 
-                # 3. Patch AutomaterSeleniumMain.java with entity + method
-                self._patch_main_class(entity_class, method_name)
-
-                # 4. Full project compile (optional)
+                # 3. Full project compile (optional)
                 if not skip_compile:
                     compile_result = self._compile()
                     if compile_result.returncode != 0:
@@ -178,7 +176,7 @@ class RunnerAgent:
                         )
                     print("[RunnerAgent] Full compilation succeeded.")
 
-                # 4b. Always recompile the 2 patched files to bake in new URL/method
+                # 3b. Always recompile StandaloneDefault.java to bake in new URL/credentials
                 patch_compile = self._compile_patched_files()
                 if patch_compile.returncode != 0:
                     return RunResult(
@@ -190,10 +188,23 @@ class RunnerAgent:
                         error=f"Patch compilation failed:\n{patch_compile.stderr[:2000]}",
                     )
 
-                # 5. Execute
-                run_result = self._execute(method_name)
+                # 4. Execute — entity class FQCN and method name passed as CLI args
+                run_result = self._execute(entity_class, method_name)
                 success = self._parse_success(run_result.stdout, run_result.stderr)
                 report_path = self._find_latest_report(method_name)
+
+                # ── HTML report override ─────────────────────────────────────
+                # The framework's LocalSetupManager.cleanup() can throw a
+                # NullPointerException when trying to open the report in a
+                # browser (no desktop env). This causes _parse_success() to
+                # return False even when the test actually passed.  Correct it
+                # by checking the generated HTML report directly.
+                if not success and report_path:
+                    html_file = Path(report_path) / "ScenarioReport.html"
+                    if html_file.exists():
+                        content = html_file.read_text(encoding="utf-8", errors="ignore")
+                        if 'data-result="FAIL"' not in content and 'data-result="PASS"' in content:
+                            success = True
 
                 if not success:
                     print("[RunnerAgent] ── Captured Error ─────────────────────────")
@@ -213,8 +224,7 @@ class RunnerAgent:
                 )
 
             finally:
-                # Always restore original files
-                self._restore(self._main_class, main_backup)
+                # Restore StandaloneDefault.java to its original state
                 self._restore(self._standalone_default, default_backup)
 
         except Exception as exc:
@@ -299,7 +309,7 @@ class RunnerAgent:
 
         if portal_name:
             content = re.sub(
-                r'^(\s*private static final String PORTAL_NAME\s*=\s*)"[^"]*"(;)',
+                r'^(\s*(?:private|protected) static final String PORTAL_NAME\s*=\s*)"[^"]*"(;)',
                 rf'\1"{portal_name}"\2',
                 content,
                 flags=re.MULTILINE,
@@ -374,7 +384,7 @@ class RunnerAgent:
 
         files = [
             str(self._standalone_default),
-            str(self._main_class),
+            # AutomaterSeleniumMain.java is no longer patched — entity/method passed as CLI args
         ]
 
         cmd = [
@@ -384,7 +394,7 @@ class RunnerAgent:
             "-d", str(self.bin_dir),
         ] + files
 
-        print(f"[RunnerAgent] Compiling 2 patched files (fast)...")
+        print(f"[RunnerAgent] Compiling patched StandaloneDefault.java (fast)...")
         result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(self.automater_root))
         if result.returncode != 0:
             print(f"[RunnerAgent] ⚠️  Patch-compile error:\n{result.stderr[:1000]}")
@@ -426,8 +436,12 @@ class RunnerAgent:
         src_list_file.unlink(missing_ok=True)
         return result
 
-    def _execute(self, method_name: str) -> subprocess.CompletedProcess:
-        """Run the compiled AutomaterSeleniumMain class, streaming output live."""
+    def _execute(self, entity_class: str, method_name: str) -> subprocess.CompletedProcess:
+        """Run the compiled AutomaterSeleniumMain class, streaming output live.
+        
+        New execution model: entity class (FQCN) and method name are passed as
+        command-line args[0] and args[1] — no source patching of Main.java required.
+        """
         classpath_parts = [str(self.bin_dir), str(self.resources_dir)]
 
         for jar in self.deps_dir.rglob("*.jar"):
@@ -435,10 +449,15 @@ class RunnerAgent:
 
         classpath = ":".join(classpath_parts)
 
+        # Resolve fully-qualified class name for args[0]
+        fqcn = ENTITY_IMPORT_MAP.get(entity_class, entity_class)
+
         cmd = [
             "java",
             "-cp", classpath,
             "com.zoho.automater.selenium.standalone.AutomaterSeleniumMain",
+            fqcn,          # args[0]: fully-qualified entity class name
+            method_name,   # args[1]: method name to execute
         ]
 
         print(f"[RunnerAgent] Executing: {method_name} ...")
@@ -453,6 +472,7 @@ class RunnerAgent:
             stderr=subprocess.PIPE,
             text=True,
             cwd=str(self.automater_root),
+            start_new_session=True,   # detach from terminal process group so Ctrl+C doesn't kill the Java subprocess
         )
 
         # Stream stdout and stderr simultaneously
@@ -545,12 +565,14 @@ class RunnerAgent:
         return "Unknown error — see stdout/stderr in run_result"
 
     def _find_latest_report(self, method_name: str) -> str:
-        """Locate the most recently created report directory for this method."""
+        """Locate the most recently created report directory for this method.
+        Handles both '<method>_<ts>' and 'LOCAL_<method>_<ts>' naming."""
         reports_dir = self.automater_root / "reports"
         if not reports_dir.exists():
             return ""
         matches = sorted(
-            reports_dir.glob(f"{method_name}_*"),
+            list(reports_dir.glob(f"{method_name}_*")) +
+            list(reports_dir.glob(f"LOCAL_{method_name}_*")),
             key=lambda p: p.stat().st_mtime,
             reverse=True,
         )

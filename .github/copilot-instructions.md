@@ -42,6 +42,38 @@ ai-automation-qa/
 
 ---
 
+## ⚠️ MODULE PLACEMENT — DERIVE FROM USE CASE, NOT FROM OPEN FILE
+
+> **Root cause of past misplacement**: Copilot defaulted to the currently open file's module
+> (`SolutionBase.java` was open) instead of reading the use-case description.
+> `"create an incident request and add notes"` → **Requests module**, not Solutions.
+
+### Rule: before writing or moving ANY scenario, answer these three questions in order
+
+1. **What entity does the use case name?**  
+   Match the noun in the description to the correct module:
+
+   | Use-case noun | Module path | Correct entity class(es) |
+   |---|---|---|
+   | incident request / IR | `modules/requests/request/` | `IncidentRequest`, `IncidentRequestNotes`, `RequestNotes` |
+   | service request / SR | `modules/requests/request/` | `ServiceRequest`, `ServiceRequestNotes` |
+   | solution | `modules/solutions/solution/` | `Solution`, `SolutionBase` |
+   | problem | `modules/problems/problem/` | `Problem`, `ProblemBase` |
+   | change | `modules/changes/change/` | `Change`, `ChangeBase` |
+   | task | `modules/tasks/task/` | `Task`, `TaskBase` |
+
+2. **Does a matching leaf class already exist?**  
+   Search `modules/<module>/` for an existing `*Notes.java`, `*DetailView.java`, etc.  
+   Place the scenario there — never create a new file if a suitable one exists.
+
+3. **Does `entity_class` in `run_test.py` match the leaf class?**  
+   Update it to the correct value (e.g. `"IncidentRequestNotes"`) before running.
+
+> **FORBIDDEN**: Using the currently open / most recently edited file as the default target
+> for a new scenario. Always validate module semantics from the use-case description first.
+
+---
+
 ## Test Lifecycle
 
 1. **preProcess** (driven by `@AutomaterScenario(group=..., dataIds={...})`)

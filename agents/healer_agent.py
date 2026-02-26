@@ -58,6 +58,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 
 from agents.state import AgentState
 from agents.llm_factory import get_llm
+from config.project_config import PROJECT_NAME
 
 
 # ── Constants ─────────────────────────────────────────────────────────────────
@@ -166,7 +167,7 @@ class HealerAgent:
         headless: bool = True,
     ):
         self.base             = Path(base_dir) if base_dir else Path(__file__).resolve().parents[1]
-        self.automater_root   = self.base / "AutomaterSelenium"
+        self.automater_root   = self.base / PROJECT_NAME
         self.bin_dir          = Path(pre_compiled_bin_dir) if pre_compiled_bin_dir else self.automater_root / "bin"
         self.src_dir          = self.automater_root / "src"
         self.deps_dir         = Path(deps_dir) if deps_dir else Path("/home/balaji-12086/Desktop/Workspace/Zide/dependencies")

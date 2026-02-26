@@ -11,7 +11,7 @@ Responsibilities:
        // ===== ADD TO: RequestCommonBase.java =====
        <implementation methods>
   3. Writes one snippet file per target class into generated/<timestamp>_<module>/
-  4. Resolves the full target file path from AutomaterSelenium/src/
+  4. Resolves the full target file path from <PROJECT_NAME>/src/
   5. Writes a plain-English WHAT_TO_DO.txt so the user knows exactly where to paste
   6. Reports paths + instructions back into state for terminal display
 
@@ -29,6 +29,7 @@ from pathlib import Path
 from datetime import datetime
 
 from agents.state import AgentState
+from config.project_config import PROJECT_NAME
 
 
 class OutputAgent:
@@ -36,7 +37,7 @@ class OutputAgent:
     def __init__(self, base_dir: str = None):
         self.base = Path(base_dir) if base_dir else Path(__file__).resolve().parents[1]
         self.output_root = (
-            self.base / 'AutomaterSelenium' / 'src' /
+            self.base / PROJECT_NAME / 'src' /
             'com' / 'zoho' / 'automater' / 'selenium' / 'modules'
         )
         self.generated_dir = self.base / 'generated'
@@ -79,7 +80,7 @@ class OutputAgent:
 
     def _resolve_target_path(self, filename: str) -> Path | None:
         """
-        Find the full path of filename inside AutomaterSelenium/src/.
+        Find the full path of filename inside {PROJECT_NAME}/src/.
         Returns None if not found (new file to be created).
         """
         if not self.output_root.exists():
@@ -130,7 +131,7 @@ class OutputAgent:
                 lines.append(f'  [{idx}] Paste code from:')
                 lines.append(f'        {snippet_name}')
                 lines.append(f'      Target file not found in repo — place in the matching .java file:')
-                lines.append(f'        AutomaterSelenium/src/.../{target_name}')
+                lines.append(f'        {PROJECT_NAME}/src/.../{target_name}')
             lines.append('')
 
         lines += [

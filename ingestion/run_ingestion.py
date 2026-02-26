@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from ingestion.java_parser import parse_all_java_files, save_parsed_results
 from ingestion.module_indexer import build_module_index, build_scenario_flat_list
+from config.project_config import PROJECT_NAME
 
 
 def main():
@@ -33,8 +34,8 @@ def main():
     save_parsed_results(fw_results, str(kb_raw / 'framework_parsed.json'))
 
     # ── Step 2: Parse Test Cases source ──
-    print("\n🔍 Step 2: Parsing AutomaterSelenium test cases...")
-    tc_root = base / 'AutomaterSelenium' / 'src'
+    print(f"\n🔍 Step 2: Parsing {PROJECT_NAME} test cases...")
+    tc_root = base / PROJECT_NAME / 'src'
     tc_results = parse_all_java_files(str(tc_root))
     save_parsed_results(tc_results, str(kb_raw / 'testcases_parsed.json'))
 

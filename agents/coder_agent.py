@@ -35,6 +35,15 @@ def _load_framework_rules() -> str:
         return ''  # graceful degradation
 
 
+def _load_framework_knowledge() -> str:
+    """Load the deep framework knowledge doc — lifecycle, traps, LocalStorage, REST session context."""
+    knowledge_path = Path(__file__).resolve().parents[1] / 'config' / 'framework_knowledge.md'
+    try:
+        return knowledge_path.read_text(encoding='utf-8')
+    except FileNotFoundError:
+        return ''  # graceful degradation
+
+
 SYSTEM_PROMPT = """
 You are an expert Java test automation engineer for Zoho ServiceDesk Plus (SDP).
 You write test cases using the AutomaterSelenium framework.
@@ -524,7 +533,8 @@ Set<String> actions.jsonArrayToSet(JSONArray arr)
 class CoderAgent:
 
     # Load rules doc once at class definition time
-    _RULES_DOC: str = _load_framework_rules()
+    _RULES_DOC: str      = _load_framework_rules()
+    _KNOWLEDGE_DOC: str = _load_framework_knowledge()
 
     def __init__(
         self,
@@ -534,13 +544,17 @@ class CoderAgent:
         base_dir: str = None,
     ):
         self.base = Path(base_dir) if base_dir else Path(__file__).resolve().parents[1]
-        # Build effective system prompt = base + validated rules doc
+        # Build effective system prompt = base + validated rules doc + deep knowledge
         self._system_prompt = (
             SYSTEM_PROMPT
             + "\n\n================================================================\n"
             + "VALIDATED FRAMEWORK RULES (authoritative — overrides any conflicting info above)\n"
             + "================================================================\n"
             + self._RULES_DOC
+            + "\n\n================================================================\n"
+            + "DEEP FRAMEWORK KNOWLEDGE (lifecycle traps, LocalStorage, REST session context, known pitfalls)\n"
+            + "================================================================\n"
+            + self._KNOWLEDGE_DOC
         )
         self.llm = llm or get_llm(
             temperature=0.1,

@@ -1,11 +1,34 @@
 {
-  "generated_at": "2026-02-24T14:15:44.027113",
-  "total_modules": 133,
-  "total_scenarios": 5558,
+  "generated_at": "2026-02-26T18:28:47.169162",
+  "total_modules": 210,
+  "total_scenarios": 17101,
   "modules": {
     "modules": {
       "entity": "modules",
       "module": "modules",
+      "scenario_count": 0,
+      "coverage": {
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "CRITICAL"
+    },
+    "modules/activities": {
+      "entity": "activities",
+      "module": "activities",
       "scenario_count": 0,
       "coverage": {
         "CREATE": 0,
@@ -52,48 +75,47 @@
     "modules/releases": {
       "entity": "releases",
       "module": "releases",
-      "scenario_count": 0,
+      "scenario_count": 4,
       "coverage": {
+        "READ": 4,
+        "VALIDATE": 4,
         "CREATE": 0,
-        "READ": 0,
         "UPDATE": 0,
         "DELETE": 0,
         "NEGATIVE": 0,
         "ROLE": 0
       },
-      "completeness_pct": 0,
+      "completeness_pct": 25,
       "missing_crud_ops": [
         "CREATE",
-        "READ",
         "UPDATE",
         "DELETE"
       ],
       "has_negative_tests": false,
       "has_role_tests": false,
-      "risk_level": "CRITICAL"
+      "risk_level": "MEDIUM"
     },
     "modules/requests": {
       "entity": "requests",
       "module": "requests",
-      "scenario_count": 11,
+      "scenario_count": 14,
       "coverage": {
-        "OTHER": 6,
-        "READ": 2,
+        "VALIDATE": 11,
+        "READ": 6,
+        "DELETE": 2,
         "UPDATE": 3,
-        "VALIDATE": 5,
+        "NEGATIVE": 2,
+        "OTHER": 3,
         "CREATE": 0,
-        "DELETE": 0,
-        "NEGATIVE": 0,
         "ROLE": 0
       },
-      "completeness_pct": 50,
+      "completeness_pct": 75,
       "missing_crud_ops": [
-        "CREATE",
-        "DELETE"
+        "CREATE"
       ],
-      "has_negative_tests": false,
+      "has_negative_tests": true,
       "has_role_tests": false,
-      "risk_level": "MEDIUM"
+      "risk_level": "LOW"
     },
     "modules/problems": {
       "entity": "problems",
@@ -121,6 +143,29 @@
     "modules/projects": {
       "entity": "projects",
       "module": "projects",
+      "scenario_count": 0,
+      "coverage": {
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "CRITICAL"
+    },
+    "modules/askzia": {
+      "entity": "askzia",
+      "module": "askzia",
       "scenario_count": 0,
       "coverage": {
         "CREATE": 0,
@@ -236,17 +281,16 @@
     "modules/cmdb": {
       "entity": "cmdb",
       "module": "cmdb",
-      "scenario_count": 107,
+      "scenario_count": 82,
       "coverage": {
-        "READ": 64,
-        "UPDATE": 59,
-        "VALIDATE": 19,
-        "DELETE": 30,
-        "ROLE": 4,
-        "CREATE": 7,
-        "NEGATIVE": 2,
-        "EDGE": 1,
-        "OTHER": 1
+        "CREATE": 34,
+        "DELETE": 10,
+        "READ": 23,
+        "UPDATE": 22,
+        "EDGE": 5,
+        "ROLE": 17,
+        "VALIDATE": 41,
+        "NEGATIVE": 4
       },
       "completeness_pct": 100,
       "missing_crud_ops": [],
@@ -254,17 +298,40 @@
       "has_role_tests": true,
       "risk_level": "LOW"
     },
+    "modules/reports": {
+      "entity": "reports",
+      "module": "reports",
+      "scenario_count": 0,
+      "coverage": {
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "CRITICAL"
+    },
     "modules/assets": {
       "entity": "assets",
       "module": "assets",
       "scenario_count": 450,
       "coverage": {
         "DELETE": 59,
-        "ROLE": 66,
-        "CREATE": 166,
-        "VALIDATE": 69,
-        "UPDATE": 240,
-        "READ": 177,
+        "ROLE": 71,
+        "CREATE": 168,
+        "VALIDATE": 72,
+        "READ": 171,
+        "UPDATE": 245,
         "OTHER": 23,
         "NEGATIVE": 0
       },
@@ -277,6 +344,29 @@
     "modules/purchaseorders": {
       "entity": "purchaseorders",
       "module": "purchaseorders",
+      "scenario_count": 0,
+      "coverage": {
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "CRITICAL"
+    },
+    "modules/customers": {
+      "entity": "customers",
+      "module": "customers",
       "scenario_count": 0,
       "coverage": {
         "CREATE": 0,
@@ -343,14 +433,39 @@
       "has_role_tests": false,
       "risk_level": "CRITICAL"
     },
+    "modules/activities/activity": {
+      "entity": "activity",
+      "module": "activities",
+      "scenario_count": 3,
+      "coverage": {
+        "OTHER": 1,
+        "CREATE": 1,
+        "EDGE": 1,
+        "VALIDATE": 1,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 25,
+      "missing_crud_ops": [
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
     "modules/releasechecklist/releasechecklist": {
       "entity": "releasechecklist",
       "module": "releasechecklist",
-      "scenario_count": 21,
+      "scenario_count": 23,
       "coverage": {
         "CREATE": 2,
-        "READ": 21,
-        "VALIDATE": 21,
+        "READ": 23,
+        "VALIDATE": 23,
         "EDGE": 1,
         "UPDATE": 0,
         "DELETE": 0,
@@ -389,15 +504,15 @@
     "modules/releases/releasetask": {
       "entity": "releasetask",
       "module": "releases",
-      "scenario_count": 454,
+      "scenario_count": 453,
       "coverage": {
-        "CREATE": 180,
+        "CREATE": 179,
         "UPDATE": 131,
-        "OTHER": 66,
+        "OTHER": 75,
         "DELETE": 28,
-        "READ": 120,
-        "VALIDATE": 153,
-        "EDGE": 66,
+        "READ": 118,
+        "VALIDATE": 142,
+        "EDGE": 67,
         "NEGATIVE": 0,
         "ROLE": 0
       },
@@ -428,12 +543,12 @@
     "modules/releases/releasedowntime": {
       "entity": "releasedowntime",
       "module": "releases",
-      "scenario_count": 5,
+      "scenario_count": 7,
       "coverage": {
         "CREATE": 3,
         "UPDATE": 1,
-        "DELETE": 1,
-        "VALIDATE": 1,
+        "DELETE": 2,
+        "VALIDATE": 3,
         "READ": 0,
         "NEGATIVE": 0,
         "ROLE": 0
@@ -470,22 +585,23 @@
     "modules/releases/release": {
       "entity": "release",
       "module": "releases",
-      "scenario_count": 97,
+      "scenario_count": 494,
       "coverage": {
-        "READ": 38,
-        "UPDATE": 49,
-        "VALIDATE": 12,
-        "CREATE": 26,
-        "DELETE": 11,
-        "ROLE": 5,
-        "OTHER": 4,
-        "NEGATIVE": 0
+        "VALIDATE": 369,
+        "UPDATE": 237,
+        "DELETE": 41,
+        "OTHER": 20,
+        "CREATE": 127,
+        "READ": 116,
+        "ROLE": 80,
+        "EDGE": 61,
+        "NEGATIVE": 40
       },
       "completeness_pct": 100,
       "missing_crud_ops": [],
-      "has_negative_tests": false,
+      "has_negative_tests": true,
       "has_role_tests": true,
-      "risk_level": "MEDIUM"
+      "risk_level": "LOW"
     },
     "modules/releases/releasetaskworklog": {
       "entity": "releasetaskworklog",
@@ -508,69 +624,90 @@
     "modules/requests/request": {
       "entity": "request",
       "module": "requests",
-      "scenario_count": 343,
+      "scenario_count": 3355,
       "coverage": {
-        "CREATE": 66,
-        "VALIDATE": 115,
-        "DELETE": 27,
-        "UPDATE": 73,
-        "READ": 143,
-        "OTHER": 43,
-        "ROLE": 8,
-        "EDGE": 27,
-        "NEGATIVE": 0
+        "READ": 1369,
+        "VALIDATE": 2596,
+        "ROLE": 354,
+        "CREATE": 560,
+        "UPDATE": 657,
+        "NEGATIVE": 21,
+        "DELETE": 100,
+        "OTHER": 324,
+        "EDGE": 148
       },
       "completeness_pct": 100,
       "missing_crud_ops": [],
-      "has_negative_tests": false,
+      "has_negative_tests": true,
       "has_role_tests": true,
-      "risk_level": "MEDIUM"
+      "risk_level": "LOW"
     },
     "modules/requests/task": {
       "entity": "task",
       "module": "requests",
-      "scenario_count": 0,
+      "scenario_count": 2,
       "coverage": {
-        "CREATE": 0,
+        "CREATE": 2,
+        "EDGE": 1,
         "READ": 0,
         "UPDATE": 0,
         "DELETE": 0,
         "NEGATIVE": 0,
         "ROLE": 0
       },
-      "completeness_pct": 0,
+      "completeness_pct": 25,
       "missing_crud_ops": [
-        "CREATE",
         "READ",
         "UPDATE",
         "DELETE"
       ],
       "has_negative_tests": false,
       "has_role_tests": false,
-      "risk_level": "CRITICAL"
+      "risk_level": "HIGH"
+    },
+    "modules/requests/requestapprovals": {
+      "entity": "requestapprovals",
+      "module": "requests",
+      "scenario_count": 28,
+      "coverage": {
+        "CREATE": 9,
+        "VALIDATE": 27,
+        "NEGATIVE": 3,
+        "UPDATE": 2,
+        "ROLE": 8,
+        "OTHER": 1,
+        "READ": 1,
+        "DELETE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "DELETE"
+      ],
+      "has_negative_tests": true,
+      "has_role_tests": true,
+      "risk_level": "LOW"
     },
     "modules/requests/worklog": {
       "entity": "worklog",
       "module": "requests",
-      "scenario_count": 0,
+      "scenario_count": 5,
       "coverage": {
-        "CREATE": 0,
+        "CREATE": 5,
+        "UPDATE": 5,
+        "VALIDATE": 5,
         "READ": 0,
-        "UPDATE": 0,
         "DELETE": 0,
         "NEGATIVE": 0,
         "ROLE": 0
       },
-      "completeness_pct": 0,
+      "completeness_pct": 50,
       "missing_crud_ops": [
-        "CREATE",
         "READ",
-        "UPDATE",
         "DELETE"
       ],
       "has_negative_tests": false,
       "has_role_tests": false,
-      "risk_level": "CRITICAL"
+      "risk_level": "MEDIUM"
     },
     "modules/requests/reminder": {
       "entity": "reminder",
@@ -595,28 +732,178 @@
       "has_role_tests": false,
       "risk_level": "CRITICAL"
     },
+    "modules/requests/request/finegrainedaccess": {
+      "entity": "finegrainedaccess",
+      "module": "requests",
+      "scenario_count": 49,
+      "coverage": {
+        "CREATE": 2,
+        "VALIDATE": 19,
+        "ROLE": 31,
+        "READ": 5,
+        "EDGE": 30,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/requests/request/fafr": {
+      "entity": "fafr",
+      "module": "requests",
+      "scenario_count": 1176,
+      "coverage": {
+        "UPDATE": 488,
+        "OTHER": 608,
+        "DELETE": 30,
+        "CREATE": 54,
+        "READ": 28,
+        "ROLE": 21,
+        "VALIDATE": 10,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/requests/request/details": {
+      "entity": "details",
+      "module": "requests",
+      "scenario_count": 127,
+      "coverage": {
+        "OTHER": 90,
+        "CREATE": 2,
+        "VALIDATE": 1,
+        "UPDATE": 35,
+        "READ": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/requests/request/RequestChecklist": {
+      "entity": "RequestChecklist",
+      "module": "requests",
+      "scenario_count": 361,
+      "coverage": {
+        "READ": 310,
+        "UPDATE": 112,
+        "VALIDATE": 348,
+        "DELETE": 47,
+        "EDGE": 16,
+        "ROLE": 20,
+        "CREATE": 77,
+        "NEGATIVE": 10
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": true,
+      "has_role_tests": true,
+      "risk_level": "LOW"
+    },
+    "modules/requests/request/tags": {
+      "entity": "tags",
+      "module": "requests",
+      "scenario_count": 164,
+      "coverage": {
+        "READ": 5,
+        "OTHER": 154,
+        "CREATE": 3,
+        "VALIDATE": 8,
+        "UPDATE": 3,
+        "DELETE": 3,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/requests/servicerequest/resource": {
+      "entity": "resource",
+      "module": "requests",
+      "scenario_count": 129,
+      "coverage": {
+        "UPDATE": 18,
+        "OTHER": 30,
+        "VALIDATE": 90,
+        "EDGE": 22,
+        "NEGATIVE": 1,
+        "READ": 13,
+        "ROLE": 21,
+        "CREATE": 10,
+        "DELETE": 8
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": true,
+      "has_role_tests": true,
+      "risk_level": "LOW"
+    },
+    "modules/esmdirectory/esmdirectory": {
+      "entity": "esmdirectory",
+      "module": "esmdirectory",
+      "scenario_count": 1,
+      "coverage": {
+        "UPDATE": 1,
+        "CREATE": 0,
+        "READ": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 25,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "HIGH"
+    },
     "modules/problems/task": {
       "entity": "task",
       "module": "problems",
-      "scenario_count": 0,
+      "scenario_count": 1,
       "coverage": {
-        "CREATE": 0,
+        "CREATE": 1,
+        "VALIDATE": 1,
+        "EDGE": 1,
         "READ": 0,
         "UPDATE": 0,
         "DELETE": 0,
         "NEGATIVE": 0,
         "ROLE": 0
       },
-      "completeness_pct": 0,
+      "completeness_pct": 25,
       "missing_crud_ops": [
-        "CREATE",
         "READ",
         "UPDATE",
         "DELETE"
       ],
       "has_negative_tests": false,
       "has_role_tests": false,
-      "risk_level": "CRITICAL"
+      "risk_level": "HIGH"
     },
     "modules/problems/worklog": {
       "entity": "worklog",
@@ -690,16 +977,17 @@
     "modules/problems/problem": {
       "entity": "problem",
       "module": "problems",
-      "scenario_count": 833,
+      "scenario_count": 1393,
       "coverage": {
-        "CREATE": 150,
-        "READ": 833,
-        "UPDATE": 344,
-        "DELETE": 55,
-        "VALIDATE": 379,
-        "ROLE": 20,
-        "NEGATIVE": 15,
-        "EDGE": 104
+        "CREATE": 211,
+        "READ": 1080,
+        "UPDATE": 384,
+        "DELETE": 286,
+        "VALIDATE": 837,
+        "ROLE": 27,
+        "NEGATIVE": 17,
+        "EDGE": 109,
+        "OTHER": 6
       },
       "completeness_pct": 100,
       "missing_crud_ops": [],
@@ -728,13 +1016,13 @@
     "modules/projects/project": {
       "entity": "project",
       "module": "projects",
-      "scenario_count": 121,
+      "scenario_count": 215,
       "coverage": {
-        "CREATE": 24,
-        "UPDATE": 69,
-        "OTHER": 7,
-        "READ": 101,
-        "VALIDATE": 32,
+        "CREATE": 82,
+        "VALIDATE": 125,
+        "UPDATE": 121,
+        "OTHER": 9,
+        "READ": 103,
         "DELETE": 25,
         "ROLE": 38,
         "NEGATIVE": 0
@@ -748,15 +1036,15 @@
     "modules/projects/projecttask": {
       "entity": "projecttask",
       "module": "projects",
-      "scenario_count": 54,
+      "scenario_count": 55,
       "coverage": {
-        "CREATE": 16,
+        "CREATE": 17,
         "UPDATE": 9,
         "READ": 16,
         "VALIDATE": 16,
         "DELETE": 6,
         "OTHER": 8,
-        "EDGE": 6,
+        "EDGE": 7,
         "ROLE": 13,
         "NEGATIVE": 0
       },
@@ -769,15 +1057,15 @@
     "modules/projects/projectmilestonetask": {
       "entity": "projectmilestonetask",
       "module": "projects",
-      "scenario_count": 15,
+      "scenario_count": 20,
       "coverage": {
-        "CREATE": 4,
+        "CREATE": 5,
         "UPDATE": 1,
         "DELETE": 2,
         "OTHER": 7,
-        "READ": 1,
-        "VALIDATE": 1,
-        "EDGE": 1,
+        "READ": 2,
+        "VALIDATE": 5,
+        "EDGE": 2,
         "NEGATIVE": 0,
         "ROLE": 0
       },
@@ -790,21 +1078,19 @@
     "modules/projects/milestone": {
       "entity": "milestone",
       "module": "projects",
-      "scenario_count": 16,
+      "scenario_count": 17,
       "coverage": {
         "CREATE": 2,
         "UPDATE": 1,
         "DELETE": 3,
         "OTHER": 8,
-        "VALIDATE": 2,
-        "READ": 0,
+        "VALIDATE": 3,
+        "READ": 1,
         "NEGATIVE": 0,
         "ROLE": 0
       },
-      "completeness_pct": 75,
-      "missing_crud_ops": [
-        "READ"
-      ],
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
       "has_negative_tests": false,
       "has_role_tests": false,
       "risk_level": "MEDIUM"
@@ -895,37 +1181,60 @@
       "has_role_tests": true,
       "risk_level": "MEDIUM"
     },
+    "modules/askzia/askzia": {
+      "entity": "askzia",
+      "module": "askzia",
+      "scenario_count": 13,
+      "coverage": {
+        "CREATE": 4,
+        "OTHER": 7,
+        "UPDATE": 1,
+        "ROLE": 1,
+        "READ": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
     "modules/solutions/solution": {
       "entity": "solution",
       "module": "solutions",
-      "scenario_count": 239,
+      "scenario_count": 402,
       "coverage": {
-        "OTHER": 25,
-        "READ": 154,
-        "CREATE": 60,
-        "UPDATE": 40,
-        "DELETE": 28,
-        "NEGATIVE": 0,
-        "ROLE": 0
+        "UPDATE": 85,
+        "VALIDATE": 84,
+        "READ": 208,
+        "CREATE": 120,
+        "OTHER": 32,
+        "ROLE": 15,
+        "DELETE": 60,
+        "NEGATIVE": 0
       },
       "completeness_pct": 100,
       "missing_crud_ops": [],
       "has_negative_tests": false,
-      "has_role_tests": false,
+      "has_role_tests": true,
       "risk_level": "MEDIUM"
     },
     "modules/contracts/contract": {
       "entity": "contract",
       "module": "contracts",
-      "scenario_count": 437,
+      "scenario_count": 488,
       "coverage": {
-        "CREATE": 24,
-        "READ": 259,
-        "UPDATE": 70,
-        "DELETE": 54,
-        "VALIDATE": 122,
+        "CREATE": 42,
+        "READ": 269,
+        "UPDATE": 76,
+        "DELETE": 61,
+        "VALIDATE": 149,
         "NEGATIVE": 15,
-        "OTHER": 104,
+        "OTHER": 107,
         "ROLE": 0
       },
       "completeness_pct": 100,
@@ -937,13 +1246,13 @@
     "modules/changes/downtime": {
       "entity": "downtime",
       "module": "changes",
-      "scenario_count": 6,
+      "scenario_count": 19,
       "coverage": {
-        "CREATE": 4,
+        "CREATE": 12,
         "READ": 1,
-        "VALIDATE": 2,
-        "UPDATE": 1,
-        "DELETE": 1,
+        "VALIDATE": 7,
+        "UPDATE": 13,
+        "DELETE": 3,
         "NEGATIVE": 0,
         "ROLE": 0
       },
@@ -976,14 +1285,14 @@
     "modules/changes/changetask": {
       "entity": "changetask",
       "module": "changes",
-      "scenario_count": 233,
+      "scenario_count": 235,
       "coverage": {
-        "CREATE": 37,
-        "UPDATE": 113,
+        "CREATE": 39,
+        "UPDATE": 114,
         "OTHER": 48,
         "DELETE": 25,
-        "READ": 89,
-        "VALIDATE": 29,
+        "READ": 90,
+        "VALIDATE": 31,
         "EDGE": 2,
         "NEGATIVE": 0,
         "ROLE": 0
@@ -997,22 +1306,22 @@
     "modules/changes/change": {
       "entity": "change",
       "module": "changes",
-      "scenario_count": 107,
+      "scenario_count": 175,
       "coverage": {
-        "OTHER": 14,
-        "UPDATE": 79,
-        "VALIDATE": 16,
-        "CREATE": 14,
-        "READ": 34,
-        "DELETE": 3,
-        "ROLE": 6,
-        "NEGATIVE": 0
+        "UPDATE": 122,
+        "OTHER": 17,
+        "VALIDATE": 67,
+        "CREATE": 23,
+        "READ": 51,
+        "DELETE": 11,
+        "ROLE": 11,
+        "NEGATIVE": 2
       },
       "completeness_pct": 100,
       "missing_crud_ops": [],
-      "has_negative_tests": false,
+      "has_negative_tests": true,
       "has_role_tests": true,
-      "risk_level": "MEDIUM"
+      "risk_level": "LOW"
     },
     "modules/changes/changereminder": {
       "entity": "changereminder",
@@ -1038,11 +1347,12 @@
     "modules/changes/changeconversations": {
       "entity": "changeconversations",
       "module": "changes",
-      "scenario_count": 3,
+      "scenario_count": 6,
       "coverage": {
-        "CREATE": 3,
-        "UPDATE": 3,
+        "CREATE": 5,
+        "UPDATE": 5,
         "DELETE": 1,
+        "VALIDATE": 3,
         "READ": 0,
         "NEGATIVE": 0,
         "ROLE": 0
@@ -1076,9 +1386,32 @@
     "modules/admin/zia": {
       "entity": "zia",
       "module": "admin",
-      "scenario_count": 47,
+      "scenario_count": 109,
       "coverage": {
-        "EDGE": 47,
+        "EDGE": 92,
+        "VALIDATE": 15,
+        "CREATE": 4,
+        "ROLE": 3,
+        "UPDATE": 1,
+        "READ": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/probesanddiscovery": {
+      "entity": "probesanddiscovery",
+      "module": "admin",
+      "scenario_count": 1,
+      "coverage": {
+        "OTHER": 1,
         "CREATE": 0,
         "READ": 0,
         "UPDATE": 0,
@@ -1097,8 +1430,31 @@
       "has_role_tests": false,
       "risk_level": "HIGH"
     },
-    "modules/admin/customization": {
-      "entity": "customization",
+    "modules/admin/developerspace": {
+      "entity": "developerspace",
+      "module": "admin",
+      "scenario_count": 0,
+      "coverage": {
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "CRITICAL"
+    },
+    "modules/admin/appaddons": {
+      "entity": "appaddons",
       "module": "admin",
       "scenario_count": 0,
       "coverage": {
@@ -1123,14 +1479,14 @@
     "modules/admin/automation/closurerules": {
       "entity": "closurerules",
       "module": "admin",
-      "scenario_count": 38,
+      "scenario_count": 47,
       "coverage": {
         "OTHER": 15,
         "ROLE": 2,
-        "READ": 18,
-        "UPDATE": 14,
-        "VALIDATE": 2,
-        "CREATE": 7,
+        "READ": 19,
+        "UPDATE": 20,
+        "VALIDATE": 6,
+        "CREATE": 13,
         "DELETE": 0,
         "NEGATIVE": 0
       },
@@ -1144,6 +1500,289 @@
     },
     "modules/admin/automation/businessrules": {
       "entity": "businessrules",
+      "module": "admin",
+      "scenario_count": 111,
+      "coverage": {
+        "VALIDATE": 105,
+        "CREATE": 45,
+        "UPDATE": 22,
+        "ROLE": 5,
+        "DELETE": 8,
+        "READ": 21,
+        "EDGE": 1,
+        "OTHER": 5,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/triggers": {
+      "entity": "triggers",
+      "module": "admin",
+      "scenario_count": 1021,
+      "coverage": {
+        "CREATE": 930,
+        "READ": 16,
+        "UPDATE": 35,
+        "VALIDATE": 218,
+        "DELETE": 7,
+        "ROLE": 4,
+        "EDGE": 1,
+        "OTHER": 16,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/cdetection": {
+      "entity": "cdetection",
+      "module": "admin",
+      "scenario_count": 13,
+      "coverage": {
+        "CREATE": 10,
+        "UPDATE": 5,
+        "OTHER": 2,
+        "READ": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/technicianautoassign": {
+      "entity": "technicianautoassign",
+      "module": "admin",
+      "scenario_count": 3,
+      "coverage": {
+        "VALIDATE": 3,
+        "ROLE": 3,
+        "READ": 2,
+        "CREATE": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 25,
+      "missing_crud_ops": [
+        "CREATE",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/sla": {
+      "entity": "sla",
+      "module": "admin",
+      "scenario_count": 34,
+      "coverage": {
+        "VALIDATE": 17,
+        "OTHER": 8,
+        "READ": 4,
+        "DELETE": 8,
+        "CREATE": 14,
+        "UPDATE": 13,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/workflows": {
+      "entity": "workflows",
+      "module": "admin",
+      "scenario_count": 235,
+      "coverage": {
+        "CREATE": 72,
+        "UPDATE": 42,
+        "OTHER": 11,
+        "VALIDATE": 171,
+        "READ": 8,
+        "ROLE": 12,
+        "DELETE": 18,
+        "NEGATIVE": 3
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": true,
+      "has_role_tests": true,
+      "risk_level": "LOW"
+    },
+    "modules/admin/automation/notificationrules": {
+      "entity": "notificationrules",
+      "module": "admin",
+      "scenario_count": 245,
+      "coverage": {
+        "CREATE": 50,
+        "OTHER": 85,
+        "UPDATE": 67,
+        "ROLE": 56,
+        "READ": 5,
+        "DELETE": 9,
+        "EDGE": 5,
+        "VALIDATE": 29,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/customactions": {
+      "entity": "customactions",
+      "module": "admin",
+      "scenario_count": 23,
+      "coverage": {
+        "OTHER": 1,
+        "UPDATE": 17,
+        "VALIDATE": 22,
+        "CREATE": 0,
+        "READ": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 25,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/closurerules/requestclosurerules": {
+      "entity": "requestclosurerules",
+      "module": "admin",
+      "scenario_count": 29,
+      "coverage": {
+        "VALIDATE": 29,
+        "EDGE": 4,
+        "READ": 6,
+        "UPDATE": 10,
+        "CREATE": 3,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/closurerules/problemclosurerules": {
+      "entity": "problemclosurerules",
+      "module": "admin",
+      "scenario_count": 3,
+      "coverage": {
+        "READ": 1,
+        "VALIDATE": 3,
+        "CREATE": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 25,
+      "missing_crud_ops": [
+        "CREATE",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/businessrules/requests": {
+      "entity": "requests",
+      "module": "admin",
+      "scenario_count": 126,
+      "coverage": {
+        "OTHER": 61,
+        "DELETE": 12,
+        "CREATE": 33,
+        "UPDATE": 15,
+        "VALIDATE": 16,
+        "READ": 2,
+        "EDGE": 2,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/businessrules/changes": {
+      "entity": "changes",
+      "module": "admin",
+      "scenario_count": 114,
+      "coverage": {
+        "OTHER": 70,
+        "DELETE": 5,
+        "CREATE": 16,
+        "UPDATE": 23,
+        "VALIDATE": 3,
+        "READ": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "READ"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/notificationrules/request": {
+      "entity": "request",
+      "module": "admin",
+      "scenario_count": 38,
+      "coverage": {
+        "CREATE": 6,
+        "VALIDATE": 19,
+        "UPDATE": 3,
+        "ROLE": 10,
+        "OTHER": 14,
+        "READ": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/notificationrules/task": {
+      "entity": "task",
       "module": "admin",
       "scenario_count": 0,
       "coverage": {
@@ -1165,62 +1804,18 @@
       "has_role_tests": false,
       "risk_level": "CRITICAL"
     },
-    "modules/admin/automation/triggers": {
-      "entity": "triggers",
+    "modules/admin/automation/notificationrules/change": {
+      "entity": "change",
       "module": "admin",
-      "scenario_count": 401,
+      "scenario_count": 36,
       "coverage": {
-        "CREATE": 393,
-        "VALIDATE": 17,
-        "UPDATE": 3,
-        "DELETE": 4,
-        "EDGE": 1,
-        "OTHER": 1,
-        "READ": 7,
-        "ROLE": 1,
-        "NEGATIVE": 0
-      },
-      "completeness_pct": 100,
-      "missing_crud_ops": [],
-      "has_negative_tests": false,
-      "has_role_tests": true,
-      "risk_level": "MEDIUM"
-    },
-    "modules/admin/automation/sla": {
-      "entity": "sla",
-      "module": "admin",
-      "scenario_count": 13,
-      "coverage": {
-        "VALIDATE": 2,
-        "OTHER": 8,
-        "READ": 3,
-        "DELETE": 3,
-        "CREATE": 0,
-        "UPDATE": 0,
-        "NEGATIVE": 0,
-        "ROLE": 0
-      },
-      "completeness_pct": 50,
-      "missing_crud_ops": [
-        "CREATE",
-        "UPDATE"
-      ],
-      "has_negative_tests": false,
-      "has_role_tests": false,
-      "risk_level": "MEDIUM"
-    },
-    "modules/admin/automation/notificationrules": {
-      "entity": "notificationrules",
-      "module": "admin",
-      "scenario_count": 201,
-      "coverage": {
-        "CREATE": 26,
-        "OTHER": 81,
-        "UPDATE": 58,
-        "ROLE": 52,
+        "UPDATE": 29,
+        "ROLE": 11,
         "READ": 1,
-        "DELETE": 9,
-        "EDGE": 6,
+        "VALIDATE": 16,
+        "CREATE": 6,
+        "DELETE": 2,
+        "OTHER": 6,
         "NEGATIVE": 0
       },
       "completeness_pct": 100,
@@ -1229,12 +1824,13 @@
       "has_role_tests": true,
       "risk_level": "MEDIUM"
     },
-    "modules/admin/automation/customactions": {
-      "entity": "customactions",
+    "modules/admin/automation/notificationrules/release": {
+      "entity": "release",
       "module": "admin",
-      "scenario_count": 1,
+      "scenario_count": 5,
       "coverage": {
-        "OTHER": 1,
+        "VALIDATE": 1,
+        "OTHER": 4,
         "CREATE": 0,
         "READ": 0,
         "UPDATE": 0,
@@ -1253,44 +1849,22 @@
       "has_role_tests": false,
       "risk_level": "HIGH"
     },
-    "modules/admin/automation/businessrules/requests": {
-      "entity": "requests",
+    "modules/admin/automation/notificationrules/cmdb": {
+      "entity": "cmdb",
       "module": "admin",
-      "scenario_count": 81,
+      "scenario_count": 2,
       "coverage": {
-        "OTHER": 36,
-        "DELETE": 10,
-        "CREATE": 25,
-        "UPDATE": 5,
-        "VALIDATE": 4,
-        "EDGE": 2,
-        "READ": 0,
-        "NEGATIVE": 0,
-        "ROLE": 0
-      },
-      "completeness_pct": 75,
-      "missing_crud_ops": [
-        "READ"
-      ],
-      "has_negative_tests": false,
-      "has_role_tests": false,
-      "risk_level": "MEDIUM"
-    },
-    "modules/admin/automation/notificationrules/request": {
-      "entity": "request",
-      "module": "admin",
-      "scenario_count": 1,
-      "coverage": {
-        "CREATE": 1,
-        "VALIDATE": 1,
+        "VALIDATE": 2,
+        "CREATE": 0,
         "READ": 0,
         "UPDATE": 0,
         "DELETE": 0,
         "NEGATIVE": 0,
         "ROLE": 0
       },
-      "completeness_pct": 25,
+      "completeness_pct": 0,
       "missing_crud_ops": [
+        "CREATE",
         "READ",
         "UPDATE",
         "DELETE"
@@ -1298,6 +1872,77 @@
       "has_negative_tests": false,
       "has_role_tests": false,
       "risk_level": "HIGH"
+    },
+    "modules/admin/automation/notificationrules/purchase": {
+      "entity": "purchase",
+      "module": "admin",
+      "scenario_count": 5,
+      "coverage": {
+        "VALIDATE": 1,
+        "OTHER": 4,
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "HIGH"
+    },
+    "modules/admin/automation/notificationrules/problem": {
+      "entity": "problem",
+      "module": "admin",
+      "scenario_count": 5,
+      "coverage": {
+        "VALIDATE": 1,
+        "OTHER": 4,
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "HIGH"
+    },
+    "modules/admin/automation/customactions/approvals": {
+      "entity": "approvals",
+      "module": "admin",
+      "scenario_count": 24,
+      "coverage": {
+        "CREATE": 8,
+        "UPDATE": 14,
+        "VALIDATE": 16,
+        "DELETE": 2,
+        "ROLE": 1,
+        "READ": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "READ"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
     },
     "modules/admin/automation/customactions/task": {
       "entity": "task",
@@ -1321,13 +1966,14 @@
     "modules/admin/automation/customactions/timer": {
       "entity": "timer",
       "module": "admin",
-      "scenario_count": 9,
+      "scenario_count": 18,
       "coverage": {
         "CREATE": 2,
         "VALIDATE": 8,
         "UPDATE": 1,
         "DELETE": 2,
         "READ": 2,
+        "OTHER": 9,
         "NEGATIVE": 0,
         "ROLE": 0
       },
@@ -1336,86 +1982,150 @@
       "has_negative_tests": false,
       "has_role_tests": false,
       "risk_level": "MEDIUM"
+    },
+    "modules/admin/automation/customactions/notification": {
+      "entity": "notification",
+      "module": "admin",
+      "scenario_count": 18,
+      "coverage": {
+        "UPDATE": 9,
+        "VALIDATE": 18,
+        "CREATE": 5,
+        "ROLE": 11,
+        "DELETE": 4,
+        "READ": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "READ"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/generalsettings/navigationandfootersettings": {
+      "entity": "navigationandfootersettings",
+      "module": "admin",
+      "scenario_count": 100,
+      "coverage": {
+        "VALIDATE": 100,
+        "UPDATE": 75,
+        "EDGE": 51,
+        "ROLE": 61,
+        "READ": 5,
+        "CREATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "CREATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/generalsettings": {
+      "entity": "generalsettings",
+      "module": "admin",
+      "scenario_count": 0,
+      "coverage": {
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "CRITICAL"
     },
     "modules/admin/generalsettings/advancedportalsettings": {
       "entity": "advancedportalsettings",
       "module": "admin",
-      "scenario_count": 0,
+      "scenario_count": 23,
       "coverage": {
-        "CREATE": 0,
-        "READ": 0,
-        "UPDATE": 0,
-        "DELETE": 0,
-        "NEGATIVE": 0,
-        "ROLE": 0
+        "READ": 3,
+        "UPDATE": 12,
+        "VALIDATE": 17,
+        "ROLE": 5,
+        "CREATE": 7,
+        "NEGATIVE": 2,
+        "OTHER": 1,
+        "DELETE": 0
       },
-      "completeness_pct": 0,
+      "completeness_pct": 75,
       "missing_crud_ops": [
-        "CREATE",
-        "READ",
-        "UPDATE",
         "DELETE"
       ],
-      "has_negative_tests": false,
-      "has_role_tests": false,
-      "risk_level": "CRITICAL"
+      "has_negative_tests": true,
+      "has_role_tests": true,
+      "risk_level": "LOW"
     },
     "modules/admin/generalsettings/requesterportal/requesterportalsettings": {
       "entity": "requesterportalsettings",
       "module": "admin",
-      "scenario_count": 0,
+      "scenario_count": 37,
       "coverage": {
-        "CREATE": 0,
-        "READ": 0,
-        "UPDATE": 0,
-        "DELETE": 0,
-        "NEGATIVE": 0,
-        "ROLE": 0
+        "UPDATE": 11,
+        "VALIDATE": 36,
+        "CREATE": 4,
+        "READ": 13,
+        "ROLE": 4,
+        "NEGATIVE": 3,
+        "DELETE": 0
       },
-      "completeness_pct": 0,
+      "completeness_pct": 75,
       "missing_crud_ops": [
-        "CREATE",
-        "READ",
-        "UPDATE",
         "DELETE"
       ],
-      "has_negative_tests": false,
-      "has_role_tests": false,
-      "risk_level": "CRITICAL"
+      "has_negative_tests": true,
+      "has_role_tests": true,
+      "risk_level": "LOW"
     },
     "modules/admin/generalsettings/requesterportal/requesterportalcustomization": {
       "entity": "requesterportalcustomization",
       "module": "admin",
-      "scenario_count": 0,
+      "scenario_count": 25,
       "coverage": {
+        "UPDATE": 8,
+        "VALIDATE": 22,
+        "READ": 7,
+        "ROLE": 2,
+        "OTHER": 2,
         "CREATE": 0,
-        "READ": 0,
-        "UPDATE": 0,
         "DELETE": 0,
-        "NEGATIVE": 0,
-        "ROLE": 0
+        "NEGATIVE": 0
       },
-      "completeness_pct": 0,
+      "completeness_pct": 50,
       "missing_crud_ops": [
         "CREATE",
-        "READ",
-        "UPDATE",
         "DELETE"
       ],
       "has_negative_tests": false,
-      "has_role_tests": false,
-      "risk_level": "CRITICAL"
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
     },
     "modules/admin/instanceconfigurations/site": {
       "entity": "site",
       "module": "admin",
-      "scenario_count": 5,
+      "scenario_count": 6,
       "coverage": {
-        "CREATE": 1,
+        "CREATE": 2,
         "VALIDATE": 5,
         "READ": 2,
         "DELETE": 2,
-        "UPDATE": 2,
+        "UPDATE": 3,
         "NEGATIVE": 0,
         "ROLE": 0
       },
@@ -1424,6 +2134,69 @@
       "has_negative_tests": false,
       "has_role_tests": false,
       "risk_level": "MEDIUM"
+    },
+    "modules/admin/instanceconfigurations/operationalhour": {
+      "entity": "operationalhour",
+      "module": "admin",
+      "scenario_count": 36,
+      "coverage": {
+        "CREATE": 27,
+        "READ": 15,
+        "VALIDATE": 27,
+        "UPDATE": 8,
+        "DELETE": 4,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/instanceconfigurations/department": {
+      "entity": "department",
+      "module": "admin",
+      "scenario_count": 10,
+      "coverage": {
+        "CREATE": 5,
+        "READ": 7,
+        "UPDATE": 5,
+        "VALIDATE": 3,
+        "OTHER": 1,
+        "ROLE": 1,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/instanceconfigurations/currency": {
+      "entity": "currency",
+      "module": "admin",
+      "scenario_count": 2,
+      "coverage": {
+        "UPDATE": 2,
+        "DELETE": 1,
+        "VALIDATE": 2,
+        "CREATE": 0,
+        "READ": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "HIGH"
     },
     "modules/admin/instanceconfigurations/region": {
       "entity": "region",
@@ -1448,11 +2221,77 @@
       "has_role_tests": false,
       "risk_level": "CRITICAL"
     },
-    "modules/admin/instanceconfigurations/operationalhours": {
-      "entity": "operationalhours",
+    "modules/admin/instanceconfigurations/orgrole": {
+      "entity": "orgrole",
       "module": "admin",
-      "scenario_count": 0,
+      "scenario_count": 270,
       "coverage": {
+        "VALIDATE": 270,
+        "EDGE": 18,
+        "ROLE": 270,
+        "UPDATE": 29,
+        "CREATE": 1,
+        "READ": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/instanceconfigurations/holidaysets": {
+      "entity": "holidaysets",
+      "module": "admin",
+      "scenario_count": 6,
+      "coverage": {
+        "CREATE": 1,
+        "READ": 6,
+        "UPDATE": 5,
+        "VALIDATE": 1,
+        "DELETE": 2,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/zia/artificialintelligence": {
+      "entity": "artificialintelligence",
+      "module": "admin",
+      "scenario_count": 6,
+      "coverage": {
+        "OTHER": 5,
+        "UPDATE": 1,
+        "CREATE": 0,
+        "READ": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 25,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/zia/ziachatbot": {
+      "entity": "ziachatbot",
+      "module": "admin",
+      "scenario_count": 1,
+      "coverage": {
+        "OTHER": 1,
         "CREATE": 0,
         "READ": 0,
         "UPDATE": 0,
@@ -1469,7 +2308,70 @@
       ],
       "has_negative_tests": false,
       "has_role_tests": false,
-      "risk_level": "CRITICAL"
+      "risk_level": "HIGH"
+    },
+    "modules/admin/probesanddiscovery/credential": {
+      "entity": "credential",
+      "module": "admin",
+      "scenario_count": 11,
+      "coverage": {
+        "CREATE": 4,
+        "UPDATE": 1,
+        "DELETE": 1,
+        "VALIDATE": 5,
+        "EDGE": 3,
+        "ROLE": 2,
+        "READ": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "READ"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/usersandpermissions/usergroups": {
+      "entity": "usergroups",
+      "module": "admin",
+      "scenario_count": 9,
+      "coverage": {
+        "CREATE": 5,
+        "VALIDATE": 6,
+        "OTHER": 2,
+        "DELETE": 1,
+        "READ": 4,
+        "UPDATE": 3,
+        "ROLE": 1,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/usersandpermissions/finegrainedaccess": {
+      "entity": "finegrainedaccess",
+      "module": "admin",
+      "scenario_count": 77,
+      "coverage": {
+        "VALIDATE": 70,
+        "EDGE": 14,
+        "ROLE": 36,
+        "READ": 42,
+        "UPDATE": 27,
+        "CREATE": 12,
+        "DELETE": 4,
+        "NEGATIVE": 7,
+        "OTHER": 1
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": true,
+      "has_role_tests": true,
+      "risk_level": "LOW"
     },
     "modules/admin/usersandpermissions/group": {
       "entity": "group",
@@ -1494,36 +2396,169 @@
       "has_role_tests": false,
       "risk_level": "CRITICAL"
     },
-    "modules/admin/usersandpermissions/technician": {
+    "modules/admin/usersandpermissions/users": {
+      "entity": "users",
+      "module": "admin",
+      "scenario_count": 4,
+      "coverage": {
+        "OTHER": 1,
+        "UPDATE": 1,
+        "ROLE": 1,
+        "VALIDATE": 1,
+        "NEGATIVE": 1,
+        "CREATE": 0,
+        "READ": 0,
+        "DELETE": 0
+      },
+      "completeness_pct": 25,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": true,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/usersandpermissions/users/requester": {
+      "entity": "requester",
+      "module": "admin",
+      "scenario_count": 6,
+      "coverage": {
+        "UPDATE": 2,
+        "VALIDATE": 4,
+        "EDGE": 1,
+        "ROLE": 2,
+        "CREATE": 2,
+        "READ": 2,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/usersandpermissions/users/technician": {
       "entity": "technician",
       "module": "admin",
-      "scenario_count": 0,
+      "scenario_count": 20,
       "coverage": {
+        "READ": 9,
+        "VALIDATE": 19,
+        "ROLE": 14,
+        "CREATE": 5,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/dataAdministration/importdata": {
+      "entity": "importdata",
+      "module": "admin",
+      "scenario_count": 11,
+      "coverage": {
+        "VALIDATE": 11,
+        "UPDATE": 2,
         "CREATE": 0,
+        "READ": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 25,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/dataAdministration/systemlog": {
+      "entity": "systemlog",
+      "module": "admin",
+      "scenario_count": 37,
+      "coverage": {
+        "CREATE": 34,
+        "VALIDATE": 34,
+        "UPDATE": 24,
+        "READ": 2,
+        "DELETE": 33,
+        "ROLE": 1,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/dataAdministration/exportdata": {
+      "entity": "exportdata",
+      "module": "admin",
+      "scenario_count": 2,
+      "coverage": {
+        "CREATE": 2,
         "READ": 0,
         "UPDATE": 0,
         "DELETE": 0,
         "NEGATIVE": 0,
         "ROLE": 0
       },
-      "completeness_pct": 0,
+      "completeness_pct": 25,
       "missing_crud_ops": [
-        "CREATE",
         "READ",
         "UPDATE",
         "DELETE"
       ],
       "has_negative_tests": false,
       "has_role_tests": false,
-      "risk_level": "CRITICAL"
+      "risk_level": "HIGH"
     },
     "modules/admin/developerspace/custommenu": {
       "entity": "custommenu",
       "module": "admin",
-      "scenario_count": 3,
+      "scenario_count": 14,
       "coverage": {
-        "VALIDATE": 3,
-        "CREATE": 1,
+        "OTHER": 6,
+        "READ": 1,
+        "VALIDATE": 4,
+        "CREATE": 5,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/developerspace/customfunction": {
+      "entity": "customfunction",
+      "module": "admin",
+      "scenario_count": 145,
+      "coverage": {
+        "CREATE": 115,
+        "VALIDATE": 127,
+        "OTHER": 18,
         "READ": 0,
         "UPDATE": 0,
         "DELETE": 0,
@@ -1543,13 +2578,34 @@
     "modules/admin/developerspace/custommodule": {
       "entity": "custommodule",
       "module": "admin",
-      "scenario_count": 41,
+      "scenario_count": 99,
       "coverage": {
-        "CREATE": 22,
-        "READ": 10,
-        "UPDATE": 13,
-        "DELETE": 3,
-        "VALIDATE": 1,
+        "CREATE": 63,
+        "UPDATE": 22,
+        "READ": 17,
+        "DELETE": 9,
+        "VALIDATE": 46,
+        "EDGE": 4,
+        "OTHER": 1,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/developerspace/customwidgets": {
+      "entity": "customwidgets",
+      "module": "admin",
+      "scenario_count": 13,
+      "coverage": {
+        "READ": 13,
+        "VALIDATE": 4,
+        "CREATE": 1,
+        "UPDATE": 1,
+        "DELETE": 1,
         "NEGATIVE": 0,
         "ROLE": 0
       },
@@ -1562,25 +2618,23 @@
     "modules/admin/templatesandforms/customscripts": {
       "entity": "customscripts",
       "module": "admin",
-      "scenario_count": 5,
+      "scenario_count": 363,
       "coverage": {
-        "READ": 4,
-        "VALIDATE": 5,
-        "CREATE": 0,
-        "UPDATE": 0,
-        "DELETE": 0,
-        "NEGATIVE": 0,
+        "VALIDATE": 290,
+        "EDGE": 1,
+        "UPDATE": 46,
+        "OTHER": 25,
+        "DELETE": 5,
+        "READ": 13,
+        "CREATE": 4,
+        "NEGATIVE": 4,
         "ROLE": 0
       },
-      "completeness_pct": 25,
-      "missing_crud_ops": [
-        "CREATE",
-        "UPDATE",
-        "DELETE"
-      ],
-      "has_negative_tests": false,
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": true,
       "has_role_tests": false,
-      "risk_level": "MEDIUM"
+      "risk_level": "LOW"
     },
     "modules/admin/templatesandforms/resolutiontemplate": {
       "entity": "resolutiontemplate",
@@ -1606,39 +2660,63 @@
     "modules/admin/templatesandforms/servicecategory": {
       "entity": "servicecategory",
       "module": "admin",
-      "scenario_count": 15,
+      "scenario_count": 129,
       "coverage": {
-        "CREATE": 2,
-        "DELETE": 2,
-        "VALIDATE": 10,
-        "READ": 5,
-        "OTHER": 1,
-        "UPDATE": 2,
-        "NEGATIVE": 0,
-        "ROLE": 0
+        "CREATE": 39,
+        "DELETE": 6,
+        "VALIDATE": 105,
+        "READ": 43,
+        "OTHER": 3,
+        "UPDATE": 16,
+        "EDGE": 3,
+        "NEGATIVE": 5,
+        "ROLE": 9
       },
       "completeness_pct": 100,
       "missing_crud_ops": [],
-      "has_negative_tests": false,
-      "has_role_tests": false,
-      "risk_level": "MEDIUM"
+      "has_negative_tests": true,
+      "has_role_tests": true,
+      "risk_level": "LOW"
     },
     "modules/admin/templatesandforms/incidenttemplate": {
       "entity": "incidenttemplate",
       "module": "admin",
-      "scenario_count": 15,
+      "scenario_count": 88,
       "coverage": {
-        "CREATE": 2,
-        "DELETE": 1,
-        "VALIDATE": 10,
-        "READ": 7,
-        "UPDATE": 3,
-        "OTHER": 2,
-        "NEGATIVE": 0,
-        "ROLE": 0
+        "CREATE": 33,
+        "DELETE": 2,
+        "VALIDATE": 73,
+        "READ": 29,
+        "UPDATE": 11,
+        "OTHER": 3,
+        "EDGE": 3,
+        "NEGATIVE": 7,
+        "ROLE": 4
       },
       "completeness_pct": 100,
       "missing_crud_ops": [],
+      "has_negative_tests": true,
+      "has_role_tests": true,
+      "risk_level": "LOW"
+    },
+    "modules/admin/templatesandforms/formrules": {
+      "entity": "formrules",
+      "module": "admin",
+      "scenario_count": 49,
+      "coverage": {
+        "CREATE": 11,
+        "VALIDATE": 42,
+        "UPDATE": 3,
+        "DELETE": 1,
+        "OTHER": 2,
+        "READ": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "READ"
+      ],
       "has_negative_tests": false,
       "has_role_tests": false,
       "risk_level": "MEDIUM"
@@ -1646,37 +2724,37 @@
     "modules/admin/templatesandforms/tasktemplate": {
       "entity": "tasktemplate",
       "module": "admin",
-      "scenario_count": 1,
+      "scenario_count": 7,
       "coverage": {
         "CREATE": 1,
+        "UPDATE": 1,
+        "DELETE": 1,
+        "OTHER": 2,
+        "VALIDATE": 2,
         "READ": 0,
-        "UPDATE": 0,
-        "DELETE": 0,
         "NEGATIVE": 0,
         "ROLE": 0
       },
-      "completeness_pct": 25,
+      "completeness_pct": 75,
       "missing_crud_ops": [
-        "READ",
-        "UPDATE",
-        "DELETE"
+        "READ"
       ],
       "has_negative_tests": false,
       "has_role_tests": false,
-      "risk_level": "HIGH"
+      "risk_level": "MEDIUM"
     },
     "modules/admin/templatesandforms/projecttemplate": {
       "entity": "projecttemplate",
       "module": "admin",
-      "scenario_count": 18,
+      "scenario_count": 20,
       "coverage": {
-        "CREATE": 4,
+        "CREATE": 6,
         "DELETE": 3,
         "READ": 2,
         "UPDATE": 3,
         "ROLE": 1,
         "OTHER": 7,
-        "VALIDATE": 3,
+        "VALIDATE": 4,
         "NEGATIVE": 0
       },
       "completeness_pct": 100,
@@ -1688,12 +2766,12 @@
     "modules/admin/templatesandforms/changetemplate": {
       "entity": "changetemplate",
       "module": "admin",
-      "scenario_count": 3,
+      "scenario_count": 9,
       "coverage": {
-        "CREATE": 1,
-        "UPDATE": 3,
-        "VALIDATE": 2,
-        "DELETE": 1,
+        "CREATE": 2,
+        "UPDATE": 9,
+        "VALIDATE": 6,
+        "DELETE": 3,
         "READ": 0,
         "NEGATIVE": 0,
         "ROLE": 0
@@ -1731,22 +2809,19 @@
     "modules/admin/templatesandforms/replytemplate": {
       "entity": "replytemplate",
       "module": "admin",
-      "scenario_count": 7,
+      "scenario_count": 11,
       "coverage": {
-        "CREATE": 2,
+        "CREATE": 3,
         "DELETE": 1,
         "OTHER": 2,
-        "VALIDATE": 2,
-        "READ": 0,
-        "UPDATE": 0,
+        "VALIDATE": 4,
+        "UPDATE": 1,
+        "READ": 1,
         "NEGATIVE": 0,
         "ROLE": 0
       },
-      "completeness_pct": 50,
-      "missing_crud_ops": [
-        "READ",
-        "UPDATE"
-      ],
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
       "has_negative_tests": false,
       "has_role_tests": false,
       "risk_level": "MEDIUM"
@@ -1779,21 +2854,19 @@
     "modules/admin/templatesandforms/releasetemplate": {
       "entity": "releasetemplate",
       "module": "admin",
-      "scenario_count": 3,
+      "scenario_count": 90,
       "coverage": {
-        "CREATE": 1,
-        "DELETE": 1,
-        "VALIDATE": 1,
-        "READ": 0,
-        "UPDATE": 0,
+        "CREATE": 36,
+        "DELETE": 22,
+        "VALIDATE": 27,
+        "UPDATE": 11,
+        "READ": 19,
+        "OTHER": 8,
         "NEGATIVE": 0,
         "ROLE": 0
       },
-      "completeness_pct": 50,
-      "missing_crud_ops": [
-        "READ",
-        "UPDATE"
-      ],
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
       "has_negative_tests": false,
       "has_role_tests": false,
       "risk_level": "MEDIUM"
@@ -1801,15 +2874,15 @@
     "modules/admin/templatesandforms/problemtemplate": {
       "entity": "problemtemplate",
       "module": "admin",
-      "scenario_count": 3,
+      "scenario_count": 6,
       "coverage": {
-        "CREATE": 1,
+        "CREATE": 2,
         "DELETE": 1,
-        "VALIDATE": 1,
+        "VALIDATE": 2,
+        "ROLE": 2,
         "READ": 0,
         "UPDATE": 0,
-        "NEGATIVE": 0,
-        "ROLE": 0
+        "NEGATIVE": 0
       },
       "completeness_pct": 50,
       "missing_crud_ops": [
@@ -1817,11 +2890,72 @@
         "UPDATE"
       ],
       "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/templatesandforms/announcementtemplate": {
+      "entity": "announcementtemplate",
+      "module": "admin",
+      "scenario_count": 8,
+      "coverage": {
+        "READ": 1,
+        "VALIDATE": 8,
+        "CREATE": 7,
+        "UPDATE": 6,
+        "DELETE": 6,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
       "has_role_tests": false,
       "risk_level": "MEDIUM"
     },
     "modules/admin/customization/additionalfields": {
       "entity": "additionalfields",
+      "module": "admin",
+      "scenario_count": 417,
+      "coverage": {
+        "CREATE": 273,
+        "READ": 79,
+        "VALIDATE": 200,
+        "EDGE": 25,
+        "UPDATE": 84,
+        "DELETE": 36,
+        "ROLE": 19,
+        "OTHER": 6,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/customization/subformtypes": {
+      "entity": "subformtypes",
+      "module": "admin",
+      "scenario_count": 4,
+      "coverage": {
+        "CREATE": 3,
+        "UPDATE": 4,
+        "DELETE": 4,
+        "VALIDATE": 4,
+        "READ": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "READ"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/customization/assetmanagement/product": {
+      "entity": "product",
       "module": "admin",
       "scenario_count": 0,
       "coverage": {
@@ -1843,8 +2977,28 @@
       "has_role_tests": false,
       "risk_level": "CRITICAL"
     },
-    "modules/admin/customization/assetmanagement/product": {
-      "entity": "product",
+    "modules/admin/customization/assetmanagement/producttype": {
+      "entity": "producttype",
+      "module": "admin",
+      "scenario_count": 32,
+      "coverage": {
+        "CREATE": 9,
+        "VALIDATE": 29,
+        "UPDATE": 8,
+        "DELETE": 5,
+        "READ": 1,
+        "ROLE": 6,
+        "EDGE": 1,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/customization/assetmanagement/softwarelicensetype": {
+      "entity": "softwarelicensetype",
       "module": "admin",
       "scenario_count": 0,
       "coverage": {
@@ -1889,28 +3043,70 @@
       "has_role_tests": false,
       "risk_level": "CRITICAL"
     },
-    "modules/admin/customization/releasemanagement/releasestage": {
-      "entity": "releasestage",
+    "modules/admin/customization/assetmanagement/assetacknowledgement": {
+      "entity": "assetacknowledgement",
       "module": "admin",
-      "scenario_count": 0,
+      "scenario_count": 43,
       "coverage": {
-        "CREATE": 0,
-        "READ": 0,
-        "UPDATE": 0,
+        "CREATE": 12,
+        "UPDATE": 27,
+        "ROLE": 7,
+        "VALIDATE": 23,
+        "OTHER": 10,
+        "EDGE": 16,
+        "READ": 7,
         "DELETE": 0,
-        "NEGATIVE": 0,
-        "ROLE": 0
+        "NEGATIVE": 0
       },
-      "completeness_pct": 0,
+      "completeness_pct": 75,
       "missing_crud_ops": [
-        "CREATE",
-        "READ",
-        "UPDATE",
         "DELETE"
       ],
       "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/customization/assetmanagement/softwaremanufacturer": {
+      "entity": "softwaremanufacturer",
+      "module": "admin",
+      "scenario_count": 21,
+      "coverage": {
+        "CREATE": 7,
+        "READ": 4,
+        "UPDATE": 3,
+        "NEGATIVE": 1,
+        "DELETE": 2,
+        "VALIDATE": 7,
+        "OTHER": 2,
+        "ROLE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": true,
       "has_role_tests": false,
-      "risk_level": "CRITICAL"
+      "risk_level": "LOW"
+    },
+    "modules/admin/customization/releasemanagement/releasestage": {
+      "entity": "releasestage",
+      "module": "admin",
+      "scenario_count": 28,
+      "coverage": {
+        "CREATE": 21,
+        "UPDATE": 16,
+        "READ": 3,
+        "NEGATIVE": 1,
+        "VALIDATE": 2,
+        "OTHER": 2,
+        "DELETE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "DELETE"
+      ],
+      "has_negative_tests": true,
+      "has_role_tests": false,
+      "risk_level": "LOW"
     },
     "modules/admin/customization/releasemanagement/downtimetype": {
       "entity": "downtimetype",
@@ -1956,48 +3152,48 @@
     "modules/admin/customization/releasemanagement/releaserole": {
       "entity": "releaserole",
       "module": "admin",
-      "scenario_count": 0,
+      "scenario_count": 3,
       "coverage": {
-        "CREATE": 0,
+        "CREATE": 1,
+        "UPDATE": 2,
+        "VALIDATE": 3,
+        "NEGATIVE": 1,
+        "EDGE": 1,
+        "ROLE": 1,
         "READ": 0,
-        "UPDATE": 0,
-        "DELETE": 0,
-        "NEGATIVE": 0,
-        "ROLE": 0
+        "DELETE": 0
       },
-      "completeness_pct": 0,
+      "completeness_pct": 50,
       "missing_crud_ops": [
-        "CREATE",
         "READ",
-        "UPDATE",
         "DELETE"
       ],
-      "has_negative_tests": false,
-      "has_role_tests": false,
-      "risk_level": "CRITICAL"
+      "has_negative_tests": true,
+      "has_role_tests": true,
+      "risk_level": "LOW"
     },
     "modules/admin/customization/contractmanagement/contractconfiguration": {
       "entity": "contractconfiguration",
       "module": "admin",
-      "scenario_count": 0,
+      "scenario_count": 3,
       "coverage": {
+        "VALIDATE": 3,
+        "READ": 1,
         "CREATE": 0,
-        "READ": 0,
         "UPDATE": 0,
         "DELETE": 0,
         "NEGATIVE": 0,
         "ROLE": 0
       },
-      "completeness_pct": 0,
+      "completeness_pct": 25,
       "missing_crud_ops": [
         "CREATE",
-        "READ",
         "UPDATE",
         "DELETE"
       ],
       "has_negative_tests": false,
       "has_role_tests": false,
-      "risk_level": "CRITICAL"
+      "risk_level": "MEDIUM"
     },
     "modules/admin/customization/contractmanagement/contracttype": {
       "entity": "contracttype",
@@ -2063,12 +3259,124 @@
       "has_role_tests": false,
       "risk_level": "CRITICAL"
     },
+    "modules/admin/customization/cmdbmanagement/relationshiptypes": {
+      "entity": "relationshiptypes",
+      "module": "admin",
+      "scenario_count": 0,
+      "coverage": {
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "CRITICAL"
+    },
+    "modules/admin/customization/cmdbmanagement/cistates": {
+      "entity": "cistates",
+      "module": "admin",
+      "scenario_count": 30,
+      "coverage": {
+        "CREATE": 3,
+        "EDGE": 6,
+        "ROLE": 6,
+        "UPDATE": 8,
+        "VALIDATE": 7,
+        "OTHER": 12,
+        "READ": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/customization/cmdbmanagement/citypes": {
+      "entity": "citypes",
+      "module": "admin",
+      "scenario_count": 160,
+      "coverage": {
+        "CREATE": 159,
+        "READ": 11,
+        "VALIDATE": 25,
+        "UPDATE": 2,
+        "EDGE": 2,
+        "ROLE": 2,
+        "NEGATIVE": 1,
+        "DELETE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "DELETE"
+      ],
+      "has_negative_tests": true,
+      "has_role_tests": true,
+      "risk_level": "LOW"
+    },
+    "modules/admin/customization/cmdbmanagement": {
+      "entity": "cmdbmanagement",
+      "module": "admin",
+      "scenario_count": 0,
+      "coverage": {
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "CRITICAL"
+    },
+    "modules/admin/customization/cmdbmanagement/syncrules": {
+      "entity": "syncrules",
+      "module": "admin",
+      "scenario_count": 57,
+      "coverage": {
+        "OTHER": 11,
+        "CREATE": 31,
+        "UPDATE": 36,
+        "ROLE": 11,
+        "DELETE": 6,
+        "READ": 3,
+        "VALIDATE": 1,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
     "modules/admin/customization/helpdesk/category": {
       "entity": "category",
       "module": "admin",
-      "scenario_count": 11,
+      "scenario_count": 12,
       "coverage": {
-        "CREATE": 9,
+        "CREATE": 10,
         "READ": 11,
         "UPDATE": 2,
         "DELETE": 1,
@@ -2143,12 +3451,13 @@
     "modules/admin/customization/helpdesk/mode": {
       "entity": "mode",
       "module": "admin",
-      "scenario_count": 6,
+      "scenario_count": 9,
       "coverage": {
         "CREATE": 4,
-        "READ": 6,
+        "READ": 9,
         "UPDATE": 1,
-        "DELETE": 1,
+        "DELETE": 3,
+        "VALIDATE": 3,
         "NEGATIVE": 0,
         "ROLE": 0
       },
@@ -2157,6 +3466,29 @@
       "has_negative_tests": false,
       "has_role_tests": false,
       "risk_level": "MEDIUM"
+    },
+    "modules/admin/customization/helpdesk": {
+      "entity": "helpdesk",
+      "module": "admin",
+      "scenario_count": 0,
+      "coverage": {
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "CRITICAL"
     },
     "modules/admin/customization/helpdesk/impact": {
       "entity": "impact",
@@ -2352,9 +3684,9 @@
     "modules/admin/customization/changemanagement/changetype": {
       "entity": "changetype",
       "module": "admin",
-      "scenario_count": 5,
+      "scenario_count": 6,
       "coverage": {
-        "OTHER": 1,
+        "OTHER": 2,
         "READ": 4,
         "UPDATE": 4,
         "DELETE": 1,
@@ -2442,35 +3774,16 @@
       "has_role_tests": false,
       "risk_level": "MEDIUM"
     },
-    "modules/admin/customization/cmdb/relationshiptype": {
-      "entity": "relationshiptype",
-      "module": "admin",
-      "scenario_count": 3,
-      "coverage": {
-        "CREATE": 1,
-        "UPDATE": 1,
-        "DELETE": 1,
-        "READ": 0,
-        "NEGATIVE": 0,
-        "ROLE": 0
-      },
-      "completeness_pct": 75,
-      "missing_crud_ops": [
-        "READ"
-      ],
-      "has_negative_tests": false,
-      "has_role_tests": false,
-      "risk_level": "MEDIUM"
-    },
     "modules/admin/customization/projectmanagement/projectstatus": {
       "entity": "projectstatus",
       "module": "admin",
-      "scenario_count": 3,
+      "scenario_count": 7,
       "coverage": {
         "CREATE": 1,
-        "READ": 3,
+        "READ": 7,
         "UPDATE": 1,
         "DELETE": 1,
+        "VALIDATE": 4,
         "NEGATIVE": 0,
         "ROLE": 0
       },
@@ -2483,12 +3796,13 @@
     "modules/admin/customization/projectmanagement/projecttype": {
       "entity": "projecttype",
       "module": "admin",
-      "scenario_count": 3,
+      "scenario_count": 7,
       "coverage": {
         "CREATE": 1,
-        "READ": 3,
+        "READ": 7,
         "UPDATE": 1,
         "DELETE": 1,
+        "VALIDATE": 4,
         "NEGATIVE": 0,
         "ROLE": 0
       },
@@ -2500,6 +3814,78 @@
     },
     "modules/admin/customization/projectmanagement/projectrole": {
       "entity": "projectrole",
+      "module": "admin",
+      "scenario_count": 4,
+      "coverage": {
+        "READ": 4,
+        "VALIDATE": 4,
+        "EDGE": 3,
+        "ROLE": 4,
+        "UPDATE": 3,
+        "CREATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "CREATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/admin/appaddons/integrations": {
+      "entity": "integrations",
+      "module": "admin",
+      "scenario_count": 8,
+      "coverage": {
+        "OTHER": 7,
+        "VALIDATE": 1,
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "HIGH"
+    },
+    "modules/admin/appaddons/integrations/chatgpt": {
+      "entity": "chatgpt",
+      "module": "admin",
+      "scenario_count": 1,
+      "coverage": {
+        "VALIDATE": 1,
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "HIGH"
+    },
+    "modules/admin/appaddons/integrations/jira": {
+      "entity": "jira",
       "module": "admin",
       "scenario_count": 0,
       "coverage": {
@@ -2524,17 +3910,17 @@
     "modules/cmdb/cmdb": {
       "entity": "cmdb",
       "module": "cmdb",
-      "scenario_count": 135,
+      "scenario_count": 688,
       "coverage": {
-        "READ": 81,
-        "UPDATE": 68,
-        "VALIDATE": 20,
-        "DELETE": 32,
-        "ROLE": 4,
-        "CREATE": 18,
-        "NEGATIVE": 5,
-        "EDGE": 1,
-        "OTHER": 2
+        "READ": 132,
+        "UPDATE": 231,
+        "VALIDATE": 134,
+        "DELETE": 44,
+        "ROLE": 73,
+        "CREATE": 344,
+        "NEGATIVE": 62,
+        "EDGE": 3,
+        "OTHER": 10
       },
       "completeness_pct": 100,
       "missing_crud_ops": [],
@@ -2542,14 +3928,39 @@
       "has_role_tests": true,
       "risk_level": "LOW"
     },
+    "modules/reports/report": {
+      "entity": "report",
+      "module": "reports",
+      "scenario_count": 76,
+      "coverage": {
+        "VALIDATE": 2,
+        "EDGE": 1,
+        "OTHER": 72,
+        "CREATE": 2,
+        "READ": 2,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
     "modules/assets/consumables": {
       "entity": "consumables",
       "module": "assets",
-      "scenario_count": 8,
+      "scenario_count": 11,
       "coverage": {
-        "CREATE": 6,
-        "UPDATE": 8,
+        "CREATE": 9,
+        "UPDATE": 10,
         "DELETE": 2,
+        "VALIDATE": 1,
         "READ": 0,
         "NEGATIVE": 0,
         "ROLE": 0
@@ -2565,35 +3976,36 @@
     "modules/assets/asset": {
       "entity": "asset",
       "module": "assets",
-      "scenario_count": 429,
+      "scenario_count": 546,
       "coverage": {
-        "CREATE": 157,
-        "READ": 174,
-        "UPDATE": 228,
-        "ROLE": 44,
-        "DELETE": 50,
-        "VALIDATE": 65,
-        "OTHER": 24,
-        "NEGATIVE": 0
+        "CREATE": 181,
+        "READ": 218,
+        "UPDATE": 311,
+        "ROLE": 51,
+        "DELETE": 55,
+        "VALIDATE": 132,
+        "NEGATIVE": 6,
+        "OTHER": 34,
+        "EDGE": 3
       },
       "completeness_pct": 100,
       "missing_crud_ops": [],
-      "has_negative_tests": false,
+      "has_negative_tests": true,
       "has_role_tests": true,
-      "risk_level": "MEDIUM"
+      "risk_level": "LOW"
     },
     "modules/assets/software": {
       "entity": "software",
       "module": "assets",
-      "scenario_count": 11,
+      "scenario_count": 20,
       "coverage": {
-        "CREATE": 5,
+        "CREATE": 6,
         "EDGE": 1,
-        "READ": 3,
-        "UPDATE": 2,
+        "READ": 12,
+        "UPDATE": 3,
         "OTHER": 3,
-        "DELETE": 2,
-        "VALIDATE": 1,
+        "DELETE": 3,
+        "VALIDATE": 7,
         "NEGATIVE": 0,
         "ROLE": 0
       },
@@ -2606,35 +4018,13 @@
     "modules/assets/software/licenseagreements": {
       "entity": "licenseagreements",
       "module": "assets",
-      "scenario_count": 2,
+      "scenario_count": 11,
       "coverage": {
-        "CREATE": 1,
-        "UPDATE": 1,
-        "READ": 0,
-        "DELETE": 0,
-        "NEGATIVE": 0,
-        "ROLE": 0
-      },
-      "completeness_pct": 50,
-      "missing_crud_ops": [
-        "READ",
-        "DELETE"
-      ],
-      "has_negative_tests": false,
-      "has_role_tests": false,
-      "risk_level": "HIGH"
-    },
-    "modules/purchaseorders/purchaseorder": {
-      "entity": "purchaseorder",
-      "module": "purchaseorders",
-      "scenario_count": 54,
-      "coverage": {
-        "VALIDATE": 24,
-        "CREATE": 10,
-        "UPDATE": 7,
+        "CREATE": 2,
+        "UPDATE": 2,
         "READ": 9,
-        "DELETE": 7,
-        "OTHER": 11,
+        "VALIDATE": 6,
+        "DELETE": 1,
         "NEGATIVE": 0,
         "ROLE": 0
       },
@@ -2642,6 +4032,68 @@
       "missing_crud_ops": [],
       "has_negative_tests": false,
       "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/assets/software/softwarelicense": {
+      "entity": "softwarelicense",
+      "module": "assets",
+      "scenario_count": 10,
+      "coverage": {
+        "READ": 10,
+        "VALIDATE": 7,
+        "CREATE": 1,
+        "UPDATE": 1,
+        "DELETE": 1,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/assets/software/licenseagreements/Utils": {
+      "entity": "Utils",
+      "module": "assets",
+      "scenario_count": 0,
+      "coverage": {
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "CRITICAL"
+    },
+    "modules/purchaseorders/purchaseorder": {
+      "entity": "purchaseorder",
+      "module": "purchaseorders",
+      "scenario_count": 133,
+      "coverage": {
+        "VALIDATE": 59,
+        "CREATE": 68,
+        "UPDATE": 11,
+        "READ": 14,
+        "DELETE": 8,
+        "OTHER": 15,
+        "ROLE": 1,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": true,
       "risk_level": "MEDIUM"
     },
     "modules/purchaseorders/purchaseorder/purchaseorderedit": {
@@ -2690,19 +4142,18 @@
     "modules/purchaseorders/purchaseorder/purchaseorderview": {
       "entity": "purchaseorderview",
       "module": "purchaseorders",
-      "scenario_count": 9,
+      "scenario_count": 16,
       "coverage": {
         "READ": 9,
         "ROLE": 6,
         "VALIDATE": 1,
         "DELETE": 2,
-        "CREATE": 0,
+        "CREATE": 7,
         "UPDATE": 0,
         "NEGATIVE": 0
       },
-      "completeness_pct": 50,
+      "completeness_pct": 75,
       "missing_crud_ops": [
-        "CREATE",
         "UPDATE"
       ],
       "has_negative_tests": false,
@@ -2753,9 +4204,30 @@
       "has_role_tests": false,
       "risk_level": "HIGH"
     },
-    "modules/general/task": {
-      "entity": "task",
-      "module": "general",
+    "modules/customers/customer": {
+      "entity": "customer",
+      "module": "customers",
+      "scenario_count": 8,
+      "coverage": {
+        "CREATE": 3,
+        "READ": 1,
+        "UPDATE": 1,
+        "OTHER": 5,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 75,
+      "missing_crud_ops": [
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/customers/customer/Utils": {
+      "entity": "Utils",
+      "module": "customers",
       "scenario_count": 0,
       "coverage": {
         "CREATE": 0,
@@ -2776,17 +4248,18 @@
       "has_role_tests": false,
       "risk_level": "CRITICAL"
     },
-    "modules/general/dashboard": {
-      "entity": "dashboard",
+    "modules/general/task": {
+      "entity": "task",
       "module": "general",
-      "scenario_count": 123,
+      "scenario_count": 48,
       "coverage": {
         "CREATE": 9,
-        "VALIDATE": 123,
-        "READ": 57,
-        "EDGE": 8,
-        "UPDATE": 38,
-        "DELETE": 2,
+        "READ": 39,
+        "UPDATE": 19,
+        "DELETE": 5,
+        "EDGE": 2,
+        "VALIDATE": 4,
+        "OTHER": 1,
         "NEGATIVE": 0,
         "ROLE": 0
       },
@@ -2796,9 +4269,9 @@
       "has_role_tests": false,
       "risk_level": "MEDIUM"
     },
-    "modules/maintenance/maintenance": {
-      "entity": "maintenance",
-      "module": "maintenance",
+    "modules/general/downtime": {
+      "entity": "downtime",
+      "module": "general",
       "scenario_count": 0,
       "coverage": {
         "CREATE": 0,
@@ -2818,6 +4291,226 @@
       "has_negative_tests": false,
       "has_role_tests": false,
       "risk_level": "CRITICAL"
+    },
+    "modules/general/userpanel": {
+      "entity": "userpanel",
+      "module": "general",
+      "scenario_count": 24,
+      "coverage": {
+        "ROLE": 24,
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "HIGH"
+    },
+    "modules/general/worklog": {
+      "entity": "worklog",
+      "module": "general",
+      "scenario_count": 0,
+      "coverage": {
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "CRITICAL"
+    },
+    "modules/general/techavailabilitychart": {
+      "entity": "techavailabilitychart",
+      "module": "general",
+      "scenario_count": 11,
+      "coverage": {
+        "VALIDATE": 11,
+        "READ": 4,
+        "EDGE": 4,
+        "ROLE": 6,
+        "CREATE": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 25,
+      "missing_crud_ops": [
+        "CREATE",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/general/requesterhome": {
+      "entity": "requesterhome",
+      "module": "general",
+      "scenario_count": 1,
+      "coverage": {
+        "CREATE": 1,
+        "READ": 1,
+        "VALIDATE": 1,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 50,
+      "missing_crud_ops": [
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "HIGH"
+    },
+    "modules/general/announcement": {
+      "entity": "announcement",
+      "module": "general",
+      "scenario_count": 60,
+      "coverage": {
+        "VALIDATE": 59,
+        "EDGE": 10,
+        "ROLE": 24,
+        "CREATE": 23,
+        "UPDATE": 23,
+        "READ": 15,
+        "DELETE": 16,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/general/dashboard": {
+      "entity": "dashboard",
+      "module": "general",
+      "scenario_count": 220,
+      "coverage": {
+        "CREATE": 28,
+        "VALIDATE": 186,
+        "READ": 94,
+        "EDGE": 9,
+        "UPDATE": 50,
+        "DELETE": 2,
+        "OTHER": 14,
+        "ROLE": 48,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/general/personalization": {
+      "entity": "personalization",
+      "module": "general",
+      "scenario_count": 1,
+      "coverage": {
+        "VALIDATE": 1,
+        "CREATE": 0,
+        "READ": 0,
+        "UPDATE": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 0,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "HIGH"
+    },
+    "modules/general/feedback": {
+      "entity": "feedback",
+      "module": "general",
+      "scenario_count": 20,
+      "coverage": {
+        "UPDATE": 7,
+        "VALIDATE": 20,
+        "EDGE": 2,
+        "ROLE": 1,
+        "CREATE": 0,
+        "READ": 0,
+        "DELETE": 0,
+        "NEGATIVE": 0
+      },
+      "completeness_pct": 25,
+      "missing_crud_ops": [
+        "CREATE",
+        "READ",
+        "DELETE"
+      ],
+      "has_negative_tests": false,
+      "has_role_tests": true,
+      "risk_level": "MEDIUM"
+    },
+    "modules/maintenance/requestmaintenance": {
+      "entity": "requestmaintenance",
+      "module": "maintenance",
+      "scenario_count": 40,
+      "coverage": {
+        "CREATE": 10,
+        "VALIDATE": 33,
+        "UPDATE": 9,
+        "DELETE": 6,
+        "READ": 5,
+        "OTHER": 4,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
+    },
+    "modules/maintenance/changemaintenance": {
+      "entity": "changemaintenance",
+      "module": "maintenance",
+      "scenario_count": 31,
+      "coverage": {
+        "CREATE": 6,
+        "UPDATE": 23,
+        "VALIDATE": 28,
+        "DELETE": 8,
+        "READ": 3,
+        "NEGATIVE": 0,
+        "ROLE": 0
+      },
+      "completeness_pct": 100,
+      "missing_crud_ops": [],
+      "has_negative_tests": false,
+      "has_role_tests": false,
+      "risk_level": "MEDIUM"
     }
   },
   "gaps": [
@@ -2829,15 +4522,15 @@
       "severity": "CRITICAL"
     },
     {
-      "module": "modules/releasechecklist",
-      "entity": "releasechecklist",
+      "module": "modules/activities",
+      "entity": "activities",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
     },
     {
-      "module": "modules/releases",
-      "entity": "releases",
+      "module": "modules/releasechecklist",
+      "entity": "releasechecklist",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
@@ -2852,6 +4545,13 @@
     {
       "module": "modules/projects",
       "entity": "projects",
+      "gap_type": "ZERO_COVERAGE",
+      "detail": "No test scenarios found for this module",
+      "severity": "CRITICAL"
+    },
+    {
+      "module": "modules/askzia",
+      "entity": "askzia",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
@@ -2878,8 +4578,22 @@
       "severity": "CRITICAL"
     },
     {
+      "module": "modules/reports",
+      "entity": "reports",
+      "gap_type": "ZERO_COVERAGE",
+      "detail": "No test scenarios found for this module",
+      "severity": "CRITICAL"
+    },
+    {
       "module": "modules/purchaseorders",
       "entity": "purchaseorders",
+      "gap_type": "ZERO_COVERAGE",
+      "detail": "No test scenarios found for this module",
+      "severity": "CRITICAL"
+    },
+    {
+      "module": "modules/customers",
+      "entity": "customers",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
@@ -2899,29 +4613,8 @@
       "severity": "CRITICAL"
     },
     {
-      "module": "modules/requests/task",
-      "entity": "task",
-      "gap_type": "ZERO_COVERAGE",
-      "detail": "No test scenarios found for this module",
-      "severity": "CRITICAL"
-    },
-    {
-      "module": "modules/requests/worklog",
-      "entity": "worklog",
-      "gap_type": "ZERO_COVERAGE",
-      "detail": "No test scenarios found for this module",
-      "severity": "CRITICAL"
-    },
-    {
       "module": "modules/requests/reminder",
       "entity": "reminder",
-      "gap_type": "ZERO_COVERAGE",
-      "detail": "No test scenarios found for this module",
-      "severity": "CRITICAL"
-    },
-    {
-      "module": "modules/problems/task",
-      "entity": "task",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
@@ -2962,36 +4655,29 @@
       "severity": "CRITICAL"
     },
     {
-      "module": "modules/admin/customization",
-      "entity": "customization",
+      "module": "modules/admin/developerspace",
+      "entity": "developerspace",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
     },
     {
-      "module": "modules/admin/automation/businessrules",
-      "entity": "businessrules",
+      "module": "modules/admin/appaddons",
+      "entity": "appaddons",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
     },
     {
-      "module": "modules/admin/generalsettings/advancedportalsettings",
-      "entity": "advancedportalsettings",
+      "module": "modules/admin/automation/notificationrules/task",
+      "entity": "task",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
     },
     {
-      "module": "modules/admin/generalsettings/requesterportal/requesterportalsettings",
-      "entity": "requesterportalsettings",
-      "gap_type": "ZERO_COVERAGE",
-      "detail": "No test scenarios found for this module",
-      "severity": "CRITICAL"
-    },
-    {
-      "module": "modules/admin/generalsettings/requesterportal/requesterportalcustomization",
-      "entity": "requesterportalcustomization",
+      "module": "modules/admin/generalsettings",
+      "entity": "generalsettings",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
@@ -3004,29 +4690,8 @@
       "severity": "CRITICAL"
     },
     {
-      "module": "modules/admin/instanceconfigurations/operationalhours",
-      "entity": "operationalhours",
-      "gap_type": "ZERO_COVERAGE",
-      "detail": "No test scenarios found for this module",
-      "severity": "CRITICAL"
-    },
-    {
       "module": "modules/admin/usersandpermissions/group",
       "entity": "group",
-      "gap_type": "ZERO_COVERAGE",
-      "detail": "No test scenarios found for this module",
-      "severity": "CRITICAL"
-    },
-    {
-      "module": "modules/admin/usersandpermissions/technician",
-      "entity": "technician",
-      "gap_type": "ZERO_COVERAGE",
-      "detail": "No test scenarios found for this module",
-      "severity": "CRITICAL"
-    },
-    {
-      "module": "modules/admin/customization/additionalfields",
-      "entity": "additionalfields",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
@@ -3039,6 +4704,13 @@
       "severity": "CRITICAL"
     },
     {
+      "module": "modules/admin/customization/assetmanagement/softwarelicensetype",
+      "entity": "softwarelicensetype",
+      "gap_type": "ZERO_COVERAGE",
+      "detail": "No test scenarios found for this module",
+      "severity": "CRITICAL"
+    },
+    {
       "module": "modules/admin/customization/assetmanagement/vendor",
       "entity": "vendor",
       "gap_type": "ZERO_COVERAGE",
@@ -3046,29 +4718,8 @@
       "severity": "CRITICAL"
     },
     {
-      "module": "modules/admin/customization/releasemanagement/releasestage",
-      "entity": "releasestage",
-      "gap_type": "ZERO_COVERAGE",
-      "detail": "No test scenarios found for this module",
-      "severity": "CRITICAL"
-    },
-    {
       "module": "modules/admin/customization/releasemanagement/downtimetype",
       "entity": "downtimetype",
-      "gap_type": "ZERO_COVERAGE",
-      "detail": "No test scenarios found for this module",
-      "severity": "CRITICAL"
-    },
-    {
-      "module": "modules/admin/customization/releasemanagement/releaserole",
-      "entity": "releaserole",
-      "gap_type": "ZERO_COVERAGE",
-      "detail": "No test scenarios found for this module",
-      "severity": "CRITICAL"
-    },
-    {
-      "module": "modules/admin/customization/contractmanagement/contractconfiguration",
-      "entity": "contractconfiguration",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
@@ -3088,8 +4739,29 @@
       "severity": "CRITICAL"
     },
     {
+      "module": "modules/admin/customization/cmdbmanagement/relationshiptypes",
+      "entity": "relationshiptypes",
+      "gap_type": "ZERO_COVERAGE",
+      "detail": "No test scenarios found for this module",
+      "severity": "CRITICAL"
+    },
+    {
+      "module": "modules/admin/customization/cmdbmanagement",
+      "entity": "cmdbmanagement",
+      "gap_type": "ZERO_COVERAGE",
+      "detail": "No test scenarios found for this module",
+      "severity": "CRITICAL"
+    },
+    {
       "module": "modules/admin/customization/helpdesk/subcategory",
       "entity": "subcategory",
+      "gap_type": "ZERO_COVERAGE",
+      "detail": "No test scenarios found for this module",
+      "severity": "CRITICAL"
+    },
+    {
+      "module": "modules/admin/customization/helpdesk",
+      "entity": "helpdesk",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
@@ -3109,22 +4781,36 @@
       "severity": "CRITICAL"
     },
     {
-      "module": "modules/admin/customization/projectmanagement/projectrole",
-      "entity": "projectrole",
+      "module": "modules/admin/appaddons/integrations/jira",
+      "entity": "jira",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
     },
     {
-      "module": "modules/general/task",
-      "entity": "task",
+      "module": "modules/assets/software/licenseagreements/Utils",
+      "entity": "Utils",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
     },
     {
-      "module": "modules/maintenance/maintenance",
-      "entity": "maintenance",
+      "module": "modules/customers/customer/Utils",
+      "entity": "Utils",
+      "gap_type": "ZERO_COVERAGE",
+      "detail": "No test scenarios found for this module",
+      "severity": "CRITICAL"
+    },
+    {
+      "module": "modules/general/downtime",
+      "entity": "downtime",
+      "gap_type": "ZERO_COVERAGE",
+      "detail": "No test scenarios found for this module",
+      "severity": "CRITICAL"
+    },
+    {
+      "module": "modules/general/worklog",
+      "entity": "worklog",
       "gap_type": "ZERO_COVERAGE",
       "detail": "No test scenarios found for this module",
       "severity": "CRITICAL"
@@ -3132,6 +4818,13 @@
     {
       "module": "modules",
       "entity": "modules",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/activities",
+      "entity": "activities",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
@@ -3147,14 +4840,14 @@
       "module": "modules/releases",
       "entity": "releases",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "detail": "Missing CREATE, UPDATE, DELETE scenarios",
       "severity": "HIGH"
     },
     {
       "module": "modules/requests",
       "entity": "requests",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, DELETE scenarios",
+      "detail": "Missing CREATE scenarios",
       "severity": "HIGH"
     },
     {
@@ -3167,6 +4860,13 @@
     {
       "module": "modules/projects",
       "entity": "projects",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/askzia",
+      "entity": "askzia",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
@@ -3193,8 +4893,22 @@
       "severity": "HIGH"
     },
     {
+      "module": "modules/reports",
+      "entity": "reports",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
       "module": "modules/purchaseorders",
       "entity": "purchaseorders",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/customers",
+      "entity": "customers",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
@@ -3214,20 +4928,6 @@
       "severity": "HIGH"
     },
     {
-      "module": "modules/requests/task",
-      "entity": "task",
-      "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
-      "severity": "HIGH"
-    },
-    {
-      "module": "modules/requests/worklog",
-      "entity": "worklog",
-      "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
-      "severity": "HIGH"
-    },
-    {
       "module": "modules/requests/reminder",
       "entity": "reminder",
       "gap_type": "MISSING_CRUD",
@@ -3235,10 +4935,10 @@
       "severity": "HIGH"
     },
     {
-      "module": "modules/problems/task",
-      "entity": "task",
+      "module": "modules/esmdirectory/esmdirectory",
+      "entity": "esmdirectory",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "detail": "Missing CREATE, READ, DELETE scenarios",
       "severity": "HIGH"
     },
     {
@@ -3277,50 +4977,92 @@
       "severity": "HIGH"
     },
     {
-      "module": "modules/admin/zia",
-      "entity": "zia",
+      "module": "modules/admin/probesanddiscovery",
+      "entity": "probesanddiscovery",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
     },
     {
-      "module": "modules/admin/customization",
-      "entity": "customization",
+      "module": "modules/admin/developerspace",
+      "entity": "developerspace",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
     },
     {
-      "module": "modules/admin/automation/businessrules",
-      "entity": "businessrules",
+      "module": "modules/admin/appaddons",
+      "entity": "appaddons",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
     },
     {
-      "module": "modules/admin/automation/sla",
-      "entity": "sla",
+      "module": "modules/admin/automation/technicianautoassign",
+      "entity": "technicianautoassign",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, UPDATE scenarios",
+      "detail": "Missing CREATE, UPDATE, DELETE scenarios",
       "severity": "HIGH"
     },
     {
       "module": "modules/admin/automation/customactions",
       "entity": "customactions",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "detail": "Missing CREATE, READ, DELETE scenarios",
       "severity": "HIGH"
     },
     {
-      "module": "modules/admin/generalsettings/advancedportalsettings",
-      "entity": "advancedportalsettings",
+      "module": "modules/admin/automation/closurerules/problemclosurerules",
+      "entity": "problemclosurerules",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/admin/automation/notificationrules/task",
+      "entity": "task",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
     },
     {
-      "module": "modules/admin/generalsettings/requesterportal/requesterportalsettings",
-      "entity": "requesterportalsettings",
+      "module": "modules/admin/automation/notificationrules/release",
+      "entity": "release",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/admin/automation/notificationrules/cmdb",
+      "entity": "cmdb",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/admin/automation/notificationrules/purchase",
+      "entity": "purchase",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/admin/automation/notificationrules/problem",
+      "entity": "problem",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/admin/generalsettings/navigationandfootersettings",
+      "entity": "navigationandfootersettings",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/admin/generalsettings",
+      "entity": "generalsettings",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
@@ -3329,7 +5071,14 @@
       "module": "modules/admin/generalsettings/requesterportal/requesterportalcustomization",
       "entity": "requesterportalcustomization",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "detail": "Missing CREATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/admin/instanceconfigurations/currency",
+      "entity": "currency",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ scenarios",
       "severity": "HIGH"
     },
     {
@@ -3340,8 +5089,15 @@
       "severity": "HIGH"
     },
     {
-      "module": "modules/admin/instanceconfigurations/operationalhours",
-      "entity": "operationalhours",
+      "module": "modules/admin/zia/artificialintelligence",
+      "entity": "artificialintelligence",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/admin/zia/ziachatbot",
+      "entity": "ziachatbot",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
@@ -3354,17 +5110,17 @@
       "severity": "HIGH"
     },
     {
-      "module": "modules/admin/usersandpermissions/technician",
-      "entity": "technician",
+      "module": "modules/admin/usersandpermissions/users",
+      "entity": "users",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "detail": "Missing CREATE, READ, DELETE scenarios",
       "severity": "HIGH"
     },
     {
-      "module": "modules/admin/templatesandforms/customscripts",
-      "entity": "customscripts",
+      "module": "modules/admin/dataAdministration/importdata",
+      "entity": "importdata",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, UPDATE, DELETE scenarios",
+      "detail": "Missing CREATE, READ, DELETE scenarios",
       "severity": "HIGH"
     },
     {
@@ -3375,15 +5131,15 @@
       "severity": "HIGH"
     },
     {
-      "module": "modules/admin/customization/additionalfields",
-      "entity": "additionalfields",
+      "module": "modules/admin/customization/assetmanagement/product",
+      "entity": "product",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
     },
     {
-      "module": "modules/admin/customization/assetmanagement/product",
-      "entity": "product",
+      "module": "modules/admin/customization/assetmanagement/softwarelicensetype",
+      "entity": "softwarelicensetype",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
@@ -3396,22 +5152,8 @@
       "severity": "HIGH"
     },
     {
-      "module": "modules/admin/customization/releasemanagement/releasestage",
-      "entity": "releasestage",
-      "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
-      "severity": "HIGH"
-    },
-    {
       "module": "modules/admin/customization/releasemanagement/downtimetype",
       "entity": "downtimetype",
-      "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
-      "severity": "HIGH"
-    },
-    {
-      "module": "modules/admin/customization/releasemanagement/releaserole",
-      "entity": "releaserole",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
@@ -3420,7 +5162,7 @@
       "module": "modules/admin/customization/contractmanagement/contractconfiguration",
       "entity": "contractconfiguration",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "detail": "Missing CREATE, UPDATE, DELETE scenarios",
       "severity": "HIGH"
     },
     {
@@ -3438,8 +5180,29 @@
       "severity": "HIGH"
     },
     {
+      "module": "modules/admin/customization/cmdbmanagement/relationshiptypes",
+      "entity": "relationshiptypes",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/admin/customization/cmdbmanagement",
+      "entity": "cmdbmanagement",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
       "module": "modules/admin/customization/helpdesk/subcategory",
       "entity": "subcategory",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/admin/customization/helpdesk",
+      "entity": "helpdesk",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
@@ -3462,14 +5225,35 @@
       "module": "modules/admin/customization/projectmanagement/projectrole",
       "entity": "projectrole",
       "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/admin/appaddons/integrations",
+      "entity": "integrations",
+      "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
     },
     {
-      "module": "modules/purchaseorders/purchaseorder/purchaseorderview",
-      "entity": "purchaseorderview",
+      "module": "modules/admin/appaddons/integrations/chatgpt",
+      "entity": "chatgpt",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing CREATE, UPDATE scenarios",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/admin/appaddons/integrations/jira",
+      "entity": "jira",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/assets/software/licenseagreements/Utils",
+      "entity": "Utils",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
     },
     {
@@ -3480,22 +5264,64 @@
       "severity": "HIGH"
     },
     {
-      "module": "modules/general/task",
-      "entity": "task",
+      "module": "modules/customers/customer/Utils",
+      "entity": "Utils",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
       "severity": "HIGH"
     },
     {
-      "module": "modules/maintenance/maintenance",
-      "entity": "maintenance",
+      "module": "modules/general/downtime",
+      "entity": "downtime",
       "gap_type": "MISSING_CRUD",
       "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/general/userpanel",
+      "entity": "userpanel",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/general/worklog",
+      "entity": "worklog",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/general/techavailabilitychart",
+      "entity": "techavailabilitychart",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/general/personalization",
+      "entity": "personalization",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, UPDATE, DELETE scenarios",
+      "severity": "HIGH"
+    },
+    {
+      "module": "modules/general/feedback",
+      "entity": "feedback",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing CREATE, READ, DELETE scenarios",
       "severity": "HIGH"
     },
     {
       "module": "modules",
       "entity": "modules",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/activities",
+      "entity": "activities",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -3515,13 +5341,6 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/requests",
-      "entity": "requests",
-      "gap_type": "NO_NEGATIVE_TESTS",
-      "detail": "No negative / error scenario found",
-      "severity": "MEDIUM"
-    },
-    {
       "module": "modules/problems",
       "entity": "problems",
       "gap_type": "NO_NEGATIVE_TESTS",
@@ -3531,6 +5350,13 @@
     {
       "module": "modules/projects",
       "entity": "projects",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/askzia",
+      "entity": "askzia",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -3571,6 +5397,13 @@
       "severity": "MEDIUM"
     },
     {
+      "module": "modules/reports",
+      "entity": "reports",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
       "module": "modules/assets",
       "entity": "assets",
       "gap_type": "NO_NEGATIVE_TESTS",
@@ -3585,6 +5418,13 @@
       "severity": "MEDIUM"
     },
     {
+      "module": "modules/customers",
+      "entity": "customers",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
       "module": "modules/general",
       "entity": "general",
       "gap_type": "NO_NEGATIVE_TESTS",
@@ -3594,6 +5434,20 @@
     {
       "module": "modules/maintenance",
       "entity": "maintenance",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/activities/activity",
+      "entity": "activity",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, UPDATE, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/activities/activity",
+      "entity": "activity",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -3669,13 +5523,6 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/releases/release",
-      "entity": "release",
-      "gap_type": "NO_NEGATIVE_TESTS",
-      "detail": "No negative / error scenario found",
-      "severity": "MEDIUM"
-    },
-    {
       "module": "modules/releases/releasetaskworklog",
       "entity": "releasetaskworklog",
       "gap_type": "NO_NEGATIVE_TESTS",
@@ -3683,10 +5530,10 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/requests/request",
-      "entity": "request",
-      "gap_type": "NO_NEGATIVE_TESTS",
-      "detail": "No negative / error scenario found",
+      "module": "modules/requests/task",
+      "entity": "task",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, UPDATE, DELETE scenarios",
       "severity": "MEDIUM"
     },
     {
@@ -3694,6 +5541,20 @@
       "entity": "task",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/requests/requestapprovals",
+      "entity": "requestapprovals",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/requests/worklog",
+      "entity": "worklog",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, DELETE scenarios",
       "severity": "MEDIUM"
     },
     {
@@ -3708,6 +5569,62 @@
       "entity": "reminder",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/requests/request/finegrainedaccess",
+      "entity": "finegrainedaccess",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing UPDATE, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/requests/request/finegrainedaccess",
+      "entity": "finegrainedaccess",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/requests/request/fafr",
+      "entity": "fafr",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/requests/request/details",
+      "entity": "details",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/requests/request/details",
+      "entity": "details",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/requests/request/tags",
+      "entity": "tags",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/esmdirectory/esmdirectory",
+      "entity": "esmdirectory",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/problems/task",
+      "entity": "task",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, UPDATE, DELETE scenarios",
       "severity": "MEDIUM"
     },
     {
@@ -3769,13 +5686,6 @@
     {
       "module": "modules/projects/milestone",
       "entity": "milestone",
-      "gap_type": "MISSING_CRUD",
-      "detail": "Missing READ scenarios",
-      "severity": "MEDIUM"
-    },
-    {
-      "module": "modules/projects/milestone",
-      "entity": "milestone",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -3816,6 +5726,20 @@
       "severity": "MEDIUM"
     },
     {
+      "module": "modules/askzia/askzia",
+      "entity": "askzia",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/askzia/askzia",
+      "entity": "askzia",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
       "module": "modules/solutions/solution",
       "entity": "solution",
       "gap_type": "NO_NEGATIVE_TESTS",
@@ -3846,13 +5770,6 @@
     {
       "module": "modules/changes/changetask",
       "entity": "changetask",
-      "gap_type": "NO_NEGATIVE_TESTS",
-      "detail": "No negative / error scenario found",
-      "severity": "MEDIUM"
-    },
-    {
-      "module": "modules/changes/change",
-      "entity": "change",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -3895,13 +5812,34 @@
     {
       "module": "modules/admin/zia",
       "entity": "zia",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/zia",
+      "entity": "zia",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/admin/customization",
-      "entity": "customization",
+      "module": "modules/admin/probesanddiscovery",
+      "entity": "probesanddiscovery",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/developerspace",
+      "entity": "developerspace",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/appaddons",
+      "entity": "appaddons",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -3935,6 +5873,27 @@
       "severity": "MEDIUM"
     },
     {
+      "module": "modules/admin/automation/cdetection",
+      "entity": "cdetection",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/cdetection",
+      "entity": "cdetection",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/technicianautoassign",
+      "entity": "technicianautoassign",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
       "module": "modules/admin/automation/sla",
       "entity": "sla",
       "gap_type": "NO_NEGATIVE_TESTS",
@@ -3956,10 +5915,24 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/admin/automation/businessrules/requests",
-      "entity": "requests",
+      "module": "modules/admin/automation/closurerules/requestclosurerules",
+      "entity": "requestclosurerules",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing READ scenarios",
+      "detail": "Missing DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/closurerules/requestclosurerules",
+      "entity": "requestclosurerules",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/closurerules/problemclosurerules",
+      "entity": "problemclosurerules",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
     },
     {
@@ -3970,15 +5943,85 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/admin/automation/notificationrules/request",
-      "entity": "request",
+      "module": "modules/admin/automation/businessrules/changes",
+      "entity": "changes",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing READ, UPDATE, DELETE scenarios",
+      "detail": "Missing READ scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/businessrules/changes",
+      "entity": "changes",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
     },
     {
       "module": "modules/admin/automation/notificationrules/request",
       "entity": "request",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/notificationrules/request",
+      "entity": "request",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/notificationrules/task",
+      "entity": "task",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/notificationrules/change",
+      "entity": "change",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/notificationrules/release",
+      "entity": "release",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/notificationrules/cmdb",
+      "entity": "cmdb",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/notificationrules/purchase",
+      "entity": "purchase",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/notificationrules/problem",
+      "entity": "problem",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/customactions/approvals",
+      "entity": "approvals",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/customactions/approvals",
+      "entity": "approvals",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -3998,17 +6041,45 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/admin/generalsettings/advancedportalsettings",
-      "entity": "advancedportalsettings",
+      "module": "modules/admin/automation/customactions/notification",
+      "entity": "notification",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/automation/customactions/notification",
+      "entity": "notification",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/admin/generalsettings/requesterportal/requesterportalsettings",
-      "entity": "requesterportalsettings",
+      "module": "modules/admin/generalsettings/navigationandfootersettings",
+      "entity": "navigationandfootersettings",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/generalsettings",
+      "entity": "generalsettings",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/generalsettings/advancedportalsettings",
+      "entity": "advancedportalsettings",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/generalsettings/requesterportal/requesterportalsettings",
+      "entity": "requesterportalsettings",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing DELETE scenarios",
       "severity": "MEDIUM"
     },
     {
@@ -4026,6 +6097,34 @@
       "severity": "MEDIUM"
     },
     {
+      "module": "modules/admin/instanceconfigurations/operationalhour",
+      "entity": "operationalhour",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/instanceconfigurations/department",
+      "entity": "department",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/instanceconfigurations/department",
+      "entity": "department",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/instanceconfigurations/currency",
+      "entity": "currency",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
       "module": "modules/admin/instanceconfigurations/region",
       "entity": "region",
       "gap_type": "NO_NEGATIVE_TESTS",
@@ -4033,8 +6132,57 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/admin/instanceconfigurations/operationalhours",
-      "entity": "operationalhours",
+      "module": "modules/admin/instanceconfigurations/orgrole",
+      "entity": "orgrole",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/instanceconfigurations/orgrole",
+      "entity": "orgrole",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/instanceconfigurations/holidaysets",
+      "entity": "holidaysets",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/zia/artificialintelligence",
+      "entity": "artificialintelligence",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/zia/ziachatbot",
+      "entity": "ziachatbot",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/probesanddiscovery/credential",
+      "entity": "credential",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/probesanddiscovery/credential",
+      "entity": "credential",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/usersandpermissions/usergroups",
+      "entity": "usergroups",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4047,8 +6195,57 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/admin/usersandpermissions/technician",
+      "module": "modules/admin/usersandpermissions/users/requester",
+      "entity": "requester",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/usersandpermissions/users/requester",
+      "entity": "requester",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/usersandpermissions/users/technician",
       "entity": "technician",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing UPDATE, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/usersandpermissions/users/technician",
+      "entity": "technician",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/dataAdministration/importdata",
+      "entity": "importdata",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/dataAdministration/systemlog",
+      "entity": "systemlog",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/dataAdministration/exportdata",
+      "entity": "exportdata",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, UPDATE, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/dataAdministration/exportdata",
+      "entity": "exportdata",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4057,12 +6254,26 @@
       "module": "modules/admin/developerspace/custommenu",
       "entity": "custommenu",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing READ, UPDATE, DELETE scenarios",
+      "detail": "Missing UPDATE, DELETE scenarios",
       "severity": "MEDIUM"
     },
     {
       "module": "modules/admin/developerspace/custommenu",
       "entity": "custommenu",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/developerspace/customfunction",
+      "entity": "customfunction",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, UPDATE, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/developerspace/customfunction",
+      "entity": "customfunction",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4075,8 +6286,8 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/admin/templatesandforms/customscripts",
-      "entity": "customscripts",
+      "module": "modules/admin/developerspace/customwidgets",
+      "entity": "customwidgets",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4096,15 +6307,15 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/admin/templatesandforms/servicecategory",
-      "entity": "servicecategory",
-      "gap_type": "NO_NEGATIVE_TESTS",
-      "detail": "No negative / error scenario found",
+      "module": "modules/admin/templatesandforms/formrules",
+      "entity": "formrules",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ scenarios",
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/admin/templatesandforms/incidenttemplate",
-      "entity": "incidenttemplate",
+      "module": "modules/admin/templatesandforms/formrules",
+      "entity": "formrules",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4113,7 +6324,7 @@
       "module": "modules/admin/templatesandforms/tasktemplate",
       "entity": "tasktemplate",
       "gap_type": "MISSING_CRUD",
-      "detail": "Missing READ, UPDATE, DELETE scenarios",
+      "detail": "Missing READ scenarios",
       "severity": "MEDIUM"
     },
     {
@@ -4161,13 +6372,6 @@
     {
       "module": "modules/admin/templatesandforms/replytemplate",
       "entity": "replytemplate",
-      "gap_type": "MISSING_CRUD",
-      "detail": "Missing READ, UPDATE scenarios",
-      "severity": "MEDIUM"
-    },
-    {
-      "module": "modules/admin/templatesandforms/replytemplate",
-      "entity": "replytemplate",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4182,13 +6386,6 @@
     {
       "module": "modules/admin/templatesandforms/releasetemplate",
       "entity": "releasetemplate",
-      "gap_type": "MISSING_CRUD",
-      "detail": "Missing READ, UPDATE scenarios",
-      "severity": "MEDIUM"
-    },
-    {
-      "module": "modules/admin/templatesandforms/releasetemplate",
-      "entity": "releasetemplate",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4203,6 +6400,13 @@
     {
       "module": "modules/admin/templatesandforms/problemtemplate",
       "entity": "problemtemplate",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/templatesandforms/announcementtemplate",
+      "entity": "announcementtemplate",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4215,8 +6419,36 @@
       "severity": "MEDIUM"
     },
     {
+      "module": "modules/admin/customization/subformtypes",
+      "entity": "subformtypes",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/customization/subformtypes",
+      "entity": "subformtypes",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
       "module": "modules/admin/customization/assetmanagement/product",
       "entity": "product",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/customization/assetmanagement/producttype",
+      "entity": "producttype",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/customization/assetmanagement/softwarelicensetype",
+      "entity": "softwarelicensetype",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4229,10 +6461,24 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/admin/customization/releasemanagement/releasestage",
-      "entity": "releasestage",
+      "module": "modules/admin/customization/assetmanagement/assetacknowledgement",
+      "entity": "assetacknowledgement",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/customization/assetmanagement/assetacknowledgement",
+      "entity": "assetacknowledgement",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/customization/releasemanagement/releasestage",
+      "entity": "releasestage",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing DELETE scenarios",
       "severity": "MEDIUM"
     },
     {
@@ -4252,8 +6498,8 @@
     {
       "module": "modules/admin/customization/releasemanagement/releaserole",
       "entity": "releaserole",
-      "gap_type": "NO_NEGATIVE_TESTS",
-      "detail": "No negative / error scenario found",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, DELETE scenarios",
       "severity": "MEDIUM"
     },
     {
@@ -4280,6 +6526,48 @@
     {
       "module": "modules/admin/customization/purchasemanagement/costcenter",
       "entity": "costcenter",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/customization/cmdbmanagement/relationshiptypes",
+      "entity": "relationshiptypes",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/customization/cmdbmanagement/cistates",
+      "entity": "cistates",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing READ, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/customization/cmdbmanagement/cistates",
+      "entity": "cistates",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/customization/cmdbmanagement/citypes",
+      "entity": "citypes",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/customization/cmdbmanagement",
+      "entity": "cmdbmanagement",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/customization/cmdbmanagement/syncrules",
+      "entity": "syncrules",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4315,6 +6603,13 @@
     {
       "module": "modules/admin/customization/helpdesk/mode",
       "entity": "mode",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/customization/helpdesk",
+      "entity": "helpdesk",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4432,20 +6727,6 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/admin/customization/cmdb/relationshiptype",
-      "entity": "relationshiptype",
-      "gap_type": "MISSING_CRUD",
-      "detail": "Missing READ scenarios",
-      "severity": "MEDIUM"
-    },
-    {
-      "module": "modules/admin/customization/cmdb/relationshiptype",
-      "entity": "relationshiptype",
-      "gap_type": "NO_NEGATIVE_TESTS",
-      "detail": "No negative / error scenario found",
-      "severity": "MEDIUM"
-    },
-    {
       "module": "modules/admin/customization/projectmanagement/projectstatus",
       "entity": "projectstatus",
       "gap_type": "NO_NEGATIVE_TESTS",
@@ -4467,6 +6748,41 @@
       "severity": "MEDIUM"
     },
     {
+      "module": "modules/admin/appaddons/integrations",
+      "entity": "integrations",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/appaddons/integrations/chatgpt",
+      "entity": "chatgpt",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/admin/appaddons/integrations/jira",
+      "entity": "jira",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/reports/report",
+      "entity": "report",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing UPDATE, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/reports/report",
+      "entity": "report",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
       "module": "modules/assets/consumables",
       "entity": "consumables",
       "gap_type": "MISSING_CRUD",
@@ -4481,13 +6797,6 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/assets/asset",
-      "entity": "asset",
-      "gap_type": "NO_NEGATIVE_TESTS",
-      "detail": "No negative / error scenario found",
-      "severity": "MEDIUM"
-    },
-    {
       "module": "modules/assets/software",
       "entity": "software",
       "gap_type": "NO_NEGATIVE_TESTS",
@@ -4497,13 +6806,20 @@
     {
       "module": "modules/assets/software/licenseagreements",
       "entity": "licenseagreements",
-      "gap_type": "MISSING_CRUD",
-      "detail": "Missing READ, DELETE scenarios",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/assets/software/licenseagreements",
-      "entity": "licenseagreements",
+      "module": "modules/assets/software/softwarelicense",
+      "entity": "softwarelicense",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/assets/software/licenseagreements/Utils",
+      "entity": "Utils",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4539,6 +6855,13 @@
     {
       "module": "modules/purchaseorders/purchaseorder/purchaseorderview",
       "entity": "purchaseorderview",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing UPDATE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/purchaseorders/purchaseorder/purchaseorderview",
+      "entity": "purchaseorderview",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4565,8 +6888,78 @@
       "severity": "MEDIUM"
     },
     {
+      "module": "modules/customers/customer",
+      "entity": "customer",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/customers/customer",
+      "entity": "customer",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/customers/customer/Utils",
+      "entity": "Utils",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
       "module": "modules/general/task",
       "entity": "task",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/general/downtime",
+      "entity": "downtime",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/general/userpanel",
+      "entity": "userpanel",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/general/worklog",
+      "entity": "worklog",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/general/techavailabilitychart",
+      "entity": "techavailabilitychart",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/general/requesterhome",
+      "entity": "requesterhome",
+      "gap_type": "MISSING_CRUD",
+      "detail": "Missing UPDATE, DELETE scenarios",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/general/requesterhome",
+      "entity": "requesterhome",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/general/announcement",
+      "entity": "announcement",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4579,8 +6972,29 @@
       "severity": "MEDIUM"
     },
     {
-      "module": "modules/maintenance/maintenance",
-      "entity": "maintenance",
+      "module": "modules/general/personalization",
+      "entity": "personalization",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/general/feedback",
+      "entity": "feedback",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/maintenance/requestmaintenance",
+      "entity": "requestmaintenance",
+      "gap_type": "NO_NEGATIVE_TESTS",
+      "detail": "No negative / error scenario found",
+      "severity": "MEDIUM"
+    },
+    {
+      "module": "modules/maintenance/changemaintenance",
+      "entity": "changemaintenance",
       "gap_type": "NO_NEGATIVE_TESTS",
       "detail": "No negative / error scenario found",
       "severity": "MEDIUM"
@@ -4614,6 +7028,13 @@
       "severity": "LOW"
     },
     {
+      "module": "modules/releases/releasedowntime",
+      "entity": "releasedowntime",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
       "module": "modules/releases/releasereminder",
       "entity": "releasereminder",
       "gap_type": "NO_ROLE_TESTS",
@@ -4623,6 +7044,20 @@
     {
       "module": "modules/releases/releasetaskworklog",
       "entity": "releasetaskworklog",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/requests/request/details",
+      "entity": "details",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/requests/request/tags",
+      "entity": "tags",
       "gap_type": "NO_ROLE_TESTS",
       "detail": "No role-based permission tests found",
       "severity": "LOW"
@@ -4644,13 +7079,6 @@
     {
       "module": "modules/projects/project/roles/projectmanager",
       "entity": "projectmanager",
-      "gap_type": "NO_ROLE_TESTS",
-      "detail": "No role-based permission tests found",
-      "severity": "LOW"
-    },
-    {
-      "module": "modules/solutions/solution",
-      "entity": "solution",
       "gap_type": "NO_ROLE_TESTS",
       "detail": "No role-based permission tests found",
       "severity": "LOW"
@@ -4684,6 +7112,13 @@
       "severity": "LOW"
     },
     {
+      "module": "modules/changes/changeconversations",
+      "entity": "changeconversations",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
       "module": "modules/changes/changetaskworklog",
       "entity": "changetaskworklog",
       "gap_type": "NO_ROLE_TESTS",
@@ -4691,8 +7126,8 @@
       "severity": "LOW"
     },
     {
-      "module": "modules/admin/zia",
-      "entity": "zia",
+      "module": "modules/admin/automation/cdetection",
+      "entity": "cdetection",
       "gap_type": "NO_ROLE_TESTS",
       "detail": "No role-based permission tests found",
       "severity": "LOW"
@@ -4705,8 +7140,29 @@
       "severity": "LOW"
     },
     {
+      "module": "modules/admin/automation/customactions",
+      "entity": "customactions",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/automation/closurerules/requestclosurerules",
+      "entity": "requestclosurerules",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
       "module": "modules/admin/automation/businessrules/requests",
       "entity": "requests",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/automation/businessrules/changes",
+      "entity": "changes",
       "gap_type": "NO_ROLE_TESTS",
       "detail": "No role-based permission tests found",
       "severity": "LOW"
@@ -4726,6 +7182,55 @@
       "severity": "LOW"
     },
     {
+      "module": "modules/admin/instanceconfigurations/site",
+      "entity": "site",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/instanceconfigurations/operationalhour",
+      "entity": "operationalhour",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/instanceconfigurations/holidaysets",
+      "entity": "holidaysets",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/zia/artificialintelligence",
+      "entity": "artificialintelligence",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/dataAdministration/importdata",
+      "entity": "importdata",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/developerspace/custommenu",
+      "entity": "custommenu",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/developerspace/customfunction",
+      "entity": "customfunction",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
       "module": "modules/admin/developerspace/custommodule",
       "entity": "custommodule",
       "gap_type": "NO_ROLE_TESTS",
@@ -4733,15 +7238,36 @@
       "severity": "LOW"
     },
     {
-      "module": "modules/admin/templatesandforms/servicecategory",
-      "entity": "servicecategory",
+      "module": "modules/admin/developerspace/customwidgets",
+      "entity": "customwidgets",
       "gap_type": "NO_ROLE_TESTS",
       "detail": "No role-based permission tests found",
       "severity": "LOW"
     },
     {
-      "module": "modules/admin/templatesandforms/incidenttemplate",
-      "entity": "incidenttemplate",
+      "module": "modules/admin/templatesandforms/customscripts",
+      "entity": "customscripts",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/templatesandforms/formrules",
+      "entity": "formrules",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/templatesandforms/tasktemplate",
+      "entity": "tasktemplate",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/templatesandforms/changetemplate",
+      "entity": "changetemplate",
       "gap_type": "NO_ROLE_TESTS",
       "detail": "No role-based permission tests found",
       "severity": "LOW"
@@ -4756,6 +7282,34 @@
     {
       "module": "modules/admin/templatesandforms/purchaseordertemplate",
       "entity": "purchaseordertemplate",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/templatesandforms/releasetemplate",
+      "entity": "releasetemplate",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/templatesandforms/announcementtemplate",
+      "entity": "announcementtemplate",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/customization/assetmanagement/softwaremanufacturer",
+      "entity": "softwaremanufacturer",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/customization/releasemanagement/releasestage",
+      "entity": "releasestage",
       "gap_type": "NO_ROLE_TESTS",
       "detail": "No role-based permission tests found",
       "severity": "LOW"
@@ -4824,6 +7378,41 @@
       "severity": "LOW"
     },
     {
+      "module": "modules/admin/customization/changemanagement/changetype",
+      "entity": "changetype",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/customization/projectmanagement/projectstatus",
+      "entity": "projectstatus",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/customization/projectmanagement/projecttype",
+      "entity": "projecttype",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/admin/appaddons/integrations",
+      "entity": "integrations",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/reports/report",
+      "entity": "report",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
       "module": "modules/assets/consumables",
       "entity": "consumables",
       "gap_type": "NO_ROLE_TESTS",
@@ -4838,15 +7427,43 @@
       "severity": "LOW"
     },
     {
-      "module": "modules/purchaseorders/purchaseorder",
-      "entity": "purchaseorder",
+      "module": "modules/assets/software/licenseagreements",
+      "entity": "licenseagreements",
       "gap_type": "NO_ROLE_TESTS",
       "detail": "No role-based permission tests found",
       "severity": "LOW"
     },
     {
-      "module": "modules/general/dashboard",
-      "entity": "dashboard",
+      "module": "modules/assets/software/softwarelicense",
+      "entity": "softwarelicense",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/customers/customer",
+      "entity": "customer",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/general/task",
+      "entity": "task",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/maintenance/requestmaintenance",
+      "entity": "requestmaintenance",
+      "gap_type": "NO_ROLE_TESTS",
+      "detail": "No role-based permission tests found",
+      "severity": "LOW"
+    },
+    {
+      "module": "modules/maintenance/changemaintenance",
+      "entity": "changemaintenance",
       "gap_type": "NO_ROLE_TESTS",
       "detail": "No role-based permission tests found",
       "severity": "LOW"
@@ -4854,62 +7471,62 @@
   ],
   "summary": {
     "category_distribution": {
-      "OTHER": 576,
-      "READ": 2650,
-      "UPDATE": 1860,
-      "VALIDATE": 1348,
-      "CREATE": 1636,
-      "DELETE": 566,
-      "ROLE": 291,
-      "NEGATIVE": 37,
-      "EDGE": 286
+      "READ": 5251,
+      "VALIDATE": 8250,
+      "DELETE": 1273,
+      "UPDATE": 4575,
+      "NEGATIVE": 219,
+      "OTHER": 2212,
+      "CREATE": 4826,
+      "EDGE": 777,
+      "ROLE": 1573
     },
-    "critical_gaps": 44,
-    "high_gaps": 52,
-    "medium_gaps": 156,
-    "low_gaps": 38,
-    "avg_scenarios_per_module": 41.78947368421053,
-    "modules_with_zero_coverage": 44,
+    "critical_gaps": 43,
+    "high_gaps": 71,
+    "medium_gaps": 241,
+    "low_gaps": 67,
+    "avg_scenarios_per_module": 81.43333333333334,
+    "modules_with_zero_coverage": 43,
     "top_10_most_tested": [
       [
+        "modules/requests/request",
+        3355
+      ],
+      [
         "modules/problems/problem",
-        833
+        1393
+      ],
+      [
+        "modules/requests/request/fafr",
+        1176
+      ],
+      [
+        "modules/admin/automation/triggers",
+        1021
+      ],
+      [
+        "modules/cmdb/cmdb",
+        688
+      ],
+      [
+        "modules/assets/asset",
+        546
+      ],
+      [
+        "modules/releases/release",
+        494
+      ],
+      [
+        "modules/contracts/contract",
+        488
       ],
       [
         "modules/releases/releasetask",
-        454
+        453
       ],
       [
         "modules/assets",
         450
-      ],
-      [
-        "modules/contracts/contract",
-        437
-      ],
-      [
-        "modules/assets/asset",
-        429
-      ],
-      [
-        "modules/admin/automation/triggers",
-        401
-      ],
-      [
-        "modules/requests/request",
-        343
-      ],
-      [
-        "modules/solutions/solution",
-        239
-      ],
-      [
-        "modules/changes/changetask",
-        233
-      ],
-      [
-        "modules/admin/automation/notificationrules",
-        201
       ]
     ],
     "top_10_least_tested": [
@@ -4918,19 +7535,27 @@
         1
       ],
       [
-        "modules/admin/automation/customactions",
+        "modules/esmdirectory/esmdirectory",
         1
       ],
       [
-        "modules/admin/automation/notificationrules/request",
+        "modules/problems/task",
         1
       ],
       [
-        "modules/admin/templatesandforms/tasktemplate",
+        "modules/admin/probesanddiscovery",
+        1
+      ],
+      [
+        "modules/admin/zia/ziachatbot",
         1
       ],
       [
         "modules/admin/customization/changemanagement/changestage",
+        1
+      ],
+      [
+        "modules/admin/appaddons/integrations/chatgpt",
         1
       ],
       [
@@ -4942,16 +7567,8 @@
         1
       ],
       [
-        "modules/assets/software/licenseagreements",
-        2
-      ],
-      [
-        "modules/releases/releaseworklog",
-        3
-      ],
-      [
-        "modules/projects/projecttaskworklog",
-        3
+        "modules/general/requesterhome",
+        1
       ]
     ]
   }
