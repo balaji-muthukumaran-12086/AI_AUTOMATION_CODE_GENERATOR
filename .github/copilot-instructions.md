@@ -3,13 +3,21 @@
 This workspace is a **Selenium-based Java automation QA framework** for the ServiceDesk Plus (SDP) product.
 Always read this file before inferring anything about the project structure.
 
+> **Active project (as of Feb 26, 2026):** `SDPLIVE_LATEST_AUTOMATER_SELENIUM`
+> Single source of truth: `config/project_config.py` → `PROJECT_NAME`
+> All agents, runner, healer, and ingestion now derive paths from this config.
+
 ---
 
 ## Project Structure
 
 ```
 ai-automation-qa/
-├── AutomaterSelenium/          # Module-specific tests (solutions, requests, problems, etc.)
+├── SDPLIVE_LATEST_AUTOMATER_SELENIUM/  # ACTIVE — Module-specific tests (gitignored, managed via Mercurial)
+│   ├── src/com/zoho/automater/selenium/modules/<module>/<entity>/
+│   └── bin/                            # Pre-compiled .class files
+│
+├── AutomaterSelenium/          # LEGACY (gitignored) — do NOT write new tests here
 │   ├── src/com/zoho/automater/selenium/modules/<module>/<entity>/
 │   │   ├── <Entity>.java               # Annotated test methods (thin wrappers)
 │   │   └── <Entity>Base.java           # Actual test logic
@@ -122,8 +130,8 @@ Supported `field_type` values: `input`, `select`, `multiselect`, `html`, `date`,
 ### Targeted compile (always use this):
 ```bash
 DEPS=/home/balaji-12086/Desktop/Workspace/Zide/dependencies
-BIN=/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/AutomaterSelenium/bin
-SRC=/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/AutomaterSelenium/src
+BIN=/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/SDPLIVE_LATEST_AUTOMATER_SELENIUM/bin
+SRC=/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/SDPLIVE_LATEST_AUTOMATER_SELENIUM/src
 CP="$BIN:$(find "$DEPS" -name "*.jar" | tr '\n' ':')"
 javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
   "$SRC/com/zoho/automater/selenium/modules/solutions/solution/common/SolutionLocators.java" \
@@ -145,10 +153,10 @@ javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
 | Python venv | `.venv/` (activate with `.venv/bin/activate`) |
 
 ```python
-# run_test.py
+# run_test.py  (current state — Feb 26, 2026)
 RUN_CONFIG = {
-    "entity_class":  "Solution",
-    "method_name":   "someMethodName",
+    "entity_class":  "IncidentRequestNotes",   # last run class — change as needed
+    "method_name":   "createIncidentRequestAndAddNotes",
     "url":           "https://sdpodqa-auto1.csez.zohocorpin.com:9090/",
     "admin_mail_id": "jaya.kumar+org1admin1t0@zohotest.com",
     "email_id":      "jaya.kumar+org1admin1t0@zohotest.com",
@@ -162,7 +170,7 @@ cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
 ```
 
 Reports generated at:
-`AutomaterSelenium/reports/<methodName>_<timestamp>/ScenarioLogDetails__.html`
+`SDPLIVE_LATEST_AUTOMATER_SELENIUM/reports/<methodName>_<timestamp>/ScenarioLogDetails__.html`
 
 ---
 
@@ -227,26 +235,78 @@ Priority order (first match wins):
 
 ## Key File Locations
 
+> All Java paths below are under `SDPLIVE_LATEST_AUTOMATER_SELENIUM/` (active project).
+
 | File | Path |
 |------|------|
-| `Solution.java` | `AutomaterSelenium/src/com/zoho/automater/selenium/modules/solutions/solution/Solution.java` |
-| `SolutionBase.java` | `AutomaterSelenium/src/com/zoho/automater/selenium/modules/solutions/solution/SolutionBase.java` |
-| `SolutionLocators.java` | `AutomaterSelenium/src/com/zoho/automater/selenium/modules/solutions/solution/common/SolutionLocators.java` |
-| `SolutionConstants.java` | `AutomaterSelenium/src/com/zoho/automater/selenium/modules/solutions/solution/common/SolutionConstants.java` |
-| `SolutionAPIUtil.java` | `AutomaterSelenium/src/com/zoho/automater/selenium/modules/solutions/solution/utils/SolutionAPIUtil.java` |
-| `SolutionAnnotationConstants.java` | `AutomaterSelenium/src/com/zoho/automater/selenium/modules/solutions/solution/common/SolutionAnnotationConstants.java` |
-| `SolutionDataConstants.java` | `AutomaterSelenium/src/com/zoho/automater/selenium/modules/solutions/solution/common/SolutionDataConstants.java` |
-| `solution_data.json` | `AutomaterSelenium/resources/entity/data/solutions/solution/solution_data.json` |
+| `Solution.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/solutions/solution/Solution.java` |
+| `SolutionBase.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/solutions/solution/SolutionBase.java` |
+| `SolutionLocators.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/solutions/solution/common/SolutionLocators.java` |
+| `SolutionConstants.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/solutions/solution/common/SolutionConstants.java` |
+| `SolutionAPIUtil.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/solutions/solution/utils/SolutionAPIUtil.java` |
+| `SolutionAnnotationConstants.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/solutions/solution/common/SolutionAnnotationConstants.java` |
+| `SolutionDataConstants.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/solutions/solution/common/SolutionDataConstants.java` |
+| `solution_data.json` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/resources/entity/data/solutions/solution/solution_data.json` |
+| `IncidentRequestNotes.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/requests/request/IncidentRequestNotes.java` |
+| `RequestNotes.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/requests/request/RequestNotes.java` |
 | `Entity.java` | `AutomaterSeleniumFramework/src/com/zoho/automater/selenium/base/Entity.java` |
 | `RestAPI.java` | `AutomaterSeleniumFramework/src/com/zoho/automater/selenium/base/client/api/RestAPI.java` |
 | `PlaceholderUtil.java` | `AutomaterSeleniumFramework/src/com/zoho/automater/selenium/base/utils/PlaceholderUtil.java` |
 | `LocalStorage.java` | `AutomaterSeleniumFramework/src/com/zoho/automater/selenium/base/common/LocalStorage.java` |
+| `project_config.py` | `config/project_config.py` |
+| `module_taxonomy.yaml` | `config/module_taxonomy.yaml` |
 | `runner_agent.py` | `agents/runner_agent.py` |
 | `run_test.py` | `run_test.py` |
 
 ---
 
-## Known Fixed Bugs (as of Feb 25, 2026)
+## ChromaDB Knowledge Base State (as of Feb 26, 2026)
+
+| Metric | Value |
+|--------|-------|
+| Active project | `SDPLIVE_LATEST_AUTOMATER_SELENIUM` |
+| Java files parsed | 1,426 |
+| Modules indexed | 210 |
+| Scenarios in `scenarios_flat.json` | 17,101 |
+| ChromaDB actual vectors | **14,637** (not 17,101 — see below) |
+| ChromaDB source chunks | 8,722 |
+| ChromaDB help topics | 920 |
+
+### ⚠️ Why ChromaDB is short 2,464 vectors
+ChromaDB upsert collapses records with the same `id` — the delta is caused by **1,350 duplicate `id` strings** in Java `@AutomaterScenario` annotations:
+
+| Duplicate ID | Count | Location |
+|---|---|---|
+| `SDPOD_AUTO_NOTIFICATION_014` | ×185 | `admin/automation/notificationrules` |
+| `NoPreprocess` | ×42 | Various — `group` name used as `id=` by mistake |
+| `SDPOD_ZIA_028` | ×36 | `admin/zia` |
+| `SDPOD_AUTO_REQ_TRIGGER_324` | ×36 | `admin/automation/triggers` |
+| `SDPOD_ORG_ROLE_*` | ×22–26 each | Instance configuration |
+
+Additionally **3,209 scenarios have empty `id`** (`@AutomaterCase` old style or `id=""`).
+
+### ⏳ Pending — Fix Duplicate / Empty IDs
+1. Fix `SDPOD_AUTO_NOTIFICATION_014` ×185 — mass copy-paste, assign sequential IDs
+2. Fix `NoPreprocess` ×42 — assign proper `SDPOD_AUTO_<MODULE>_NNN` IDs
+3. Fix remaining 1,300+ duplicates
+4. After fixing: `python knowledge_base/rag_indexer.py --reset` → should reach clean 17,101 vectors
+5. Decide fate of 3,209 empty-ID legacy scenarios
+
+---
+
+## Known Fixed Bugs (as of Feb 26, 2026)
+
+### SDPOD_AUTO_IR_NOTES_001 — `createIncidentRequestAndAddNotes` (Feb 26, 2026)
+**Status**: ✅ Compiled & placed correctly
+**Issue**: Scenario was in wrong module (`Solution.java`/`SolutionBase.java`) — should be in Requests.
+**Files changed:**
+- `IncidentRequestNotes.java` (requests/request) — Added `@AutomaterScenario` wrapper
+- `RequestNotes.java` (requests/request) — Added preProcess branch + full method implementation
+- `SolutionBase.java` — Removed `createIncidentForNotes` preProcess branch + method body
+- `Solution.java` — Removed `@AutomaterScenario` wrapper
+- `run_test.py` — `entity_class` updated to `"IncidentRequestNotes"`
+
+---
 
 ### SDPOD_AUTO_SOL_DV_241 — `createAndShareApprovedPublicSolutionFromDV`
 **Status**: ✅ PASSING
@@ -307,7 +367,9 @@ Document Ingestion → Planner → Coverage → Coder → Reviewer → Output �
 - Chromium installed at `~/.cache/ms-playwright/`
 
 ### Knowledge Base
-- **ChromaDB** vector store at `knowledge_base/` — seeded with all existing test cases
+- **ChromaDB** vector store at `knowledge_base/chroma_db/` — 14,637 scenario vectors (210 modules, 17,101 source scenarios — 2,464 collapsed due to duplicate IDs in Java source)
+- `config/project_config.py` → `PROJECT_NAME` drives all ingestion + agent paths
+- `coverage_agent.py` uses `top_k=5` for duplicate search (raised from 3 after corpus grew 3×)
 - New generation is always gap-aware (Coverage Agent queries KB before generating)
 - LLM: **local Ollama** (`qwen2.5-coder:7b`) — upgrade to `gpt-4o` for better quality
 - Entry point: `main.py` (full pipeline), `run_test.py` (quick CLI runner)
@@ -316,8 +378,10 @@ Document Ingestion → Planner → Coverage → Coder → Reviewer → Output �
 | Phase | Status | Description |
 |-------|--------|-------------|
 | 0 — Foundation | ✅ DONE | LangGraph pipeline, RunnerAgent, ChromaDB, first AI-generated test |
-| 0.5 — Self-Healing | ✅ DONE | HealerAgent with Playwright |
-| 1 — Document Ingestion | 🔲 NEXT | Accept PDF/DOCX/XLSX/TXT → structured use-cases |
+| 0.5 — Self-Healing | ✅ DONE | HealerAgent with Playwright (Feb 25, 2026) |
+| 0.6 — SDPLIVE Sync | ✅ DONE | Switched active project to SDPLIVE_LATEST_AUTOMATER_SELENIUM; reindexed 210 modules / 17,101 scenarios; fixed all hardcoded paths (Feb 26, 2026) |
+| 0.7 — Duplicate ID Cleanup | ⏳ NEXT | Fix 1,350 duplicate IDs + 3,209 empty IDs in Java source → clean --reset reindex to 17,101 vectors |
+| 1 — Document Ingestion | 🔲 | Accept PDF/DOCX/XLSX/TXT → structured use-cases |
 | 2 — Web UI | 🔲 | FastAPI + React upload interface with live streaming |
 | 3 — Git Integration | 🔲 | Auto-branch, commit, PR on test pass |
 | 4 — Multi-Entity | 🔲 | All 10+ entities, regression suite generation |
