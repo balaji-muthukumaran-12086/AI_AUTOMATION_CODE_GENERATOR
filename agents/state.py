@@ -15,6 +15,10 @@ class AgentState(TypedDict):
     target_modules: list[str]         # Resolved module paths (e.g. ["requests/request"])
     generation_mode: str              # "new_feature" | "gap_fill" | "regression"
 
+    # ── Ingestion Agent output ─────────────────────────────
+    source_document: str              # Path to uploaded document (PDF/DOCX/XLSX/PPTX/TXT)
+    document_metadata: dict           # { document_title, document_type, confidence, scenario_count, ... }
+
     # ── Planner Agent output ───────────────────────────────
     test_plan: dict                   # { module_path: [ scenario_description, ... ] }
     affected_modules: list[str]

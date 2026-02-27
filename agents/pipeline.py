@@ -29,6 +29,7 @@ from typing import Literal
 from langgraph.graph import StateGraph, END
 
 from agents.state import AgentState
+from agents.ingestion_agent import IngestionAgent
 from agents.planner_agent import PlannerAgent
 from agents.coverage_agent import CoverageAgent
 from agents.coder_agent import CoderAgent
@@ -50,6 +51,7 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
     ctx = ContextBuilder(str(base))
 
     # Agents
+    ingestion = IngestionAgent(base_dir=str(base))
     planner   = PlannerAgent(base_dir=str(base))
     coverage  = CoverageAgent(vector_store=store, base_dir=str(base))
     coder     = CoderAgent(context_builder=ctx, vector_store=store, base_dir=str(base))
@@ -115,8 +117,9 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
 
     graph = StateGraph(AgentState)
 
-    graph.add_node("planner",  planner.run)
-    graph.add_node("coverage", coverage.run)
+    graph.add_node("ingestion", ingestion.run)
+    graph.add_node("planner",   planner.run)
+    graph.add_node("coverage",  coverage.run)
     graph.add_node("scout",    scout.run)     # proactive UI observer — runs before coder
     graph.add_node("coder",    coder.run)
     graph.add_node("reviewer", reviewer.run)
@@ -124,8 +127,9 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
     graph.add_node("runner",   runner.run)
     graph.add_node("healer",   healer.run)
 
-    graph.set_entry_point("planner")
-    graph.add_edge("planner",  "coverage")
+    graph.set_entry_point("ingestion")
+    graph.add_edge("ingestion", "planner")
+    graph.add_edge("planner",   "coverage")
     graph.add_edge("coverage", "scout")       # scout surfs the UI first
     graph.add_edge("scout",    "coder")       # then coder generates code with live UI context
     graph.add_edge("coder",    "reviewer")
@@ -147,11 +151,12 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
 
 
 def run_pipeline(
-    feature_description: str,
+    feature_description: str = "",
     target_modules: list[str] = None,
     generation_mode: str = "new_feature",
     base_dir: str = None,
     run_config: dict = None,
+    source_document: str = "",
 ) -> AgentState:
     """
     Main entry point to run the agentic test generation pipeline.
@@ -180,6 +185,8 @@ def run_pipeline(
 
     initial_state: AgentState = {
         'feature_description': feature_description,
+        'source_document':     source_document,
+        'document_metadata':   {},
         'target_modules': target_modules or [],
         'generation_mode': generation_mode,
         'test_plan': {},

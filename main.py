@@ -119,14 +119,18 @@ def cmd_generate(args):
     if args.file:
         feature_description = Path(args.file).read_text(encoding='utf-8')
 
-    if not feature_description:
-        console.print("[red]❌ Provide --feature 'description' or --file path.txt")
+    source_document = args.doc or ""
+
+    if not feature_description and not source_document:
+        console.print("[red]❌ Provide --feature 'description', --file path.txt, or --doc path/to/document.pdf")
         sys.exit(1)
 
     modules = args.modules.split(',') if args.modules else []
 
+    doc_label = Path(source_document).name if source_document else "(none)"
     console.print(Panel(
-        f"[bold]Feature:[/bold] {feature_description[:300]}\n"
+        f"[bold]Feature:[/bold] {(feature_description or '(from document)')[:300]}\n"
+        f"[bold]Document:[/bold] {doc_label}\n"
         f"[bold]Entity / Modules:[/bold] {', '.join(modules) if modules else 'Auto-detect'}\n"
         f"[bold]LLM Provider:[/bold] {provider}\n"
         f"[bold]Mode:[/bold] {args.mode}",
@@ -134,12 +138,18 @@ def cmd_generate(args):
         border_style="green",
     ))
 
-    with console.status("[bold green]Running agentic pipeline (Planner → Coverage → Coder → Reviewer → Output)..."):
+    status_msg = (
+        "[bold green]Running agentic pipeline (Ingestion → Planner → Coverage → Coder → Reviewer → Output)..."
+        if source_document
+        else "[bold green]Running agentic pipeline (Planner → Coverage → Coder → Reviewer → Output)..."
+    )
+    with console.status(status_msg):
         final_state = run_pipeline(
             feature_description=feature_description,
             target_modules=modules,
             generation_mode=args.mode,
             base_dir=BASE_DIR,
+            source_document=source_document,
         )
 
     # ── Pipeline log ────────────────────────────────────────────────────────
@@ -221,6 +231,9 @@ def main():
     p_gen = sub.add_parser('generate', help='Generate test cases for a feature')
     p_gen.add_argument('--feature', '-f', type=str, help='Feature description text')
     p_gen.add_argument('--file', type=str, help='Path to feature description file (.txt/.md)')
+    p_gen.add_argument('--doc', type=str, default='',
+                       help='Path to a document file to ingest (PDF, DOCX, XLSX, PPTX, TXT). '
+                            'The Ingestion Agent will extract and structure the content automatically.')
     p_gen.add_argument('--modules', '-m', type=str,
                        help='Comma-separated module paths to focus on')
     p_gen.add_argument('--mode', choices=['new_feature', 'gap_fill', 'regression'],
