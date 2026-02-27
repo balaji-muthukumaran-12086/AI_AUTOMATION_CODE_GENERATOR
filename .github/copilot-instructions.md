@@ -375,14 +375,74 @@ Document Ingestion → Planner → Coverage → Coder → Reviewer → Output �
 - Entry point: `main.py` (full pipeline), `run_test.py` (quick CLI runner)
 
 ### Phase Status
-| Phase | Status | Description |
-|-------|--------|-------------|
-| 0 — Foundation | ✅ DONE | LangGraph pipeline, RunnerAgent, ChromaDB, first AI-generated test |
-| 0.5 — Self-Healing | ✅ DONE | HealerAgent with Playwright (Feb 25, 2026) |
-| 0.6 — SDPLIVE Sync | ✅ DONE | Switched active project to SDPLIVE_LATEST_AUTOMATER_SELENIUM; reindexed 210 modules / 17,101 scenarios; fixed all hardcoded paths (Feb 26, 2026) |
-| 0.7 — Duplicate ID Cleanup | ⏳ NEXT | Fix 1,350 duplicate IDs + 3,209 empty IDs in Java source → clean --reset reindex to 17,101 vectors |
-| 1 — Document Ingestion | 🔲 | Accept PDF/DOCX/XLSX/TXT → structured use-cases |
-| 2 — Web UI | 🔲 | FastAPI + React upload interface with live streaming |
-| 3 — Git Integration | 🔲 | Auto-branch, commit, PR on test pass |
-| 4 — Multi-Entity | 🔲 | All 10+ entities, regression suite generation |
-| 5 — Feedback Loop | 🔲 | Learn from failures, human approval queue |
+| Phase | Status | Commit | Description |
+|-------|--------|--------|-------------|
+| 0 — Foundation | ✅ DONE | — | LangGraph pipeline, RunnerAgent, ChromaDB, first AI-generated test |
+| 0.5 — Self-Healing | ✅ DONE | — | HealerAgent with Playwright (Feb 25, 2026) |
+| 0.6 — SDPLIVE Sync | ✅ DONE | — | Switched active project to SDPLIVE_LATEST_AUTOMATER_SELENIUM; reindexed 210 modules / 17,101 scenarios; fixed all hardcoded paths (Feb 26, 2026) |
+| 0.7 — Duplicate ID Cleanup | ⏳ IN PROGRESS | `bd959b3` | Fix 1,350 duplicate IDs + 3,209 empty IDs in Java source → clean --reset reindex to 17,101 vectors (2-week Java task) |
+| 1 — Document Ingestion | ✅ DONE | `bc42247` | PDF/DOCX/XLSX/TXT → structured use-cases via IngestionAgent |
+| 2 — Web UI | ✅ DONE | `6438cba` | FastAPI + React upload interface with live SSE streaming on port 9500 |
+| 3 — Hg Integration | ✅ DONE | `aad0e69` | Auto-branch + commit in Mercurial on test pass; gated by `HG_AGENT_ENABLED` flag |
+| 4 — Live Test Run | ✅ DONE | `358fb4f`, `e416284` | End-to-end generation via Web UI; fixed NameError in CoderAgent + Annotated[list] reducer doubling bug |
+| **5 — Pipeline Monitoring & Orchestrator** | 🔲 NEXT | — | Real-time per-agent monitoring, orchestrator agent, progress UI, OOM/timeout recovery (see spec below) |
+| 6 — Multi-Entity | 🔲 | — | All 10+ entities, regression suite generation |
+| 7 — Feedback Loop | 🔲 | — | Learn from failures, human approval queue |
+
+---
+
+### Phase 5 — Pipeline Monitoring & Orchestrator Agent (Detailed Spec)
+
+> **Goal**: Replace the current "black-box RUNNING" state with full per-stage visibility and an intelligent orchestrator that can detect, diagnose, and recover from mid-pipeline failures without human intervention.
+
+#### 5.1 — Per-Agent Progress Streaming
+| Item | Detail |
+|------|--------|
+| Stage indicator | UI shows which node is currently executing: `Ingestion → Planner → Coverage → Scout → Coder → Reviewer → Output → Runner → Healer` |
+| Per-agent log panel | Each agent streams its own timestamped sub-logs via SSE (not batched at end) |
+| Token / time metrics | Track tokens used + wall-clock time per agent; display in run summary |
+| Progress bar | Estimated % complete based on stage weights (Coder = heaviest) |
+
+#### 5.2 — Orchestrator Agent (`agents/orchestrator_agent.py`)
+Wraps the LangGraph invocation and provides:
+| Responsibility | Detail |
+|----------------|--------|
+| Stage lifecycle events | Emits `STAGE_START` / `STAGE_END` / `STAGE_ERROR` events for each node |
+| OOM detection & retry | Detects `"requires more system memory"` from Ollama → waits 30s, kills idle processes inside runner thread, retries up to 2× |
+| Timeout watchdog | Per-agent timeout (configurable in `project_config.py`); kills stuck agent, marks it as `TIMED_OUT`, continues pipeline |
+| Partial-result recovery | If Planner partially succeeds (some modules planned), Coverage + Coder still run on those modules |
+| Health pulse | Emits a heartbeat every 10s so the UI knows the pipeline is alive (prevents false "stuck" display) |
+
+#### 5.3 — Run History & Monitoring Dashboard
+| Item | Detail |
+|------|--------|
+| Persistent run log | Store all runs in `logs/runs.jsonl` (append-only) for post-mortem |
+| `/api/runs` history endpoint | Return last N runs with status, duration, error summary |
+| Dashboard view | New tab in Web UI: table of all past runs, click to expand full log |
+| Memory / CPU gauge | Live system stats (RAM available, Ollama resident size) shown in UI header |
+| Alert badge | Red badge on UI if last 3 runs all failed (signals systemic issue) |
+
+#### 5.4 — Notification on Completion
+| Item | Detail |
+|------|--------|
+| Browser notification | `Notification API` push when tab is backgrounded |
+| Webhook (optional) | POST to configurable URL on `success` / `failure` |
+| Sound indicator (opt-in) | Audible ding on completion |
+
+#### 5.5 — Config additions (`config/project_config.py`)
+```python
+AGENT_TIMEOUTS = {
+    "planner":  120,   # seconds
+    "coverage":  60,
+    "scout":    180,
+    "coder":    300,
+    "reviewer":  90,
+    "output":    60,
+    "runner":   600,
+    "healer":   300,
+}
+OOM_RETRY_MAX    = 2
+OOM_RETRY_WAIT_S = 30
+MONITORING_HEARTBEAT_S = 10
+RUNS_LOG_PATH    = "logs/runs.jsonl"
+```
