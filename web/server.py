@@ -46,7 +46,7 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BASE_DIR))
 load_dotenv(BASE_DIR / ".env")
 
-from config.project_config import BASE_DIR as PROJECT_BASE_DIR
+from config.project_config import BASE_DIR as PROJECT_BASE_DIR, HG_AGENT_ENABLED
 
 # ── In-memory run store ───────────────────────────────────────────────────────
 # run_id → {status, messages, errors, files, metadata, started_at, finished_at}
@@ -196,7 +196,7 @@ async def serve_index():
 
 @app.get("/api/health")
 async def health():
-    return {"status": "ok", "version": "1.0.0", "runs": len(_runs)}
+    return {"status": "ok", "version": "1.0.0", "runs": len(_runs), "hg_agent_enabled": HG_AGENT_ENABLED}
 
 
 @app.get("/api/modules")
@@ -253,8 +253,8 @@ async def generate(
     # Parse modules
     target_modules = [m.strip() for m in modules.split(",") if m.strip()]
 
-    # Build hg_config if requested
-    hg_config = {"push": True} if hg_enabled else {}
+    # Build hg_config — gate on global config flag first
+    hg_config = {"push": True} if (hg_enabled and HG_AGENT_ENABLED) else {}
 
     # Create run record
     run_id = uuid.uuid4().hex[:12]

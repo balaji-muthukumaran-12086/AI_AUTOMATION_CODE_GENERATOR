@@ -41,7 +41,7 @@ from agents.hg_agent import HgAgent
 from agents.ui_scout_agent import UIScoutAgent
 from knowledge_base.vector_store import VectorStore
 from knowledge_base.context_builder import ContextBuilder
-from config.project_config import PROJECT_NAME, BASE_DIR
+from config.project_config import PROJECT_NAME, BASE_DIR, HG_AGENT_ENABLED
 
 
 def build_pipeline(base_dir: str = None) -> StateGraph:
@@ -209,7 +209,8 @@ def run_pipeline(
         'messages': [],
         'run_config': run_config or {},
         'run_result': {},
-        'hg_config':  hg_config or {},
+        # Enforce the global gate: ignore caller-supplied hg_config when disabled
+        'hg_config':  (hg_config or {}) if HG_AGENT_ENABLED else {},
         'hg_result':  {},
     }
 

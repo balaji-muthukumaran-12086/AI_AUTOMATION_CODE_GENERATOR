@@ -18,6 +18,26 @@ All agents, runners, and indexers will automatically pick up the new value.
 
 PROJECT_NAME = "SDPLIVE_LATEST_AUTOMATER_SELENIUM"
 
+# ── Mercurial integration (Phase 3) ───────────────────────────────────────
+# Controls whether the HgAgent is allowed to create branches and push to the
+# remote hg repository after test generation.
+#
+# Current status: DISABLED — pending management approval
+#
+# To enable after approval:
+#   1. Set HG_AGENT_ENABLED = True
+#   2. Optionally customise HG_BRANCH_PREFIX below
+#   3. Restart the web server (if running)
+#
+# When False:
+#   - hg_config is ignored; HgAgent is a no-op regardless of what callers pass
+#   - The hg toggle in the Web UI is hidden
+#   - The --hg CLI flag is silently ignored
+HG_AGENT_ENABLED = False
+
+# Branch prefix used when auto-generating branch names (only relevant when enabled)
+HG_BRANCH_PREFIX = "feature/AI_GEN_"
+
 # ── Derived paths (do not edit) ────────────────────────────────────────────
 import os as _os
 

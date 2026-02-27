@@ -313,7 +313,7 @@
         </select>
       </div>
 
-      <div class="field" style="flex-direction:row;align-items:center;gap:10px;">
+      <div id="hg-row" class="field" style="flex-direction:row;align-items:center;gap:10px;display:none;">
         <input type="checkbox" id="hg-enabled" style="width:18px;height:18px;accent-color:#007acc;cursor:pointer;">
         <label for="hg-enabled" style="cursor:pointer;font-weight:500;">
           🔀 Commit to Mercurial branch after generation
@@ -648,7 +648,13 @@ function showToast(msg, type='ok') {
 
 /* ─────────────────────────────────────────── Init ── */
 async function init() {
-  // Populate modules datalist
+  // Check server config — show hg toggle only if HG_AGENT_ENABLED=True in project_config.py
+  try {
+    const cfg = await fetch('/api/health').then(r => r.json());
+    if (cfg.hg_agent_enabled) {
+      document.getElementById('hg-row').style.display = 'flex';
+    }
+  } catch(e) {}
   try {
     const res = await fetch('/api/modules');
     const data = await res.json();
