@@ -249,6 +249,40 @@
     }
     .btn-stop:hover { background: rgba(239,68,68,.25); border-color: var(--red); }
 
+    /* ── Stage progress indicator ──────────────────────────────────────── */
+    #stage-bar {
+      display: flex; gap: 4px; flex-wrap: wrap; padding: 6px 0 8px;
+      border-bottom: 1px solid var(--border); margin-bottom: 8px;
+    }
+    .stage-pill {
+      font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px;
+      background: var(--surface2); color: var(--text-dim);
+      border: 1px solid var(--border); transition: .2s; white-space: nowrap; user-select: none;
+    }
+    .stage-pill.active {
+      background: rgba(0,122,204,.2); color: var(--blue);
+      border-color: var(--blue); animation: stage-pulse 1.3s ease-in-out infinite;
+    }
+    .stage-pill.done  { background: rgba(34,197,94,.15); color: var(--green); border-color: rgba(34,197,94,.4); }
+    @keyframes stage-pulse { 0%,100%{opacity:1} 50%{opacity:.55} }
+
+    /* ── System stats bar ──────────────────────────────────────────────── */
+    .stats-bar { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-dim); }
+    .mem-track {
+      width: 60px; height: 6px; background: var(--surface2);
+      border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;
+    }
+    .mem-fill { height: 100%; border-radius: 3px; transition: width .6s, background .4s; background: var(--green); }
+    .mem-fill.warn { background: #f59e0b; }
+    .mem-fill.crit { background: var(--red); }
+
+    /* ── Alert banner ──────────────────────────────────────────────────── */
+    #alert-banner {
+      display: none; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
+      border-radius: 6px; padding: 8px 14px; margin-bottom: 8px;
+      font-size: 13px; color: var(--red);
+    }
+
     /* ── Notification toast ─────────────────────────────────────────────── */
     #toast {
       position: fixed; bottom: 24px; right: 24px;
@@ -274,8 +308,15 @@
       <span class="logo-badge">AutomaterSelenium</span>
     </div>
     <div class="header-right">
-      <button class="btn-sm" onclick="loadHistory()">⟳ Refresh History</button>
-      <button class="btn-sm" onclick="clearLog()">🗑 Clear Log</button>
+      <div class="stats-bar" id="stats-bar" style="display:none">
+        <span id="stats-label">RAM:</span>
+        <span id="stats-ram">—</span>
+        <span class="mem-track"><span class="mem-fill" id="mem-fill" style="width:0%"></span></span>
+        <span id="stats-cpu">CPU: —</span>
+      </div>
+      <button class="btn-sm" onclick="loadHistory()">⟳ Refresh</button>
+      <button class="btn-sm" onclick="clearHistory()" title="Clear all run history">🗑 History</button>
+      <button class="btn-sm" onclick="clearLog()">🗑 Log</button>
     </div>
   </header>
 
@@ -345,6 +386,19 @@
         <span id="status-badge" class="badge-idle">Idle</span>
       </div>
 
+      <!-- Stage progress — pills light up as each agent runs -->
+      <div id="stage-bar">
+        <span class="stage-pill" id="sp-ingestion">📄 Ingest</span>
+        <span class="stage-pill" id="sp-planner">📝 Plan</span>
+        <span class="stage-pill" id="sp-coverage">🔍 Coverage</span>
+        <span class="stage-pill" id="sp-scout">🕵️ Scout</span>
+        <span class="stage-pill" id="sp-coder">⚙️ Code</span>
+        <span class="stage-pill" id="sp-reviewer">🔎 Review</span>
+        <span class="stage-pill" id="sp-output">💾 Output</span>
+        <span class="stage-pill" id="sp-runner">🧪 Run</span>
+        <span class="stage-pill" id="sp-healer">🩺 Heal</span>
+      </div>
+
       <div id="log-panel">
         <div class="log-empty" id="log-empty">Pipeline output will appear here...</div>
       </div>
@@ -356,6 +410,7 @@
     </div>
 
     <!-- Bottom: run history (spans full width via JS) -->
+    <div id="alert-banner">⚠️ Last 3 pipeline runs all failed — check Ollama, logs, or configuration.</div>
     <div id="history">
       <div id="history-header">
         <div class="section-title" style="margin:0">📋 Run History</div>
@@ -458,6 +513,7 @@ async function startGeneration() {
   // UI: loading state
   setButtonLoading(true);
   clearLog();
+  resetStage();
   setStatus('queued');
   const srcLabel = selectedFile ? selectedFile.name : (feature.slice(0,60) + (feature.length > 60 ? '…' : ''));
   document.getElementById('run-title').textContent = srcLabel || 'Running…';
@@ -492,6 +548,8 @@ function startStream(runId) {
       appendLog(msg.data, classifyLog(msg.data));
     } else if (msg.type === 'error') {
       appendLog(msg.data, 'error');
+    } else if (msg.type === 'stage') {
+      updateStage(msg.data);
     } else if (msg.type === 'files') {
       renderFiles(msg.data, runId);
     } else if (msg.type === 'done') {
@@ -508,6 +566,14 @@ function startStream(runId) {
         showToast(ok ? `✅ Test generation complete!${branchNote}` : '❌ Pipeline failed — check log', ok ? 'ok' : 'err');
       }
       if (branch) appendLog(`🔀 hg branch created: ${branch}`, 'ok');
+      // Browser notification when tab is backgrounded
+      if (Notification.permission === 'granted') {
+        new Notification('AI Test Generator', {
+          body: stopped ? '⏹ Generation stopped manually'
+              : ok     ? '✅ Test cases generated successfully!'
+              :          '❌ Pipeline failed — check the run log',
+        });
+      }
       loadHistory();
     }
     // heartbeat & __close__ → ignore
@@ -559,6 +625,7 @@ function setStatus(status) {
     running: ['badge-running', 'Running…'],
     success: ['badge-success', 'Success ✓'],
     failed:  ['badge-failed',  'Failed ✕'],
+    stopped: ['badge-stopped', 'Stopped ⏹'],
   };
   const [cls, label] = map[status] || map.idle;
   badge.classList.add(cls);
@@ -623,9 +690,15 @@ async function loadHistory() {
     const tbody = document.getElementById('history-rows');
     tbody.innerHTML = '';
     if (!data.runs.length) {
-      tbody.innerHTML = '<tr><td colspan="7" style="color:var(--text-dim);text-align:center;padding:12px">No runs yet</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text-dim);text-align:center;padding:12px">No runs yet</td></tr>';
+      document.getElementById('alert-banner').style.display = 'none';
       return;
     }
+    // Alert banner: last 3 completed runs all failed?
+    const completed = data.runs.filter(r => ['success','failed','stopped'].includes(r.status));
+    const last3 = completed.slice(0, 3);
+    const allFailed = last3.length >= 3 && last3.every(r => r.status === 'failed');
+    document.getElementById('alert-banner').style.display = allFailed ? 'block' : 'none';
     data.runs.forEach(r => {
       const tr = document.createElement('tr');
       tr.className = 'tr-click' + (r.run_id === currentRunId ? ' active-row' : '');
@@ -678,7 +751,58 @@ function toggleHistory() {
   document.getElementById('history-body').classList.toggle('collapsed', historyCollapsed);
   document.getElementById('history-toggle').textContent = historyCollapsed ? '▶ Show' : '▼ Hide';
 }
+/* ────────────────────────────────────────── Stage progress ── */
+const STAGE_ORDER = ['ingestion','planner','coverage','scout','coder','reviewer','output','runner','healer'];
 
+function updateStage(stage) {
+  const cur = STAGE_ORDER.indexOf(stage);
+  STAGE_ORDER.forEach((s, idx) => {
+    const el = document.getElementById(`sp-${s}`);
+    if (!el) return;
+    el.classList.remove('active', 'done');
+    if (idx < cur)  el.classList.add('done');
+    if (idx === cur) el.classList.add('active');
+  });
+}
+
+function resetStage() {
+  STAGE_ORDER.forEach(s => {
+    const el = document.getElementById(`sp-${s}`);
+    if (el) el.classList.remove('active', 'done');
+  });
+}
+
+/* ────────────────────────────────────────── System stats ── */
+async function loadStats() {
+  try {
+    const d = await fetch('/api/stats').then(r => r.json());
+    if (!d.memory) return;
+    document.getElementById('stats-bar').style.display = 'flex';
+    document.getElementById('stats-ram').textContent = `${d.memory.used_gb}/${d.memory.total_gb} GB`;
+    document.getElementById('stats-cpu').textContent = `CPU: ${Math.round(d.cpu_percent)}%`;
+    const pct = d.memory.percent;
+    const fill = document.getElementById('mem-fill');
+    fill.style.width = pct + '%';
+    fill.className = 'mem-fill' + (pct > 90 ? ' crit' : pct > 75 ? ' warn' : '');
+  } catch(e) {}
+}
+
+/* ────────────────────────────────────────── Clear history ── */
+async function clearHistory() {
+  if (!confirm('Clear all run history from memory and disk?')) return;
+  try {
+    const res = await fetch('/api/runs', { method: 'DELETE' });
+    if (!res.ok) {
+      const err = await res.json();
+      showToast('⚠️ ' + (err.detail || 'Could not clear history'), 'err');
+      return;
+    }
+    showToast('🗑 History cleared', 'ok');
+    loadHistory();
+  } catch(e) {
+    showToast('❌ ' + e.message, 'err');
+  }
+}
 /* ─────────────────────────────────────────── Toast ── */
 let toastTimer = null;
 function showToast(msg, type='ok') {
@@ -711,6 +835,15 @@ async function init() {
 
   // Load history
   await loadHistory();
+
+  // Start system stats polling (every 8s)
+  loadStats();
+  setInterval(loadStats, 8000);
+
+  // Request browser notification permission
+  if (Notification && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
 
   // Refresh history every 5s while page is open
   setInterval(loadHistory, 5000);

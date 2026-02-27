@@ -4,14 +4,20 @@ web/server.py
 FastAPI backend for the AI Test Generation Web UI.
 
 Endpoints:
-  GET  /                          → serves index.html
-  GET  /api/health                → health check
-  POST /api/generate              → start a pipeline run (text or file upload)
-  GET  /api/stream/{run_id}       → SSE stream of live log messages
-  GET  /api/runs                  → list all past runs
-  GET  /api/runs/{run_id}         → full details for one run
-  GET  /api/runs/{run_id}/file    → download a specific generated .java file
-  GET  /api/modules               → list available SDP modules from taxonomy
+  GET    /                          → serves index.html
+  GET    /api/health                → health check
+  POST   /api/generate              → start a pipeline run (text or file upload)
+  GET    /api/stream/{run_id}       → SSE stream of live log messages
+  GET    /api/runs                  → list all past runs (loaded from disk, survives restarts)
+  GET    /api/runs/{run_id}         → full details for one run
+  POST   /api/runs/{run_id}/stop    → stop a running pipeline run
+  DELETE /api/runs                  → clear all run history (memory + disk)
+  GET    /api/runs/{run_id}/file    → download a specific generated .java file
+  GET    /api/modules               → list available SDP modules from taxonomy
+  GET    /api/stats                 → system memory / CPU stats (requires psutil)
+
+Run history is persisted to logs/runs.jsonl and reloaded on every server start.
+In-flight runs at the time of a crash are marked 'failed' automatically on reload.
 
 Run with:
   cd ai-automation-qa
@@ -46,7 +52,7 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BASE_DIR))
 load_dotenv(BASE_DIR / ".env")
 
-from config.project_config import BASE_DIR as PROJECT_BASE_DIR, HG_AGENT_ENABLED
+from config.project_config import BASE_DIR as PROJECT_BASE_DIR, HG_AGENT_ENABLED, RUNS_LOG_PATH
 
 # ── In-memory run store ───────────────────────────────────────────────────────
 # run_id → {status, messages, errors, files, metadata, started_at, finished_at}
@@ -57,6 +63,23 @@ _queues: dict[str, asyncio.Queue] = {}
 _threads: dict[str, threading.Thread] = {}
 # The event loop that the server runs on (set at startup)
 _loop: asyncio.AbstractEventLoop | None = None
+
+# Thread lock protecting writes to logs/runs.jsonl
+_runs_file_lock = threading.Lock()
+
+# Maps log-message prefixes → stage name for UI stage-progress indicator
+_AGENT_STAGE_MAP = {
+    "[IngestionAgent]": "ingestion",
+    "[PlannerAgent]":   "planner",
+    "[CoverageAgent]":  "coverage",
+    "[UIScoutAgent]":   "scout",
+    "[CoderAgent]":     "coder",
+    "[ReviewerAgent]":  "reviewer",
+    "[OutputAgent]":    "output",
+    "[RunnerAgent]":    "runner",
+    "[HealerAgent]":    "healer",
+    "[HgAgent]":        "hg",
+}
 
 UPLOAD_DIR = BASE_DIR / "web" / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -83,11 +106,67 @@ app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 _pipeline = None   # CompiledStateGraph — populated in on_startup
 
 
+# ── Run persistence ───────────────────────────────────────────────────────────
+def _persist_runs() -> None:
+    """Atomically rewrite logs/runs.jsonl with the current _runs dict.
+    Called whenever run status changes. Thread-safe via _runs_file_lock."""
+    log_path = Path(RUNS_LOG_PATH)
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = log_path.with_suffix(".tmp")
+    with _runs_file_lock:
+        try:
+            with open(tmp_path, "w", encoding="utf-8") as f:
+                for r in _runs.values():
+                    f.write(json.dumps(r) + "\n")
+            tmp_path.replace(log_path)
+        except Exception as e:
+            print(f"[Server] ⚠️  Failed to persist runs: {e}")
+
+
+def _load_runs_from_disk() -> None:
+    """Load persisted runs from logs/runs.jsonl into _runs on server startup.
+    Any run still marked 'running' or 'queued' is flipped to 'failed' because
+    the previous server process is gone and those threads no longer exist."""
+    log_path = Path(RUNS_LOG_PATH)
+    if not log_path.exists():
+        return
+    loaded = 0
+    try:
+        with open(log_path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    record = json.loads(line)
+                    run_id = record.get("run_id")
+                    if not run_id:
+                        continue
+                    # Interrupt any previously in-flight runs
+                    if record.get("status") in ("running", "queued"):
+                        record["status"] = "failed"
+                        record["finished_at"] = record.get("finished_at") or datetime.now().isoformat()
+                        if "errors" not in record:
+                            record["errors"] = []
+                        record["errors"].append("Run interrupted — server restarted")
+                    _runs[run_id] = record
+                    loaded += 1
+                except json.JSONDecodeError:
+                    pass
+        if loaded:
+            print(f"[Server] 📂 Loaded {loaded} run(s) from {log_path}")
+    except Exception as e:
+        print(f"[Server] ⚠️  Could not load run history: {e}")
+
+
 # ── Startup / shutdown ───────────────────────────────────────────────────────
 @app.on_event("startup")
 async def on_startup():
     global _loop, _pipeline
     _loop = asyncio.get_running_loop()
+
+    # Restore run history from disk before accepting requests
+    _load_runs_from_disk()
 
     # Build the pipeline in a thread so the event loop isn't blocked
     import concurrent.futures
@@ -123,10 +202,17 @@ def _run_pipeline_thread(
     run = _runs[run_id]
     run["status"] = "running"
     _threads[run_id] = threading.current_thread()
+    _persist_runs()  # persist "running" status immediately
 
     def _log(msg: str):
         run["messages"].append(msg)
         _push(run_id, "log", msg)
+        # Detect agent stage transitions → push stage event + persist checkpoint
+        for prefix, stage in _AGENT_STAGE_MAP.items():
+            if prefix in msg:
+                _push(run_id, "stage", stage)
+                _persist_runs()
+                break
 
     _log(f"[{datetime.now().strftime('%H:%M:%S')}] 🚀 Pipeline started")
     if source_document:
@@ -185,12 +271,14 @@ def _run_pipeline_thread(
         else:
             run["status"] = "success"
             _log(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Pipeline complete (no new files — may be duplicates)")
+        _persist_runs()
 
     except SystemExit:
         # Raised by /api/runs/{run_id}/stop endpoint via ctypes
         if run["status"] != "stopped":
             run["status"] = "stopped"
         _log(f"[{datetime.now().strftime('%H:%M:%S')}] ⏹ Generation stopped manually")
+        _persist_runs()
 
     except Exception as exc:
         run["status"] = "failed"
@@ -198,10 +286,12 @@ def _run_pipeline_thread(
         run["errors"].append(err_msg)
         _log(f"[{datetime.now().strftime('%H:%M:%S')}] ❌ {err_msg}")
         _push(run_id, "error", err_msg)
+        _persist_runs()
 
     finally:
         run["finished_at"] = datetime.now().isoformat()
         _threads.pop(run_id, None)
+        _persist_runs()  # final state checkpoint
         _push(run_id, "done", {"status": run["status"], "files": run.get("files", []), "hg_branch": run.get("hg_result", {}).get("branch_name", "")})
         # Signal SSE stream to close
         _push(run_id, "__close__", None)
@@ -299,6 +389,7 @@ async def generate(
         "finished_at":     None,
     }
     _queues[run_id] = asyncio.Queue()
+    _persist_runs()  # persist "queued" status to disk immediately
 
     # Launch pipeline in a background thread (it's sync)
     thread = threading.Thread(
@@ -391,6 +482,7 @@ async def stop_run(run_id: str):
     # Mark stopped immediately so the thread's finally block won't overwrite it
     run["status"] = "stopped"
     run["finished_at"] = datetime.now().isoformat()
+    _persist_runs()  # persist stopped status to disk
 
     # Inject SystemExit into the worker thread
     thread = _threads.get(run_id)
@@ -431,6 +523,56 @@ async def download_file(run_id: str, path: str):
     if not file_path.exists():
         raise HTTPException(404, f"File not found: {path}")
     return FileResponse(str(file_path), filename=file_path.name, media_type="text/plain")
+
+
+@app.get("/api/stats")
+async def get_stats():
+    """
+    Return system memory and CPU stats for the monitoring dashboard.
+    Requires psutil; falls back gracefully if not installed.
+    """
+    try:
+        import psutil
+        mem  = psutil.virtual_memory()
+        swap = psutil.swap_memory()
+        cpu  = psutil.cpu_percent(interval=0.1)
+        return {
+            "memory": {
+                "total_gb": round(mem.total      / 1e9, 1),
+                "used_gb":  round(mem.used       / 1e9, 1),
+                "avail_gb": round(mem.available  / 1e9, 1),
+                "percent":  mem.percent,
+            },
+            "swap": {
+                "total_gb": round(swap.total / 1e9, 1),
+                "used_gb":  round(swap.used  / 1e9, 1),
+                "percent":  swap.percent,
+            },
+            "cpu_percent": cpu,
+            "active_runs": sum(1 for r in _runs.values() if r["status"] in ("running", "queued")),
+            "total_runs":  len(_runs),
+        }
+    except ImportError:
+        return {"memory": None, "swap": None, "cpu_percent": None,
+                "note": "psutil not installed — run: pip install psutil"}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.delete("/api/runs")
+async def clear_runs():
+    """
+    Clear all run history from memory and disk.
+    Returns 400 if any run is still active.
+    """
+    active = [rid for rid, r in _runs.items() if r["status"] in ("running", "queued")]
+    if active:
+        raise HTTPException(400, f"Cannot clear: {len(active)} run(s) still active")
+    _runs.clear()
+    log_path = Path(RUNS_LOG_PATH)
+    if log_path.exists():
+        log_path.unlink()
+    return {"cleared": True, "message": "All run history cleared"}
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────

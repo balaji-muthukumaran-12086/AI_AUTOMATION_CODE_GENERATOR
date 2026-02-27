@@ -49,3 +49,28 @@ PROJECT_BIN     = _os.path.join(PROJECT_ROOT, "bin")
 PROJECT_RES     = _os.path.join(PROJECT_ROOT, "resources")
 BASE_DIR        = _BASE_DIR
 DEPS_DIR        = "/home/balaji-12086/Desktop/Workspace/Zide/dependencies17"
+
+# ── Phase 5 — Pipeline Monitoring ─────────────────────────────────────────
+# Per-agent execution timeout in seconds. OrchestratorAgent (future) will kill
+# a stuck agent after this many seconds and mark it TIMED_OUT.
+AGENT_TIMEOUTS = {
+    "planner":   120,
+    "coverage":   60,
+    "scout":     180,
+    "coder":     300,
+    "reviewer":   90,
+    "output":     60,
+    "runner":    600,
+    "healer":    300,
+}
+
+# Ollama OOM recovery: retry up to OOM_RETRY_MAX times, waiting OOM_RETRY_WAIT_S seconds each.
+OOM_RETRY_MAX      = 2
+OOM_RETRY_WAIT_S   = 30
+
+# How often (seconds) the server emits a heartbeat SSE event to keep connections alive.
+MONITORING_HEARTBEAT_S = 10
+
+# All past pipeline runs are persisted to this JSONL file (one JSON object per line).
+# Loaded on server startup so run history survives restarts.
+RUNS_LOG_PATH = _os.path.join(_BASE_DIR, "logs", "runs.jsonl")
