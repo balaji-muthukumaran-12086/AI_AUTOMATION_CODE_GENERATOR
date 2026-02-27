@@ -3,7 +3,7 @@
 This workspace is a **Selenium-based Java automation QA framework** for the ServiceDesk Plus (SDP) product.
 Always read this file before inferring anything about the project structure.
 
-> **Active project (as of Feb 26, 2026):** `SDPLIVE_LATEST_AUTOMATER_SELENIUM`
+> **Active project (as of Feb 27, 2026):** `SDPLIVE_LATEST_AUTOMATER_SELENIUM`
 > Single source of truth: `config/project_config.py` → `PROJECT_NAME`
 > All agents, runner, healer, and ingestion now derive paths from this config.
 
@@ -33,9 +33,12 @@ ai-automation-qa/
 │   └── bin/                            # Pre-compiled .class files (used by runner)
 │
 ├── AutomaterSeleniumFramework/         # Core engine (base classes, actions, utilities)
+│   │                                   # hg branch: AI_Automation_Code_Generator (rev 304)
 │   └── src/com/zoho/automater/selenium/base/
 │       ├── Entity.java                 # preProcess/postProcess lifecycle
-│       ├── EntityCase.java             # addSuccessReport / addFailureReport
+│       ├── EntityCase.java             # addSuccessReport / addFailureReport (isLocalSetup() guarded)
+│       ├── standalone/LocalSetupManager.java  # local run config, report path, cleanup
+│       ├── report/ScenarioReport.java  # HTML report writer for local runs
 │       ├── client/components/
 │       │   ├── FormBuilder.java        # fillInputForAnEntity, fillDateField, fillSelectField, etc.
 │       │   └── Validator.java          # textContent, isElementPresent, etc.
@@ -127,7 +130,16 @@ Supported `field_type` values: `input`, `select`, `multiselect`, `html`, `date`,
 > ⚠️ **Full project compile is BROKEN** — 67 pre-existing errors in unrelated modules (requests,
 > problems, contracts, admin, etc.). Never run full project compile.
 
-### Targeted compile (always use this):
+### Step 1 — Framework compile (run once after clone or branch switch):
+```bash
+./setup_framework_bin.sh
+```
+This compiles all 90+ `AutomaterSeleniumFramework` source files (branch `AI_Automation_Code_Generator`)
+into `SDPLIVE_LATEST_AUTOMATER_SELENIUM/bin/`, overriding old classes from `AutomationFrameWork.jar`.
+**Required** because `EntityCase`, `ScenarioReport`, `LocalSetupManager` etc. need UmeshBranch versions
+for local runs to work correctly (report/screenshot generation depends on `isLocalSetup()` guards).
+
+### Step 2 — Module targeted compile (after editing module source):
 ```bash
 DEPS=/home/balaji-12086/Desktop/Workspace/Zide/dependencies
 BIN=/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/SDPLIVE_LATEST_AUTOMATER_SELENIUM/bin
@@ -138,7 +150,14 @@ javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
   "$SRC/com/zoho/automater/selenium/modules/solutions/solution/SolutionBase.java"
 ```
 - Must include `find "$DEPS" -name "*.jar"` **recursively** — `dependencies/framework/` subdirectory has critical JARs (selenium, AutomationFrameWork.jar, json.jar)
-- Runner (`run_test.py`) with `skip_compile=True` only recompiles 2 patched files — always run targeted compile after editing `SolutionBase.java` or `SolutionLocators.java`
+- Runner (`run_test.py`) with `skip_compile=True` only recompiles 2 patched files — always run targeted compile after editing module source files
+
+### Classpath precedence (critical):
+```
+bin/  (our compiled classes — WINS over JARs)
+AutomationFrameWork.jar  (old versions, overridden for Entity/Report classes)
+selenium*.jar, json.jar, etc.
+```
 
 ---
 
@@ -153,7 +172,7 @@ javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
 | Python venv | `.venv/` (activate with `.venv/bin/activate`) |
 
 ```python
-# run_test.py  (current state — Feb 26, 2026)
+# run_test.py  (current state — Feb 27, 2026)
 RUN_CONFIG = {
     "entity_class":  "IncidentRequestNotes",   # last run class — change as needed
     "method_name":   "createIncidentRequestAndAddNotes",
@@ -170,7 +189,11 @@ cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
 ```
 
 Reports generated at:
-`SDPLIVE_LATEST_AUTOMATER_SELENIUM/reports/<methodName>_<timestamp>/ScenarioLogDetails__.html`
+`SDPLIVE_LATEST_AUTOMATER_SELENIUM/reports/LOCAL_<methodName>_<timestamp>/ScenarioReport.html`
+
+Screenshots at: `reports/LOCAL_<methodName>_<timestamp>/screenshots/Success_<ts>.png`
+
+> ⚠️ Report filename changed from `ScenarioLogDetails__.html` (Aalam mode) to `ScenarioReport.html` (local mode)
 
 ---
 
@@ -184,6 +207,8 @@ Reports generated at:
 | `fillDateField(name, millis)` | Opens datepicker → navigates by year/month arrows → clicks day cell |
 | `LocalStorage` | Scoped to single test run; key `"solution_template"` → template name, `"topic"` → topic name |
 | `MODULE_TITLE` locator | `//div[@id='details-middle-container']/descendant::h1` — may include display ID prefix (e.g. `SOL-8Title...`) |
+| Local run report flow | `EntityCase.addSuccessReport()` → `LocalFailureTemplates` + `ScenarioReport` rows + `screenshots/Success_<ts>.png` → `Entity.run()` finally → `ScenarioReport.createReport()` → `ScenarioReport.html` |
+| `AutomationReport` (Aalam/CI) | NOT used in local runs — guarded by `!LocalSetupManager.isLocalSetup()` in `EntityCase`. Old JAR version has no guard → `IOException` when `REPORT_FILE_PATH` is null. Always compile framework via `setup_framework_bin.sh` to get the guarded version. |
 
 ---
 
@@ -230,6 +255,12 @@ Priority order (first match wins):
 3. `"BUILD FAILED"` → **FAILED**
 4. `"BUILD SUCCESSFUL"` → **PASSED**
 5. Java exceptions (`addFailureReport`, `NullPointerException`, `NoSuchElementException`, `TimeoutException`, `WebDriverException`, `AssertionException`) → **FAILED**
+6. **Default: `False`** — no positive signal = FAILED (prevents false PASS on clean JVM exit)
+
+### Additional checks (applied after parse):
+- `ENTITY_IMPORT_MAP` must contain FQCN for entity class — missing entry → `ClassNotFoundException` silently caught → false PASS
+- Empty report directory after `success=True` → overridden to FAIL (report dir created early by `LocalSetupManager.configure()` before test runs)
+- `ScenarioReport.html` must exist in report dir for result to be trusted as PASS
 
 ---
 
@@ -253,10 +284,13 @@ Priority order (first match wins):
 | `RestAPI.java` | `AutomaterSeleniumFramework/src/com/zoho/automater/selenium/base/client/api/RestAPI.java` |
 | `PlaceholderUtil.java` | `AutomaterSeleniumFramework/src/com/zoho/automater/selenium/base/utils/PlaceholderUtil.java` |
 | `LocalStorage.java` | `AutomaterSeleniumFramework/src/com/zoho/automater/selenium/base/common/LocalStorage.java` |
+| `LocalSetupManager.java` | `AutomaterSeleniumFramework/src/com/zoho/automater/selenium/base/standalone/LocalSetupManager.java` |
+| `ScenarioReport.java` | `AutomaterSeleniumFramework/src/com/zoho/automater/selenium/base/report/ScenarioReport.java` |
 | `project_config.py` | `config/project_config.py` |
 | `module_taxonomy.yaml` | `config/module_taxonomy.yaml` |
 | `runner_agent.py` | `agents/runner_agent.py` |
 | `run_test.py` | `run_test.py` |
+| `setup_framework_bin.sh` | `setup_framework_bin.sh` |
 
 ---
 
@@ -294,7 +328,20 @@ Additionally **3,209 scenarios have empty `id`** (`@AutomaterCase` old style or 
 
 ---
 
-## Known Fixed Bugs (as of Feb 26, 2026)
+## Known Fixed Bugs (as of Feb 27, 2026)
+
+### Local Run — Reports & Screenshots Not Generated (Feb 27, 2026)
+**Status**: ✅ Fixed
+**Root cause**: `AutomaterSeleniumFramework` source was not compiled into `bin/` — old JAR's `EntityCase.class` (without `isLocalSetup()` guards) was being loaded. It called `AutomationReport.addRowToReport()` which reads `CommonVariables.REPORT_FILE_PATH` (null in local runs) → `IOException`.
+**Fix**: `setup_framework_bin.sh` — compiles all 90 framework sources into `bin/`. New `EntityCase` uses `ScenarioReport` + `LocalFailureTemplates` for local runs (completely bypasses `AutomationReport`).
+**Additional fixes in framework source:**
+- `EntityCase.java` — commented out `CommonVariables.setisSkipScreenShot()` (missing in local JAR)
+- `ScenarioReport.java` — `element.childNodeSize()` → `element.children().size()` (jsoup API)
+- `FirefoxWebDriver.java` + `ChromeWebDriver.java` — commented out `CommonVariables.gridURL` (missing field)
+- `LocalSetupManager.openReport()` — fixed NPE: `System.getProperty("headless")` null-guarded with `Boolean.parseBoolean(..., "false")`
+**hg commit**: `AI_Automation_Code_Generator` rev `304:bb0d9ca1eaa6` by `Balaji_M`
+
+---
 
 ### SDPOD_AUTO_IR_NOTES_001 — `createIncidentRequestAndAddNotes` (Feb 26, 2026)
 **Status**: ✅ Compiled & placed correctly
@@ -381,6 +428,7 @@ Document Ingestion → Planner → Coverage → Coder → Reviewer → Output �
 | 0.5 — Self-Healing | ✅ DONE | — | HealerAgent with Playwright (Feb 25, 2026) |
 | 0.6 — SDPLIVE Sync | ✅ DONE | — | Switched active project to SDPLIVE_LATEST_AUTOMATER_SELENIUM; reindexed 210 modules / 17,101 scenarios; fixed all hardcoded paths (Feb 26, 2026) |
 | 0.7 — Duplicate ID Cleanup | ⏳ IN PROGRESS | `bd959b3` | Fix 1,350 duplicate IDs + 3,209 empty IDs in Java source → clean --reset reindex to 17,101 vectors (2-week Java task) |
+| 0.8 — Local Run Infrastructure | ✅ DONE | `56a0f3c` | Compiled AutomaterSeleniumFramework (AI_Automation_Code_Generator hg branch) into SDPLIVE bin/; fixed report + screenshot generation; setup_framework_bin.sh for repeatable setup (Feb 27, 2026) |
 | 1 — Document Ingestion | ✅ DONE | `bc42247` | PDF/DOCX/XLSX/TXT → structured use-cases via IngestionAgent |
 | 2 — Web UI | ✅ DONE | `6438cba` | FastAPI + React upload interface with live SSE streaming on port 9500 |
 | 3 — Hg Integration | ✅ DONE | `aad0e69` | Auto-branch + commit in Mercurial on test pass; gated by `HG_AGENT_ENABLED` flag |
