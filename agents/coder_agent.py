@@ -576,6 +576,7 @@ class CoderAgent:
         module_path: str,
         scenarios: list[dict],
         similar: list[dict],
+        ui_observations: dict = None,
     ) -> str:
         # Derive the help-guide module name from the module_path
         # e.g. modules/requests/request → requests
@@ -598,7 +599,7 @@ class CoderAgent:
             help_context = self.store.search_help_topics(feature_query, top_k=6)
 
         # Full context: existing source + similar cases + grammar + help guide + live UI scout
-        ui_obs_all = state.get('ui_observations', {})
+        ui_obs_all = ui_observations or {}
         ui_obs = ui_obs_all.get(module_path, ui_obs_all.get(raw_segment, []))
         context = self.ctx_builder.build_generation_context(
             module_path=module_path,
@@ -631,7 +632,7 @@ class CoderAgent:
         )
         return prompt
 
-    def _generate_for_module(self, module_path: str, scenarios: list[dict]) -> dict:
+    def _generate_for_module(self, module_path: str, scenarios: list[dict], ui_observations: dict = None) -> dict:
         """Generate code for all scenarios of one module."""
         # Retrieve similar existing tests for this module
         similar = []
@@ -640,7 +641,7 @@ class CoderAgent:
                 sc.get('description', ''), top_k=3, module_filter=module_path
             )
 
-        prompt = self._build_prompt(module_path, scenarios, similar)
+        prompt = self._build_prompt(module_path, scenarios, similar, ui_observations=ui_observations)
 
         try:
             response = self.llm.invoke([
@@ -673,6 +674,7 @@ class CoderAgent:
             "[CoderAgent] Starting code generation..."
         ]
 
+        ui_observations = state.get('ui_observations', {})
         generated = []
         for module_path, scenarios in test_plan.items():
             if not scenarios:
@@ -681,7 +683,7 @@ class CoderAgent:
             state['messages'] = state.get('messages', []) + [
                 f"[CoderAgent] Generating {len(scenarios)} scenario(s) for {module_path}"
             ]
-            result = self._generate_for_module(module_path, scenarios)
+            result = self._generate_for_module(module_path, scenarios, ui_observations=ui_observations)
             generated.append(result)
 
         state['generated_code'] = generated

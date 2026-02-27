@@ -231,4 +231,9 @@ def _build_initial_state(
         'run_result': {},
         'hg_config':  (hg_config or {}) if HG_AGENT_ENABLED else {},
         'hg_result':  {},
+        # Agent-written fields — must be initialized for LangGraph state completeness
+        'generation_instructions': [],
+        'generated_dir': '',
+        'ui_observations': {},
+        'heal_result': {},
     }
