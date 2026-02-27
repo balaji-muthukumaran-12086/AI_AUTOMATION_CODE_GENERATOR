@@ -50,6 +50,15 @@ PROJECT_RES     = _os.path.join(PROJECT_ROOT, "resources")
 BASE_DIR        = _BASE_DIR
 DEPS_DIR        = "/home/balaji-12086/Desktop/Workspace/Zide/dependencies17"
 
+# ── SDP Test Application Credentials ────────────────────────────────────────
+# Used by HealerAgent (Playwright) and RunnerAgent as fallbacks when no
+# run_config is provided at runtime.
+# Override any of these in .env — do NOT commit real passwords to source control.
+SDP_URL         = _os.environ.get("SDP_URL",         "https://sdpodqa-auto1.csez.zohocorpin.com:9090/")
+SDP_PORTAL      = _os.environ.get("SDP_PORTAL",      "portal1")
+SDP_ADMIN_EMAIL = _os.environ.get("SDP_ADMIN_EMAIL", "jaya.kumar+org1admin1t0@zohotest.com")
+SDP_ADMIN_PASS  = _os.environ.get("SDP_ADMIN_PASS",  "Admin@123")
+
 # ── Phase 5 — Pipeline Monitoring ─────────────────────────────────────────
 # Per-agent execution timeout in seconds. OrchestratorAgent (future) will kill
 # a stuck agent after this many seconds and mark it TIMED_OUT.

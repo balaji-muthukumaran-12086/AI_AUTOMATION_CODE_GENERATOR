@@ -58,7 +58,13 @@ from langchain_core.messages import SystemMessage, HumanMessage
 
 from agents.state import AgentState
 from agents.llm_factory import get_llm
-from config.project_config import PROJECT_NAME
+from config.project_config import (
+    PROJECT_NAME,
+    SDP_URL,
+    SDP_PORTAL,
+    SDP_ADMIN_EMAIL,
+    SDP_ADMIN_PASS,
+)
 
 
 # ── Constants ─────────────────────────────────────────────────────────────────
@@ -72,11 +78,11 @@ FAILURE_LOGIC   = "LOGIC_FAILURE"
 FAILURE_COMPILE = "COMPILE_FAILURE"
 FAILURE_OTHER   = "OTHER"
 
-# Default app credentials — overridden from .env or run_config
-DEFAULT_URL          = "https://sdpodqa-auto1.csez.zohocorpin.com:9090/"
-DEFAULT_PORTAL       = "portal1"
-DEFAULT_ADMIN_EMAIL  = "jaya.kumar+org1admin1t0@zohotest.com"
-DEFAULT_ADMIN_PASS   = "Admin@123"
+# Default app credentials — read from config/project_config.py (overridable via .env)
+DEFAULT_URL         = SDP_URL
+DEFAULT_PORTAL      = SDP_PORTAL
+DEFAULT_ADMIN_EMAIL = SDP_ADMIN_EMAIL
+DEFAULT_ADMIN_PASS  = SDP_ADMIN_PASS
 
 # Entity → module navigation path (used by Playwright to reach the right page)
 MODULE_NAV_MAP = {
