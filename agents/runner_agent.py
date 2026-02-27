@@ -43,17 +43,32 @@ MAIN_CLASS_PATH = (
 )
 
 # Known entity class → fully-qualified import mapping
+# IMPORTANT: Every entity class passed via tests_to_run.json MUST have an entry
+# here. Missing entries cause Class.forName() to receive a simple name instead
+# of a FQCN, throwing ClassNotFoundException that is silently caught by
+# AutomaterSeleniumMain → browser opens then closes → reported as false-PASS.
 ENTITY_IMPORT_MAP = {
-    "Solution":       "com.zoho.automater.selenium.modules.solutions.solution.Solution",
-    "Asset":          "com.zoho.automater.selenium.modules.assets.asset.Asset",
-    "Request":        "com.zoho.automater.selenium.modules.requests.request.Request",
-    "Problem":        "com.zoho.automater.selenium.modules.problems.problem.Problem",
-    "Change":         "com.zoho.automater.selenium.modules.changes.change.Change",
-    "Release":        "com.zoho.automater.selenium.modules.releases.release.Release",
-    "Project":        "com.zoho.automater.selenium.modules.projects.project.Project",
-    "Task":           "com.zoho.automater.selenium.modules.tasks.task.Task",
-    "CabEvaluationTask": "com.zoho.automater.selenium.modules.changes.cabevaluationtask.CabEvaluationTask",
-    "UATTask":        "com.zoho.automater.selenium.modules.releases.uattask.UATTask",
+    # ── Solutions ──────────────────────────────────────────────────────────
+    "Solution":              "com.zoho.automater.selenium.modules.solutions.solution.Solution",
+    # ── Requests ───────────────────────────────────────────────────────────
+    "Request":               "com.zoho.automater.selenium.modules.requests.request.Request",
+    "IncidentRequest":       "com.zoho.automater.selenium.modules.requests.request.IncidentRequest",
+    "IncidentRequestNotes":  "com.zoho.automater.selenium.modules.requests.request.IncidentRequestNotes",
+    "ServiceRequest":        "com.zoho.automater.selenium.modules.requests.request.ServiceRequest",
+    "RequestNotes":          "com.zoho.automater.selenium.modules.requests.request.RequestNotes",
+    # ── Problems ───────────────────────────────────────────────────────────
+    "Problem":               "com.zoho.automater.selenium.modules.problems.problem.Problem",
+    # ── Changes ────────────────────────────────────────────────────────────
+    "Change":                "com.zoho.automater.selenium.modules.changes.change.Change",
+    "CabEvaluationTask":     "com.zoho.automater.selenium.modules.changes.cabevaluationtask.CabEvaluationTask",
+    # ── Releases ───────────────────────────────────────────────────────────
+    "Release":               "com.zoho.automater.selenium.modules.releases.release.Release",
+    "UATTask":               "com.zoho.automater.selenium.modules.releases.uattask.UATTask",
+    # ── Projects & Tasks ───────────────────────────────────────────────────
+    "Project":               "com.zoho.automater.selenium.modules.projects.project.Project",
+    "Task":                  "com.zoho.automater.selenium.modules.tasks.task.Task",
+    # ── Assets ─────────────────────────────────────────────────────────────
+    "Asset":                 "com.zoho.automater.selenium.modules.assets.asset.Asset",
 }
 
 
@@ -194,17 +209,25 @@ class RunnerAgent:
                 report_path = self._find_latest_report(method_name)
 
                 # ── HTML report override ─────────────────────────────────────
-                # The framework's LocalSetupManager.cleanup() can throw a
-                # NullPointerException when trying to open the report in a
-                # browser (no desktop env). This causes _parse_success() to
-                # return False even when the test actually passed.  Correct it
-                # by checking the generated HTML report directly.
-                if not success and report_path:
+                # 1. If _parse_success returned False but the HTML report says
+                #    PASS (cleanup NPE on no-display env), promote to True.
+                # 2. If _parse_success returned True but the report directory is
+                #    empty (no HTML written — test never ran), demote to False.
+                if report_path:
                     html_file = Path(report_path) / "ScenarioReport.html"
-                    if html_file.exists():
+                    if not success and html_file.exists():
                         content = html_file.read_text(encoding="utf-8", errors="ignore")
                         if 'data-result="FAIL"' not in content and 'data-result="PASS"' in content:
                             success = True
+                    elif success and not html_file.exists():
+                        # Report dir was created by LocalSetupManager but test
+                        # exited before writing the HTML → treat as failure.
+                        print(f"[RunnerAgent] ⚠️  Report directory is empty (no HTML written) — marking FAIL")
+                        success = False
+                elif success:
+                    # No report directory at all and no explicit success signal → FAIL
+                    print(f"[RunnerAgent] ⚠️  No report directory found — marking FAIL")
+                    success = False
 
                 if not success:
                     print("[RunnerAgent] ── Captured Error ─────────────────────────")
@@ -553,8 +576,11 @@ class RunnerAgent:
             if marker in combined:
                 return False
 
-        # Default: no explicit failure detected → pass
-        return True
+        # Default: no explicit positive signal → FAIL.
+        # A test is only PASS when the framework emits a success marker or
+        # BUILD SUCCESSFUL. Silently exiting (ClassNotFoundException caught,
+        # cleanup without report, etc.) must NOT be treated as a pass.
+        return False
 
     def _extract_error(self, stdout: str, stderr: str) -> str:
         """Pull the most relevant error line from combined output."""
