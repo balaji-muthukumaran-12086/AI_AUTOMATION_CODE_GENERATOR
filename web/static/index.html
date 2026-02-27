@@ -175,6 +175,7 @@
     .badge-running { background: rgba(59,130,246,.15); color: var(--blue); border: 1px solid rgba(59,130,246,.3); animation: pulse 1.5s ease-in-out infinite; }
     .badge-success { background: rgba(34,197,94,.15); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
     .badge-failed  { background: rgba(239,68,68,.15); color: var(--red); border: 1px solid rgba(239,68,68,.3); }
+    .badge-stopped { background: rgba(148,163,184,.12); color: var(--text-dim); border: 1px solid rgba(148,163,184,.25); }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.65} }
 
     /* Log panel */
@@ -236,7 +237,17 @@
     .st-success { background: rgba(34,197,94,.2);  color: var(--green); }
     .st-failed  { background: rgba(239,68,68,.2);  color: var(--red);   }
     .st-idle    { background: var(--surface2);      color: var(--text-dim); }
+    .st-stopped { background: rgba(148,163,184,.15); color: var(--text-dim); }
     .tr-click { cursor: pointer; }
+
+    /* Stop button in history */
+    .btn-stop {
+      padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;
+      background: rgba(239,68,68,.12); color: var(--red);
+      border: 1px solid rgba(239,68,68,.3); cursor: pointer; transition: .15s;
+      white-space: nowrap;
+    }
+    .btn-stop:hover { background: rgba(239,68,68,.25); border-color: var(--red); }
 
     /* ── Notification toast ─────────────────────────────────────────────── */
     #toast {
@@ -355,7 +366,7 @@
           <thead>
             <tr>
               <th>Run ID</th><th>Source</th><th>Mode</th><th>Status</th>
-              <th>Files</th><th>Started</th><th>Duration</th>
+              <th>Files</th><th>Started</th><th>Duration</th><th></th>
             </tr>
           </thead>
           <tbody id="history-rows"></tbody>
@@ -485,12 +496,17 @@ function startStream(runId) {
       renderFiles(msg.data, runId);
     } else if (msg.type === 'done') {
       const ok = msg.data.status === 'success';
+      const stopped = msg.data.status === 'stopped';
       const branch = msg.data.hg_branch;
-      setStatus(ok ? 'success' : 'failed');
+      setStatus(stopped ? 'stopped' : (ok ? 'success' : 'failed'));
       setButtonLoading(false);
       currentSource.close(); currentSource = null;
       const branchNote = branch ? ` · hg: ${branch}` : '';
-      showToast(ok ? `✅ Test generation complete!${branchNote}` : '❌ Pipeline failed — check log', ok ? 'ok' : 'err');
+      if (stopped) {
+        showToast('⏹ Generation stopped manually', 'err');
+      } else {
+        showToast(ok ? `✅ Test generation complete!${branchNote}` : '❌ Pipeline failed — check log', ok ? 'ok' : 'err');
+      }
       if (branch) appendLog(`🔀 hg branch created: ${branch}`, 'ok');
       loadHistory();
     }
@@ -575,6 +591,30 @@ function setButtonLoading(on) {
   else btn.classList.remove('loading');
 }
 
+/* ─────────────────────────────────────────────── Stop Run ── */
+async function stopRun(runId, event) {
+  event.stopPropagation();  // don't trigger replayRun
+  try {
+    const res = await fetch(`/api/runs/${runId}/stop`, { method: 'POST' });
+    if (!res.ok) {
+      const err = await res.json();
+      showToast('⚠️ ' + (err.detail || 'Could not stop run'), 'err');
+      return;
+    }
+    showToast('⏹ Generation stopped', 'ok');
+    // If this is the active stream, close it and update UI
+    if (runId === currentRunId) {
+      if (currentSource) { currentSource.close(); currentSource = null; }
+      setStatus('stopped');
+      setButtonLoading(false);
+      appendLog('⏹ Generation stopped manually', 'error');
+    }
+    loadHistory();
+  } catch(e) {
+    showToast('❌ ' + e.message, 'err');
+  }
+}
+
 /* ─────────────────────────────────────────── History ── */
 async function loadHistory() {
   try {
@@ -601,7 +641,10 @@ async function loadHistory() {
         <td><span class="st st-${r.status}">${r.status}</span></td>
         <td>${r.files_count}</td>
         <td>${started}</td>
-        <td>${dur}</td>`;
+        <td>${dur}</td>
+        <td>${r.status === 'running' || r.status === 'queued'
+          ? `<button class="btn-stop" onclick="stopRun('${r.run_id}',event)">⏹ Stop</button>`
+          : ''}`;
       tr.onclick = () => replayRun(r.run_id);
       tbody.appendChild(tr);
     });

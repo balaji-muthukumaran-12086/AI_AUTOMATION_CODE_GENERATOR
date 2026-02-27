@@ -53,6 +53,8 @@ from config.project_config import BASE_DIR as PROJECT_BASE_DIR, HG_AGENT_ENABLED
 _runs: dict[str, dict] = {}
 # run_id → asyncio.Queue  (SSE message bus)
 _queues: dict[str, asyncio.Queue] = {}
+# run_id → background thread (for manual stop / cancellation)
+_threads: dict[str, threading.Thread] = {}
 # The event loop that the server runs on (set at startup)
 _loop: asyncio.AbstractEventLoop | None = None
 
@@ -120,6 +122,7 @@ def _run_pipeline_thread(
     """
     run = _runs[run_id]
     run["status"] = "running"
+    _threads[run_id] = threading.current_thread()
 
     def _log(msg: str):
         run["messages"].append(msg)
@@ -183,6 +186,12 @@ def _run_pipeline_thread(
             run["status"] = "success"
             _log(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Pipeline complete (no new files — may be duplicates)")
 
+    except SystemExit:
+        # Raised by /api/runs/{run_id}/stop endpoint via ctypes
+        if run["status"] != "stopped":
+            run["status"] = "stopped"
+        _log(f"[{datetime.now().strftime('%H:%M:%S')}] ⏹ Generation stopped manually")
+
     except Exception as exc:
         run["status"] = "failed"
         err_msg = f"Pipeline error: {exc}"
@@ -192,6 +201,7 @@ def _run_pipeline_thread(
 
     finally:
         run["finished_at"] = datetime.now().isoformat()
+        _threads.pop(run_id, None)
         _push(run_id, "done", {"status": run["status"], "files": run.get("files", []), "hg_branch": run.get("hg_result", {}).get("branch_name", "")})
         # Signal SSE stream to close
         _push(run_id, "__close__", None)
@@ -363,6 +373,40 @@ async def list_runs():
             for r in runs
         ]
     }
+
+
+@app.post("/api/runs/{run_id}/stop")
+async def stop_run(run_id: str):
+    """
+    Manually stop a running pipeline.
+    Injects SystemExit into the worker thread via ctypes, updates status to 'stopped',
+    and pushes a done event to the SSE stream.
+    """
+    if run_id not in _runs:
+        raise HTTPException(404, f"Run '{run_id}' not found")
+    run = _runs[run_id]
+    if run["status"] not in ("running", "queued"):
+        raise HTTPException(400, f"Run is not active (status: {run['status']})")
+
+    # Mark stopped immediately so the thread's finally block won't overwrite it
+    run["status"] = "stopped"
+    run["finished_at"] = datetime.now().isoformat()
+
+    # Inject SystemExit into the worker thread
+    thread = _threads.get(run_id)
+    if thread and thread.is_alive():
+        import ctypes
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(
+            ctypes.c_ulong(thread.ident),
+            ctypes.py_object(SystemExit),
+        )
+
+    # Push final events to SSE so the UI updates
+    _push(run_id, "log", f"[{datetime.now().strftime('%H:%M:%S')}] ⏹ Generation stopped manually")
+    _push(run_id, "done", {"status": "stopped", "files": run.get("files", []), "hg_branch": ""})
+    _push(run_id, "__close__", None)
+
+    return {"run_id": run_id, "status": "stopped"}
 
 
 @app.get("/api/runs/{run_id}")
