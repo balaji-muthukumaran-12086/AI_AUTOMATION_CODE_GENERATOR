@@ -77,11 +77,23 @@ static_dir = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 
+# ── Pipeline singleton (built once at startup, reused for every request) ─────
+_pipeline = None   # CompiledStateGraph — populated in on_startup
+
+
 # ── Startup / shutdown ───────────────────────────────────────────────────────
 @app.on_event("startup")
 async def on_startup():
-    global _loop
+    global _loop, _pipeline
     _loop = asyncio.get_running_loop()
+
+    # Build the pipeline in a thread so the event loop isn't blocked
+    import concurrent.futures
+    from agents.pipeline import build_pipeline
+    loop = asyncio.get_running_loop()
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+        _pipeline = await loop.run_in_executor(pool, build_pipeline, str(BASE_DIR))
+    print(f"[Server] ✅ Pipeline ready (ChromaDB + agents loaded)")
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -103,10 +115,9 @@ def _run_pipeline_thread(
 ):
     """
     Runs the pipeline synchronously in a worker thread.
+    Uses the pre-built _pipeline singleton (loaded at startup) — no cold-start delay.
     All log messages are pushed to the SSE queue.
     """
-    from agents.pipeline import run_pipeline
-
     run = _runs[run_id]
     run["status"] = "running"
 
@@ -122,14 +133,15 @@ def _run_pipeline_thread(
     _log(f"[{datetime.now().strftime('%H:%M:%S')}] 🔧 Mode: {generation_mode} | Modules: {', '.join(target_modules) or 'auto-detect'}")
 
     try:
-        final_state = run_pipeline(
+        from agents.pipeline import _build_initial_state
+        initial_state = _build_initial_state(
             feature_description=feature_description,
             source_document=source_document,
             target_modules=target_modules,
             generation_mode=generation_mode,
-            base_dir=str(BASE_DIR),
             hg_config=hg_config,
         )
+        final_state = _pipeline.invoke(initial_state)
 
         # Stream all pipeline messages
         for msg in final_state.get("messages", []):

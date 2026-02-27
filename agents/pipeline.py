@@ -187,8 +187,28 @@ def run_pipeline(
         Final AgentState with generated_code, final_output_paths, and run_result
     """
     pipeline = build_pipeline(base_dir)
+    initial_state = _build_initial_state(
+        feature_description=feature_description,
+        source_document=source_document,
+        target_modules=target_modules,
+        generation_mode=generation_mode,
+        run_config=run_config,
+        hg_config=hg_config,
+    )
+    final_state = pipeline.invoke(initial_state)
+    return final_state
 
-    initial_state: AgentState = {
+
+def _build_initial_state(
+    feature_description: str = "",
+    source_document: str = "",
+    target_modules: list[str] = None,
+    generation_mode: str = "new_feature",
+    run_config: dict = None,
+    hg_config: dict = None,
+) -> AgentState:
+    """Build the initial state dict for a pipeline run (reusable by the web server)."""
+    return {
         'feature_description': feature_description,
         'source_document':     source_document,
         'document_metadata':   {},
@@ -209,10 +229,6 @@ def run_pipeline(
         'messages': [],
         'run_config': run_config or {},
         'run_result': {},
-        # Enforce the global gate: ignore caller-supplied hg_config when disabled
         'hg_config':  (hg_config or {}) if HG_AGENT_ENABLED else {},
         'hg_result':  {},
     }
-
-    final_state = pipeline.invoke(initial_state)
-    return final_state
