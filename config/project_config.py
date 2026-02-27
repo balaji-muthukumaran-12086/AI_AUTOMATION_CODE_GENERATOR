@@ -48,7 +48,8 @@ PROJECT_SRC     = _os.path.join(PROJECT_ROOT, "src")
 PROJECT_BIN     = _os.path.join(PROJECT_ROOT, "bin")
 PROJECT_RES     = _os.path.join(PROJECT_ROOT, "resources")
 BASE_DIR        = _BASE_DIR
-DEPS_DIR        = "/home/balaji-12086/Desktop/Workspace/Zide/dependencies17"
+# Override DEPS_DIR in .env to point to a different dependencies folder.
+DEPS_DIR        = _os.environ.get("DEPS_DIR", "/home/balaji-12086/Desktop/Workspace/Zide/dependencies")
 
 # ── SDP Test Application Credentials ────────────────────────────────────────
 # Used by HealerAgent (Playwright) and RunnerAgent as fallbacks when no

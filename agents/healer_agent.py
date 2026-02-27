@@ -60,6 +60,7 @@ from agents.state import AgentState
 from agents.llm_factory import get_llm
 from config.project_config import (
     PROJECT_NAME,
+    DEPS_DIR,
     SDP_URL,
     SDP_PORTAL,
     SDP_ADMIN_EMAIL,
@@ -176,7 +177,7 @@ class HealerAgent:
         self.automater_root   = self.base / PROJECT_NAME
         self.bin_dir          = Path(pre_compiled_bin_dir) if pre_compiled_bin_dir else self.automater_root / "bin"
         self.src_dir          = self.automater_root / "src"
-        self.deps_dir         = Path(deps_dir) if deps_dir else Path("/home/balaji-12086/Desktop/Workspace/Zide/dependencies")
+        self.deps_dir         = Path(deps_dir) if deps_dir else Path(DEPS_DIR)
         self.screenshots_dir  = self.base / HEALER_SCREENSHOTS_DIR
         self.screenshots_dir.mkdir(parents=True, exist_ok=True)
         self.headless         = headless
