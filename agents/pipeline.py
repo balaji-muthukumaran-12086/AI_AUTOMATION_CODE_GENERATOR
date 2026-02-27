@@ -39,6 +39,8 @@ from agents.runner_agent import RunnerAgent
 from agents.healer_agent import HealerAgent
 from agents.hg_agent import HgAgent
 from agents.ui_scout_agent import UIScoutAgent
+from agents.parallel_runner_agent import ParallelRunnerAgent
+from agents.learning_agent import LearningAgent
 from knowledge_base.vector_store import VectorStore
 from knowledge_base.context_builder import ContextBuilder
 from config.project_config import PROJECT_NAME, BASE_DIR, DEPS_DIR, HG_AGENT_ENABLED
@@ -154,6 +156,58 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
     return graph.compile()
 
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Learning pipeline  (parallel execution → learn → hands-free heal loop)
+# ──────────────────────────────────────────────────────────────────────────────
+
+def build_learning_pipeline(base_dir: str = None) -> StateGraph:
+    """
+    Standalone pipeline for the parallel execution + learning cycle.
+
+    Flow:
+        parallel_runner  → load tests_to_run.json, run N JVMs in parallel
+            ↓
+        learning         → LLM extracts rules/patterns, updates knowledge files,
+                           hands-free heal → re-run loop (up to LEARNING_RETRIES)
+    """
+    base = Path(base_dir) if base_dir else Path(BASE_DIR)
+
+    parallel_runner = ParallelRunnerAgent(base_dir=str(base), deps_dir=DEPS_DIR)
+    learner         = LearningAgent(base_dir=str(base), deps_dir=DEPS_DIR)
+
+    graph = StateGraph(AgentState)
+    graph.add_node("parallel_runner", parallel_runner.run)
+    graph.add_node("learning",        learner.run)
+
+    graph.set_entry_point("parallel_runner")
+    graph.add_edge("parallel_runner", "learning")
+    graph.add_edge("learning", END)
+
+    return graph.compile()
+
+
+def run_learning_pipeline(
+    base_dir: str = None,
+    tests_override: list[dict] = None,
+) -> AgentState:
+    """
+    Entry point to run the parallel-execution + learning cycle.
+
+    Args:
+        base_dir       : Root of the ai-automation-qa workspace (defaults to BASE_DIR)
+        tests_override : Optional list of run_config dicts; if None, reads tests_to_run.json
+
+    Returns:
+        Final AgentState with batch_run_results and learnings
+    """
+    pipeline = build_learning_pipeline(base_dir)
+    initial_state = _build_initial_state()
+    if tests_override:
+        initial_state["batch_run_configs"] = tests_override
+    final_state = pipeline.invoke(initial_state)
+    return final_state
+
+
 def run_pipeline(
     feature_description: str = "",
     target_modules: list[str] = None,
@@ -236,4 +290,9 @@ def _build_initial_state(
         'generated_dir': '',
         'ui_observations': {},
         'heal_result': {},
+        # Parallel runner + learning (Phase 8)
+        'batch_run_configs':  [],
+        'batch_run_results':  [],
+        'learnings':          [],
+        'learning_iteration': 0,
     }

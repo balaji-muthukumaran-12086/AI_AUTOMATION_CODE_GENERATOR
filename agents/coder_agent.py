@@ -44,6 +44,16 @@ def _load_framework_knowledge() -> str:
         return ''  # graceful degradation
 
 
+# Imported lazily to avoid circular imports (learning_agent also imports from agents.llm_factory)
+def _load_recent_learnings() -> str:
+    """Return latest learnings from logs/learnings.jsonl for prompt injection."""
+    try:
+        from agents.learning_agent import load_recent_learnings
+        return load_recent_learnings()
+    except Exception:
+        return ''
+
+
 SYSTEM_PROMPT = """
 You are an expert Java test automation engineer for Zoho ServiceDesk Plus (SDP).
 You write test cases using the AutomaterSelenium framework.
@@ -623,9 +633,19 @@ class CoderAgent:
                 f"  Notes: {sc.get('notes', '')}"
             )
 
+        # Inject recent learnings from past executions (updated after every batch run)
+        recent_learnings = _load_recent_learnings()
+        learnings_block = (
+            f"\n\n================================================================\n"
+            f"RECENT LEARNINGS FROM PAST TEST EXECUTIONS (highest priority — apply these first)\n"
+            f"================================================================\n"
+            f"{recent_learnings}"
+        ) if recent_learnings else ""
+
         prompt = (
             f"{grammar_rules}\n\n"
             f"{context}\n\n"
+            f"{learnings_block}\n\n"
             f"## Scenarios to Generate:\n"
             + '\n'.join(scenarios_to_generate) +
             "\n\nGenerate the Java @AutomaterScenario method(s) for the above scenarios."

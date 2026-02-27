@@ -84,3 +84,20 @@ MONITORING_HEARTBEAT_S = 10
 # All past pipeline runs are persisted to this JSONL file (one JSON object per line).
 # Loaded on server startup so run history survives restarts.
 RUNS_LOG_PATH = _os.path.join(_BASE_DIR, "logs", "runs.jsonl")
+
+# ── Phase 8 — Parallel Execution & Learning ────────────────────────────────
+# Number of tests to run in parallel.  Keep at 2 on a 16 GB machine with Ollama
+# loaded (4.5 GB) — each JVM + Firefox takes ~1 GB.
+PARALLEL_WORKERS = int(_os.environ.get("PARALLEL_WORKERS", "2"))
+
+# Path to the curated list of tests for the parallel learning runner.
+TESTS_TO_RUN_PATH = _os.path.join(_BASE_DIR, "tests_to_run.json")
+
+# How many recent learnings to inject into CoderAgent and ReviewerAgent prompts.
+LEARNING_TOP_N = int(_os.environ.get("LEARNING_TOP_N", "10"))
+
+# How many times the hands-free loop will re-run failing tests after healing.
+LEARNING_RETRIES = int(_os.environ.get("LEARNING_RETRIES", "2"))
+
+# All learnings extracted from batch runs are appended to this JSONL file.
+LEARNINGS_LOG_PATH = _os.path.join(_BASE_DIR, "logs", "learnings.jsonl")

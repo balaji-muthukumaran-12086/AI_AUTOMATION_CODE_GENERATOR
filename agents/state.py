@@ -59,3 +59,9 @@ class AgentState(TypedDict):
     # ── Hg Agent (Phase 3) ────────────────────────────────
     hg_config: dict                   # Opt-in. { repo_root, branch_name, commit_msg, push, remote }
     hg_result: dict                   # { success, branch_name, revision, pushed, files_committed, message, error }
+
+    # ── Parallel Runner + Learning (Phase 8) ─────────────────────────────
+    batch_run_configs: list[dict]     # Input: list of run_config dicts (from tests_to_run.json)
+    batch_run_results: list[dict]     # Output: [RunResult.to_dict()] from parallel batch run
+    learnings: Annotated[list[dict], operator.add]  # Learnings extracted by LearningAgent
+    learning_iteration: int           # Hands-free loop counter (increments per retry cycle)

@@ -1,0 +1,38 @@
+{
+  "_comment": "Curated regression batch for parallel execution + learning cycle.",
+  "_placeholders": "$(SDP_URL), $(SDP_PORTAL), $(SDP_ADMIN_EMAIL) are resolved at runtime from project_config.py / .env",
+  "parallelism": 2,
+  "learning_retries": 2,
+  "tests": [
+    {
+      "_id": "SDPOD_AUTO_SOL_DV_241",
+      "entity_class": "Solution",
+      "method_name":  "createAndShareApprovedPublicSolutionFromDV",
+      "url":          "$(SDP_URL)",
+      "admin_mail_id":"$(SDP_ADMIN_EMAIL)",
+      "email_id":     "$(SDP_ADMIN_EMAIL)",
+      "portal_name":  "$(SDP_PORTAL)",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_AUTO_SOL_DV_242",
+      "entity_class": "Solution",
+      "method_name":  "createUnapprovedSolutionWithCustomTopicRevDateExpDate",
+      "url":          "$(SDP_URL)",
+      "admin_mail_id":"$(SDP_ADMIN_EMAIL)",
+      "email_id":     "$(SDP_ADMIN_EMAIL)",
+      "portal_name":  "$(SDP_PORTAL)",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_AUTO_IR_NOTES_001",
+      "entity_class": "IncidentRequestNotes",
+      "method_name":  "createIncidentRequestAndAddNotes",
+      "url":          "$(SDP_URL)",
+      "admin_mail_id":"$(SDP_ADMIN_EMAIL)",
+      "email_id":     "$(SDP_ADMIN_EMAIL)",
+      "portal_name":  "$(SDP_PORTAL)",
+      "skip_compile": true
+    }
+  ]
+}
