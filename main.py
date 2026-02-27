@@ -150,6 +150,7 @@ def cmd_generate(args):
             generation_mode=args.mode,
             base_dir=BASE_DIR,
             source_document=source_document,
+            hg_config={"push": True} if getattr(args, 'hg', False) else {},
         )
 
     # ── Pipeline log ────────────────────────────────────────────────────────
@@ -189,7 +190,13 @@ def cmd_generate(args):
     gaps = final_state.get('coverage_gaps', [])
     dups = final_state.get('duplicate_warnings', [])
     console.print(f"\n📊 Coverage: [green]{len(gaps)} new scenario(s)[/green] | [yellow]{len(dups)} duplicate(s) skipped[/yellow]")
-
+    # ── Mercurial result ──────────────────────────────────────────────────────
+    hg_res = final_state.get('hg_result', {})
+    if hg_res.get('branch_name'):
+        icon = "\u2705" if hg_res.get('success') else "\u26a0\ufe0f"
+        console.print(f"\n{icon}  hg: {hg_res.get('message', '')}")
+        if hg_res.get('push_error'):
+            console.print(f"   [yellow]Push note: {hg_res['push_error']}[/yellow]")
 
 def cmd_setup(args):
     """Full setup: ingest → index → report (run once after cloning)."""
@@ -238,6 +245,8 @@ def main():
                        help='Comma-separated module paths to focus on')
     p_gen.add_argument('--mode', choices=['new_feature', 'gap_fill', 'regression'],
                        default='new_feature')
+    p_gen.add_argument('--hg', action='store_true', default=False,
+                       help='Commit generated Java files to a new hg feature branch and push')
 
     args = parser.parse_args()
 

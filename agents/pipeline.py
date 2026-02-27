@@ -37,6 +37,7 @@ from agents.reviewer_agent import ReviewerAgent
 from agents.output_agent import OutputAgent
 from agents.runner_agent import RunnerAgent
 from agents.healer_agent import HealerAgent
+from agents.hg_agent import HgAgent
 from agents.ui_scout_agent import UIScoutAgent
 from knowledge_base.vector_store import VectorStore
 from knowledge_base.context_builder import ContextBuilder
@@ -72,6 +73,7 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
                     base_dir=str(base),
                     headless=True,
                 )
+    hg        = HgAgent(base_dir=str(base))
 
     # ── Routing logic ───────────────────────────────────────
 
@@ -126,6 +128,7 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
     graph.add_node("output",   output.run)
     graph.add_node("runner",   runner.run)
     graph.add_node("healer",   healer.run)
+    graph.add_node("hg",       hg.run)
 
     graph.set_entry_point("ingestion")
     graph.add_edge("ingestion", "planner")
@@ -139,13 +142,14 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
     })
     graph.add_conditional_edges("output", route_after_output, {
         "runner":    "runner",
-        "__end__":   END,
+        "__end__":   "hg",
     })
     graph.add_conditional_edges("runner", route_after_runner, {
         "healer":  "healer",
-        "__end__": END,
+        "__end__": "hg",
     })
-    graph.add_edge("healer", END)
+    graph.add_edge("healer", "hg")
+    graph.add_edge("hg", END)
 
     return graph.compile()
 
@@ -157,6 +161,7 @@ def run_pipeline(
     base_dir: str = None,
     run_config: dict = None,
     source_document: str = "",
+    hg_config: dict = None,
 ) -> AgentState:
     """
     Main entry point to run the agentic test generation pipeline.
@@ -204,6 +209,8 @@ def run_pipeline(
         'messages': [],
         'run_config': run_config or {},
         'run_result': {},
+        'hg_config':  hg_config or {},
+        'hg_result':  {},
     }
 
     final_state = pipeline.invoke(initial_state)

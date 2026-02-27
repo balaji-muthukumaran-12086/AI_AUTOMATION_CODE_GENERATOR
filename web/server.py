@@ -99,6 +99,7 @@ def _run_pipeline_thread(
     source_document: str,
     target_modules: list[str],
     generation_mode: str,
+    hg_config: dict,
 ):
     """
     Runs the pipeline synchronously in a worker thread.
@@ -127,6 +128,7 @@ def _run_pipeline_thread(
             target_modules=target_modules,
             generation_mode=generation_mode,
             base_dir=str(BASE_DIR),
+            hg_config=hg_config,
         )
 
         # Stream all pipeline messages
@@ -144,6 +146,16 @@ def _run_pipeline_thread(
         run["generated_dir"] = final_state.get("generated_dir", "")
         run["document_metadata"] = final_state.get("document_metadata", {})
         run["affected_modules"] = final_state.get("affected_modules", [])
+        run["hg_result"] = final_state.get("hg_result", {})
+
+        # Log hg branch if committed
+        hg_res = run["hg_result"]
+        if hg_res.get("branch_name"):
+            branch = hg_res['branch_name']
+            if hg_res.get("success"):
+                _log(f"[{datetime.now().strftime('%H:%M:%S')}] 🔀 hg branch: {branch} — {hg_res.get('message','')}")
+            else:
+                _log(f"[{datetime.now().strftime('%H:%M:%S')}] ⚠️ hg partial: {hg_res.get('message','')}")
 
         file_count = len(output_paths)
         had_errors = bool(final_state.get("errors"))
@@ -168,7 +180,7 @@ def _run_pipeline_thread(
 
     finally:
         run["finished_at"] = datetime.now().isoformat()
-        _push(run_id, "done", {"status": run["status"], "files": run.get("files", [])})
+        _push(run_id, "done", {"status": run["status"], "files": run.get("files", []), "hg_branch": run.get("hg_result", {}).get("branch_name", "")})
         # Signal SSE stream to close
         _push(run_id, "__close__", None)
 
@@ -210,6 +222,7 @@ async def generate(
     feature: str = Form(default=""),
     modules: str = Form(default=""),
     mode: str = Form(default="new_feature"),
+    hg_enabled: bool = Form(default=False),
     file: Optional[UploadFile] = File(default=None),
 ):
     """
@@ -240,6 +253,9 @@ async def generate(
     # Parse modules
     target_modules = [m.strip() for m in modules.split(",") if m.strip()]
 
+    # Build hg_config if requested
+    hg_config = {"push": True} if hg_enabled else {}
+
     # Create run record
     run_id = uuid.uuid4().hex[:12]
     _runs[run_id] = {
@@ -248,6 +264,7 @@ async def generate(
         "feature":         feature[:200] if feature else "",
         "source_document": Path(source_document).name if source_document else "",
         "mode":            mode,
+        "hg_enabled":      hg_enabled,
         "target_modules":  target_modules,
         "messages":        [],
         "errors":          [],
@@ -255,6 +272,7 @@ async def generate(
         "generated_dir":   "",
         "affected_modules":[],
         "document_metadata": {},
+        "hg_result":       {},
         "started_at":      datetime.now().isoformat(),
         "finished_at":     None,
     }
@@ -263,7 +281,7 @@ async def generate(
     # Launch pipeline in a background thread (it's sync)
     thread = threading.Thread(
         target=_run_pipeline_thread,
-        args=(run_id, feature.strip(), source_document, target_modules, mode),
+        args=(run_id, feature.strip(), source_document, target_modules, mode, hg_config),
         daemon=True,
     )
     thread.start()

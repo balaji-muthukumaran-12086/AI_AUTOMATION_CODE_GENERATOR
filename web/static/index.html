@@ -313,6 +313,14 @@
         </select>
       </div>
 
+      <div class="field" style="flex-direction:row;align-items:center;gap:10px;">
+        <input type="checkbox" id="hg-enabled" style="width:18px;height:18px;accent-color:#007acc;cursor:pointer;">
+        <label for="hg-enabled" style="cursor:pointer;font-weight:500;">
+          🔀 Commit to Mercurial branch after generation
+          <span style="font-size:11px;color:#777;display:block;">Creates <code>feature/AI_GEN_&lt;SLUG&gt;_BRANCH</code> in the SDPLIVE hg repo</span>
+        </label>
+      </div>
+
       <button id="btn-generate" onclick="startGeneration()">
         <div class="spinner"></div>
         <span class="btn-label">⚡ Generate Test Cases</span>
@@ -418,6 +426,7 @@ async function startGeneration() {
   const feature = document.getElementById('feature-text').value.trim();
   const modules = document.getElementById('modules-input').value.trim();
   const mode    = document.getElementById('mode-select').value;
+  const hgEnabled = document.getElementById('hg-enabled').checked;
 
   if (!feature && !selectedFile) {
     showToast('⚠️ Please enter a feature description or upload a document.', 'err');
@@ -432,6 +441,7 @@ async function startGeneration() {
   fd.append('feature', feature);
   fd.append('modules', modules);
   fd.append('mode',    mode);
+  fd.append('hg_enabled', hgEnabled ? 'true' : 'false');
   if (selectedFile) fd.append('file', selectedFile);
 
   // UI: loading state
@@ -475,10 +485,13 @@ function startStream(runId) {
       renderFiles(msg.data, runId);
     } else if (msg.type === 'done') {
       const ok = msg.data.status === 'success';
+      const branch = msg.data.hg_branch;
       setStatus(ok ? 'success' : 'failed');
       setButtonLoading(false);
       currentSource.close(); currentSource = null;
-      showToast(ok ? '✅ Test generation complete!' : '❌ Pipeline failed — check log', ok ? 'ok' : 'err');
+      const branchNote = branch ? ` · hg: ${branch}` : '';
+      showToast(ok ? `✅ Test generation complete!${branchNote}` : '❌ Pipeline failed — check log', ok ? 'ok' : 'err');
+      if (branch) appendLog(`🔀 hg branch created: ${branch}`, 'ok');
       loadHistory();
     }
     // heartbeat & __close__ → ignore
