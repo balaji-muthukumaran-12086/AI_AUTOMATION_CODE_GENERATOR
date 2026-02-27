@@ -248,7 +248,7 @@ class UIScoutAgent:
         state["ui_observations"] = all_observations
         summary = f"[UIScoutAgent] Scouted {len(all_observations)} module(s), " \
                   f"captured {sum(len(v) for v in all_observations.values())} UI observations."
-        state["messages"] = state.get("messages", []) + [summary]
+        state["messages"] = [summary]
         print(summary)
         return state
 

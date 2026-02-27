@@ -72,7 +72,7 @@ class CoverageAgent:
     def run(self, state: AgentState) -> AgentState:
         """LangGraph node function."""
         test_plan = state.get('test_plan', {})
-        state['messages'] = state.get('messages', []) + [
+        state['messages'] = [
             "[CoverageAgent] Checking for duplicates and coverage gaps..."
         ]
 
@@ -135,7 +135,7 @@ class CoverageAgent:
         state['test_plan'] = filtered_plan
         state['coverage_gaps'] = coverage_gaps
         state['duplicate_warnings'] = duplicate_warnings
-        state['messages'] = state.get('messages', []) + [
+        state['messages'] = [
             f"[CoverageAgent] Total: {total_planned} | "
             f"New: {total_new} | Similar: {total_similar} | Duplicates skipped: {total_dup}"
         ]

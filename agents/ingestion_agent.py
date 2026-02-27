@@ -302,12 +302,12 @@ class IngestionAgent:
         source_doc = state.get("source_document", "")
         if not source_doc:
             # No document provided — existing text-based flow, nothing to do
-            state["messages"] = state.get("messages", []) + [
+            state["messages"] = [
                 "[IngestionAgent] No source_document in state — skipping (text-based flow)"
             ]
             return state
 
-        state["messages"] = state.get("messages", []) + [
+        state["messages"] = [
             f"[IngestionAgent] Processing document: {Path(source_doc).name}"
         ]
 
@@ -333,7 +333,7 @@ class IngestionAgent:
 
             state["document_metadata"] = result["document_metadata"]
 
-            state["messages"] = state.get("messages", []) + [
+            state["messages"] = [
                 f"[IngestionAgent] ✅ Document processed: "
                 f"'{result['document_metadata']['document_title']}' "
                 f"({result['document_metadata']['document_type']}) — "
@@ -343,10 +343,10 @@ class IngestionAgent:
             ]
 
         except Exception as e:
-            state["errors"] = state.get("errors", []) + [
+            state["errors"] = [
                 f"[IngestionAgent] Error processing '{source_doc}': {e}"
             ]
-            state["messages"] = state.get("messages", []) + [
+            state["messages"] = [
                 f"[IngestionAgent] ❌ Failed to process document: {e}"
             ]
 

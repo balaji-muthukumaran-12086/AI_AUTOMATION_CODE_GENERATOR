@@ -156,7 +156,7 @@ class OutputAgent:
         review_results = {r['module_path']: r for r in state.get('review_results', [])}
         feature_description = state.get('feature_description', 'Unnamed feature')
 
-        state['messages'] = state.get('messages', []) + [
+        state['messages'] = [
             "[OutputAgent] Parsing LLM output and writing snippet files..."
         ]
 
@@ -170,14 +170,14 @@ class OutputAgent:
             raw_code = gen.get('code', '')
 
             if gen.get('status') == 'error' or not raw_code.strip():
-                state['messages'] = state.get('messages', []) + [
+                state['messages'] = [
                     f"[OutputAgent] Skipped {module_path} — no code (status={gen.get('status')})"
                 ]
                 continue
 
             review = review_results.get(module_path, {})
             if not review.get('approved', True):
-                state['messages'] = state.get('messages', []) + [
+                state['messages'] = [
                     f"[OutputAgent] Skipped {module_path} — reviewer rejected"
                 ]
                 continue
@@ -216,7 +216,7 @@ class OutputAgent:
             all_output_paths.append(instructions_path)
             all_instructions = instructions   # shown in terminal for last module
 
-            state['messages'] = state.get('messages', []) + [
+            state['messages'] = [
                 f"[OutputAgent] ✅ {len(pieces)} snippet(s) for [{module_path}] → {run_dir.name}/"
             ]
 
@@ -235,7 +235,7 @@ class OutputAgent:
         state['final_output_paths'] = all_output_paths
         state['generation_instructions'] = all_instructions
         state['generated_dir'] = last_run_dir
-        state['messages'] = state.get('messages', []) + [
+        state['messages'] = [
             f"[OutputAgent] ✅ Done — {len(all_output_paths)} file(s) in {self.generated_dir}",
         ]
         return state

@@ -97,7 +97,7 @@ class PlannerAgent:
         feature_description = state.get('feature_description', '')
         target_modules = state.get('target_modules', [])
 
-        state['messages'] = state.get('messages', []) + [
+        state['messages'] = [
             f"[PlannerAgent] Analyzing: {feature_description[:100]}..."
         ]
 
@@ -116,13 +116,13 @@ class PlannerAgent:
             plan_data = json.loads(raw)
             state['affected_modules'] = plan_data.get('affected_modules', [])
             state['test_plan'] = plan_data.get('test_plan', {})
-            state['messages'] = state.get('messages', []) + [
+            state['messages'] = [
                 f"[PlannerAgent] Plan created: {len(state['affected_modules'])} modules, "
                 f"{sum(len(v) for v in state['test_plan'].values())} scenarios planned"
             ]
 
         except Exception as e:
-            state['errors'] = state.get('errors', []) + [f"[PlannerAgent] Error: {e}"]
+            state['errors'] = [f"[PlannerAgent] Error: {e}"]
             # Fallback: use target_modules as affected
             state['affected_modules'] = target_modules
             state['test_plan'] = {m: [] for m in target_modules}

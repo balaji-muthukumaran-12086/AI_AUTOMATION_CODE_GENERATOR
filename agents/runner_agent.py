@@ -259,7 +259,7 @@ class RunnerAgent:
         """
         config = state.get("run_config", {})
         if not config:
-            state["messages"] = state.get("messages", []) + [
+            state["messages"] = [
                 "[RunnerAgent] No run_config found in state — skipping execution."
             ]
             return state
@@ -275,7 +275,7 @@ class RunnerAgent:
         )
 
         state["run_result"] = result.to_dict()
-        state["messages"] = state.get("messages", []) + [result.summary()]
+        state["messages"] = [result.summary()]
         print(result.summary())
         return state
 

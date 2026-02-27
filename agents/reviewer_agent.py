@@ -198,7 +198,7 @@ class ReviewerAgent:
     def run(self, state: AgentState) -> AgentState:
         """LangGraph node function."""
         generated = state.get('generated_code', [])
-        state['messages'] = state.get('messages', []) + [
+        state['messages'] = [
             "[ReviewerAgent] Reviewing generated code..."
         ]
 
@@ -245,7 +245,7 @@ class ReviewerAgent:
         state['revision_requests'] = revision_requests
 
         approved_count = sum(1 for r in review_results if r['approved'])
-        state['messages'] = state.get('messages', []) + [
+        state['messages'] = [
             f"[ReviewerAgent] {approved_count}/{len(review_results)} approved. "
             f"{len(revision_requests)} revision(s) needed."
         ]

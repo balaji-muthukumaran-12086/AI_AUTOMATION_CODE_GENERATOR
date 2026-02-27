@@ -670,7 +670,7 @@ class CoderAgent:
     def run(self, state: AgentState) -> AgentState:
         """LangGraph node function."""
         test_plan = state.get('test_plan', {})
-        state['messages'] = state.get('messages', []) + [
+        state['messages'] = [
             "[CoderAgent] Starting code generation..."
         ]
 
@@ -680,14 +680,14 @@ class CoderAgent:
             if not scenarios:
                 continue
 
-            state['messages'] = state.get('messages', []) + [
+            state['messages'] = [
                 f"[CoderAgent] Generating {len(scenarios)} scenario(s) for {module_path}"
             ]
             result = self._generate_for_module(module_path, scenarios, ui_observations=ui_observations)
             generated.append(result)
 
         state['generated_code'] = generated
-        state['messages'] = state.get('messages', []) + [
+        state['messages'] = [
             f"[CoderAgent] Generated code for {len(generated)} modules."
         ]
         return state

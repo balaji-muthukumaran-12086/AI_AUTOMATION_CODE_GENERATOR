@@ -197,7 +197,7 @@ class HealerAgent:
             msg = "[HealerAgent] Test passed — no healing needed."
             print(msg)
             state["heal_result"] = HealResult(healed=False, fix_description="Test already passed").to_dict()
-            state["messages"] = state.get("messages", []) + [msg]
+            state["messages"] = [msg]
             return state
 
         print("[HealerAgent] 🩺 Test failed — activating healer...")
@@ -213,7 +213,7 @@ class HealerAgent:
         )
 
         state["heal_result"] = result.to_dict()
-        state["messages"] = state.get("messages", []) + [result.summary()]
+        state["messages"] = [result.summary()]
         print(result.summary())
         return state
 

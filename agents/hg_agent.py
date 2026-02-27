@@ -138,12 +138,12 @@ class HgAgent:
         """LangGraph node function."""
         hg_config = state.get("hg_config") or {}
         if not hg_config:
-            state["messages"] = state.get("messages", []) + [
+            state["messages"] = [
                 "[HgAgent] No hg_config in state — skipping (opt-in only)"
             ]
             return state
 
-        state["messages"] = state.get("messages", []) + [
+        state["messages"] = [
             "[HgAgent] 🔀 Starting Mercurial branch workflow..."
         ]
 
@@ -151,14 +151,14 @@ class HgAgent:
             result = self._commit_to_branch(state, hg_config)
             state["hg_result"] = result
             icon = "✅" if result["success"] else "⚠️"
-            state["messages"] = state.get("messages", []) + [
+            state["messages"] = [
                 f"[HgAgent] {icon} {result['message']}"
             ]
         except Exception as exc:
             err = f"HgAgent error: {exc}"
             state["hg_result"] = {"success": False, "error": err, "message": err}
-            state["errors"] = state.get("errors", []) + [f"[HgAgent] {err}"]
-            state["messages"] = state.get("messages", []) + [f"[HgAgent] ❌ {err}"]
+            state["errors"] = [f"[HgAgent] {err}"]
+            state["messages"] = [f"[HgAgent] ❌ {err}"]
 
         return state
 
