@@ -64,10 +64,14 @@ def get_llm(temperature: float = 0.2):
             raise EnvironmentError(
                 "LLM_PROVIDER=openrouter but OPENROUTER_API_KEY is not set in .env"
             )
-        print(f"[LLM] Using OpenRouter → {model}")
+        # max_tokens: trial accounts have ~4000 token budget; paid accounts can remove this cap.
+        # Override via OPENROUTER_MAX_TOKENS env var (e.g. 8000 for paid accounts).
+        max_tokens = int(os.environ.get("OPENROUTER_MAX_TOKENS", "3500"))
+        print(f"[LLM] Using OpenRouter → {model}  (max_tokens={max_tokens})")
         return ChatOpenAI(
             model=model,
             temperature=temperature,
+            max_tokens=max_tokens,
             openai_api_key=api_key,
             openai_api_base="https://openrouter.ai/api/v1",
             default_headers={
