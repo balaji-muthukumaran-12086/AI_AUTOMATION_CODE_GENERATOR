@@ -1,0 +1,110 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# docker-compose.yml — AI Automation QA Framework
+#
+# Services:
+#   app    → FastAPI web server + agents + Selenium runner (port 9500)
+#   ollama → Local LLM server (port 11434)
+#
+# BEFORE FIRST RUN:
+#   1. Copy .env.example → .env and fill in your paths and credentials.
+#   2. Ensure bind-mount source directories exist on the host:
+#        ./SDPLIVE_LATEST_AUTOMATER_SELENIUM/   (hg clone of active test project)
+#        ./AutomaterSeleniumFramework/           (hg clone of framework source)
+#        ../dependencies/                        (JAR files; relative to this file)
+#   3. (Optional) Pre-populate ChromaDB:
+#        tar -xzf chroma_db_backup.tar.gz -C knowledge_base/
+#      Otherwise the chroma_db volume starts empty and you re-index on first run.
+#   4. Pull the LLM model into Ollama:
+#        docker compose run --rm ollama ollama pull qwen2.5-coder:7b
+#
+# RUN:
+#   docker compose up -d
+#   docker compose logs -f app
+# ──────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Main application ─────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-automation-qa
+    restart: unless-stopped
+    ports:
+      - "${PORT:-9500}:9500"
+    env_file:
+      - .env
+    environment:
+      # Docker-specific overrides (take precedence over .env defaults)
+      FIREFOX_BINARY: /usr/bin/firefox
+      GECKODRIVER_PATH: /usr/local/bin/geckodriver
+      DEPS_DIR: /app/dependencies
+      OLLAMA_BASE_URL: http://ollama:11434
+      HOST: "0.0.0.0"
+      PORT: "9500"
+    volumes:
+      # ── Mercurial-managed Java projects (not in git — must exist on host) ──
+      - ./SDPLIVE_LATEST_AUTOMATER_SELENIUM:/app/SDPLIVE_LATEST_AUTOMATER_SELENIUM
+      - ./AutomaterSeleniumFramework:/app/AutomaterSeleniumFramework
+      # ── JAR dependencies (lives one level up from the project root) ────────
+      # Adjust this path if your dependencies/ folder is elsewhere.
+      - ../dependencies:/app/dependencies:ro
+      # ── Persistent data volumes ────────────────────────────────────────────
+      - chroma_db:/app/knowledge_base/chroma_db
+      - kb_raw:/app/knowledge_base/raw
+      - uploads:/app/uploads
+      - logs:/app/logs
+      - reports:/app/reports
+    depends_on:
+      ollama:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9500/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ── Ollama — Local LLM server ─────────────────────────────────────────────
+  # Agents connect to this at http://ollama:11434
+  # To pull a model after first start:
+  #   docker compose exec ollama ollama pull qwen2.5-coder:7b
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ai-automation-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"      # Also exposed to host so you can run `ollama` CLI locally
+    volumes:
+      - ollama_models:/root/.ollama   # Model weights persist across restarts
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/version"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    # ── GPU support (optional — remove deploy block if no GPU) ───────────────
+    # Requires: nvidia-container-toolkit installed on the host.
+    # Without GPU, Ollama still works on CPU (just slower).
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+# ── Named volumes ─────────────────────────────────────────────────────────────
+volumes:
+  chroma_db:
+    # To pre-populate from a backup:
+    #   docker volume create ai-automation-qa_chroma_db
+    #   docker run --rm -v ai-automation-qa_chroma_db:/data -v $(pwd):/backup \
+    #     ubuntu tar -xzf /backup/chroma_db_backup.tar.gz -C /data
+  kb_raw:
+  uploads:
+  logs:
+  reports:
+  ollama_models:
+    # LLM model weights (~4GB for qwen2.5-coder:7b). Persists across restarts.
