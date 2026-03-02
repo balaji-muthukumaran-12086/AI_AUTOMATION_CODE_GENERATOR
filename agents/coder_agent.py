@@ -18,10 +18,11 @@ import re
 from pathlib import Path
 from typing import Any
 
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
 from agents.state import AgentState
-from agents.llm_factory import get_llm
+from agents.llm_factory import get_llm, supports_tool_calling
+from agents.coder_tools import CODER_TOOLS
 from knowledge_base.context_builder import ContextBuilder
 from knowledge_base.vector_store import VectorStore
 
@@ -566,13 +567,30 @@ class CoderAgent:
             + "================================================================\n"
             + self._KNOWLEDGE_DOC
         )
-        self.llm = llm or get_llm(
-            temperature=0.1,
-        )
+        self.llm = llm or get_llm(temperature=0.1)
         self.ctx_builder = context_builder or ContextBuilder(str(self.base))
         self.store = vector_store or VectorStore(
             persist_dir=str(self.base / 'knowledge_base' / 'chroma_db')
         )
+
+        # ── ReAct agent (tool-calling path) ──────────────────────────────────
+        # When the provider supports function/tool calling (OpenAI, OpenRouter)
+        # we build a ReAct agent that can call read_file / grep_search / list_dir
+        # on demand during generation — exactly as GitHub Copilot does.
+        # Ollama 7B falls back to the existing static RAG path.
+        self._react_agent = None
+        if supports_tool_calling():
+            try:
+                from langgraph.prebuilt import create_react_agent
+                llm_with_tools = self.llm.bind_tools(CODER_TOOLS)
+                self._react_agent = create_react_agent(
+                    llm_with_tools,
+                    tools=CODER_TOOLS,
+                    # System prompt is injected per-invocation via messages
+                )
+                print("[CoderAgent] ✅ ReAct agent initialised — tool-calling enabled.", flush=True)
+            except Exception as exc:
+                print(f"[CoderAgent] ⚠️  ReAct agent init failed ({exc}); falling back to RAG.", flush=True)
 
     # Map from module_path segment → help topic module name (where they differ)
     _MODULE_PATH_TO_HELP: dict[str, str] = {
@@ -663,13 +681,20 @@ class CoderAgent:
 
         prompt = self._build_prompt(module_path, scenarios, similar, ui_observations=ui_observations)
 
+        if self._react_agent is not None:
+            return self._generate_for_module_react(module_path, scenarios, prompt)
+        return self._generate_for_module_rag(module_path, scenarios, prompt)
+
+    # ── Static RAG path (Ollama / no tool-calling) ───────────────────────────
+
+    def _generate_for_module_rag(self, module_path: str, scenarios: list[dict], prompt: str) -> dict:
+        """Original single-shot LLM call with RAG context only."""
         try:
             response = self.llm.invoke([
                 SystemMessage(content=self._system_prompt),
                 HumanMessage(content=prompt),
             ])
             code = response.content.strip()
-            # Strip markdown fences if model added them
             code = re.sub(r'^```java\s*', '', code)
             code = re.sub(r'```\s*$', '', code)
             return {
@@ -686,6 +711,85 @@ class CoderAgent:
                 'status': 'error',
                 'error': str(e),
             }
+
+    # ── ReAct tool-calling path (OpenAI / OpenRouter) ────────────────────────
+
+    def _generate_for_module_react(self, module_path: str, scenarios: list[dict], prompt: str) -> dict:
+        """
+        ReAct generation: the LLM reasons → calls read_file/grep_search/list_dir
+        on demand → reasons again → produces final Java code.
+
+        This mirrors exactly how GitHub Copilot works: pull context reactively
+        during generation rather than injecting fixed RAG chunks upfront.
+        The RAG prompt is still passed as the first HumanMessage to give the
+        agent a warm start (existing source files, similar scenarios), but the
+        agent is then free to fetch whatever else it needs.
+        """
+        tool_hint = (
+            "\n\n[TOOL GUIDANCE]\n"
+            "You have access to three tools to retrieve project context on demand:\n"
+            "  • read_file(file_path, start_line, end_line) — read any Java/JSON file\n"
+            "    Example: read_file('com/zoho/automater/selenium/modules/admin/automation/triggers/ProblemTrigger.java', 94, 160)\n"
+            "  • grep_search(query, file_pattern) — find methods, constants, locators by name\n"
+            "    Example: grep_search('createNotificationViaAPI', '**/*.java')\n"
+            "  • list_dir(dir_path) — explore folder structure\n"
+            "    Example: list_dir('src/com/zoho/automater/selenium/modules/admin/automation/triggers')\n"
+            "\nUSE THESE TOOLS BEFORE writing code whenever you need to:\n"
+            "  - Verify a method signature in an APIUtil or ActionsUtil class\n"
+            "  - Check the exact preProcess branches in the target *Trigger/*.java file\n"
+            "  - Confirm constants in *Constants.java or *Locators.java\n"
+            "  - Read existing similar scenarios for exact code patterns\n"
+            "  - Inspect *_data.json to understand data placeholders\n"
+            "\nDo NOT guess — use the tools to confirm. Produce the final Java code only after\n"
+            "you have verified all class names, method names, and constants."
+        )
+
+        messages = [
+            SystemMessage(content=self._system_prompt),
+            HumanMessage(content=prompt + tool_hint),
+        ]
+
+        try:
+            result = self._react_agent.invoke({"messages": messages})
+            # The final response is the last AIMessage that contains no tool calls
+            final_msg = next(
+                (
+                    m for m in reversed(result["messages"])
+                    if isinstance(m, AIMessage) and not getattr(m, "tool_calls", None)
+                ),
+                None,
+            )
+            if final_msg is None:
+                raise RuntimeError("ReAct agent produced no final AIMessage.")
+
+            code = final_msg.content.strip()
+            code = re.sub(r'^```java\s*', '', code)
+            code = re.sub(r'```\s*$', '', code)
+
+            # Log how many tool calls were made (useful for debugging)
+            tool_call_count = sum(
+                1 for m in result["messages"]
+                if hasattr(m, "tool_calls") and m.tool_calls
+            )
+            print(
+                f"[CoderAgent] ReAct: {tool_call_count} tool call(s) made for {module_path}",
+                flush=True,
+            )
+
+            return {
+                'module_path': module_path,
+                'code': code.strip(),
+                'scenarios': scenarios,
+                'status': 'generated',
+            }
+        except Exception as e:
+            # Graceful fallback to static RAG if the ReAct loop errors
+            print(
+                f"[CoderAgent] ⚠️  ReAct failed ({e}); falling back to static RAG for {module_path}",
+                flush=True,
+            )
+            # Rebuild prompt without tool hint for clean RAG call
+            return self._generate_for_module_rag(module_path, scenarios, prompt)
 
     def run(self, state: AgentState) -> AgentState:
         """LangGraph node function."""
