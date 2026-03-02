@@ -20,10 +20,10 @@ Set in .env:
   # OR for OpenRouter (recommended — gives access to GPT-4o, Claude, etc.):
   LLM_PROVIDER=openrouter
   OPENROUTER_API_KEY=sk-or-...
-  OPENROUTER_MODEL=openai/gpt-4o          # or anthropic/claude-sonnet-4-5
+  OPENROUTER_MODEL=openai/gpt-4o-mini      # cheapest tool-calling model; or openai/gpt-4o for full power
 
 Tool-calling support (used by ReAct CoderAgent):
-  - openai / openrouter → True  (GPT-4o, Claude natively support function calling)
+  - openai / openrouter → True  (GPT-4o / GPT-4o-mini / Claude natively support function calling)
   - ollama              → False (7B models do not reliably support tool calling)
 """
 
@@ -58,7 +58,7 @@ def get_llm(temperature: float = 0.2):
 
     if provider == "openrouter":
         from langchain_openai import ChatOpenAI
-        model = os.environ.get("OPENROUTER_MODEL", "openai/gpt-4o")
+        model = os.environ.get("OPENROUTER_MODEL", "openai/gpt-4o-mini")
         api_key = os.environ.get("OPENROUTER_API_KEY", "")
         if not api_key:
             raise EnvironmentError(
