@@ -35,6 +35,7 @@ from config.project_config import (
     DEPS_DIR as _DEFAULT_DEPS_DIR,
     FIREFOX_BINARY as _DEFAULT_FIREFOX,
     GECKODRIVER_PATH as _DEFAULT_GECKODRIVER,
+    TEST_EXECUTION_TIMEOUT as _TEST_EXECUTION_TIMEOUT,
 )
 
 
@@ -554,14 +555,18 @@ class RunnerAgent:
         t_out.start()
         t_err.start()
 
+        timeout_s = _TEST_EXECUTION_TIMEOUT
         try:
-            process.wait(timeout=300)
+            process.wait(timeout=timeout_s)
         except subprocess.TimeoutExpired:
             process.kill()
-            print("[RunnerAgent] ⚠️  Test timed out after 300 seconds")
+            print(f"[RunnerAgent] ⚠️  Test timed out after {timeout_s}s "
+                  f"({timeout_s // 60}m). Increase TEST_EXECUTION_TIMEOUT in .env if needed.")
 
-        t_out.join()
-        t_err.join()
+        # Give reader threads a grace window to drain any remaining output
+        # before we proceed, so no output lines are lost after process exit.
+        t_out.join(timeout=30)
+        t_err.join(timeout=30)
 
         print("[RunnerAgent] ─── End Output ───────────────────────────────")
 

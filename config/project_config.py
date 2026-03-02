@@ -111,3 +111,10 @@ LEARNING_RETRIES = int(_os.environ.get("LEARNING_RETRIES", "2"))
 
 # All learnings extracted from batch runs are appended to this JSONL file.
 LEARNINGS_LOG_PATH = _os.path.join(_BASE_DIR, "logs", "learnings.jsonl")
+
+# ── Test execution timeout ─────────────────────────────────────────────────
+# Maximum seconds to wait for a single Java test method to complete.
+# Some scenarios (e.g. Workflow, large UDF) can take 20-30 minutes.
+# Override in .env:  TEST_EXECUTION_TIMEOUT=3600  (for very long suites)
+# Default: 1800 seconds (30 minutes) — safe upper bound for any scenario.
+TEST_EXECUTION_TIMEOUT = int(_os.environ.get("TEST_EXECUTION_TIMEOUT", "1800"))
