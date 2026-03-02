@@ -42,8 +42,8 @@ the copied problem is searchable in the Problems listview.
 """
 
 RUN_CONFIG = {
-    "entity_class":  "IncidentRequestNotes",
-    "method_name":   "createIncidentRequestAndAddNotes",
+    "entity_class":  "ProblemTrigger",
+    "method_name":   "createProblemTriggerAndVerifyExecutionInHistory",
     "url":           "https://sdpodqa-auto1.csez.zohocorpin.com:9090/",
     "admin_mail_id": "jaya.kumar+org1admin1t0@zohotest.com",
     "email_id":      "jaya.kumar+org1admin1t0@zohotest.com",

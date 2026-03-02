@@ -693,6 +693,30 @@ class CoderAgent:
         state['messages'] = [
             "[CoderAgent] Starting code generation..."
         ]
+        print("[CoderAgent] Starting code generation...", flush=True)
+
+        # ── from_testcases mode: convert proposed_scenarios → test_plan format ──
+        if not test_plan and state.get("generation_mode") == "from_testcases":
+            proposed = state.get("proposed_scenarios", [])
+            if proposed:
+                print(f"[CoderAgent] from_testcases mode — converting {len(proposed)} test case(s) to test_plan.")
+                converted: dict = {}
+                for sc in proposed:
+                    mp = sc.get("module_path", "unknown/module")
+                    # Enrich description with steps + expected result so LLM has full spec
+                    desc = sc.get("description", sc.get("title", ""))
+                    steps = sc.get("test_steps", [])
+                    expected = sc.get("expected_result", "")
+                    if steps:
+                        desc += "\n\nTest Steps:\n" + "\n".join(f"  {i+1}. {s}" for i, s in enumerate(steps))
+                    if expected:
+                        desc += f"\n\nExpected Result: {expected}"
+                    enriched = dict(sc)  # shallow copy so we don't mutate state
+                    enriched["description"] = desc
+                    enriched["_from_testcase"] = True  # hint for LLM: exact spec provided
+                    converted.setdefault(mp, []).append(enriched)
+                test_plan = converted
+                state["test_plan"] = test_plan
 
         ui_observations = state.get('ui_observations', {})
         generated = []
@@ -703,6 +727,7 @@ class CoderAgent:
             state['messages'] = [
                 f"[CoderAgent] Generating {len(scenarios)} scenario(s) for {module_path}"
             ]
+            print(f"[CoderAgent] Generating {len(scenarios)} scenario(s) for {module_path}...", flush=True)
             result = self._generate_for_module(module_path, scenarios, ui_observations=ui_observations)
             generated.append(result)
 
@@ -710,4 +735,5 @@ class CoderAgent:
         state['messages'] = [
             f"[CoderAgent] Generated code for {len(generated)} modules."
         ]
+        print(f"[CoderAgent] ✅ Done — code generated for {len(generated)} module(s).", flush=True)
         return state

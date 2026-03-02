@@ -348,3 +348,46 @@ AgentState (shared dict)
 | **Revision cap** | The Reviewer → Coder loop is capped at **2 revisions** to prevent infinite loops. After 2 cycles, whatever code exists is passed to OutputAgent regardless. |
 | **Runner opt-in** | RunnerAgent only activates if `run_config` is included in the initial state. The Web UI does not send `run_config` by default — test execution is a separate step. |
 | **HgAgent gated** | `HG_AGENT_ENABLED = False` in `config/project_config.py`. Set to `True` to enable auto-branch + commit. |
+
+---
+
+## Roadmap
+
+### Phase 4.5 — Run-Once Validation + UI Copy-Paste Panel 🔲
+
+**Goal:** After code generation, let the user validate the generated test with a single click and copy the final `.java` files directly from the Web UI — no manual `scp` / file browsing needed.
+
+#### What needs to be built
+
+| Item | Location | Detail |
+|------|----------|--------|
+| **"Run after generation" toggle** | Web UI (`web/static/index.html`) | Checkbox on the generate form. When checked, sends `run_once=true` in the `POST /api/generate` body |
+| **`run_config` auto-population** | `web/server.py` → `_run_pipeline_thread` | When `run_once=true`, build a minimal `run_config` from the generated entity class name and method name (extracted from `final_output_paths`) and inject it into initial state |
+| **RunnerAgent single-run** | `agents/pipeline.py` `route_after_output` | Already routes to `runner` when `run_config` present. No change needed. |
+| **Copy-Paste panel in UI** | `web/static/index.html` | After run completes, for each file in `final_output_paths`:<br>• Show filename as a tab/card<br>• Syntax-highlighted `<pre>` block with full file contents<br>• **"Copy file"** button (Clipboard API)<br>• Run result badge (✅ PASSED / ❌ FAILED) next to each file |
+| **`GET /api/runs/{run_id}/file-content`** | `web/server.py` | New endpoint — returns the raw text content of a generated file by path, so the UI can render it without a file download |
+| **Destination path hint** | UI copy-paste panel | Show the exact target path where the file should be placed in `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/...` so the developer knows where to paste |
+
+#### User journey (after this phase)
+```
+1. Paste feature description (or upload doc) → hit Generate
+2. Check "Run once to validate" ☑
+3. Pipeline runs: generate → compile → execute test
+4. Generated file panel appears:
+   ┌─────────────────────────────────────────────────────┐
+   │  SolutionBase.java  ✅ PASSED                        │
+   │  [Copy file ▾]  Target: modules/solutions/solution/  │
+   │  ┌──────────────────────────────────────────────┐   │
+   │  │ public void createSolution() {               │   │
+   │  │     super.createSolution();                  │   │
+   │  │ }                                            │   │
+   │  └──────────────────────────────────────────────┘   │
+   └─────────────────────────────────────────────────────┘
+5. Developer copies → pastes into module src → commits to Hg
+```
+
+#### Files to touch
+- `web/server.py` — add `GET /api/runs/{run_id}/file-content`, populate `run_config` when `run_once=true`
+- `web/static/index.html` — "Run once" toggle, copy-paste panel, Clipboard API, target-path hint
+- `agents/pipeline.py` — no changes needed (routing already correct)
+- `config/project_config.py` — optionally add `RUN_ONCE_DEFAULT = False`

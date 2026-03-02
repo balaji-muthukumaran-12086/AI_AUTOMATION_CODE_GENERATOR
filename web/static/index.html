@@ -332,10 +332,10 @@
           <button id="clear-file" onclick="clearFile(event)" title="Remove file" style="display:none">✕</button>
           <div class="dz-icon" id="dz-icon">📂</div>
           <div class="dz-primary" id="dz-primary">Drop a document here or click to browse</div>
-          <div class="dz-secondary" id="dz-secondary">PDF · DOCX · XLSX · PPTX · TXT · MD</div>
+          <div class="dz-secondary" id="dz-secondary">PDF · DOCX · XLSX · CSV · PPTX · TXT · MD</div>
           <div class="dz-filename" id="dz-filename"></div>
         </div>
-        <input type="file" id="file-input" accept=".pdf,.docx,.xlsx,.xls,.pptx,.txt,.md"
+        <input type="file" id="file-input" accept=".pdf,.docx,.xlsx,.xls,.csv,.pptx,.txt,.md"
                onchange="onFileSelected(event)" />
       </div>
 
@@ -362,6 +362,7 @@
           <option value="new_feature">🆕 New Feature — generate tests for a new feature</option>
           <option value="gap_fill">🔍 Gap Fill — fill coverage gaps in existing module</option>
           <option value="regression">🔄 Regression — regenerate/extend regression suite</option>
+          <option value="from_testcases">⚡ From Test Cases — Excel/CSV test case sheet (skip Planner)</option>
         </select>
       </div>
 
@@ -468,6 +469,13 @@ function applyFile(file) {
   document.getElementById('dz-secondary').textContent = formatBytes(file.size);
   document.getElementById('dz-filename').textContent = file.name;
   document.getElementById('clear-file').style.display = 'block';
+  // Auto-switch to from_testcases mode for spreadsheet files
+  const ext = file.name.split('.').pop().toLowerCase();
+  const modeSelect = document.getElementById('mode-select');
+  if (['xlsx', 'xls', 'csv'].includes(ext) && modeSelect.value !== 'from_testcases') {
+    modeSelect.dataset.prevMode = modeSelect.value;
+    modeSelect.value = 'from_testcases';
+  }
 }
 function clearFile(e) {
   e.stopPropagation();
@@ -477,9 +485,15 @@ function clearFile(e) {
   dz.classList.remove('has-file');
   document.getElementById('dz-icon').textContent = '📂';
   document.getElementById('dz-primary').textContent = 'Drop a document here or click to browse';
-  document.getElementById('dz-secondary').textContent = 'PDF · DOCX · XLSX · PPTX · TXT · MD';
+  document.getElementById('dz-secondary').textContent = 'PDF · DOCX · XLSX · CSV · PPTX · TXT · MD';
   document.getElementById('dz-filename').textContent = '';
   document.getElementById('clear-file').style.display = 'none';
+  // Restore previous mode if it was auto-switched
+  const modeSelect = document.getElementById('mode-select');
+  if (modeSelect.value === 'from_testcases' && modeSelect.dataset.prevMode) {
+    modeSelect.value = modeSelect.dataset.prevMode;
+    delete modeSelect.dataset.prevMode;
+  }
 }
 function formatBytes(b) {
   if (b < 1024) return b + ' B';

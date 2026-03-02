@@ -964,3 +964,117 @@ public void createIncidentRequestAndAddNotes() {
 	super.createIncidentRequestAndAddNotes();
 }
 ```
+### IncidentRequestWorkflow.createWorkflowOfIncidentRequest
+**Product Area**: Admin > Automation > Workflows > Incident Request
+**Status (last run)**: FAILED ❌
+**Complexity**: HIGH — multi-step, canvas drag-drop, polling, async node activation, 10-20 min typical runtime
+**Preprocess Group**: `No preprocess`
+
+**What it tests**:
+End-to-end workflow creation via the Workflows canvas UI for Incident Requests. Creates a workflow with multiple node types: Notification, Field Update (impact/urgency/priority), Task, Wait-For, Fork, Join, and Approval. Then links the workflow to an Incident Template via API, creates an IR, navigates to the IR detail view, triggers each node by updating fields, and verifies: notification fired, field updates applied, tasks created, status → Closed, workflow marked complete. Finally, deletes and restores the workflow.
+
+**Key framework methods**:
+- `AdminActionsUtil.gotoentity('Workflows')          → navigates to Admin > Automation > Workflows listview`
+- `WorkflowsActionsUtil.*                             → drags nodes onto canvas, connects them, configures each`
+- `actions.navigate.toModule(ModuleConstants.REQUESTS) → switches to Requests module`
+- `actions.navigate.toSubTabInDetailsPage()           → switches between tabs in IR details`
+- `actions.formBuilder.fillSelectField()              → fills select dropdown (impact field)`
+- `verifyWaitForNode()                                → polls until 'Wait For' node activates`
+- `verifyNotification(title)                          → checks notification panel for expected subject`
+- `verifyFieldUpdate(field, value)                    → reads field from detail view, compares to expected`
+- `verifyTask(title, bool)                            → checks task created/completed in task panel`
+- `verifyStatus('Closed')                             → reads status field on IR details`
+- `verifyWorkflowComplete()                           → verifies workflow progress indicator shows 100%`
+- `deleteAndRestoreWorkflow(name)                     → deletes then restores from recycle bin`
+- `restAPI.getEntityIdUsingSearchCriteria()           → REST: searches workflow by name to get its ID`
+- `IncidentTemplateAPIUtil.createIncidentTemplate()   → REST: creates incident template linked to workflow`
+- `RequestAPIUtil.createIR()                          → REST: creates incident request using the template`
+
+**Key locators**: `WorkflowsLocators.* (workflow canvas, node drag handles, connection arrows)`, `RequestLocators.Listview.PAGE_COUNT (pagination info)`, `SDPCommonLocators.ButtonLocators.BTN_BYNAME_SPAN.apply('New Incident')`
+**Key data constants**: `WorkflowsDataConstants.WorkflowsData.CREATE_INCIDENT_REQUEST_WORKFLOW`, `IncidentTemplateDataConstants.IncidentTemplateData.REQUEST_TEMPLATE`, `RequestDataConstants.RequestData.CREATE_REQUEST_FOR_WORKFLOW`, `TimerDataConstants.TimerData.LIST_INFO_CRITERIA_NAME_SEARCH`
+**Notes**: Thread.sleep(10000) used before priority node verification — timing-sensitive scenario
+
+---
+
+### AssetTrigger.checkAllAssetTriggerForAccesspoint
+**Product Area**: Admin > Automation > Triggers > Asset Triggers
+**Status (last run)**: FAILED ❌
+**Complexity**: MEDIUM — preprocess API calls + UI create + trigger verification
+**Preprocess Group**: `createAssetTrigger`
+
+**What it tests**:
+Verifies that an Asset Trigger (with Notification action) fires correctly when a new Access Point asset is created. preProcess (group='createAssetTrigger') creates:
+  1. A Notification rule via API (TriggerAPIUtil.createNotificationViaAPI)
+  2. A Trigger via REST API ('wftriggers') that fires on asset creation, criteria: created_by=technician
+Then the test:
+  1. Creates the Access Point product type via API if not exists (AssetAPIUtil.checkAndCreateProduct)
+  2. Navigates to Assets listview
+  3. Selects 'Access Point' product type from left accordion
+  4. Clicks 'New Asset', fills form via fillInputForAnEntity and submits
+  5. Calls verifyNotification() to confirm trigger fired
+
+**Key framework methods**:
+- `TriggerAPIUtil.getEntityIdforCriteriaValue()        → REST lookup of 'All Assets' product type ID`
+- `TriggerAPIUtil.createNotificationViaAPI()           → REST POST to create notification rule`
+- `restAPI.createAndGetAPIResponse('wftriggers', ...)  → REST POST to create trigger with criteria`
+- `AssetAPIUtil.checkAndCreateProduct()                → REST: creates product type if not exists`
+- `actions.navigate.toModule(ModuleConstants.ASSETS)   → navigates to Assets module`
+- `AssetActionsUtil.searchAndSelectProductTypeInAccordian() → left sidebar product-type filter`
+- `SDPCloudActions.isMSP()                             → checks if portal is MSP mode`
+- `actions.click(AssetLocators.Listview.LISTVIEW_BUTTONS.apply('New Asset'))`
+- `actions.formBuilder.fillInputForAnEntity()          → fills name, serial, type from asset_data.json`
+- `formBuilder.submit()                                 → submits create form`
+- `verifyNotification()                                 → checks notification bell / trigger audit`
+
+**Key locators**: `AssetLocators.Listview.LISTVIEW_BUTTONS.apply(AssetConstants.ListviewGlobalActions.NEW_ASSET)`, `AdditionalFieldsLocators (used in MSP-mode customer selection)`, `TriggersLocators.Listview (for checking trigger status)`
+**Key data constants**: `AssetDataConstants.AssetData.CREATE_ACCESS_POINT_ASSET`, `TriggersDataConstants.TriggersData.NOTIFICATION_DATA_FOR_TRIGGER_SUBENTITY`, `TriggersDataConstants.TriggersData.CUSTOM_DATA_FOR_TRIGGER_SUBENTITY_WITH_NOTIFICATION_ACTIONS_ONLY`
+**Notes**: LocalStorage keys: 'technician', 'triggerName', 'triggerId', 'entityId', 'moduleName', 'criteriaCondition', 'criteriaField', 'criteriaValue'
+
+---
+
+
+### Framework-Level Test Setup and Validation
+_Learned from: ProjectUDF.filterUdfByDataTypeNumeric | Date: 2026-03-02_
+
+This pattern demonstrates setting up test data via API calls, structuring UI interactions, and validating success messages using the AutomaterSelenium framework.
+
+**Applies to:** Tests requiring setup of test data through APIs and validation of UI interactions in the AutomaterSelenium framework.
+
+```java
+public void filterUdfByDataTypeNumeric() {
+    super.filterUdfByDataTypeNumeric();
+}
+```
+### ProjectUDF.filterUdfByDataTypeNumeric
+**Product Area**: Admin > Customization > Additional Fields (UDF) > Project Module
+**Status (last run)**: PASSED ✅
+**Complexity**: LOW — mostly read + count verification, no drag-drop or async waiting
+**Preprocess Group**: `UDF_project_group1`
+
+**What it tests**:
+Verifies the 'Filter by Data Type: Numeric' functionality on the Additional Fields listview for the Project module. Steps:
+  1. Navigates to Admin > Customization > Additional Fields
+  2. Selects 'Project' module from left panel (AdditionalFieldsActionsUtil.selectModule)
+  3. Clicks the 'Data Type' filter dropdown
+  4. Selects 'Numeric' from dropdown
+  5. Reads table settings to get page count (records shown)
+  6. Counts all UDF rows where the type badge = Numeric (using XPATH count)
+  7. Asserts count == page count (filter shows exactly the right results)
+
+**Key framework methods**:
+- `AdminActionsUtil.gotoentity(AdminConstants.SubModule.ADDITIONALFIELDS) → navigate to UDF page`
+- `AdditionalFieldsActionsUtil.selectModule(moduleName)  → click 'Project' in left panel`
+- `actions.click(AdditionalFieldsLocators.DATA_TYPE_FILTER) → open filter dropdown`
+- `actions.click(AdditionalFieldsLocators.DATA_TYPE_FILTER_DROPDOWN.apply('Numeric')) → select type`
+- `getTestCaseData(AdditionalFieldsDataConstants.AdditionalFieldsData.FIELDFILTERS) → load filter config`
+- `AutomaterUtil.getValueAsArrayFromInputUsingAPIPath()   → extract numeric subtypes list from JSON`
+- `actions.listView.setTableSettings()                    → set page size to max for full count`
+- `actions.getText(RequestLocators.Listview.PAGE_COUNT)   → read 'X of Y' pagination text`
+- `AdditionalFieldsActionsUtil.getCount(locator)          → count matching rows by XPath`
+- `addSuccessReport / addFailureReport                    → record result`
+
+**Key locators**: `AdditionalFieldsLocators.DATA_TYPE_FILTER`, `AdditionalFieldsLocators.DATA_TYPE_FILTER_DROPDOWN.apply(filterType)`, `AdditionalFieldsLocators.UDF_WITH_SPECIFIC_TYPE_COUNT.apply(type)`, `RequestLocators.Listview.PAGE_COUNT  (shared locator reused in UDF page)`
+**Key data constants**: `AdditionalFieldsDataConstants.AdditionalFieldsData.FIELDFILTERS`, `RequestDataConstants.RequestData.TABLE_SETTINGS`
+**Notes**: UDF_project_group1 preProcess likely creates Numeric UDF(s) via API beforehand. Uses report.startMethodFlowInStepsToReproduce / endMethodFlowInStepsToReproduce lifecycle. PAGE_COUNT locator is shared from Requests module — demonstrating locator reuse across modules.
+
+---

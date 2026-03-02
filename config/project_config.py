@@ -118,3 +118,10 @@ LEARNINGS_LOG_PATH = _os.path.join(_BASE_DIR, "logs", "learnings.jsonl")
 # Override in .env:  TEST_EXECUTION_TIMEOUT=3600  (for very long suites)
 # Default: 1800 seconds (30 minutes) — safe upper bound for any scenario.
 TEST_EXECUTION_TIMEOUT = int(_os.environ.get("TEST_EXECUTION_TIMEOUT", "1800"))
+
+# ── Headless browser mode ──────────────────────────────────────────────────
+# When True, Firefox is launched without a visible window (no Xvfb needed).
+# Useful for CI, Docker, and unattended runs on headless servers.
+# Override in .env:  HEADLESS=true
+# Default: false (headed — shows browser window on the local desktop)
+HEADLESS = _os.environ.get("HEADLESS", "false").lower() in ("1", "true", "yes")

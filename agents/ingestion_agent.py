@@ -202,6 +202,66 @@ Respond ONLY with a valid JSON object in this exact format:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Test Case Sheet extraction prompt
+# Used when the uploaded document IS already a test case register (e.g. Excel QA
+# test case sheet) rather than a feature spec.  Bypasses Planner + Coverage.
+# ─────────────────────────────────────────────────────────────────────────────
+
+TESTCASE_SYSTEM_PROMPT = """You are a senior QA engineer for Zoho ServiceDesk Plus (SDP),
+an enterprise ITSM platform. You are given the raw contents of a QA test case document
+(typically an Excel sheet, CSV, or tabular test register).
+
+Your job is to extract each individual test case EXACTLY as written — do NOT invent or
+interpret. Map every test case to its SDP module path and produce a camelCase Java method
+name from the test case title.
+
+SDP module path conventions:
+  "requests/request"            — Incident / Service requests
+  "problems/problem"            — Problem management
+  "changes/change"              — Change management
+  "releases/release"            — Release management
+  "assets/asset"                — Asset management
+  "solutions/solution"          — Solutions / Knowledge base
+  "projects/project"            — Project management
+  "tasks/task"                  — Task management
+  "admin/automation/workflows"  — Workflow automation
+  "admin/automation/notificationrules" — Notification rules
+  "admin/sla"                   — SLA management
+  "admin/zia"                   — ZIA (AI) settings
+  "reports/report"              — Reports
+
+Rules:
+1. Extract EVERY test case row — do not skip or merge any.
+2. method_name must be unique camelCase, derived from the title (e.g. "verifyCreateIncidentWithHighPriority").
+3. group should be "NoPreprocess" unless the test explicitly needs a prerequisite entity
+   (in that case use "CREATE_PREREQUISITE").
+4. test_steps should be a list of individual action strings from the test steps column.
+5. expected_result must be the verbatim expected outcome text.
+6. data_requirements: list field names that the test needs (e.g. ["priority", "category", "subject"]).
+
+Respond ONLY with a valid JSON object in this exact format (no markdown fences):
+{
+  "document_title": "Short title of the test case sheet",
+  "scenarios": [
+    {
+      "module_path": "requests/request",
+      "title": "Exact test case title from the document",
+      "method_name": "camelCaseMethodName",
+      "description": "One-paragraph summary of what this test validates",
+      "test_steps": ["Navigate to ...", "Click ...", "Fill in ..."],
+      "expected_result": "Verbatim expected outcome",
+      "group": "NoPreprocess",
+      "data_requirements": ["subject", "priority"],
+      "notes": "Any extra info or caveats for this test case"
+    }
+  ]
+}"""
+
+# Document types that indicate an already-written test case register
+_TESTCASE_DOC_TYPES = {"test_plan", "testcase_sheet"}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # IngestionAgent
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -243,7 +303,60 @@ class IngestionAgent:
 
         return json.loads(raw)
 
-    def process_file(self, file_path: str) -> dict:
+    def _call_llm_testcases(self, raw_text: str) -> dict:
+        """Use the testcase-specific prompt to extract structured proposed_scenarios."""
+        truncated = raw_text[:MAX_CHARS]
+        if len(raw_text) > MAX_CHARS:
+            truncated += f"\n\n[... document truncated at {MAX_CHARS} chars ...]"
+
+        response = self.llm.invoke([
+            SystemMessage(content=TESTCASE_SYSTEM_PROMPT),
+            HumanMessage(content=f"Test case document contents:\n\n{truncated}"),
+        ])
+
+        raw = response.content.strip()
+        if raw.startswith("```"):
+            raw = raw.split("\n", 1)[1]
+            raw = raw.rsplit("```", 1)[0]
+
+        return json.loads(raw)
+
+    def process_file_testcases(self, file_path: str) -> dict:
+        """
+        Process a test case register document (Excel/CSV/tabular) and extract
+        each test case directly as a proposed_scenario dict.
+
+        Returns:
+          - proposed_scenarios : list[dict]  — ready for CoderAgent (bypasses Planner/Coverage)
+          - document_metadata  : dict
+        """
+        file_path = str(file_path)
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"Document not found: {file_path}")
+
+        print(f"[IngestionAgent] Extracting test cases from: {Path(file_path).name}")
+        raw_text = extract_document_text(file_path)
+        print(f"[IngestionAgent] Extracted {len(raw_text):,} chars. Parsing test cases...")
+
+        structured = self._call_llm_testcases(raw_text)
+        scenarios  = structured.get("scenarios", [])
+
+        print(f"[IngestionAgent] ✅ Extracted {len(scenarios)} test case(s) from document.")
+
+        return {
+            "proposed_scenarios": scenarios,
+            "document_metadata": {
+                "source_file":     file_path,
+                "document_title":  structured.get("document_title", Path(file_path).stem),
+                "document_type":   "testcase_sheet",
+                "confidence":      "high",
+                "notes":           f"{len(scenarios)} test cases extracted directly — bypassing Planner/Coverage.",
+                "scenario_count":  len(scenarios),
+                "raw_text_length": len(raw_text),
+            },
+        }
+
+
         """
         Process a document file end-to-end.
 
@@ -312,6 +425,34 @@ class IngestionAgent:
         ]
 
         try:
+            # ── Testcase-sheet mode (bypass Planner + Coverage) ────────────
+            # Triggered when caller explicitly sets generation_mode="from_testcases"
+            # OR when the file is an Excel/CSV-type spreadsheet that we suspect
+            # already contains structured test cases (auto-detection).
+            is_explicit_tc_mode = state.get("generation_mode", "") == "from_testcases"
+            is_spreadsheet      = Path(source_doc).suffix.lower() in (".xlsx", ".xls", ".csv")
+
+            if is_explicit_tc_mode or (is_spreadsheet and not state.get("feature_description", "").strip()):
+                # Run the dedicated testcase extractor
+                tc_result = self.process_file_testcases(source_doc)
+
+                if tc_result.get("proposed_scenarios"):
+                    state["proposed_scenarios"]  = tc_result["proposed_scenarios"]
+                    state["generation_mode"]     = "from_testcases"
+                    state["document_metadata"]   = tc_result["document_metadata"]
+                    meta = tc_result["document_metadata"]
+                    state["messages"] = [
+                        f"[IngestionAgent] ✅ Test case sheet processed: "
+                        f"'{meta['document_title']}' — "
+                        f"{meta['scenario_count']} test case(s) extracted. "
+                        f"Pipeline will bypass Planner + Coverage + Scout."
+                    ]
+                    return state
+                else:
+                    # LLM returned no scenarios — fall through to normal feature-doc flow
+                    print("[IngestionAgent] ⚠️  Testcase extraction returned 0 scenarios — falling back to feature-doc flow.")
+                    state["generation_mode"] = "new_feature"
+
             result = self.process_file(source_doc)
 
             # Only overwrite feature_description if it was empty

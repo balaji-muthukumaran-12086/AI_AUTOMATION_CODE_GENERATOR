@@ -84,7 +84,7 @@ _AGENT_STAGE_MAP = {
 UPLOAD_DIR = BASE_DIR / "web" / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
-ALLOWED_EXTENSIONS = {".pdf", ".docx", ".xlsx", ".xls", ".pptx", ".txt", ".md"}
+ALLOWED_EXTENSIONS = {".pdf", ".docx", ".xlsx", ".xls", ".csv", ".pptx", ".txt", ".md"}
 
 
 # ── App ───────────────────────────────────────────────────────────────────────
@@ -219,7 +219,8 @@ def _run_pipeline_thread(
         _log(f"[{datetime.now().strftime('%H:%M:%S')}] 📄 Document: {Path(source_document).name}")
     if feature_description:
         _log(f"[{datetime.now().strftime('%H:%M:%S')}] 📝 Feature: {feature_description[:120]}...")
-    _log(f"[{datetime.now().strftime('%H:%M:%S')}] 🔧 Mode: {generation_mode} | Modules: {', '.join(target_modules) or 'auto-detect'}")
+    mode_hint = " (⚡ direct — Planner+Coverage bypassed)" if generation_mode == "from_testcases" else ""
+    _log(f"[{datetime.now().strftime('%H:%M:%S')}] 🔧 Mode: {generation_mode}{mode_hint} | Modules: {', '.join(target_modules) or 'auto-detect'}")
 
     try:
         from agents.pipeline import _build_initial_state

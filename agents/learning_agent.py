@@ -239,43 +239,68 @@ class LearningAgent:
         Analyze a failed run result and extract a DO/DON'T rule using the LLM.
         Returns a learning dict or None.
         """
-        entity_class = result.get("entity_class", "?")
-        method_name  = result.get("method_name", "?")
-        stdout       = result.get("stdout", "")
-        stderr       = result.get("stderr", "")
-        error        = result.get("error", "")
+        entity_class    = result.get("entity_class", "?")
+        method_name     = result.get("method_name", "?")
+        stdout          = result.get("stdout", "")
+        stderr          = result.get("stderr", "")
+        error           = result.get("error", "")
+        product_context = result.get("product_context", {})
 
         # Read source for context
         source_snippet = self._read_entity_source(entity_class, max_chars=3000)
+
+        # Build human-readable product context block if available
+        product_ctx_block = ""
+        if product_context:
+            product_ctx_block = f"""
+PRODUCT CONTEXT (what this test is supposed to do):
+  Product Area  : {product_context.get('product_area', '-')}
+  Complexity    : {product_context.get('known_complexity', '-')}
+  Preprocess    : {product_context.get('preprocess_group', '-')}
+  What it tests : {product_context.get('what_it_tests', '-').strip()[:600]}
+  Key framework methods exercised:
+    {chr(10).join('    - ' + m for m in product_context.get('framework_methods_exercised', [])[:8])}
+  Notes         : {product_context.get('note', '-')}
+"""
 
         prompt = f"""You are an expert in the AutomaterSelenium Java test framework for Zoho ServiceDesk Plus.
 
 A test FAILED:
   Entity: {entity_class}
   Method: {method_name}
-
-ERROR (key lines):
+{product_ctx_block}
+ERROR (key lines — noise already filtered):
 {self._extract_key_error_lines(stdout + error + stderr)}
 
 FAILING SOURCE CONTEXT:
 {source_snippet}
 
-Analyze the failure and produce ONE actionable rule to prevent this category of error in future tests.
+IMPORTANT CONTEXT ABOUT NOISE:
+- Lines like `Unable to locate element: //a[@id='zia-decline-button']` or `.tour-skip-all`
+  are NORMAL during login — Firefox tries to dismiss optional popups and they often don't exist.
+  Do NOT write rules about these locators — they are not test failures.
+- `NS_ERROR_NOT_IMPLEMENTED` from BrowserGlue.sys.mjs is a Firefox internal telemetry error, NOT a
+  test code issue. Ignore it.
+- Only the lines in the ERROR block above are real signal. If the block is empty, the test likely
+  timed out or the report was never written — write a rule about that instead.
+
+Analyze the actual ROOT CAUSE and produce ONE actionable, generalisable rule.
 
 Return a JSON object with these EXACT keys:
 {{
   "title":        "Short rule title (max 10 words)",
   "section":      "Which framework_rules.md section this belongs to (e.g. SECTION 4 — API CALLS)",
   "rule_type":    "DON'T" or "DO",
-  "body":         "Clear explanation of the rule (2-4 sentences)",
-  "bad_example":  "Java code showing the WRONG pattern (single code line or null if N/A)",
-  "good_example": "Java code showing the CORRECT pattern (single code line or null if N/A)",
+  "body":         "Clear, specific explanation of the rule (2-4 sentences). Include the module/product area affected.",
+  "bad_example":  "Java code showing the WRONG pattern (single line or null)",
+  "good_example": "Java code showing the CORRECT pattern (single line or null)",
   "source":       "{entity_class}.{method_name}"
 }}
 
 RULES for your response:
 - Focus on the ROOT CAUSE pattern, not the specific test details
 - The rule must be GENERALISABLE — applicable to any entity, not just {entity_class}
+- If no clear Java-level failure is visible, rule on test environment / timing / preprocess setup
 - Return ONLY valid JSON, no markdown"""
 
         try:
@@ -299,30 +324,48 @@ RULES for your response:
         Analyze a passing run result and extract a reusable pattern using the LLM.
         Returns a learning dict or None.
         """
-        entity_class = result.get("entity_class", "?")
-        method_name  = result.get("method_name", "?")
+        entity_class    = result.get("entity_class", "?")
+        method_name     = result.get("method_name", "?")
+        product_context = result.get("product_context", {})
 
         # Read the specific passing method body
         method_body = self._read_method_body(entity_class, method_name)
         if not method_body:
             return None  # nothing useful to analyse
 
+        # Build human-readable product context block if available
+        product_ctx_block = ""
+        if product_context:
+            product_ctx_block = f"""
+PRODUCT CONTEXT:
+  Product Area   : {product_context.get('product_area', '-')}
+  What it tests  : {product_context.get('what_it_tests', '-').strip()[:400]}
+  Preprocess Grp : {product_context.get('preprocess_group', '-')}
+  Notes          : {product_context.get('note', '-')}
+"""
+
         prompt = f"""You are an expert in the AutomaterSelenium Java test framework for Zoho ServiceDesk Plus.
 
 A test PASSED:
   Entity: {entity_class}
   Method: {method_name}
-
+{product_ctx_block}
 PASSING METHOD BODY:
 {method_body}
 
 Extract ONE transferable coding pattern that made this test succeed and that other test writers should reuse.
+Focus especially on:
+- How preProcess sets up test data (API calls, LocalStorage keys)
+- How UI interactions are structured (fillInputForAnEntity + manual checkbox clicks)
+- How assertions are made (addSuccessReport / addFailureReport patterns)
+- How shared locators from other modules are properly reused
+- How placeholders like $(custom_X) or $(unique_string) are used safely
 
 Return a JSON object with these EXACT keys:
 {{
   "title":        "Short pattern name (max 10 words)",
-  "description":  "What this pattern does and why it works (2-3 sentences)",
-  "code_example": "The key Java code block illustrating this pattern (copy from source)",
+  "description":  "What this pattern does and why it works (2-3 sentences). Be specific about the framework mechanism.",
+  "code_example": "The key Java code block illustrating this pattern (copy from source, max 15 lines)",
   "applies_to":   "Which scenario types benefit from this pattern (1 sentence)",
   "source":       "{entity_class}.{method_name}"
 }}
@@ -554,18 +597,49 @@ RULES:
             i += 1
         return source[start:start + max_chars]
 
-    def _extract_key_error_lines(self, text: str, max_lines: int = 20) -> str:
-        """Extract the most relevant error lines from combined output."""
+    def _extract_key_error_lines(self, text: str, max_lines: int = 30) -> str:
+        """Extract the most relevant error lines from combined output.
+
+        Filters out known noise:
+        - Marionette / WebDriver protocol DEBUG lines (Firefox internals)
+        - Repeated 404s for benign popup-dismissal probes (zia-decline-button,
+          tour-skip-all, dash-enhance-banner) — these appear during every login
+          and do NOT indicate test failures
+        - Firefox BrowserGlue / NS_ERROR_NOT_IMPLEMENTED telemetry errors
+        """
+        # Patterns that indicate NOISE (skip these lines)
+        _NOISE = [
+            "Marionette      DEBUG",
+            "Marionette  DEBUG",
+            "webdriver::server       DEBUG",
+            "webdriver::server  DEBUG",
+            "NS_ERROR_NOT_IMPLEMENTED",
+            "BrowserGlue.sys.mjs",
+            "zia-decline-button",
+            "tour-skip-all",
+            "tour-skip",
+            "dash-enhance-banner",
+            "RemoteError@chrome://",
+            "WebDriverError@chrome://",
+            "dom.find/</<@chrome://",
+            "404 Not Found",
+        ]
+        # Keywords that mark a REAL error
+        _SIGNAL = [
+            "Exception", "FAILED", "addFailureReport",
+            "Caused by", "NoSuchElement", "TimeoutException",
+            "NullPointerException", "$$Failure",
+            "cannot find symbol", "BUILD FAILED",
+            "ClassNotFoundException", "AssertionError",
+            "Unable to locate element",
+        ]
         relevant = []
         for line in text.splitlines():
-            if any(kw in line for kw in [
-                "Exception", "Error", "FAILED", "addFailureReport",
-                "Caused by", "NoSuchElement", "TimeoutException",
-                "NullPointer", "Unable to locate", "$$Failure",
-                "cannot find symbol",
-            ]):
-                relevant.append(line)
-        return "\n".join(relevant[:max_lines]) if relevant else text[-1000:]
+            if any(noise in line for noise in _NOISE):
+                continue
+            if any(kw in line for kw in _SIGNAL):
+                relevant.append(line.strip())
+        return "\n".join(relevant[:max_lines]) if relevant else text[-1500:]
 
     def _configs_from_results(self, results: list[dict]) -> list[dict]:
         """Build minimal run_config dicts from RunResult dicts (for re-run)."""

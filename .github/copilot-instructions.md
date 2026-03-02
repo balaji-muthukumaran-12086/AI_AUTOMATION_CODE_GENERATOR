@@ -433,7 +433,8 @@ Document Ingestion → Planner → Coverage → Coder → Reviewer → Output �
 | 2 — Web UI | ✅ DONE | `6438cba` | FastAPI + React upload interface with live SSE streaming on port 9500 |
 | 3 — Hg Integration | ✅ DONE | `aad0e69` | Auto-branch + commit in Mercurial on test pass; gated by `HG_AGENT_ENABLED` flag |
 | 4 — Live Test Run | ✅ DONE | `358fb4f`, `e416284` | End-to-end generation via Web UI; fixed NameError in CoderAgent + Annotated[list] reducer doubling bug |
-| **5 — Pipeline Monitoring & Orchestrator** | 🔲 NEXT | — | Real-time per-agent monitoring, orchestrator agent, progress UI, OOM/timeout recovery (see spec below) |
+| **4.5 — Run-Once + UI Copy-Paste** | 🔲 NEXT | — | After generation, one-click test validation via RunnerAgent; generated .java files shown in Web UI with syntax-highlighted copy-paste panel and target-path hint; `GET /api/runs/{run_id}/file-content` endpoint; "Run once" toggle on generate form (see `docs/pipeline-flow.md` Phase 4.5 spec) |
+| **5 — Pipeline Monitoring & Orchestrator** | 🔲 | — | Real-time per-agent monitoring, orchestrator agent, progress UI, OOM/timeout recovery (see spec below) |
 | 6 — Multi-Entity | 🔲 | — | All 10+ entities, regression suite generation |
 | 7 — Feedback Loop | 🔲 | — | Learn from failures, human approval queue |
 

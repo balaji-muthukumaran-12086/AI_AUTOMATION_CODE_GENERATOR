@@ -83,6 +83,20 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
         """Run the test only if run_config was provided in the initial state."""
         return "runner" if state.get("run_config") else "__end__"
 
+    def route_after_ingestion(state: AgentState) -> Literal["planner", "coder"]:
+        """
+        If the uploaded document was a test case register (proposed_scenarios already
+        populated by IngestionAgent), skip Planner + Coverage + Scout and go directly
+        to CoderAgent.  Otherwise, use the normal feature-doc Planner path.
+        """
+        if (
+            state.get("generation_mode") == "from_testcases"
+            and state.get("proposed_scenarios")
+        ):
+            print("[Pipeline] from_testcases mode → skipping Planner / Coverage / Scout ⚡")
+            return "coder"
+        return "planner"
+
     def route_after_runner(state: AgentState) -> Literal["healer", "__end__"]:
         """Activate the healer if the test failed, otherwise end."""
         run_result = state.get("run_result", {})
@@ -133,7 +147,10 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
     graph.add_node("hg",       hg.run)
 
     graph.set_entry_point("ingestion")
-    graph.add_edge("ingestion", "planner")
+    graph.add_conditional_edges("ingestion", route_after_ingestion, {
+        "planner": "planner",
+        "coder":   "coder",   # from_testcases: bypass Planner + Coverage + Scout
+    })
     graph.add_edge("planner",   "coverage")
     graph.add_edge("coverage", "scout")       # scout surfs the UI first
     graph.add_edge("scout",    "coder")       # then coder generates code with live UI context
@@ -223,7 +240,11 @@ def run_pipeline(
     Args:
         feature_description: User story or feature description text
         target_modules: Optional list of module paths to focus on
-        generation_mode: "new_feature" | "gap_fill" | "regression"
+        generation_mode: "new_feature" | "gap_fill" | "regression" | "from_testcases"
+            "from_testcases": uploaded document is already a QA test case register
+            (Excel/CSV).  IngestionAgent extracts test cases directly into
+            proposed_scenarios → Planner, Coverage, and Scout are bypassed →
+            CoderAgent generates Java directly from the exact test case spec.
         base_dir: Root of the ai-automation-qa workspace
         run_config: Optional dict to trigger RunnerAgent after code generation.
             Example::
@@ -240,6 +261,8 @@ def run_pipeline(
     Returns:
         Final AgentState with generated_code, final_output_paths, and run_result
     """
+    from datetime import datetime as _dt
+    print(f"[Pipeline] \U0001f680 Starting pipeline at {_dt.now().strftime('%H:%M:%S')} | mode={generation_mode} | modules={target_modules}", flush=True)
     pipeline = build_pipeline(base_dir)
     initial_state = _build_initial_state(
         feature_description=feature_description,
@@ -250,6 +273,7 @@ def run_pipeline(
         hg_config=hg_config,
     )
     final_state = pipeline.invoke(initial_state)
+    print(f"[Pipeline] \U0001f3c1 Pipeline complete at {_dt.now().strftime('%H:%M:%S')}", flush=True)
     return final_state
 
 

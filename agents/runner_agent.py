@@ -36,6 +36,7 @@ from config.project_config import (
     FIREFOX_BINARY as _DEFAULT_FIREFOX,
     GECKODRIVER_PATH as _DEFAULT_GECKODRIVER,
     TEST_EXECUTION_TIMEOUT as _TEST_EXECUTION_TIMEOUT,
+    HEADLESS as _HEADLESS,
 )
 
 
@@ -74,7 +75,13 @@ ENTITY_IMPORT_MAP = {
     "Project":               "com.zoho.automater.selenium.modules.projects.project.Project",
     "Task":                  "com.zoho.automater.selenium.modules.tasks.task.Task",
     # ── Assets ─────────────────────────────────────────────────────────────
-    "Asset":                 "com.zoho.automater.selenium.modules.assets.asset.Asset",    "AssetTrigger":          "com.zoho.automater.selenium.modules.admin.automation.triggers.AssetTrigger",
+    "Asset":                 "com.zoho.automater.selenium.modules.assets.asset.Asset",
+    "AssetTrigger":          "com.zoho.automater.selenium.modules.admin.automation.triggers.AssetTrigger",
+    # ── Admin — Automation / Triggers ─────────────────────────────────────
+    "ProblemTrigger":        "com.zoho.automater.selenium.modules.admin.automation.triggers.ProblemTrigger",
+    "IncidentRequestTrigger": "com.zoho.automater.selenium.modules.admin.automation.triggers.IncidentRequestTrigger",
+    "ChangeTrigger":         "com.zoho.automater.selenium.modules.admin.automation.triggers.ChangeTrigger",
+    "ServiceRequestTrigger": "com.zoho.automater.selenium.modules.admin.automation.triggers.ServiceRequestTrigger",
     # ── Admin — Automation / Workflows ────────────────────────────────────
     "IncidentRequestWorkflow": "com.zoho.automater.selenium.modules.admin.automation.workflows.IncidentRequestWorkflow",
     # ── Admin — Customization / Additional Fields ──────────────────────────
@@ -423,6 +430,8 @@ class RunnerAgent:
         firefox     = _DEFAULT_FIREFOX
         geckodriver = _DEFAULT_GECKODRIVER
 
+        headless_str = "true" if _HEADLESS else "false"
+
         lines = props_path.read_text(encoding="utf-8").splitlines()
         updated = []
         for line in lines:
@@ -430,11 +439,14 @@ class RunnerAgent:
                 updated.append(f"firefox_local={firefox}")
             elif line.startswith("geckodriver_local="):
                 updated.append(f"geckodriver_local={geckodriver}")
+            elif line.startswith("headless="):
+                updated.append(f"headless={headless_str}")
             else:
                 updated.append(line)
         props_path.write_text("\n".join(updated) + "\n", encoding="utf-8")
         print(f"[RunnerAgent] app.properties → firefox_local={firefox}")
         print(f"[RunnerAgent] app.properties → geckodriver_local={geckodriver}")
+        print(f"[RunnerAgent] app.properties → headless={headless_str}")
 
     def _compile_patched_files(self) -> subprocess.CompletedProcess:
         """
@@ -528,6 +540,9 @@ class RunnerAgent:
         print(f"[RunnerAgent] Executing: {method_name} ...")
         print("[RunnerAgent] ─── Live Output ──────────────────────────────")
 
+        import time as _time
+        run_start_ms = int(_time.time() * 1000)  # used to ignore stale report dirs
+
         stdout_lines = []
         stderr_lines = []
 
@@ -537,11 +552,14 @@ class RunnerAgent:
             stderr=subprocess.PIPE,
             text=True,
             cwd=str(self.automater_root),
-            start_new_session=True,   # detach from terminal process group so Ctrl+C doesn't kill the Java subprocess
+            # NOTE: do NOT use start_new_session=True — keeping the Java process
+            # in the same process group ensures it is killed when the terminal/
+            # parent process exits (e.g. Ctrl+C, session close).
         )
 
         # Stream stdout and stderr simultaneously
         import threading
+        import psutil
 
         def stream(pipe, lines, label):
             for line in iter(pipe.readline, ""):
@@ -550,16 +568,126 @@ class RunnerAgent:
                 print(f"  [{label}] {line}")
             pipe.close()
 
-        t_out = threading.Thread(target=stream, args=(process.stdout, stdout_lines, "OUT"))
-        t_err = threading.Thread(target=stream, args=(process.stderr, stderr_lines, "ERR"))
+        t_out = threading.Thread(target=stream, args=(process.stdout, stdout_lines, "OUT"), daemon=True)
+        t_err = threading.Thread(target=stream, args=(process.stderr, stderr_lines, "ERR"), daemon=True)
         t_out.start()
         t_err.start()
+
+        def _kill_tree(pid: int) -> None:
+            """Kill a process and all its children — mirrors Eclipse's JVM termination.
+
+            Eclipse terminates the JVM process entirely (no background survivors).
+            We must do the same: kill Java + geckodriver + Firefox in one shot.
+            """
+            try:
+                parent = psutil.Process(pid)
+                children = parent.children(recursive=True)
+                for child in children:
+                    try:
+                        child.kill()
+                    except (psutil.NoSuchProcess, psutil.AccessDenied):
+                        pass
+                parent.kill()
+                print(f"[RunnerAgent] 🔪 Killed process tree rooted at PID {pid} "
+                      f"({len(children)} child(ren)).")
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                pass  # already gone
+
+        def _browser_watchdog(java_proc: subprocess.Popen, start_ms: int) -> None:
+            """Mirror Eclipse behavior: once ScenarioReport.html is written the test
+            is done — kill the entire process tree immediately (Java + geckodriver +
+            Firefox).  In Eclipse, main() returns after LocalSetupManager.cleanup()
+            writes the report and the JVM exits naturally; here Selenium's non-daemon
+            threads keep the JVM alive, so we force-kill on the same signal.
+
+            Fallback: if Firefox closes but the report never appears within 45 s,
+            kill anyway to avoid a hung runner (handles cleanup() failures).
+
+            start_ms: epoch-milliseconds recorded just before process launch.
+            Only report directories with a timestamp suffix >= (start_ms - 10_000)
+            are considered — this prevents a ScenarioReport.html from a *previous*
+            run of the same method from triggering an early kill.
+            """
+            import time
+
+            java_pid = java_proc.pid
+            reports_dir = self.automater_root / "reports"
+
+            def _report_exists() -> bool:
+                all_matched = (
+                    list(reports_dir.glob(f"LOCAL_{method_name}_*")) +
+                    list(reports_dir.glob(f"{method_name}_*"))
+                )
+                # Only consider directories created by THIS run — filter by the
+                # millisecond timestamp embedded in the directory name suffix.
+                # Tolerance of 10 s (10_000 ms) covers JVM startup time.
+                current_run_dirs = []
+                for d in all_matched:
+                    try:
+                        suffix = int(d.name.rsplit("_", 1)[-1])
+                        if suffix >= start_ms - 10_000:
+                            current_run_dirs.append(d)
+                    except ValueError:
+                        pass
+                if not current_run_dirs:
+                    return False
+                # Sort so newest is last, check for report
+                current_run_dirs.sort(key=lambda p: p.name)
+                return (current_run_dirs[-1] / "ScenarioReport.html").exists()
+
+            def _child_browser_pids() -> set:
+                try:
+                    return {
+                        p.pid for p in psutil.Process(java_pid).children(recursive=True)
+                        if p.name().lower() in ("firefox", "firefox-bin", "geckodriver")
+                    }
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    return set()
+
+            # Wait for Firefox to launch before we start watching
+            print("[RunnerAgent] 👁  Watchdog started — waiting for Firefox launch...")
+            for _ in range(30):           # up to 30 s
+                if java_proc.poll() is not None:
+                    return               # Java already exited on its own
+                if _child_browser_pids():
+                    break
+                time.sleep(1)
+
+            browser_died_at: float | None = None
+
+            while java_proc.poll() is None:
+                # ── Primary signal: report written → test complete ──────────
+                if _report_exists():
+                    print("[RunnerAgent] ✅ ScenarioReport.html detected — "
+                          "killing process tree now (Eclipse-style clean exit).")
+                    _kill_tree(java_pid)
+                    break
+
+                # ── Fallback: browser closed but report not yet written ─────
+                browser_alive = bool(_child_browser_pids())
+                if not browser_alive:
+                    if browser_died_at is None:
+                        browser_died_at = time.time()
+                        print("[RunnerAgent] 🌐 Firefox closed — waiting up to 45 s "
+                              "for ScenarioReport.html before force-kill...")
+                    elif time.time() - browser_died_at > 45:
+                        print("[RunnerAgent] ⚠️  Report not written 45 s after Firefox "
+                              "closed — force-killing Java process tree.")
+                        _kill_tree(java_pid)
+                        break
+                else:
+                    browser_died_at = None   # Firefox relaunched / still alive
+
+                time.sleep(2)
+
+        watchdog = threading.Thread(target=_browser_watchdog, args=(process, run_start_ms), daemon=True)
+        watchdog.start()
 
         timeout_s = _TEST_EXECUTION_TIMEOUT
         try:
             process.wait(timeout=timeout_s)
         except subprocess.TimeoutExpired:
-            process.kill()
+            _kill_tree(process.pid)
             print(f"[RunnerAgent] ⚠️  Test timed out after {timeout_s}s "
                   f"({timeout_s // 60}m). Increase TEST_EXECUTION_TIMEOUT in .env if needed.")
 
@@ -622,10 +750,35 @@ class RunnerAgent:
             if marker in combined:
                 return False
 
+        # ── LOCAL mode: parse ScenarioReport.html ────────────────────────────
+        # In local mode addSuccessReport / addFailureReport write ONLY to the
+        # HTML report — nothing appears in stdout/stderr.  We locate the report
+        # from the INFO log line printed by LocalSetupManager and parse it.
+        import re as _re
+        html_match = _re.search(
+            r"INFO: \[LOCAL\] Report successfully created: (.+?ScenarioReport\.html)",
+            combined,
+        )
+        if html_match:
+            report_path = html_match.group(1).strip()
+            try:
+                with open(report_path) as _f:
+                    html_content = _f.read()
+                # addFailureReport → <div class=" error message-detail ...">
+                # This CSS class only appears on actual failure step elements,
+                # not in the stylesheet selectors (those use .error without quotes).
+                if 'class=" error message-detail' in html_content:
+                    return False
+                # Report exists, written cleanly, and no error entries → PASS
+                return True
+            except OSError:
+                pass  # report unreadable — fall through to default
+
         # Default: no explicit positive signal → FAIL.
-        # A test is only PASS when the framework emits a success marker or
-        # BUILD SUCCESSFUL. Silently exiting (ClassNotFoundException caught,
-        # cleanup without report, etc.) must NOT be treated as a pass.
+        # A test is only PASS when the framework emits a success marker,
+        # BUILD SUCCESSFUL, or a clean local ScenarioReport with no errors.
+        # Silently exiting (ClassNotFoundException caught, cleanup without
+        # report, etc.) must NOT be treated as a pass.
         return False
 
     def _extract_error(self, stdout: str, stderr: str) -> str:

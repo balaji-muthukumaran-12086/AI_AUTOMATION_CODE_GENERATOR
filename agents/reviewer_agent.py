@@ -201,6 +201,7 @@ class ReviewerAgent:
         state['messages'] = [
             "[ReviewerAgent] Reviewing generated code..."
         ]
+        print(f"[ReviewerAgent] Reviewing {len(generated)} generated module(s)...", flush=True)
 
         review_results = []
         revision_requests = []
@@ -249,4 +250,5 @@ class ReviewerAgent:
             f"[ReviewerAgent] {approved_count}/{len(review_results)} approved. "
             f"{len(revision_requests)} revision(s) needed."
         ]
+        print(f"[ReviewerAgent] ✅ Done — {approved_count}/{len(review_results)} approved, {len(revision_requests)} revision(s) needed.", flush=True)
         return state

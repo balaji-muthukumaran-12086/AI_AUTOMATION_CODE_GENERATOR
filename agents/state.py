@@ -13,7 +13,7 @@ class AgentState(TypedDict):
     # ── Input ─────────────────────────────────────────────
     feature_description: str          # Raw feature/user story input
     target_modules: list[str]         # Resolved module paths (e.g. ["requests/request"])
-    generation_mode: str              # "new_feature" | "gap_fill" | "regression"
+    generation_mode: str              # "new_feature" | "gap_fill" | "regression" | "from_testcases"
 
     # ── Ingestion Agent output ─────────────────────────────
     source_document: str              # Path to uploaded document (PDF/DOCX/XLSX/PPTX/TXT)

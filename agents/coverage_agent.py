@@ -75,6 +75,8 @@ class CoverageAgent:
         state['messages'] = [
             "[CoverageAgent] Checking for duplicates and coverage gaps..."
         ]
+        total_scenarios = sum(len(v) for v in test_plan.values())
+        print(f"[CoverageAgent] Checking {total_scenarios} planned scenario(s) against knowledge base...", flush=True)
 
         coverage_gaps   = []
         duplicate_warnings = []
@@ -139,5 +141,6 @@ class CoverageAgent:
             f"[CoverageAgent] Total: {total_planned} | "
             f"New: {total_new} | Similar: {total_similar} | Duplicates skipped: {total_dup}"
         ]
+        print(f"[CoverageAgent] ✅ Done — {total_planned} total | {total_new} new | {total_similar} similar | {total_dup} duplicates skipped.", flush=True)
 
         return state

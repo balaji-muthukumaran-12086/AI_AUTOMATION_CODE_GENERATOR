@@ -100,6 +100,7 @@ class PlannerAgent:
         state['messages'] = [
             f"[PlannerAgent] Analyzing: {feature_description[:100]}..."
         ]
+        print(f"[PlannerAgent] Calling LLM — analyzing feature: {feature_description[:80]}...", flush=True)
 
         try:
             response = self.llm.invoke([
@@ -116,12 +117,16 @@ class PlannerAgent:
             plan_data = json.loads(raw)
             state['affected_modules'] = plan_data.get('affected_modules', [])
             state['test_plan'] = plan_data.get('test_plan', {})
+            n_mods = len(state['affected_modules'])
+            n_sc = sum(len(v) for v in state['test_plan'].values())
             state['messages'] = [
-                f"[PlannerAgent] Plan created: {len(state['affected_modules'])} modules, "
-                f"{sum(len(v) for v in state['test_plan'].values())} scenarios planned"
+                f"[PlannerAgent] Plan created: {n_mods} modules, "
+                f"{n_sc} scenarios planned"
             ]
+            print(f"[PlannerAgent] ✅ Done — {n_mods} module(s), {n_sc} scenario(s) planned.", flush=True)
 
         except Exception as e:
+            print(f"[PlannerAgent] ❌ Error: {e}", flush=True)
             state['errors'] = [f"[PlannerAgent] Error: {e}"]
             # Fallback: use target_modules as affected
             state['affected_modules'] = target_modules

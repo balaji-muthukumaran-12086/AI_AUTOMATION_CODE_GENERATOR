@@ -1171,3 +1171,23 @@ Do not use methods that have been deprecated or do not exist in the current vers
 // ❌ WRONG
 LocalAutomationData.Builder.isLocal(Boolean)
 ```
+
+### [DON'T] Avoid using deprecated or non-implemented methods
+_Section: SECTION 2 — BROWSER AND DRIVER MANAGEMENT | Learned from: IncidentRequestWorkflow.createWorkflowOfIncidentRequest | Date: 2026-03-02_
+
+Do not use methods that are either deprecated or not implemented in the current browser version. This can lead to runtime errors and test failures.
+
+```java
+// ❌ WRONG
+driver.get(url); // Using a method that might be non-implemented in some browsers
+```
+
+### [DO] Handle Firefox Telemetry Errors
+_Section: SECTION 1 — ENVIRONMENT SETUP | Learned from: IncidentRequestWorkflow.createWorkflowOfIncidentRequest | Date: 2026-03-02_
+
+Ensure that the test environment is configured to ignore Firefox telemetry errors. These are internal Firefox issues and do not indicate a failure in the test code.
+
+```java
+// ✅ CORRECT
+System.setProperty("webdriver.gecko.driver", "/path/to/geckodriver");
+```

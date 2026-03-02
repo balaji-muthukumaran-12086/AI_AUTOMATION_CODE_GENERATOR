@@ -159,6 +159,7 @@ class OutputAgent:
         state['messages'] = [
             "[OutputAgent] Parsing LLM output and writing snippet files..."
         ]
+        print(f"[OutputAgent] Writing {len(generated)} generated snippet(s) to disk...", flush=True)
 
         all_output_paths: list[str] = []
         all_instructions: list[str] = []
@@ -238,4 +239,5 @@ class OutputAgent:
         state['messages'] = [
             f"[OutputAgent] ✅ Done — {len(all_output_paths)} file(s) in {self.generated_dir}",
         ]
+        print(f"[OutputAgent] ✅ Done — {len(all_output_paths)} file(s) written. Run dir: {last_run_dir}", flush=True)
         return state
