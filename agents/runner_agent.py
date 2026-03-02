@@ -30,7 +30,12 @@ from datetime import datetime
 from typing import Optional
 
 from agents.state import AgentState
-from config.project_config import PROJECT_NAME, DEPS_DIR as _DEFAULT_DEPS_DIR
+from config.project_config import (
+    PROJECT_NAME,
+    DEPS_DIR as _DEFAULT_DEPS_DIR,
+    FIREFOX_BINARY as _DEFAULT_FIREFOX,
+    GECKODRIVER_PATH as _DEFAULT_GECKODRIVER,
+)
 
 
 # ── Constants ──────────────────────────────────────────────────────────────
@@ -140,6 +145,7 @@ class RunnerAgent:
 
         self._standalone_default = self.base / STANDALONE_DEFAULT_PATH
         self._main_class = self.base / MAIN_CLASS_PATH
+        self._app_properties = self.automater_root / "product_package" / "conf" / "app.properties"
 
     # ── Public API ─────────────────────────────────────────────────────────
 
@@ -167,6 +173,9 @@ class RunnerAgent:
         """
         print(f"[RunnerAgent] Preparing to run: {entity_class}.{method_name}")
         print(f"[RunnerAgent] Target URL: {url}")
+
+        # Stamp browser paths from env into app.properties before the JVM starts
+        self._patch_app_properties()
 
         try:
             # 1. Backup StandaloneDefault.java only (AutomaterSeleniumMain is no longer patched —
@@ -393,6 +402,35 @@ class RunnerAgent:
         print(f"[RunnerAgent] Patched AutomaterSeleniumMain.java → {entity_class}.{method_name}")
 
     # ── Compile & run ──────────────────────────────────────────────────────
+
+    def _patch_app_properties(self) -> None:
+        """Overwrite firefox_local and geckodriver_local in app.properties with
+        values from FIREFOX_BINARY / GECKODRIVER_PATH env vars (set in .env).
+
+        This is the single point that makes browser-driver paths portable:
+        deploying to a new machine only requires updating .env — no Java
+        source files need touching.
+        """
+        props_path = self._app_properties
+        if not props_path.exists():
+            print(f"[RunnerAgent] Warning: app.properties not found at {props_path} — skipping browser path patch")
+            return
+
+        firefox     = _DEFAULT_FIREFOX
+        geckodriver = _DEFAULT_GECKODRIVER
+
+        lines = props_path.read_text(encoding="utf-8").splitlines()
+        updated = []
+        for line in lines:
+            if line.startswith("firefox_local="):
+                updated.append(f"firefox_local={firefox}")
+            elif line.startswith("geckodriver_local="):
+                updated.append(f"geckodriver_local={geckodriver}")
+            else:
+                updated.append(line)
+        props_path.write_text("\n".join(updated) + "\n", encoding="utf-8")
+        print(f"[RunnerAgent] app.properties → firefox_local={firefox}")
+        print(f"[RunnerAgent] app.properties → geckodriver_local={geckodriver}")
 
     def _compile_patched_files(self) -> subprocess.CompletedProcess:
         """

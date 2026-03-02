@@ -51,6 +51,16 @@ BASE_DIR        = _BASE_DIR
 # Override DEPS_DIR in .env to point to a different dependencies folder.
 DEPS_DIR        = _os.environ.get("DEPS_DIR", "/home/balaji-12086/Desktop/Workspace/Zide/dependencies")
 
+# ── Browser Driver Paths ────────────────────────────────────────────────────
+# Set these in .env so the project runs identically on any machine.
+# Linux default  : firefox binary under Drivers/firefox/firefox
+# macOS example  : /Applications/Firefox.app/Contents/MacOS/firefox
+# CI/Docker      : /usr/bin/firefox  |  /usr/bin/geckodriver
+_DRIVERS_DIR_DEFAULT = _os.environ.get("DRIVERS_DIR", "/home/balaji-12086/Desktop/Workspace/Drivers")
+DRIVERS_DIR      = _DRIVERS_DIR_DEFAULT
+FIREFOX_BINARY   = _os.environ.get("FIREFOX_BINARY",    _os.path.join(_DRIVERS_DIR_DEFAULT, "firefox", "firefox"))
+GECKODRIVER_PATH = _os.environ.get("GECKODRIVER_PATH",  _os.path.join(_DRIVERS_DIR_DEFAULT, "geckodriver"))
+
 # ── SDP Test Application Credentials ────────────────────────────────────────
 # Used by HealerAgent (Playwright) and RunnerAgent as fallbacks when no
 # run_config is provided at runtime.
