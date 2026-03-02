@@ -547,6 +547,31 @@ class CoderAgent:
     _RULES_DOC: str      = _load_framework_rules()
     _KNOWLEDGE_DOC: str = _load_framework_knowledge()
 
+    # ── Compact system prompt for ReAct (tool-calling) path ──────────────────
+    # The full _system_prompt is ~32K tokens — too large for OpenRouter trial.
+    # ReAct doesn't need the full RAG context injected upfront; instead the agent
+    # calls read_file/grep_search/list_dir on demand.
+    # This prompt is ~1200 tokens — leaves ~14K tokens for tool results + output.
+    _REACT_SYSTEM_PROMPT: str = """
+You are an expert Java + Selenium automation engineer for the AutomaterSelenium/SDP framework.
+Generate @AutomaterScenario test code. Use tools to read source files before writing any code.
+
+CRITICAL RULES:
+1. Call list_dir first, then read_file the *Base.java to read preProcess() and existing methods.
+2. API setup (template/topic/entity creation) goes ONLY in preProcess(), NOT in the test method.
+3. Add a new else-if branch to preProcess() — never overwrite existing branches.
+4. Verify every method name via grep_search on *APIUtil.java before referencing it.
+5. Checkboxes: use explicit actions.click(locator); fillInputForAnEntity skips boolean fields.
+6. Button XPath: normalize-space(text())='Add' (not contains) to avoid partial matches.
+7. @AutomaterScenario must have: id, description, type, group, dataIds[], priority, runType.
+8. preProcess group name must match @AutomaterScenario group= (equalsIgnoreCase).
+9. Output two delimited blocks:
+   // ===== ADD TO: <ClassName>.java =====
+   // ===== ADD TO: <ClassNameBase>.java =====
+
+TOOL USAGE: list_dir → read key files → grep_search to verify methods → write code.
+""".strip()
+
     def __init__(
         self,
         llm: Any = None,
@@ -672,17 +697,18 @@ class CoderAgent:
 
     def _generate_for_module(self, module_path: str, scenarios: list[dict], ui_observations: dict = None) -> dict:
         """Generate code for all scenarios of one module."""
-        # Retrieve similar existing tests for this module
+        if self._react_agent is not None:
+            # ReAct path: lean prompt only — agent uses tools to pull context on demand.
+            # Do NOT inject the full RAG context upfront (38K+ tokens blows the budget).
+            return self._generate_for_module_react(module_path, scenarios)
+
+        # Static RAG path (Ollama): build full context prompt then single LLM call.
         similar = []
         for sc in scenarios[:3]:
             similar += self.store.search_scenarios(
                 sc.get('description', ''), top_k=3, module_filter=module_path
             )
-
         prompt = self._build_prompt(module_path, scenarios, similar, ui_observations=ui_observations)
-
-        if self._react_agent is not None:
-            return self._generate_for_module_react(module_path, scenarios, prompt)
         return self._generate_for_module_rag(module_path, scenarios, prompt)
 
     # ── Static RAG path (Ollama / no tool-calling) ───────────────────────────
@@ -714,44 +740,48 @@ class CoderAgent:
 
     # ── ReAct tool-calling path (OpenAI / OpenRouter) ────────────────────────
 
-    def _generate_for_module_react(self, module_path: str, scenarios: list[dict], prompt: str) -> dict:
+    def _generate_for_module_react(self, module_path: str, scenarios: list[dict]) -> dict:
         """
-        ReAct generation: the LLM reasons → calls read_file/grep_search/list_dir
-        on demand → reasons again → produces final Java code.
+        ReAct generation: lean prompt — agent uses read_file/grep_search/list_dir
+        on demand to gather exactly the context it needs, then produces Java code.
 
-        This mirrors exactly how GitHub Copilot works: pull context reactively
-        during generation rather than injecting fixed RAG chunks upfront.
-        The RAG prompt is still passed as the first HumanMessage to give the
-        agent a warm start (existing source files, similar scenarios), but the
-        agent is then free to fetch whatever else it needs.
+        Token budget (trial-safe at ~3500 max_tokens):
+          System prompt                ~1200 tokens
+          Lean scenario prompt          ~300 tokens
+          Tool call results (2-4 calls) ~700 tokens
+          Output budget                ~800 tokens
         """
-        tool_hint = (
-            "\n\n[TOOL GUIDANCE]\n"
-            "You have access to three tools to retrieve project context on demand:\n"
-            "  • read_file(file_path, start_line, end_line) — read any Java/JSON file\n"
-            "    Example: read_file('com/zoho/automater/selenium/modules/admin/automation/triggers/ProblemTrigger.java', 94, 160)\n"
-            "  • grep_search(query, file_pattern) — find methods, constants, locators by name\n"
-            "    Example: grep_search('createNotificationViaAPI', '**/*.java')\n"
-            "  • list_dir(dir_path) — explore folder structure\n"
-            "    Example: list_dir('src/com/zoho/automater/selenium/modules/admin/automation/triggers')\n"
-            "\nUSE THESE TOOLS BEFORE writing code whenever you need to:\n"
-            "  - Verify a method signature in an APIUtil or ActionsUtil class\n"
-            "  - Check the exact preProcess branches in the target *Trigger/*.java file\n"
-            "  - Confirm constants in *Constants.java or *Locators.java\n"
-            "  - Read existing similar scenarios for exact code patterns\n"
-            "  - Inspect *_data.json to understand data placeholders\n"
-            "\nDo NOT guess — use the tools to confirm. Produce the final Java code only after\n"
-            "you have verified all class names, method names, and constants."
+        scenarios_text = "\n".join(
+            f"- {sc.get('description', '')}"
+            + (f"\n  Notes: {sc.get('notes', '')}" if sc.get('notes') else "")
+            for sc in scenarios
+        )
+
+        lean_prompt = (
+            f"## Task\n"
+            f"Generate Java @AutomaterScenario test code for the following scenario(s) "
+            f"in module: `{module_path}`\n\n"
+            f"## Scenarios\n{scenarios_text}\n\n"
+            f"## Instructions\n"
+            f"1. Use `list_dir` to explore the module folder structure first.\n"
+            f"2. Use `read_file` to read the existing *Base.java (or *Trigger.java) file "
+            f"   — especially the preProcess() method to understand available groups.\n"
+            f"3. Use `grep_search` to find method signatures in *APIUtil.java / *ActionsUtil.java "
+            f"   before referencing them.\n"
+            f"4. Use `read_file` to check *_data.json for existing data keys and placeholders.\n"
+            f"5. After gathering context via tools, produce the complete two-piece Java output:\n"
+            f"   // ===== ADD TO: <Entity>.java =====\n"
+            f"   // ===== ADD TO: <Entity>Base.java =====\n\n"
+            f"Start by listing the module directory to understand what files exist."
         )
 
         messages = [
-            SystemMessage(content=self._system_prompt),
-            HumanMessage(content=prompt + tool_hint),
+            SystemMessage(content=self._REACT_SYSTEM_PROMPT),
+            HumanMessage(content=lean_prompt),
         ]
 
         try:
             result = self._react_agent.invoke({"messages": messages})
-            # The final response is the last AIMessage that contains no tool calls
             final_msg = next(
                 (
                     m for m in reversed(result["messages"])
@@ -766,7 +796,6 @@ class CoderAgent:
             code = re.sub(r'^```java\s*', '', code)
             code = re.sub(r'```\s*$', '', code)
 
-            # Log how many tool calls were made (useful for debugging)
             tool_call_count = sum(
                 1 for m in result["messages"]
                 if hasattr(m, "tool_calls") and m.tool_calls
@@ -783,13 +812,18 @@ class CoderAgent:
                 'status': 'generated',
             }
         except Exception as e:
-            # Graceful fallback to static RAG if the ReAct loop errors
             print(
                 f"[CoderAgent] ⚠️  ReAct failed ({e}); falling back to static RAG for {module_path}",
                 flush=True,
             )
-            # Rebuild prompt without tool hint for clean RAG call
-            return self._generate_for_module_rag(module_path, scenarios, prompt)
+            # Build RAG prompt for fallback
+            similar = []
+            for sc in scenarios[:3]:
+                similar += self.store.search_scenarios(
+                    sc.get('description', ''), top_k=3, module_filter=module_path
+                )
+            rag_prompt = self._build_prompt(module_path, scenarios, similar)
+            return self._generate_for_module_rag(module_path, scenarios, rag_prompt)
 
     def run(self, state: AgentState) -> AgentState:
         """LangGraph node function."""
