@@ -1191,3 +1191,92 @@ Ensure that the test environment is configured to ignore Firefox telemetry error
 // ✅ CORRECT
 System.setProperty("webdriver.gecko.driver", "/path/to/geckodriver");
 ```
+
+---
+
+## SECTION 12 — LINKING CHANGES (CH-286) RULES
+
+_Learned from: manually generating 6 test methods for 19 use cases (SDPOD_LINKING_CH_001-019) | Date: 2026-03-03_
+
+### 12.1 LHS Association Tab vs RHS Associations (REQUIRED)
+
+Linking Changes uses a **dedicated LHS Association tab**, NOT the RHS accordion. Always navigate via:
+```java
+// ✅ CORRECT — LHS tab for linking changes
+actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB);
+
+// ❌ WRONG — RHS association pattern (used for requests-caused-by, etc.)
+actions.click(ChangeLocators.AssociationTab.RHS_ASSOCIATIONS);
+```
+
+### 12.2 Parent = Radio, Child = Checkbox (REQUIRED)
+
+Parent change popup uses **radio buttons** (single selection). Child changes popup uses **checkboxes** (multi-selection, max 25).
+
+```java
+// ✅ CORRECT — Radio for single parent
+actions.click(ChangeLocators.LinkingChangePopup.SELECT_RADIO_WITH_ENTITYID.apply(parentId));
+
+// ✅ CORRECT — Checkbox for children (can select multiple)
+actions.click(ChangeLocators.LinkingChangePopup.SELECT_CHECKBOX_WITH_ENTITYID.apply(childId1));
+actions.click(ChangeLocators.LinkingChangePopup.SELECT_CHECKBOX_WITH_ENTITYID.apply(childId2));
+
+// ❌ WRONG — Using checkbox locator for parent selection
+actions.click(ChangeLocators.LinkingChangePopup.SELECT_CHECKBOX_WITH_ENTITYID.apply(parentId));
+```
+
+### 12.3 Mutual Exclusion — Parent OR Child, Never Both (REQUIRED)
+
+A change can only be a parent OR a child. After linking as one type, the other option must disappear from the Attach dropdown.
+
+```java
+// After attaching a parent change:
+// ✅ CORRECT — verify child option is no longer available
+boolean hasChildOption = actions.isElementPresent(ChangeLocators.LinkingChange.ATTACH_CHILD_CHANGES_OPTION);
+assertFalse(hasChildOption, "Child option should be hidden after parent is linked");
+
+// After detaching → BOTH options should return
+actions.click(ChangeLocators.LinkingChange.ATTACH_BUTTON_DROPDOWN);
+assertTrue(actions.isElementPresent(ChangeLocators.LinkingChange.ATTACH_PARENT_CHANGE_OPTION));
+assertTrue(actions.isElementPresent(ChangeLocators.LinkingChange.ATTACH_CHILD_CHANGES_OPTION));
+```
+
+### 12.4 preProcess Must Create 3 Changes (REQUIRED for linking tests)
+
+Linking tests need at minimum 3 changes: 1 source (navigated to in UI) + 2 targets (potential parents/children). The preProcess group `CREATE_CHANGES_FOR_LINKING` handles this.
+
+```java
+// In Change.java preProcess:
+// entityId → source change (opens in details page)
+// targetChangeId1, targetChangeName1, targetChangeDisplayValue1 → first target
+// targetChangeId2, targetChangeName2, targetChangeDisplayValue2 → second target
+// All stored in LocalStorage
+```
+
+### 12.5 Popup Column Search Uses actions.popUp (REQUIRED)
+
+When searching inside an association popup, use `actions.popUp.listView.columnSearch()`, not the regular `actions.listView.columnSearch()`.
+
+```java
+// ✅ CORRECT — searching inside popup
+actions.popUp.listView.columnSearch("Title", LocalStorage.getAsString("targetChangeName1"));
+
+// ❌ WRONG — this searches the main list view behind the popup
+actions.listView.columnSearch("Title", LocalStorage.getAsString("targetChangeName1"));
+```
+
+### 12.6 API Contract for Linking (REQUIRED)
+
+Linking is done via the `rel/` sub-path under changes API:
+- `PUT api/v3/changes/{id}/rel/parent_change` — link parent
+- `DELETE api/v3/changes/{id}/rel/parent_change?ids={id}` — unlink parent
+- `PUT api/v3/changes/{id}/rel/child_changes` — link children
+- `DELETE api/v3/changes/{id}/rel/child_changes?ids={csv_ids}` — unlink children
+
+```java
+// Body for parent link:
+{"parent_change":[{"parent_change":{"id":"<targetId>"}}]}
+
+// Body for child link (multiple):
+{"child_changes":[{"child_changes":{"id":"<id1>"}},{"child_changes":{"id":"<id2>"}}]}
+```

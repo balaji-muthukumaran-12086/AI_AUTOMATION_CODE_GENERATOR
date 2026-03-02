@@ -19,6 +19,7 @@ import os
 from pathlib import Path
 from typing import Any
 
+from json_repair import repair_json
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from agents.state import AgentState
@@ -114,7 +115,10 @@ class PlannerAgent:
                 raw = raw.split('\n', 1)[1]
                 raw = raw.rsplit('```', 1)[0]
 
-            plan_data = json.loads(raw)
+            try:
+                plan_data = json.loads(raw)
+            except json.JSONDecodeError:
+                plan_data = json.loads(repair_json(raw))
             state['affected_modules'] = plan_data.get('affected_modules', [])
             state['test_plan'] = plan_data.get('test_plan', {})
             n_mods = len(state['affected_modules'])

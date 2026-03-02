@@ -177,11 +177,20 @@ class OutputAgent:
                 continue
 
             review = review_results.get(module_path, {})
+            revision_count = state.get('revision_count', 0)
+            max_revisions = state.get('max_revisions', 2)
             if not review.get('approved', True):
-                state['messages'] = [
-                    f"[OutputAgent] Skipped {module_path} — reviewer rejected"
-                ]
-                continue
+                if revision_count < max_revisions:
+                    # Still have revision rounds left — skip for now
+                    state['messages'] = [
+                        f"[OutputAgent] Skipped {module_path} — reviewer rejected"
+                    ]
+                    continue
+                else:
+                    # Max revisions exhausted — write code anyway with warning
+                    state['messages'] = [
+                        f"[OutputAgent] ⚠ {module_path} — not approved after {revision_count} revisions, writing best-effort code"
+                    ]
 
             # ── Create run directory ────────────────────────────────────────
             safe_module = module_path.replace('/', '_').strip('_')

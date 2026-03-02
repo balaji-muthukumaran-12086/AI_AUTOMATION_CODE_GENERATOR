@@ -42,6 +42,42 @@ top_level_modules:
       - change_reminder
       - change_conversations
       - downtime
+    features:
+      linking_changes:
+        description: "CH-286: Linking Change Requests (Parent-Child association)"
+        test_class: "DetailsView"
+        module_path: "modules/changes/change"
+        scenarios:
+          - id: "SDPOD_LINKING_CH_001,SDPOD_LINKING_CH_005"
+            method: "verifyAssociationTabAndAttachOptionsInLHS"
+            description: "Association tab in LHS + Attach button Parent/Child options"
+          - id: "SDPOD_LINKING_CH_006-011"
+            method: "verifyAttachParentChangePopup"
+            description: "Parent popup: filters, radio, search, pagination, table settings"
+          - id: "SDPOD_LINKING_CH_012-016"
+            method: "attachParentChangeAndVerifyAssociation"
+            description: "Attach parent, verify list view, records count, table settings, child blocked"
+          - id: "SDPOD_LINKING_CH_017"
+            method: "detachParentChangeAndVerifyReset"
+            description: "Detach parent, confirm dialog, verify tab resets to both options"
+          - id: "SDPOD_LINKING_CH_018,SDPOD_LINKING_CH_019"
+            method: "verifyAttachChildChangePopup"
+            description: "Child popup: filters, multi-checkbox, comments, cancel"
+          - id: "SDPOD_LINKING_CH_002-004"
+            method: "attachDetachChildChangesAndVerifyListView"
+            description: "Full child flow: attach, records count, table settings, detach, reset"
+        api_patterns:
+          - "PUT api/v3/changes/{id}/rel/parent_change"
+          - "DELETE api/v3/changes/{id}/rel/parent_change?ids={id}"
+          - "PUT api/v3/changes/{id}/rel/child_changes"
+          - "DELETE api/v3/changes/{id}/rel/child_changes?ids={ids}"
+        ui_patterns:
+          - "LHS Association tab (not RHS)"
+          - "Parent: radio selection (single select)"
+          - "Child: checkbox selection (multi-select, max 25)"
+          - "Mutual exclusion: parent OR child, never both"
+          - "Badges in title: 'Parent Change' / 'Child Change'"
+          - "Popup filters: All Changes / Open Changes / Closed Changes"
 
   releases:
     description: "Release Management"

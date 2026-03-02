@@ -1078,3 +1078,78 @@ Verifies the 'Filter by Data Type: Numeric' functionality on the Additional Fiel
 **Notes**: UDF_project_group1 preProcess likely creates Numeric UDF(s) via API beforehand. Uses report.startMethodFlowInStepsToReproduce / endMethodFlowInStepsToReproduce lifecycle. PAGE_COUNT locator is shared from Requests module — demonstrating locator reuse across modules.
 
 ---
+
+## LINKING CHANGES (CH-286) — Parent-Child Association Pattern
+
+### Feature Overview
+Linking Changes allows associating changes in parent-child relationships via the LHS Association tab in Change Details. Key constraints:
+- A change can be either a parent OR a child, never both (mutual exclusion)
+- Max 1 parent per change, max 25 children per parent
+- Parent selection uses **radio buttons** (single select); child uses **checkboxes** (multi-select)
+- Popup has filters: All Changes / Open Changes / Closed Changes
+- After parent linked → child option disappears; after child linked → parent option disappears
+- Detach resets the tab to show both options again
+- Badges appear in change title: "Parent Change" or "Child Change"
+
+### Architecture Pattern: LHS Association Tab Tests
+Unlike RHS associations (which use the right sidebar accordion), linking changes uses a **dedicated LHS tab**:
+
+```
+DetailsView.java                          ← Test methods live HERE (not in ChangeBase)
+  ├─ preProcess: CREATE_CHANGES_FOR_LINKING group
+  │   Creates 3 changes (1 source + 2 targets) via API
+  │   Stores: entityId, changeName, targetChangeId1/2, targetChangeName1/2, targetChangeDisplayValue1/2
+  ├─ Test flow: navigate → module → listview → details page → LHS Association tab → popup → validate
+  └─ postProcess: Deletes target changes first, then source
+```
+
+### API Patterns for Linking
+```java
+// Link parent change
+ChangeAPIUtil.linkParentChange(sourceChangeId, targetChangeId);
+// → PUT api/v3/changes/{sourceId}/rel/parent_change  body: {"parent_change":[{"parent_change":{"id":targetId}}]}
+
+// Unlink parent change
+ChangeAPIUtil.unlinkParentChange(sourceChangeId, parentChangeId);
+// → DELETE api/v3/changes/{sourceId}/rel/parent_change?ids=parentId
+
+// Link child changes
+ChangeAPIUtil.linkChildChanges(parentChangeId, childId1, childId2);
+// → PUT api/v3/changes/{parentId}/rel/child_changes  body: {"child_changes":[{"child_changes":{"id":childId}},...]}
+
+// Unlink child changes
+ChangeAPIUtil.unlinkChildChanges(parentChangeId, "id1,id2");
+// → DELETE api/v3/changes/{parentId}/rel/child_changes?ids=id1,id2
+```
+
+### Key Locator Patterns
+- `ChangeLocators.LinkingChange.*` — LHS tab, sections, badges, attach/detach buttons
+- `ChangeLocators.LinkingChangePopup.*` — Popup elements, filters, radio/checkbox selectors
+- Function-based locators take entity IDs: `SELECT_RADIO_WITH_ENTITYID.apply(changeId)`, `SELECT_CHECKBOX_WITH_ENTITYID.apply(changeId)`
+- `LINKED_CHANGE_ROW.apply(changeId)` — Verify a specific change is shown in association list
+
+### Key Constants
+- `ChangeAnnotationConstants.Group.CREATE_CHANGES_FOR_LINKING`
+- `ChangeAnnotationConstants.Data.API_CREATE_CHANGE_FOR_LINKING`
+- `ChangeConstants.PopupFilters.ALL_CHANGES / OPEN_CHANGES / CLOSED_CHANGES`
+- `ChangeConstants.AlertMessages.PARENT_CHANGE_ASSOCIATED / DETACHED / CHILD_CHANGES_ASSOCIATED / DETACHED`
+
+### Scenario Coverage (19 use cases → 6 test methods)
+| Method | Use Cases | Focus |
+|--------|-----------|-------|
+| `verifyAssociationTabAndAttachOptionsInLHS` | 001, 005 | Tab + attach options |
+| `verifyAttachParentChangePopup` | 006-011 | Parent popup UI elements |
+| `attachParentChangeAndVerifyAssociation` | 012-016 | Attach parent + list view validations |
+| `detachParentChangeAndVerifyReset` | 017 | Detach + reset |
+| `verifyAttachChildChangePopup` | 018-019 | Child popup UI elements |
+| `attachDetachChildChangesAndVerifyListView` | 002-004 | Full child flow + list view |
+
+### Learnings for Coder Agent
+1. **LHS vs RHS**: Association tabs on LHS are navigated via `actions.click(LHS_ASSOCIATION_TAB)`, NOT via RHS accordion pattern
+2. **Radio vs Checkbox**: Parent popup uses `SELECT_RADIO_WITH_ENTITYID` (radio), child uses `SELECT_CHECKBOX_WITH_ENTITYID` (checkbox). Never mix these.
+3. **Mutual exclusion testing**: After linking as parent, verify child option disappears from Attach dropdown; after linking as child, verify parent option disappears
+4. **preProcess creates 3 changes**: 1 source (the change we navigate to) + 2 targets (potential parents/children) — stored in LocalStorage with numbered keys
+5. **Popup column search**: Use `actions.popUp.listView.columnSearch()` (not `actions.listView.columnSearch()`) when searching inside a popup
+6. **Confirmation dialog pattern**: `actions.validate.confirmationBoxTitleAndConfirmationText("Confirm", "Do you want to detach")` + `actions.clickByNameSpan(GlobalConstants.Actions.YES)`
+
+---

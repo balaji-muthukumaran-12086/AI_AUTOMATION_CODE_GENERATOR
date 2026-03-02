@@ -1,0 +1,122 @@
+UseCase ID,Severity,Description
+SDPOD_LINKING_CH_001,Showstopper,"Check Associations tab is newly shown in change details page - LHS panel
+
+Steps: Change -> Details page(Relationship tag should shown in change title in details page if available) -> LHS
+
+Expected Result: Association tab should shown in change details - LHS."
+SDPOD_LINKING_CH_002,Major,"Check the records count.
+
+Steps: Change -> Details page -> LHS -> Association -> top of RHS
+
+Expected Result: It should list out records range in current page out of total count. If total count is 25 and records per page is 10 and current page is 2 then it should display like 11 - 20 of 25"
+SDPOD_LINKING_CH_003,Major,"Check the page navigation.
+
+Steps: Change -> Details page -> LHS -> Association -> top of RHS
+
+Expected Result: If the current page has previous and next page then it should enable both icons. If it has only previous or next icon then corresponding icon only should shown. If total count is 25 and records per page is 10 and current page is 2 then both icons should enabled. If page is in 1, next icon only should enabled and if page is 3, previous only should enabled."
+SDPOD_LINKING_CH_004,Major,"Check the table settings.
+
+Steps: Change -> Details page -> LHS -> Association -> top of RHS
+
+Expected Result: It should have Records per page, sort by column and column chooser.
+Records per page should have 10, 25, 50, 75 and 100. If 10 selected 10 records per page should be shown and like that remaining should be shown.
+Sort by column should have set of fields with ascending and descending order. As per the field name and order, list should be shown.
+Column chooser should have set of fields to select to view in list. As per the fields order, list should be shown. If a field is deselected, it should be removed from the list.
+If cancel / close clicked, table settings should be closed."
+SDPOD_LINKING_CH_005,Showstopper,"Check the Attach button
+
+Steps: Change -> Details page -> LHS -> Association 
+
+Expected Result: Attach button should have Attach parent changes and Attach child changes options."
+SDPOD_LINKING_CH_006,Showstopper,"Check Attach parent change option.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach parent change
+
+Expected Result: It should open associate parent change pop up."
+SDPOD_LINKING_CH_007,Major,"Check Attach parent change pop up.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach parent change
+
+Expected Result: It should have all changes, open changes and closed changes option. As per the filter option, list should be shown. 
+It should allow to select single record only.
+When clicking change name, it should list out details.
+When clicking view details icon, it should redirect to change details page.
+Comments field allows to add comment to this association.
+When associate is clicked without any change selection, it should shown ""select at lease one change with ok button"".
+When cancel and close clicked, pop up should get closed."
+SDPOD_LINKING_CH_008,Major,"Check the records count.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach parent change
+
+Expected Result: It should list out records range in current page out of total count. If total count is 25 and records per page is 10 and current page is 2 then it should display like 11 - 20 of 25"
+SDPOD_LINKING_CH_009,Major,"Check the page navigation.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach parent change
+
+Expected Result: If the current page has previous and next page then it should enable both icons. If it has only previous or next icon then corresponding icon only should shown. If total count is 25 and records per page is 10 and current page is 2 then both icons should enabled. If page is in 1, next icon only should enabled and if page is 3, previous only should enabled."
+SDPOD_LINKING_CH_010,Major,"Check the search.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach parent change
+
+Expected Result: Search should available for all the list view fields except date fields. When it is checked with valid data, proper records should be shown otherwise no matches found should be shown."
+SDPOD_LINKING_CH_011,Major,"Check the table settings.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach parent change
+
+Expected Result: It should have Records per page, sort by column and column chooser.
+Records per page should have 10, 25, 50, 75 and 100. If 10 selected 10 records per page should be shown and like that remaining should be shown.
+Sort by column should have set of fields with ascending and descending order. As per the field name and order, list should be shown.
+Column chooser should have set of fields to select to view in list. As per the fields order, list should be shown. If a field is deselected, it should be removed from the list.
+If cancel / close clicked, table settings should be closed."
+SDPOD_LINKING_CH_012,Critical,"Add a parent and check
+
+Steps: Change -> Details page -> LHS -> Association -> Attach parent change -> select a change and give comments -> click associate.
+
+Expected Result: Selected change should added under parent change. Attach button should changed as detach. History should be added for this association with comments if it is given. Once parent added, system should not allow to add child using attach."
+SDPOD_LINKING_CH_013,Major,"check the parent list view.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach parent change -> select a change and give comments -> click associate -> 
+
+Expected Result: parent list should have view details icon, when its clicked it should redirect to details page of the change.
+It should have records count, page navigation icons and table settings."
+SDPOD_LINKING_CH_014,Major,"Check the records count.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach parent change -> select a change and give comments -> click associate -> 
+
+Expected Result: It should list out records range in current page out of total count. If total count is 25 and records per page is 10 and current page is 2 then it should display like 11 - 20 of 25"
+SDPOD_LINKING_CH_015,Major,"Check the page navigation.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach parent change -> select a change and give comments -> click associate -> 
+
+Expected Result: If the current page has previous and next page then it should enable both icons. If it has only previous or next icon then corresponding icon only should shown. If total count is 25 and records per page is 10 and current page is 2 then both icons should enabled. If page is in 1, next icon only should enabled and if page is 3, previous only should enabled."
+SDPOD_LINKING_CH_016,Major,"Check the table settings.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach parent change -> select a change and give comments -> click associate -> 
+
+Expected Result: It should have Records per page, sort by column and column chooser.
+Records per page should have 10, 25, 50, 75 and 100. If 10 selected 10 records per page should be shown and like that remaining should be shown.
+Sort by column should have set of fields with ascending and descending order. As per the field name and order, list should be shown.
+Column chooser should have set of fields to select to view in list. As per the fields order, list should be shown. If a field is deselected, it should be removed from the list.
+If cancel / close clicked, table settings should be closed."
+SDPOD_LINKING_CH_017,Critical,"check the detach button.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach parent change -> select a change and give comments -> click associate -> click detach near parent
+
+Expected Result: When detach clicked, selected parent should be removed from the list with confirmation 
+Association tab should reset with Attach option."
+SDPOD_LINKING_CH_018,Showstopper,"Check Attach child change option.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach child change
+
+Expected Result: It should open associate child change pop up."
+SDPOD_LINKING_CH_019,Major,"Check Attach child change pop up.
+
+Steps: Change -> Details page -> LHS -> Association -> Attach child change
+
+Expected Result: It should have all changes, open changes and closed changes option. As per the filter option, list should be shown. 
+It should allow to select multiple records.
+When clicking change name, it should list out details.
+When clicking view details icon, it should redirect to change details page.
+Comments field allows to add comment to this association.
+When associate is clicked without any change selection, it should shown ""select at lease one change with ok button"".
+When cancel and close clicked, pop up should get closed."

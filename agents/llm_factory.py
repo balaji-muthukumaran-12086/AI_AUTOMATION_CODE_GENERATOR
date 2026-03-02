@@ -45,8 +45,16 @@ def supports_tool_calling() -> bool:
     """
     Returns True when the configured provider natively supports tool/function
     calling — meaning the ReAct CoderAgent can be used instead of static RAG.
+    Free-tier OpenRouter models (model id ending in ':free') do NOT support
+    function/tool calling reliably, so they fall back to the RAG path.
     """
-    return get_provider() in _TOOL_CALLING_PROVIDERS
+    if get_provider() not in _TOOL_CALLING_PROVIDERS:
+        return False
+    # Free-tier models (e.g. google/gemma-3-4b-it:free) don't support tool calling
+    model = os.environ.get("OPENROUTER_MODEL", "") or os.environ.get("OPENAI_MODEL", "")
+    if model.endswith(":free"):
+        return False
+    return True
 
 
 def get_llm(temperature: float = 0.2):

@@ -21,7 +21,8 @@ import os
 # Make sure project root is on path
 sys.path.insert(0, os.path.dirname(__file__))
 
-from config.project_config import PROJECT_NAME, PROJECT_BIN, BASE_DIR as _BASE_DIR, DEPS_DIR as _DEPS_DIR
+from config.project_config import (PROJECT_NAME, PROJECT_BIN, BASE_DIR as _BASE_DIR, DEPS_DIR as _DEPS_DIR,
+                                   SDP_URL, SDP_ADMIN_EMAIL, SDP_PORTAL)
 
 # ── Configure here ────────────────────────────────────────────────────────
 
@@ -42,12 +43,12 @@ the copied problem is searchable in the Problems listview.
 """
 
 RUN_CONFIG = {
-    "entity_class":  "ProblemTrigger",
-    "method_name":   "createProblemTriggerAndVerifyExecutionInHistory",
-    "url":           "https://sdpodqa-auto1.csez.zohocorpin.com:9090/",
-    "admin_mail_id": "jaya.kumar+org1admin1t0@zohotest.com",
-    "email_id":      "jaya.kumar+org1admin1t0@zohotest.com",
-    "portal_name":   "portal1",
+    "entity_class":  "ChangeDetailsView",
+    "method_name":   "verifyAttachParentChangePopup",
+    "url":           SDP_URL,
+    "admin_mail_id": SDP_ADMIN_EMAIL,
+    "email_id":      SDP_ADMIN_EMAIL,
+    "portal_name":   SDP_PORTAL,
     "skip_compile":  True,   # keep True — full compile is broken
 }
 

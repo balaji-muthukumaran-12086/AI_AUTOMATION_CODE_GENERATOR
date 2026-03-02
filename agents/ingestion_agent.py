@@ -301,7 +301,11 @@ class IngestionAgent:
             raw = raw.split("\n", 1)[1]
             raw = raw.rsplit("```", 1)[0]
 
-        return json.loads(raw)
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            from json_repair import repair_json
+            return json.loads(repair_json(raw))
 
     def _call_llm_testcases(self, raw_text: str) -> dict:
         """Use the testcase-specific prompt to extract structured proposed_scenarios."""
@@ -319,7 +323,11 @@ class IngestionAgent:
             raw = raw.split("\n", 1)[1]
             raw = raw.rsplit("```", 1)[0]
 
-        return json.loads(raw)
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            from json_repair import repair_json
+            return json.loads(repair_json(raw))
 
     def process_file_testcases(self, file_path: str) -> dict:
         """
@@ -356,7 +364,7 @@ class IngestionAgent:
             },
         }
 
-
+    def process_file(self, file_path: str) -> dict:
         """
         Process a document file end-to-end.
 

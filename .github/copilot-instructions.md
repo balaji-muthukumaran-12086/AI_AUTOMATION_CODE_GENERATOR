@@ -380,6 +380,90 @@ Additionally **3,209 scenarios have empty `id`** (`@AutomaterCase` old style or 
 - **Data key naming**: `SOL_UNAPPROVED_PUB_*` maps to snake_case `sol_unapproved_pub_*` in JSON
 - **Template/topic setup**: Must be in `preProcess` group `CREATE_CUST_TEMP_TOPIC` — stores under `"solution_template"` and `"topic"` in LocalStorage
 - **`$(custom_solution_template)`**: Strips `custom_` prefix → looks up `"solution_template"` in LocalStorage
+- **Select2 dropdowns**: Render option `<li>` elements in `<div class="select2-drop">` appended to `<body>` — NOT inside the parent dialog/popup. Use `//div[contains(@class,'select2-result-label')]` to match options.
+- **SDP Associations tab container ID**: `change_associations_parent_change` (not `change_associations_linked_changes`). Attach button has `name="associating-change-button"`.
+
+---
+
+## CH-286 Linking Changes — Active Test Suite (as of Mar 2, 2026)
+
+> **Feature**: Link parent/child changes in Change module Associations tab
+> **Build URL**: `https://sdpod-am1.csez.zohocorpin.com:55091/` (feature branch)
+> **Feature doc**: `docs/Feature_Document/Linking Change and Lookup field Enhancement.md`
+> **Use case CSV**: `docs/UseCase/Balaji_CH 286 Linking Changes and Multi select Lookup Fields for Change _Sheet1.csv`
+> **19 CSV use cases → 6 test methods** in `DetailsView.java` (lines 1727-2243)
+
+### Test Methods & Execution Status
+
+| # | Method | IDs | Status |
+|---|--------|-----|--------|
+| 1 | `verifyAssociationTabAndAttachOptionsInLHS` | CH_001, CH_005 | ✅ PASSED |
+| 2 | `verifyAttachParentChangePopup` | CH_006-011 | ❌ Fix applied, needs re-run |
+| 3 | `attachParentChangeAndVerifyAssociation` | CH_012-016 | ⏳ Not run |
+| 4 | `detachParentChangeAndVerifyReset` | CH_017 | ⏳ Not run |
+| 5 | `verifyAttachChildChangePopup` | CH_018-019 | ⏳ Not run |
+| 6 | `attachDetachChildChangesAndVerifyListView` | CH_002-004 | ⏳ Not run |
+
+### Key Files
+
+| File | Path |
+|------|------|
+| `DetailsView.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/changes/change/DetailsView.java` |
+| `ChangeLocators.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/changes/change/common/ChangeLocators.java` |
+| `ChangeConstants.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/changes/change/common/ChangeConstants.java` |
+| `ChangeAnnotationConstants.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/changes/change/common/ChangeAnnotationConstants.java` |
+| `ChangeDataConstants.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/changes/change/common/ChangeDataConstants.java` |
+| `ChangeAPIUtil.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/changes/change/utils/ChangeAPIUtil.java` |
+| `Change.java` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/changes/change/Change.java` |
+| `change_data.json` | `SDPLIVE_LATEST_AUTOMATER_SELENIUM/resources/entity/data/changes/change/change_data.json` |
+
+### Locator Interfaces Added to ChangeLocators.java
+
+- **`LinkingChange`** — Main page locators: Association tab, Attach button, dropdown options (Parent/Child), Detach button, records count, pagination, table settings, linked change rows
+- **`LinkingChangePopup`** — Popup dialog locators: title, filter dropdown (Select2), filter options, radio/checkbox selection, Associate/Cancel buttons, search, records count, pagination, table settings
+
+### preProcess Group: `CREATE_CHANGES_FOR_LINKING`
+- Creates 3 changes via API (1 source + 2 targets)
+- Stores in LocalStorage: `changeName`, `changeId`, `targetChangeName1`, `targetChangeId1`, `targetChangeName2`, `targetChangeId2`
+
+### DOM Mapping (verified via Playwright)
+
+| UI Element | Selector |
+|---|---|
+| Associations tab | `//a[@data-tabname='associations']` |
+| Parent change container | `//div[@id='change_associations_parent_change']` |
+| Attach button | `//button[@name='associating-change-button']` |
+| Parent Change option | `//a[@name='associate_parent_change']` |
+| Child Changes option | `//a[@name='associate_child_changes']` |
+| Popup dialog | `.association-dialog-popup.changes-association` |
+| Select2 trigger | `//div[contains(@class,'association-dialog-popup')]//span[contains(@class,'select2-chosen')]` |
+| Select2 options | `//div[contains(@class,'select2-result-label') and contains(text(),'...')]` (at body level) |
+| Records count | `//span[contains(@class,'navigatorDetailsColumn')]` |
+| Table settings | `//div[@data-sdp-table-id='sdp-table-list-settings']` |
+
+### Run Configuration
+```python
+# run_test.py
+RUN_CONFIG = {
+    "entity_class":  "ChangeDetailsView",
+    "method_name":   "verifyAttachParentChangePopup",  # change per test
+    "skip_compile":  True,
+}
+# runner_agent.py ENTITY_IMPORT_MAP:
+# "ChangeDetailsView": "com.zoho.automater.selenium.modules.changes.change.DetailsView"
+```
+
+### Remaining Feature Gaps (10 areas, deferred)
+1. List View — linked changes column
+2. RHS summary count
+3. History entries for link/unlink
+4. Closure Rules (block close if linked changes open)
+5. Trash/Restore behaviour
+6. Export linked changes
+7. Permissions (technician vs requester)
+8. MSP considerations
+9. Linking Constraints (self-link, circular)
+10. Multi-select Lookup Field Enhancement
 
 ---
 

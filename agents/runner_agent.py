@@ -67,6 +67,7 @@ ENTITY_IMPORT_MAP = {
     "Problem":               "com.zoho.automater.selenium.modules.problems.problem.Problem",
     # ── Changes ────────────────────────────────────────────────────────────
     "Change":                "com.zoho.automater.selenium.modules.changes.change.Change",
+    "ChangeDetailsView":     "com.zoho.automater.selenium.modules.changes.change.DetailsView",
     "CabEvaluationTask":     "com.zoho.automater.selenium.modules.changes.cabevaluationtask.CabEvaluationTask",
     # ── Releases ───────────────────────────────────────────────────────────
     "Release":               "com.zoho.automater.selenium.modules.releases.release.Release",

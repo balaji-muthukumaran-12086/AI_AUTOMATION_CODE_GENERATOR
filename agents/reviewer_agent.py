@@ -191,7 +191,11 @@ class ReviewerAgent:
             if raw.startswith('```'):
                 raw = raw.split('\n', 1)[1].rsplit('```', 1)[0]
             import json
-            return json.loads(raw)
+            try:
+                return json.loads(raw)
+            except json.JSONDecodeError:
+                from json_repair import repair_json
+                return json.loads(repair_json(raw))
         except Exception as e:
             return [{'severity': 'WARNING', 'issue': f'LLM review failed: {e}', 'fix': ''}]
 
