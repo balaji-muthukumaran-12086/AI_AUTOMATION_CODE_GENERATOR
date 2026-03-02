@@ -111,23 +111,21 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
         revision_count    = state.get('revision_count', 0)
         max_revisions     = state.get('max_revisions', 2)
 
-        if revision_requests and revision_count < max_revisions:
-            # Inject revision instructions into test_plan and re-run coder
+        if revision_requests and revision_count <= max_revisions:
+            # Inject revision instructions into test_plan so coder knows what to fix.
+            # NOTE: state mutation here WON'T persist in LangGraph — the reviewer
+            # node already incremented revision_count so it IS persisted.
             updated_plan = {}
             for req in revision_requests:
                 mp = req['module_path']
-                # Re-queue scenarios from revision request
                 existing = state['test_plan'].get(mp, [])
                 if not existing:
-                    # Build a placeholder
                     existing = [{'description': 'Revise generated code', 'notes': req['fix_instructions']}]
                 else:
                     for sc in existing:
                         sc['_revision_notes'] = req['fix_instructions']
                 updated_plan[mp] = existing
-
-            state['test_plan'] = updated_plan
-            state['revision_count'] = revision_count + 1
+            state['test_plan'] = updated_plan   # best-effort; coder will also read revision_requests directly
             return "coder"
         return "output"
 

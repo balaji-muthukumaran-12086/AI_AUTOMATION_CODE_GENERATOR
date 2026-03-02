@@ -244,6 +244,9 @@ class ReviewerAgent:
 
         state['review_results'] = review_results
         state['revision_requests'] = revision_requests
+        # Increment revision_count here (router functions cannot persist state in LangGraph)
+        if revision_requests:
+            state['revision_count'] = state.get('revision_count', 0) + 1
 
         approved_count = sum(1 for r in review_results if r['approved'])
         state['messages'] = [

@@ -31,7 +31,7 @@ class AgentState(TypedDict):
     proposed_scenarios: list[dict]    # [{ module, method_name, description, group, ... }]
 
     # ── Coder Agent output ────────────────────────────────
-    generated_code: Annotated[list[dict], operator.add]  # [{ module, class_name, code }]
+    generated_code: list[dict]  # [{ module, class_name, code }] — replaced each coder run (not accumulated)
 
     # ── Reviewer Agent output ─────────────────────────────
     review_results: list[dict]        # [{ code_ref, issues, approved }]
