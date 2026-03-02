@@ -350,10 +350,17 @@ RULES:
     # ── File updaters ─────────────────────────────────────────────────────
 
     def _append_to_rules_file(self, rules: list[dict]) -> None:
-        """Append extracted DO/DON'T rules to framework_rules.md."""
+        """Append extracted DO/DON'T rules to framework_rules.md — skips rules
+        whose title is already present in the file."""
+        existing_md = _RULES_FILE.read_text(encoding="utf-8") if _RULES_FILE.exists() else ""
         lines = []
+        skipped = 0
         for r in rules:
             title    = r.get("title", "Unnamed Rule")
+            # Skip if this exact title heading already exists in the file
+            if f"### " in existing_md and title.lower() in existing_md.lower():
+                skipped += 1
+                continue
             section  = r.get("section", "GENERAL")
             rtype    = r.get("rule_type", "DO")
             body     = r.get("body", "")
@@ -369,14 +376,26 @@ RULES:
                 lines.append(f"\n```java\n// ❌ WRONG\n{bad}\n```")
             if good:
                 lines.append(f"\n```java\n// ✅ CORRECT\n{good}\n```")
-        self._write_to_file(_RULES_FILE, _LEARNED_RULES_HEADER, "\n".join(lines))
-        print(f"[LearningAgent] ✅ {len(rules)} rule(s) appended to framework_rules.md")
+        if skipped:
+            print(f"[LearningAgent] ⏭ Skipped {skipped} duplicate rule(s) for framework_rules.md")
+        if lines:
+            self._write_to_file(_RULES_FILE, _LEARNED_RULES_HEADER, "\n".join(lines))
+            print(f"[LearningAgent] ✅ {len(rules) - skipped} new rule(s) appended to framework_rules.md")
+        else:
+            print(f"[LearningAgent] ℹ All rules already present in framework_rules.md")
 
     def _append_to_knowledge_file(self, patterns: list[dict]) -> None:
-        """Append extracted patterns to framework_knowledge.md."""
+        """Append extracted patterns to framework_knowledge.md — skips patterns
+        whose title is already present in the file."""
+        existing_md = _KNOWLEDGE_FILE.read_text(encoding="utf-8") if _KNOWLEDGE_FILE.exists() else ""
         lines = []
+        skipped = 0
         for p in patterns:
             title   = p.get("title", "Unnamed Pattern")
+            # Skip if this exact title heading already exists in the file
+            if f"### " in existing_md and title.lower() in existing_md.lower():
+                skipped += 1
+                continue
             desc    = p.get("description", "")
             code    = p.get("code_example", "")
             applies = p.get("applies_to", "")
@@ -390,8 +409,13 @@ RULES:
                 lines.append(f"\n**Applies to:** {applies}")
             if code:
                 lines.append(f"\n```java\n{code}\n```")
-        self._write_to_file(_KNOWLEDGE_FILE, _LEARNED_PATTERNS_HEADER, "\n".join(lines))
-        print(f"[LearningAgent] ✅ {len(patterns)} pattern(s) appended to framework_knowledge.md")
+        if skipped:
+            print(f"[LearningAgent] ⏭ Skipped {skipped} duplicate pattern(s) for framework_knowledge.md")
+        if lines:
+            self._write_to_file(_KNOWLEDGE_FILE, _LEARNED_PATTERNS_HEADER, "\n".join(lines))
+            print(f"[LearningAgent] ✅ {len(patterns) - skipped} new pattern(s) appended to framework_knowledge.md")
+        else:
+            print(f"[LearningAgent] ℹ All patterns already present in framework_knowledge.md")
 
     def _write_to_file(self, path: Path, section_header: str, content: str) -> None:
         """
@@ -409,11 +433,34 @@ RULES:
             path.write_text(new_content, encoding="utf-8")
 
     def _persist_learnings(self, learnings: list[dict]) -> None:
-        """Append learnings to logs/learnings.jsonl (one JSON object per line)."""
+        """Append learnings to logs/learnings.jsonl — deduplicates by title to
+        prevent the same rule/pattern being logged on every re-run cycle."""
         with _file_lock:
+            # Build set of already-known titles from existing log
+            existing_titles: set[str] = set()
+            if _LEARNINGS_LOG.exists():
+                for line in _LEARNINGS_LOG.read_text(encoding="utf-8").splitlines():
+                    line = line.strip()
+                    if line:
+                        try:
+                            existing_titles.add(json.loads(line).get("title", "").strip().lower())
+                        except Exception:
+                            pass
+
+            new_count = 0
             with open(_LEARNINGS_LOG, "a", encoding="utf-8") as f:
                 for l in learnings:
+                    title_key = l.get("title", "").strip().lower()
+                    if title_key and title_key in existing_titles:
+                        print(f"[LearningAgent] ⏭ Skipping duplicate learning: '{l.get('title')}'")
+                        continue
                     f.write(json.dumps(l, ensure_ascii=False) + "\n")
+                    existing_titles.add(title_key)
+                    new_count += 1
+            if new_count:
+                print(f"[LearningAgent] ✅ {new_count} new learning(s) persisted to jsonl")
+            else:
+                print(f"[LearningAgent] ℹ All learnings were duplicates — nothing new added")
 
     # ── Hands-free heal + re-run ──────────────────────────────────────────
 

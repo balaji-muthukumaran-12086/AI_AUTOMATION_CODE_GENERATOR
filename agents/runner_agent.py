@@ -73,8 +73,11 @@ ENTITY_IMPORT_MAP = {
     "Project":               "com.zoho.automater.selenium.modules.projects.project.Project",
     "Task":                  "com.zoho.automater.selenium.modules.tasks.task.Task",
     # ── Assets ─────────────────────────────────────────────────────────────
-    "Asset":                 "com.zoho.automater.selenium.modules.assets.asset.Asset",
-}
+    "Asset":                 "com.zoho.automater.selenium.modules.assets.asset.Asset",    "AssetTrigger":          "com.zoho.automater.selenium.modules.admin.automation.triggers.AssetTrigger",
+    # ── Admin — Automation / Workflows ────────────────────────────────────
+    "IncidentRequestWorkflow": "com.zoho.automater.selenium.modules.admin.automation.workflows.IncidentRequestWorkflow",
+    # ── Admin — Customization / Additional Fields ──────────────────────────
+    "ProjectUDF":            "com.zoho.automater.selenium.modules.admin.customization.additionalfields.ProjectUDF",}
 
 
 class RunResult:
