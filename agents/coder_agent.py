@@ -715,9 +715,12 @@ TOOL USAGE: list_dir → read key files → grep_search to verify methods → wr
 
     def _generate_for_module_rag(self, module_path: str, scenarios: list[dict], prompt: str) -> dict:
         """Original single-shot LLM call with RAG context only."""
+        # On OpenRouter use the lean system prompt to avoid burning 32K tokens per call.
+        # On Ollama/local the full rules doc is free so keep it.
+        sys_prompt = self._REACT_SYSTEM_PROMPT if supports_tool_calling() else self._system_prompt
         try:
             response = self.llm.invoke([
-                SystemMessage(content=self._system_prompt),
+                SystemMessage(content=sys_prompt),
                 HumanMessage(content=prompt),
             ])
             code = response.content.strip()
