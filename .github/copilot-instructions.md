@@ -784,7 +784,7 @@ Each block = **only the additions**. Never output the entire file. Marker must m
 # run_test.py
 RUN_CONFIG = {
     "entity_class":  "ChangeDetailsView",
-    "method_name":   "verifyAttachParentChangePopup",  # change per test
+    "method_name":   "attachDetachChildChangesAndVerifyListView",  # last run (all 6 PASSED Mar 3)
     "skip_compile":  True,
 }
 # runner_agent.py ENTITY_IMPORT_MAP:
