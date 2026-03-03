@@ -39,8 +39,10 @@ def build_module_index(parsed_json_path: str, output_path: str) -> dict:
         'scenario_files': [],
         'fields_file': None,
         'data_constants_file': None,
+        'annotation_constants_file': None,
         'locators_file': None,
         'constants_file': None,
+        'data_json_file': None,
         'utils_files': [],
         'scenario_count': 0,
         'scenarios': [],
@@ -89,13 +91,42 @@ def build_module_index(parsed_json_path: str, output_path: str) -> dict:
         elif ftype == 'LOCATORS':
             entry['locators_file'] = fpath
         elif ftype == 'CONSTANTS':
-            entry['constants_file'] = fpath
+            # Distinguish AnnotationConstants from regular Constants
+            if 'AnnotationConstants' in class_name:
+                entry['annotation_constants_file'] = fpath
+            else:
+                entry['constants_file'] = fpath
         elif ftype == 'UTILS':
             if fpath not in entry['utils_files']:
                 entry['utils_files'].append(fpath)
         elif ftype == 'ROLE':
             if class_name not in entry['roles']:
                 entry['roles'].append(class_name)
+
+    # ── Discover data JSON files for each module ──────────────────────────
+    # Convention: resources/entity/data/<module>/<entity>/<entity>_data.json
+    # The parsed_json_path is under knowledge_base/raw/ — project root is 2 levels up.
+    project_root = Path(parsed_json_path).resolve().parents[2]
+    from config.project_config import PROJECT_NAME
+    resources_base = project_root / PROJECT_NAME / 'resources' / 'entity' / 'data'
+    for mp, entry in index.items():
+        parts = mp.split('/')
+        # mp format: "modules/<module>/<entity>" e.g. "modules/changes/change"
+        # or shorter: "modules/<module>" e.g. "modules/changes"
+        if len(parts) >= 3:
+            module_name = parts[1]    # e.g. "changes"
+            entity_name = parts[-1]   # e.g. "change"
+        elif len(parts) == 2 and parts[0] == 'modules':
+            module_name = parts[1]    # e.g. "changes"
+            entity_name = parts[1]    # try same name
+        else:
+            continue
+        # Try exact match first, then with trailing 's' stripped
+        for ename in [entity_name, module_name.rstrip('s')]:
+            data_json = resources_base / module_name / ename / f'{ename}_data.json'
+            if data_json.exists():
+                entry['data_json_file'] = str(data_json)
+                break
 
     total_scenarios = sum(v['scenario_count'] for v in index.values())
     result = {

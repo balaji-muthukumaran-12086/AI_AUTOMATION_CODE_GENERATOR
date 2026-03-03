@@ -58,6 +58,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 
 from agents.state import AgentState
 from agents.llm_factory import get_llm
+from agents.sdp_api_helper import SDPAPIHelper
 from config.project_config import (
     PROJECT_NAME,
     DEPS_DIR,
@@ -388,6 +389,16 @@ Reply with ONLY the category name (e.g. LOCATOR_FAILURE). No explanation."""
                 else:
                     print("[HealerAgent] Already logged in or login form not found")
 
+                # ── Create prerequisite data via API ──────────────────
+                api_helper = SDPAPIHelper()
+                prereq_entities = api_helper.create_prerequisites_sync(page, method_name)
+                prereq_context = api_helper.get_entity_context_for_llm(method_name)
+                api_cheatsheet = api_helper.get_sdp_api_cheatsheet()
+                if prereq_entities:
+                    print(f"[HealerAgent] 📦 Created {len(prereq_entities)} prerequisite entities for debugging")
+                else:
+                    print("[HealerAgent] ℹ No prerequisite entities created (no report or no preProcess calls)")
+
                 # ── Navigate to module ────────────────────────────────
                 module_name = MODULE_NAV_MAP.get(entity_class, entity_class + "s")
                 nav_url = f"{url}app/{portal}/{module_name.lower()}/"
@@ -427,6 +438,7 @@ Reply with ONLY the category name (e.g. LOCATOR_FAILURE). No explanation."""
                 locator_file_content=locator_file_content,
                 method_name=method_name,
                 entity_class=entity_class,
+                prereq_context=prereq_context,
             )
 
             if not fix or not fix.get("old_line") or not fix.get("new_line"):
@@ -518,12 +530,22 @@ Reply with ONLY the category name (e.g. LOCATOR_FAILURE). No explanation."""
         error_snippet    = self._extract_error_snippet(stdout, stderr)
         source_context   = self._read_full_source(source_files, max_chars=8000)
 
+        # Gather SDP API context for API failures
+        api_context = ""
+        if failure_type == FAILURE_API:
+            api_helper = SDPAPIHelper()
+            api_context = api_helper.get_sdp_api_cheatsheet()
+            prereq_info = api_helper.get_entity_context_for_llm(method_name)
+            if prereq_info:
+                api_context += "\n\n" + prereq_info
+
         fix = self._llm_generate_code_fix(
             error_snippet=error_snippet,
             source_context=source_context,
             method_name=method_name,
             entity_class=entity_class,
             failure_type=failure_type,
+            api_context=api_context,
         )
 
         if not fix or not fix.get("file_path"):
@@ -704,6 +726,7 @@ Reply with ONLY the category name (e.g. LOCATOR_FAILURE). No explanation."""
         locator_file_content: str,
         method_name: str,
         entity_class: str,
+        prereq_context: str = "",
     ) -> Optional[dict]:
         """
         Ask the LLM to identify the correct locator from the live accessibility
@@ -712,6 +735,8 @@ Reply with ONLY the category name (e.g. LOCATOR_FAILURE). No explanation."""
         prompt = f"""You are a Selenium locator repair expert for a Java test automation framework.
 
 A test case FAILED because a locator could not find the element in the browser.
+
+{prereq_context if prereq_context else ''}
 
 BROKEN LOCATOR HINT (from error/source):
 {broken_locator_hint}
@@ -771,15 +796,20 @@ Example:
         method_name: str,
         entity_class: str,
         failure_type: str,
+        api_context: str = "",
     ) -> Optional[dict]:
         """
         Ask the LLM to generate a code patch (old_code → new_code) for
         API/logic/compile failures.
         """
+        api_section = ""
+        if api_context:
+            api_section = f"\n\nSDP API REFERENCE (use this to understand API patterns):\n{api_context}\n"
+
         prompt = f"""You are a Java test automation expert for Zoho ServiceDesk Plus.
 
 A test has FAILED with a {failure_type}.
-
+{api_section}
 ERROR (relevant lines):
 {error_snippet}
 

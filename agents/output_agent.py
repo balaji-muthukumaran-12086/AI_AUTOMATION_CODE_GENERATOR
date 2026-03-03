@@ -30,6 +30,7 @@ from datetime import datetime
 
 from agents.state import AgentState
 from config.project_config import PROJECT_NAME
+from knowledge_base.vector_store import VectorStore
 
 
 class OutputAgent:
@@ -241,6 +242,26 @@ class OutputAgent:
                     'coverage_gaps': state.get('coverage_gaps', []),
                     'duplicate_warnings': state.get('duplicate_warnings', []),
                 }, f, indent=2)
+
+        # ── Index generated scenarios into ChromaDB ────────────────────
+        #    This ensures the Coverage Agent detects them as duplicates
+        #    if the same feature document is fed again.
+        try:
+            all_scenarios = []
+            for gen in generated:
+                mp = gen.get('module_path', '')
+                for sc in gen.get('scenarios', []):
+                    sc_copy = dict(sc)
+                    sc_copy['module_path'] = mp
+                    all_scenarios.append(sc_copy)
+            if all_scenarios:
+                store = VectorStore(
+                    persist_dir=str(self.base / 'knowledge_base' / 'chroma_db')
+                )
+                indexed = store.upsert_generated_scenarios(all_scenarios)
+                print(f"[OutputAgent] 📥 Indexed {indexed} scenario(s) into ChromaDB for dedup", flush=True)
+        except Exception as e:
+            print(f"[OutputAgent] ⚠ ChromaDB indexing failed (non-fatal): {e}", flush=True)
 
         state['final_output_paths'] = all_output_paths
         state['generation_instructions'] = all_instructions

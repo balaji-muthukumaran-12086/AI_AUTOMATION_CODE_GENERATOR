@@ -538,6 +538,8 @@ Set<String> actions.jsonArrayToSet(JSONArray arr)
 24. runType TRAP: the annotation default is PORTAL_BASED. ALWAYS write runType=ScenarioRunType.USER_BASED explicitly. Never omit it.
 25. Owner values: use ONLY — OwnerConstants.UMESH_SUDAN, ANTONYRAJAN_D, RAJESHWARAN_A, MUTHUSIVABALAN_S, VINUTHNA_K, NANTHAKUMAR_G, VIGNESH_E, RUJENDRAN, THILAK_RAJ, PURVA_RAJESH, VEERAVEL, JAYA_KUMAR.
 26. Data JSON: every entry MUST have {"data":{...}} wrapper. Lookup fields must be {"name":"Value"} objects, NOT flat strings. Never omit the wrapper.
+27. DATA REUSE: NEVER create new *_data.json entries or DataConstants if existing ones provide the same entity data (e.g. creating a change). Check the "Existing Data JSON Keys" and "Existing Annotation Constants" sections in context. Reuse existing keys for preProcess group data — only create new entries for genuinely new UI test data that doesn't exist yet.
+28. AnnotationConstants.Data reuse: dataIds values MUST reference existing constants from AnnotationConstants.Data interface. Only add new constants if no existing one matches the required API setup data.
 """
 
 
@@ -569,7 +571,14 @@ CRITICAL RULES:
    // ===== ADD TO: <ClassName>.java =====
    // ===== ADD TO: <ClassNameBase>.java =====
 
-TOOL USAGE: list_dir → read key files → grep_search to verify methods → write code.
+DATA REUSE (CRITICAL — prevents duplicate data entries):
+10. ALWAYS read *_data.json AND *AnnotationConstants.java BEFORE writing any data entries.
+11. NEVER create new JSON data entries if an existing key provides the same entity data.
+    For example: if "create_change_API" already exists for creating a change, REUSE it.
+12. NEVER add new AnnotationConstants.Data constants if an existing one matches.
+13. Only create new *_data.json entries for genuinely new UI test data with unique field combinations.
+
+TOOL USAGE: list_dir → read key files (including *_data.json, *AnnotationConstants.java) → grep_search to verify methods → write code.
 """.strip()
 
     def __init__(
@@ -771,8 +780,11 @@ TOOL USAGE: list_dir → read key files → grep_search to verify methods → wr
             f"   — especially the preProcess() method to understand available groups.\n"
             f"3. Use `grep_search` to find method signatures in *APIUtil.java / *ActionsUtil.java "
             f"   before referencing them.\n"
-            f"4. Use `read_file` to check *_data.json for existing data keys and placeholders.\n"
-            f"5. After gathering context via tools, produce the complete two-piece Java output:\n"
+            f"4. Use `read_file` to check *AnnotationConstants.java for existing Data constants "
+            f"   (MUST reuse existing ones in dataIds — do NOT invent new constants).\n"
+            f"5. Use `read_file` to check *_data.json for existing data keys and placeholders "
+            f"   (MUST reuse existing entity creation entries — do NOT create duplicates).\n"
+            f"6. After gathering context via tools, produce the complete two-piece Java output:\n"
             f"   // ===== ADD TO: <Entity>.java =====\n"
             f"   // ===== ADD TO: <Entity>Base.java =====\n\n"
             f"Start by listing the module directory to understand what files exist."

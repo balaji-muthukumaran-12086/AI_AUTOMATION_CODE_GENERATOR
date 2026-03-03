@@ -19,7 +19,9 @@ from agents.state import AgentState
 from knowledge_base.vector_store import VectorStore
 
 
-DUPLICATE_THRESHOLD = 0.92   # cosine similarity >= this → likely duplicate
+DUPLICATE_THRESHOLD = 0.90   # cosine similarity >= this → likely duplicate
+                             # (lowered from 0.92 — enriched query format gives ~0.91
+                             #  for exact descriptions when method_name differs)
 GAP_THRESHOLD       = 0.70   # cosine similarity < this  → genuine new scenario
 
 
@@ -39,10 +41,21 @@ class CoverageAgent:
         if self.store.scenario_count == 0:
             return {'status': 'new', 'similar': [], 'score': 0.0}
 
-        results = self.store.search_scenarios(description, top_k=5, module_filter=module_path)
+        # Build an enriched query that matches the embed_text format used by
+        # both rag_indexer (existing scenarios) and upsert_generated_scenarios
+        # (AI-generated).  This dramatically improves cosine similarity for
+        # exact-match detection (raw description alone scores ~0.73 vs 1.0).
+        entity_parts = module_path.replace('modules/', '').split('/')
+        entity = entity_parts[-1] if entity_parts else ''
+        enriched_query = (
+            f"Module: {module_path} | Entity: {entity} | "
+            f"Description: {description}"
+        )
+
+        results = self.store.search_scenarios(enriched_query, top_k=5, module_filter=module_path)
         if not results:
             # try without module filter
-            results = self.store.search_scenarios(description, top_k=5)
+            results = self.store.search_scenarios(enriched_query, top_k=5)
 
         if not results:
             return {'status': 'new', 'similar': [], 'score': 0.0}

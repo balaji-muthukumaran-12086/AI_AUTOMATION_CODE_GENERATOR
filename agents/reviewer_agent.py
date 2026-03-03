@@ -102,6 +102,12 @@ CHECKS = [
         'required': False,
         'message': 'System.out.println found — use addCaseFlow/report methods instead',
     },
+    {
+        'name': 'no_new_data_json_entry',
+        'pattern': r'// ===== ADD TO:.*_data\.json',
+        'required': False,
+        'message': 'New _data.json entries detected — verify they do not duplicate existing keys. Reuse existing data entries when possible.',
+    },
 ]
 
 
@@ -138,6 +144,10 @@ FRAMEWORK RULES (verify every one):
     or SOLUTION_ADD_APPROVE (approved) — NOT actions.formBuilder.submit()
 21. ALWAYS use SolutionActionsUtil.pageSetup() for list view setup, and SolutionActionsUtil.searchSolutionUsingId()
     for searching. Never inline this logic in Base methods. Add new methods to ActionsUtil if missing.
+22. DATA REUSE: Flag any new *_data.json entries or AnnotationConstants.Data constants that duplicate
+    existing entity creation data. For example, if the module already has "create_change_API" for creating
+    a change via preProcess, a new entry like "create_change_for_linking_api" that does the same thing
+    is a duplication ERROR. Only genuinely new field combinations justify a new data entry.
 
 Review the provided Java code and identify all issues.
 

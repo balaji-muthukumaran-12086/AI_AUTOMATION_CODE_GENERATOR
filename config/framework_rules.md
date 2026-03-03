@@ -457,6 +457,42 @@ $(custom_KEY)                        → shorthand: returns value stored in Loca
 
 ---
 
+## SECTION 8b — DATA REUSE (CRITICAL — prevents duplicate data entries)
+
+### 8b.1 ALWAYS check existing data before creating new entries
+
+Before creating ANY new `*_data.json` entry, `DataConstants` constant, or `AnnotationConstants.Data` constant:
+1. Read the existing `*_data.json` file and list all top-level keys
+2. Read the existing `*AnnotationConstants.java` → `Data` interface for all preProcess data IDs
+3. Read the existing `*DataConstants.java` for all `TestCaseData` constants
+
+### 8b.2 REUSE existing entries when field payloads match
+
+If an existing data JSON entry provides the same entity creation data (e.g. creating a basic change,
+creating a basic incident request), **REUSE that key** — do NOT create a new one.
+
+```
+# WRONG — new entry duplicates existing "create_change_API"
+"create_change_for_linking_api": { "data": { "title": "...", "status": {"name": "Open"} } }
+
+# CORRECT — reuse the existing key in dataIds and preProcess
+dataIds = { ChangeAnnotationConstants.Data.CREATE_CHANGE_API }
+```
+
+### 8b.3 Only create new entries for genuinely new data
+
+A new `*_data.json` entry is justified ONLY when:
+- The field combination is meaningfully different (e.g. different template, different status)
+- No existing key covers the same API setup payload
+- It's UI test data (not preProcess API data) with unique assertions
+
+### 8b.4 FORBIDDEN patterns
+- Creating a new `create_<entity>_*` entry when one already exists with matching fields
+- Adding new `AnnotationConstants.Data` constants that map to existing JSON keys
+- Duplicating preProcess API setup data under a different name
+
+---
+
 ## SECTION 9 — DataConstants PATTERN
 
 ### 9.1 TestCaseData declaration (REQUIRED)

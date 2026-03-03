@@ -45,22 +45,20 @@ The system takes a feature document / help document / use-case sheet as input an
 │                         │                         Agent                  │
 │                         │                         (validate)             │
 │                         │                              │                 │
-│                         │                         Output                 │
-│                         │                         Agent                  │
-│                         │                         (write files)          │
-│                         │                              │                 │
 │                         │                         Runner                 │
 │                         │                         Agent                  │
 │                         │                         (compile + run)        │
 │                         │                              │                 │
 │                         │                    FAILED    │    PASSED        │
 │                         │                       ↓      │      ↓          │
-│                         │                    Healer    │    → UI shows   │
-│                         │                    Agent     │      ✅ result   │
-│                         │                    (Playwright                 │
-│                         │                     self-heal)                 │
-│                         │                         │                      │
-│                         └─────────────────────────┘                      │
+│                         │                    Healer    │    Output        │
+│                         │                    Agent     │    Agent         │
+│                         │                    (Playwright│   (write files) │
+│                         │                     self-heal)│       │         │
+│                         │                         │     │   → UI shows   │
+│                         │                         │     │     ✅ result   │
+│                         │                         │     │                 │
+│                         └─────────────────────────┘     │                 │
 │                                     ↓                                    │
 │                         UI responds with:                                │
 │                         - File names changed                             │
@@ -75,7 +73,7 @@ The system takes a feature document / help document / use-case sheet as input an
 ## 📋 Phase-wise Execution Plan
 
 ### ✅ Phase 0 — Foundation (COMPLETED)
-- LangGraph pipeline: Planner → Coverage → Coder → Reviewer → Output → Runner
+- LangGraph pipeline: Planner → Coverage → Coder → Reviewer → Runner → Output
 - RunnerAgent: compile + execute AutomaterSelenium test cases
 - Knowledge base (ChromaDB vector store) seeded with existing test cases
 - LLM factory (Ollama local / OpenAI)

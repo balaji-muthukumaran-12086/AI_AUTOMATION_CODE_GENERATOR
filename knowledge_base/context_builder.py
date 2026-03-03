@@ -81,8 +81,10 @@ class ContextBuilder:
         {
           'fields':        '..java content..',
           'data_constants':'..java content..',
+          'annotation_constants': '..java content..',
           'locators':      '..java content..',
           'constants':     '..java content..',
+          'data_json_keys': ['key1', 'key2', ...],
           'scenario_samples': ['..java content..', ...],
         }
         """
@@ -94,10 +96,16 @@ class ContextBuilder:
             result['fields'] = self.read_source_file(mod['fields_file'])
         if mod.get('data_constants_file'):
             result['data_constants'] = self.read_source_file(mod['data_constants_file'])
+        if mod.get('annotation_constants_file'):
+            result['annotation_constants'] = self.read_source_file(mod['annotation_constants_file'])
         if mod.get('locators_file'):
             result['locators'] = self.read_source_file(mod['locators_file'])
         if mod.get('constants_file'):
             result['constants'] = self.read_source_file(mod['constants_file'])
+
+        # Extract top-level keys from the entity's _data.json file
+        if mod.get('data_json_file'):
+            result['data_json_keys'] = self._extract_data_json_keys(mod['data_json_file'])
 
         # Sample 2 scenario files
         scenario_samples = []
@@ -108,6 +116,18 @@ class ContextBuilder:
         result['scenario_samples'] = scenario_samples
 
         return result
+
+    def _extract_data_json_keys(self, data_json_path: str) -> list[str]:
+        """Extract top-level keys from an entity _data.json file."""
+        try:
+            p = Path(data_json_path)
+            if p.exists():
+                data = json.loads(p.read_text(encoding='utf-8', errors='ignore'))
+                if isinstance(data, dict):
+                    return list(data.keys())
+        except Exception:
+            pass
+        return []
 
     # ── Context builder ────────────────────────────────────
 
@@ -162,6 +182,22 @@ class ContextBuilder:
             lines.append("```java")
             lines.append(sources['data_constants'][:2000])
             lines.append("```")
+
+        # 4b. AnnotationConstants.java (preProcess data IDs — MUST reuse existing ones)
+        if sources.get('annotation_constants'):
+            lines.append("\n## Existing Annotation Constants (AnnotationConstants.java):")
+            lines.append("CRITICAL: Reuse these existing Data constants in dataIds={} — do NOT invent new ones.")
+            lines.append("```java")
+            lines.append(sources['annotation_constants'][:2000])
+            lines.append("```")
+
+        # 4c. Existing data JSON keys (MUST reuse — do NOT create duplicates)
+        if sources.get('data_json_keys'):
+            keys = sources['data_json_keys']
+            lines.append(f"\n## Existing Data JSON Keys ({len(keys)} entries in *_data.json):")
+            lines.append("CRITICAL: REUSE these existing data entries when they match your test's needs.")
+            lines.append("DO NOT create new JSON entries if an existing key provides the same entity data.")
+            lines.append("Keys: " + ', '.join(keys[:80]))
 
         # 5. Locators.java
         if sources.get('locators'):

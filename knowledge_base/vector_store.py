@@ -486,6 +486,73 @@ class VectorStore:
         similar = [r for r in results if (1 - r['distance']) >= threshold]
         return len(similar) > 0, similar
 
+    def upsert_generated_scenarios(self, scenarios: list[dict]) -> int:
+        """
+        Index newly generated scenarios into ChromaDB so future pipeline
+        runs can detect them as duplicates.
+
+        Each item in *scenarios* is the planner/coder dict with at least:
+          - description (str)       — mandatory, used as embed text
+        Plus any of: method_name, type, group, priority, run_type, data_ids, tags
+
+        *module_path* is supplied per-item (from the generated_code entry).
+
+        Returns the count of scenarios actually upserted.
+        """
+        if not scenarios:
+            return 0
+
+        ids, docs, metas = [], [], []
+        ts = __import__('time').time_ns()  # tie-breaker for id generation
+
+        for i, sc in enumerate(scenarios):
+            desc = sc.get('description', '').strip()
+            if not desc:
+                continue
+
+            module_path = sc.get('module_path', '')
+            method_name = sc.get('method_name', '')
+            # Build a deterministic id from description (allows re-runs to upsert, not duplicate)
+            import hashlib
+            desc_hash = hashlib.sha256(desc.encode()).hexdigest()[:12]
+            doc_id = f"gen_{module_path.replace('/', '_')}_{desc_hash}"
+
+            entity_parts = module_path.replace('modules/', '').split('/')
+            module = entity_parts[0] if entity_parts else ''
+            entity = entity_parts[-1] if entity_parts else ''
+
+            embed_text = (
+                f"Module: {module_path} | Entity: {entity} | "
+                f"Method: {method_name} | Description: {desc}"
+            )
+
+            ids.append(doc_id)
+            docs.append(embed_text)
+            metas.append({
+                'module_path': module_path,
+                'entity': entity,
+                'module': module,
+                'class_name': sc.get('class_name', ''),
+                'method_name': method_name,
+                'description': desc,
+                'priority': sc.get('priority', 'MEDIUM'),
+                'run_type': sc.get('run_type', 'USER_BASED'),
+                'tags': ','.join(sc.get('tags', [])),
+                'group': sc.get('group', ''),
+                'source': 'ai_generated',
+            })
+
+        if not ids:
+            return 0
+
+        self._scenarios.upsert(
+            ids=ids,
+            documents=docs,
+            metadatas=metas,
+        )
+        print(f"[VectorStore] 📥 Indexed {len(ids)} generated scenario(s) into ChromaDB")
+        return len(ids)
+
     @property
     def scenario_count(self) -> int:
         return self._scenarios.count()

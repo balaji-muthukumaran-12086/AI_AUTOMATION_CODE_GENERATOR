@@ -46,6 +46,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 
 from agents.llm_factory import get_llm
 from agents.state import AgentState
+from agents.sdp_api_helper import SDPAPIHelper
 
 # ── Defaults ───────────────────────────────────────────────────────────────────
 DEFAULT_URL         = "https://sdpodqa-auto1.csez.zohocorpin.com:9090/"
@@ -289,6 +290,16 @@ class UIScoutAgent:
             # ── Login ───────────────────────────────────────────────────
             await self._login(page, url, portal, admin_email)
 
+            # ── Create prerequisite test data via API ─────────────────
+            #    Detail-view and association flows need existing entities
+            api_helper = SDPAPIHelper()
+            prereq_entities = await api_helper.create_prerequisites_async(
+                page,
+                module_path=module_path,
+            )
+            if prereq_entities:
+                print(f"[UIScoutAgent]   📦 Created {len(prereq_entities)} entities for scouting")
+
             # ── Run each flow ──────────────────────────────────────────
             for flow in scout_plan.get("flows", []):
                 try:
@@ -300,6 +311,11 @@ class UIScoutAgent:
                         observations.append(obs)
                 except Exception as ex:
                     print(f"[UIScoutAgent]   ⚠ Flow {flow['name']} failed: {ex}")
+
+            # ── Clean up created entities ─────────────────────────────
+            if prereq_entities:
+                print("[UIScoutAgent]   🧹 Cleaning up scouting prerequisite data...")
+                await api_helper.cleanup_entities_async(page, prereq_entities)
 
             await browser.close()
 
