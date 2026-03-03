@@ -22,7 +22,7 @@ import os
 sys.path.insert(0, os.path.dirname(__file__))
 
 from config.project_config import (PROJECT_NAME, PROJECT_BIN, BASE_DIR as _BASE_DIR, DEPS_DIR as _DEPS_DIR,
-                                   SDP_URL, SDP_ADMIN_EMAIL, SDP_PORTAL)
+                                   SDP_URL, SDP_ADMIN_EMAIL, SDP_EMAIL_ID, SDP_PORTAL, SDP_ADMIN_PASS)
 
 # ── Configure here ────────────────────────────────────────────────────────
 
@@ -44,11 +44,12 @@ the copied problem is searchable in the Problems listview.
 
 RUN_CONFIG = {
     "entity_class":  "ChangeDetailsView",
-    "method_name":   "verifyAttachParentChangePopup",
+    "method_name":   "attachDetachChildChangesAndVerifyListView",
     "url":           SDP_URL,
     "admin_mail_id": SDP_ADMIN_EMAIL,
-    "email_id":      SDP_ADMIN_EMAIL,
+    "email_id":      SDP_EMAIL_ID,
     "portal_name":   SDP_PORTAL,
+    "password":      SDP_ADMIN_PASS,
     "skip_compile":  True,   # keep True — full compile is broken
 }
 
@@ -124,6 +125,7 @@ if __name__ == "__main__":
             email_id=RUN_CONFIG.get("email_id"),
             portal_name=RUN_CONFIG.get("portal_name"),
             skip_compile=RUN_CONFIG.get("skip_compile", True),
+            password=RUN_CONFIG.get("password"),
         )
 
         print(f"\n{'='*60}")

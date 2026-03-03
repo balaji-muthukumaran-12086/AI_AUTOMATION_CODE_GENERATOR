@@ -1079,6 +1079,328 @@ Verifies the 'Filter by Data Type: Numeric' functionality on the Additional Fiel
 
 ---
 
+## 23. REST API ARCHITECTURE — `RestAPI.java` Complete Analysis
+
+_Source: `AutomaterSeleniumFramework/src/com/zoho/automater/selenium/base/client/api/RestAPI.java` (503 lines)_
+
+### Architecture: Browser-Based API Execution
+
+> **Critical**: All REST API calls go through the **browser's JavaScript engine** using Selenium `JavascriptExecutor`.
+> There is NO direct HTTP client. The browser must have an **active logged-in session** for API calls to work.
+
+```
+Java: RestAPI.triggerRestAPI(method, apiPath, formData)
+  │
+  ├─ Maps DELETE → "del" string (SDP convention)
+  ├─ Encodes formData: 'key=' + encodeURIComponent(JSON.stringify(value))
+  ├─ Builds JS: "return sdpAPICall('apiPath','method','encodedData').responseJSON"
+  │
+  └─► Selenium executeScript(js) → browser executes synchronous XHR
+       └─ Returns JSON string → parsed to JSONObject
+```
+
+### Core Public Methods
+
+```java
+// CREATE — returns entity ID string
+String create(String entityName, String apiPath, JSONObject inputData)
+// → POST → extracts response[entityName]["id"]
+// → AUTO-REGISTERS entity in DataUtil.cleanUpIds for cleanup
+
+// CREATE — returns full entity response object
+JSONObject createAndGetResponse(String entityName, String apiPath, JSONObject inputData)
+// → POST → returns response[entityName] JSONObject
+// → MOST COMMON for preProcess (stores ID, name, displayID from response)
+
+// CREATE — returns entire raw response (no unwrapping)
+JSONObject createAndGetFullResponse(String apiPath, JSONObject inputData)
+// → POST → returns entire response JSONObject
+
+// READ
+JSONObject get(String apiPath, JSONObject inputData)
+// → GET → returns response object
+
+// UPDATE
+JSONObject update(String apiPath, JSONObject inputData)
+// → PUT → returns response object
+
+// DELETE
+boolean delete(String apiPath)
+// → DELETE → returns true if status_code == 2000
+
+// SEARCH — by criteria
+String getEntityIdUsingSearchCriteria(String pluralName, String apiPath, JSONObject inputData)
+// → GET with search criteria → returns first matching entity ID
+
+// SEARCH — by field value (2-step: metainfo → search)
+String getEntityIDUsingFieldValue(String apiPath, String fieldName, String value)
+// → First GETs metainfo to find search column name → then searches by that field
+```
+
+### Response Format
+```json
+{
+  "entity_name": { "id": "123", "title": "...", ... },
+  "response_status": { "status_code": 2000, "status": "success" }
+}
+```
+- `status_code == 2000` → success
+- `status_code != 2000` → throws `BadResponseException`
+
+### Auto-Cleanup Mechanism
+Every `POST` (create) call automatically pushes the entity ID + API path to `DataUtil.cleanUpIds` stack.
+The framework's `postProcess` or test lifecycle calls cleanup on these IDs automatically.
+When writing custom `postProcess`, you can also call `restAPI.delete("changes/".concat(id))` directly.
+
+### Input Data Wrapping Pattern
+```java
+// Standard pattern used in Change.java:
+JSONObject inputData = getTestCaseDataUsingCaseId(dataId);  // Loads from JSON file, resolves placeholders
+JSONObject response = restAPI.createAndGetResponse(
+    getName(),           // entity name (e.g., "change")
+    getModuleName(),     // module API path (e.g., "changes")
+    getInputData(inputData)  // wraps with module-specific envelope
+);
+
+// Alternative: when creating entities from other modules in preProcess
+JSONObject inputData = DataUtil.getInputDataForRestAPI(getModuleName(), getName(), dataId, fields);
+// → Loads JSON, resolves placeholders, wraps as {"change": {...}}
+```
+
+### Key Gotchas
+1. **Session context**: preProcess runs in admin session (APIs work); method body runs in user session (user may lack permissions)
+2. **Null response**: If `sdpAPICall` returns `undefined`/`null`, `responseString` is null → NPE in callers
+3. **Browser required**: Must be on a valid SDP page for JS execution to work
+4. **DELETE mapping**: Framework maps `DELETE` HTTP method to `"del"` string for `sdpAPICall`
+5. **Form data encoding**: Values are JSON.stringify'd then encodeURIComponent'd
+6. **No direct HTTP**: Cannot use RestAPI outside browser context (no curl/OkHttp)
+7. **Auto-cleanup**: POST calls register for cleanup — be aware in postProcess to avoid double-delete
+
+---
+
+## 24. ClientFrameworkActions — Complete Component Hierarchy
+
+_Source: `AutomaterSeleniumFramework/src/com/zoho/automater/selenium/base/client/ClientFrameworkActions.java` (88 lines)_
+
+### Class Hierarchy
+```
+Actions (base)
+  └── SDPCloudActions
+        └── ClientFrameworkActions (final, singleton)
+              ├── navigate    : Navigate
+              ├── validate    : Validator
+              ├── formBuilder : FormBuilder
+              ├── listView    : ListView
+              ├── detailsView : DetailsView
+              ├── popUp       : PopUp
+              │     ├── popUp.formBuilder : FormBuilderForPopUp
+              │     └── popUp.listView    : ListViewForPopUp
+              ├── admin       : Admin
+              └── windowManager : WindowManager
+```
+
+### Access Pattern
+```java
+// All component access is through 'actions' instance:
+actions.navigate.toModule(moduleName);
+actions.validate.textContent(locator, expected);
+actions.formBuilder.fillInputForAnEntity(true, fields, inputData);
+actions.listView.columnSearch("Title", value);
+actions.detailsView.clickSubTab("notes");
+actions.popUp.listView.columnSearch("Subject", value);
+actions.popUp.formBuilder.fillInputForAnEntity(true, fields, inputData);
+actions.admin.navigateToAdminPage(subModule);
+actions.windowManager.switchToNewTab(10);
+
+// Direct action methods (inherited from SDPCloudActions):
+actions.click(locator);
+actions.type(locator, value);
+actions.getText(locator);
+actions.isElementPresent(locator);
+actions.isElementPresent(locator, timeoutSeconds);
+actions.clickByName(buttonName);
+actions.clickByNameSpan(buttonName);
+actions.setTableView(viewName);
+actions.waitForAjaxComplete();
+```
+
+---
+
+## 25. PopUp & ListViewForPopUp — Complete Method Reference
+
+_Sources:_
+- `AutomaterSeleniumFramework/src/.../components/popup/PopUp.java` (302 lines)
+- `AutomaterSeleniumFramework/src/.../components/popup/ListViewForPopUp.java` (149 lines)
+- `AutomaterSeleniumFramework/src/.../components/popup/FormBuilderForPopUp.java`
+
+### PopUp Methods (`actions.popUp`)
+```java
+void clickByName(String buttonName)         // clicks button by name attribute inside popup
+void clickByNameInput(String name)          // clicks input by name inside popup
+void clickByNameSubmit(String name)         // clicks submit by name inside popup
+void clickByNameSpan(String name)           // clicks span by name inside popup
+boolean isColumnSelected(String column)     // checks if column is selected in popup
+void columnChooser(String column, boolean enable)  // enable/disable column in popup
+void setTableSettings(JSONObject data, String path) // configure table settings in popup
+void selectFilterUsingSearch(String option)  // select filter by typing and searching
+void selectFilterWithoutSearch(String option) // select filter by direct click
+```
+
+### ListViewForPopUp Methods (`actions.popUp.listView`)
+```java
+// Filter selection
+void selectFilterUsingSearch(String option)
+// → clicks PopupLocators.BTN_ALL_FILTER → actions.formBuilder.typeAndSelectOption(option)
+// Uses Select2 type-and-select pattern
+
+void selectFilterWithoutSearch(String option)
+// → clicks PopupLocators.BTN_ALL_FILTER → clicks PopupLocators.FILTERVALUE.apply(option)
+// Direct click on filter option text
+
+// Column search (MOST COMMONLY USED)
+void columnSearch(String column, String value)
+// → clicks PopupLocators.ICON_SEARCH (search icon)
+// → finds column index in TABLE_HEADER
+// → types value in SEARCH_TABLE_HEADER(index) input
+// Works for any popup with standard table layout
+```
+
+### Popup Locator Scoping — CRITICAL
+
+All framework popup locators are scoped to `slide-down-popup` class:
+```xpath
+//*[contains(concat(' ', normalize-space(@class), ' '), ' slide-down-popup')][last()][contains(@class,'slide-down-popup')]
+```
+
+**This means framework PopUp methods work for:**
+- Standard SDP attach popups (requests, problems, projects)
+- Any popup using `slide-down-popup` CSS class
+
+**This does NOT work for:**
+- CH-286 association dialog (uses `association-dialog-popup changes-association` CSS class)
+- Custom jQuery UI dialog popups with different class names
+
+### When Framework Popup Methods Work vs Custom Locators
+
+| Scenario | Framework popup methods? | Why |
+|----------|------------------------|-----|
+| Attach Request to Change | ✅ Yes | Uses `slide-down-popup` |
+| Attach Problem to Change | ✅ Yes | Uses `slide-down-popup` |
+| CH-286 Link Parent/Child Change | ⚠️ Partial | `columnSearch()` works (table structure same), but `selectFilter*()` fails (different popup class, Select2 filter not in `slide-down-popup`) |
+
+**Pattern for CH-286 (and similar non-standard popups):**
+```java
+// Column search in popup — WORKS (table structure is compatible)
+actions.popUp.listView.columnSearch("Title", changeName);
+
+// Filter selection — DOES NOT WORK (popup class mismatch)
+// Must use custom locators:
+actions.click(ChangeLocators.LinkingChangePopup.FILTER_DROPDOWN);
+actions.click(ChangeLocators.LinkingChangePopup.FILTER_OPTION.apply("All Changes"));
+```
+
+---
+
+## 26. Select2 Dropdown Handling — Framework Patterns
+
+### FormBuilder.typeAndSelectOption() Flow
+```java
+public void typeAndSelectOption(String value) throws SeleniumException {
+    actions.type(TYPE_DROPDOWN_SEARCH_INPUT, value);   // xpath: //*[@id='select2-drop']//input
+    actions.waitForAjaxComplete();
+    actions.click(OPTION_ELEMENT.apply(value));         // xpath: //*[@id='select2-drop']//li//*[text()='value']
+}
+```
+
+### Key Select2 Locators (from ClientFrameworkLocators.FormBuilderLocators)
+```java
+// Search input inside open Select2 dropdown
+TYPE_DROPDOWN_SEARCH_INPUT = "//*[@id='select2-drop']/*[@class='select2-search']/input"
+
+// Option element (renders at BODY level, NOT inside popup container)
+OPTION_ELEMENT = "//*[@id='select2-drop']/descendant::*[@class='select2-results']//li[not(contains(@class,'unselectable'))]/descendant::*[text()='<value>']"
+
+// Close mask (click to dismiss open dropdown)
+CLOSE_POP_UP = By.id("select2-drop-mask")
+```
+
+### Select2 Behavior Notes
+1. **Options render at body level**: Select2 appends its dropdown `#select2-drop` directly to `<body>`, NOT inside the parent popup/dialog — this means `OPTION_ELEMENT` works regardless of which popup opened the Select2
+2. **Search triggers AJAX**: After typing, `waitForAjaxComplete()` is needed before clicking option
+3. **Only one Select2 dropdown open at a time**: The framework's locator (`#select2-drop`) targets whichever one is currently open
+4. **Close with mask**: Click `select2-drop-mask` to dismiss without selecting
+
+### Reusing Select2 Locators in Custom Popups
+Even when framework PopUp methods don't work (wrong popup class), you can still reuse Select2 locators:
+```java
+// ✅ Custom popup trigger + framework Select2 option locator
+actions.click(CustomPopup.MY_SELECT2_TRIGGER);
+actions.click(ClientFrameworkLocators.FormBuilderLocators.OPTION_ELEMENT.apply("All Changes"));
+
+// ✅ Or define module-specific option locators matching the same Select2 pattern
+// (This is what ChangeLocators.LinkingChangePopup.FILTER_OPTION does)
+```
+
+---
+
+## 27. Existing Entity Creation Patterns — Reuse Over Reinvent
+
+### The Standard Pattern (Change.java example)
+```java
+// In Change.java:
+public JSONObject createChangeGetResponse(String dataId) throws Exception {
+    JSONObject inputData = getTestCaseDataUsingCaseId(dataId);           // Load JSON + resolve placeholders
+    JSONObject response = restAPI.createAndGetResponse(
+        getName(),                // "change"
+        getModuleName(),          // "changes"
+        getInputData(inputData)   // Wraps as {"change": {...}}
+    );
+    LocalStorage.store(getName(), response.optString("id"));
+    LocalStorage.store("changeId", response.optString("id"));
+    LocalStorage.store("changeName", response.optString("title"));
+    LocalStorage.store("changeDisplayID", ...);
+    LocalStorage.store("changeDisplayValue", ...);
+    return response;
+}
+```
+
+### Creating Additional Entities in preProcess
+When creating multiple entities of the SAME type (e.g., 3 changes for linking tests):
+```java
+// First change — use the standard method
+createChangeGetResponse(dataIds[0]);
+
+// Additional changes — call DataUtil.getInputDataForRestAPI() for fresh placeholder resolution
+JSONObject targetData = DataUtil.getInputDataForRestAPI(getModuleName(), getName(), dataIds[0], fields);
+JSONObject targetResponse = restAPI.createAndGetResponse(getName(), getModuleName(), getInputData(targetData));
+// Store with numbered keys
+LocalStorage.store("targetChangeId1", targetResponse.optString("id"));
+LocalStorage.store("targetChangeName1", targetResponse.optString("title"));
+```
+
+**Why DataUtil.getInputDataForRestAPI?**
+- Calling `getTestCaseDataUsingCaseId(dataId)` twice with the same `dataId` would return the same resolved data (same `$(unique_string)` timestamp)
+- `DataUtil.getInputDataForRestAPI()` re-resolves placeholders, generating unique values each time
+
+### RULE: Never Create Custom API Utility Methods When Standard Patterns Exist
+```java
+// ❌ WRONG — Creating ChangeAPIUtil.createChange() when Change.createChangeGetResponse() exists
+public static void createChange(String dataId) { ... }
+
+// ✅ CORRECT — Use the parent class method
+createChangeGetResponse(dataIds[0]);
+
+// ❌ WRONG — Manually constructing API calls in test methods
+JSONObject body = new JSONObject().put("change", new JSONObject().put("title", "..."));
+restAPI.triggerRestAPI(Method.POST, "changes", body);
+
+// ✅ CORRECT — Use the framework's data layer
+JSONObject inputData = getTestCaseDataUsingCaseId(dataId);
+restAPI.createAndGetResponse(getName(), getModuleName(), getInputData(inputData));
+```
+
+---
+
 ## LINKING CHANGES (CH-286) — Parent-Child Association Pattern
 
 ### Feature Overview
@@ -1144,6 +1466,41 @@ ChangeAPIUtil.unlinkChildChanges(parentChangeId, "id1,id2");
 | `verifyAttachChildChangePopup` | 018-019 | Child popup UI elements |
 | `attachDetachChildChangesAndVerifyListView` | 002-004 | Full child flow + list view |
 
+### Popup Pattern: CH-286 vs Standard SDP Popups
+
+**Standard SDP association popups** (Attach Request, Problem, etc.):
+- Container: `slide-down-popup` class
+- Filter trigger: `requestnamecss` / `requestnameanc` class spans
+- Filter options: `filter-search-menu` div with filter text spans
+- Framework methods: `actions.popUp.listView.selectFilterWithoutSearch()` ✅
+
+**CH-286 Linking Change popup** (Attach Parent/Child Change):
+- Container: `association-dialog-popup changes-association` class (jQuery UI dialog)
+- Filter trigger: Select2 widget (`select2-chosen` span inside dialog)
+- Filter options: Select2 dropdown (`select2-result-label` div at body level)
+- Framework methods: `actions.popUp.listView.columnSearch()` ✅ (table structure same), but `selectFilter*()` ❌ (different container class)
+
+**Consequence**: Linking Change popups need custom `FILTER_DROPDOWN` and `FILTER_OPTION` locators in `ChangeLocators.LinkingChangePopup`, but can reuse `actions.popUp.listView.columnSearch()` for table search.
+
+### Existing Association Test Pattern (from DetailsView.java line 112+)
+```java
+// Pattern from attachDetachRequestCausedByChangeRHS():
+actions.navigate.toModule(getModuleName());
+actions.setTableView(GlobalConstants.listView.LISTVIEW);
+actions.listView.columnSearch("Title", LocalStorage.getAsString("changeName"));
+actions.navigate.toDetailsPageUsingRecordId(getEntityId());
+actions.click(ChangeLocators.ChangeDetailsview.STAGES.apply("planning"));
+actions.click(ChangeLocators.ChangeDetailsview.RHS_ASSOCIATIONS.apply(REQUESTS_CAUSED_BY_CHANGE));
+actions.click(ChangeLocators.ChangeDetailsview.ATTACH_DETACH_REQUEST.apply(REQUESTS_ATTACH));
+actions.click(ChangeLocators.Popup.CLICK_LISTVIEW_FILTERS);       // Opens filter dropdown
+actions.click(ChangeLocators.Popup.CLICK_ALL_REQUESTS_FILTERS);   // Clicks "All Requests"
+actions.popUp.listView.columnSearch("Subject", LocalStorage.getAsString("subject")); // Popup column search
+actions.click(ChangeLocators.ChangeListview.SELECT_CHECKBOX_WITH_ENTITYID.apply(id));
+actions.clickByName(GlobalConstants.Actions.ASSOCIATE);
+```
+
+**Key difference from Linking Changes**: RHS association tests use `STAGES.apply("planning")` → `RHS_ASSOCIATIONS` pattern; Linking Changes uses LHS `LHS_ASSOCIATION_TAB` → `ATTACH_BUTTON_DROPDOWN` → `ATTACH_PARENT_CHANGE_OPTION` pattern.
+
 ### Learnings for Coder Agent
 1. **LHS vs RHS**: Association tabs on LHS are navigated via `actions.click(LHS_ASSOCIATION_TAB)`, NOT via RHS accordion pattern
 2. **Radio vs Checkbox**: Parent popup uses `SELECT_RADIO_WITH_ENTITYID` (radio), child uses `SELECT_CHECKBOX_WITH_ENTITYID` (checkbox). Never mix these.
@@ -1151,5 +1508,8 @@ ChangeAPIUtil.unlinkChildChanges(parentChangeId, "id1,id2");
 4. **preProcess creates 3 changes**: 1 source (the change we navigate to) + 2 targets (potential parents/children) — stored in LocalStorage with numbered keys
 5. **Popup column search**: Use `actions.popUp.listView.columnSearch()` (not `actions.listView.columnSearch()`) when searching inside a popup
 6. **Confirmation dialog pattern**: `actions.validate.confirmationBoxTitleAndConfirmationText("Confirm", "Do you want to detach")` + `actions.clickByNameSpan(GlobalConstants.Actions.YES)`
+7. **Filter selection in non-standard popups**: When popup class differs from `slide-down-popup`, define custom filter locators matching the specific popup container (e.g., `association-dialog-popup`) but reuse Select2 `OPTION_ELEMENT` pattern since it renders at body level
+8. **Entity creation reuse**: Always use `createChangeGetResponse(dataId)` from Change.java super class; for additional entities in preProcess, use `DataUtil.getInputDataForRestAPI()` + `restAPI.createAndGetResponse()` with numbered LocalStorage keys
+9. **Existing popup locators pattern**: Each module defines its own popup locators in `ChangeLocators.Popup.*`, `ChangeLocators.LinkingChangePopup.*` etc. — these are module-specific, not framework-level
 
 ---

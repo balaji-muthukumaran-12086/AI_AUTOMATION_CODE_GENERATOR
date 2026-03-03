@@ -62,13 +62,17 @@ FIREFOX_BINARY   = _os.environ.get("FIREFOX_BINARY",    _os.path.join(_DRIVERS_D
 GECKODRIVER_PATH = _os.environ.get("GECKODRIVER_PATH",  _os.path.join(_DRIVERS_DIR_DEFAULT, "geckodriver"))
 
 # ── SDP Test Application Credentials ────────────────────────────────────────
-# Used by HealerAgent (Playwright) and RunnerAgent as fallbacks when no
-# run_config is provided at runtime.
-# Override any of these in .env — do NOT commit real passwords to source control.
-SDP_URL         = _os.environ.get("SDP_URL",         "https://sdpod-am1.csez.zohocorpin.com:55091/")
-SDP_PORTAL      = _os.environ.get("SDP_PORTAL",      "portal1")
-SDP_ADMIN_EMAIL = _os.environ.get("SDP_ADMIN_EMAIL", "jaya.kumar+org1admin1t0@zohotest.com")
-SDP_ADMIN_PASS  = _os.environ.get("SDP_ADMIN_PASS",  "Zoho@135")
+# Single source of truth for server URL, portal, and credentials.
+# Used by RunnerAgent (patches StandaloneDefault.java at runtime),
+# HealerAgent (Playwright), and run_test.py (CLI runner).
+#
+# Override any of these via environment variables or .env file.
+# Do NOT commit real passwords to source control — use .env for local overrides.
+SDP_URL         = _os.environ.get("SDP_URL",         "https://sdpodqa-auto2.csez.zohocorpin.com:12493/")
+SDP_PORTAL      = _os.environ.get("SDP_PORTAL",      "revampis")
+SDP_ADMIN_EMAIL = _os.environ.get("SDP_ADMIN_EMAIL", "automater-sdpcloudqa+rs2@zohotest.com")
+SDP_EMAIL_ID    = _os.environ.get("SDP_EMAIL_ID",    "automater-sdpcloudqa+rs2sdp-sdguest@zohotest.com")
+SDP_ADMIN_PASS  = _os.environ.get("SDP_ADMIN_PASS",  "Sdpg2@2025")
 
 # ── Phase 5 — Pipeline Monitoring ─────────────────────────────────────────
 # Per-agent execution timeout in seconds. OrchestratorAgent (future) will kill

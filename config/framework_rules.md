@@ -1194,6 +1194,150 @@ System.setProperty("webdriver.gecko.driver", "/path/to/geckodriver");
 
 ---
 
+## SECTION 21 — REST API USAGE RULES
+
+_Learned from: analysis of RestAPI.java (503 lines), Change.java preProcess patterns, ClientFrameworkActions hierarchy | Date: 2026-03-03_
+
+### 21.1 All API calls go through browser JavaScript (REQUIRED understanding)
+
+REST API calls in this framework use `sdpAPICall()` JavaScript function executed via Selenium `JavascriptExecutor`. There is **no direct HTTP client**.
+
+```java
+// ✅ CORRECT — Use RestAPI instance methods
+JSONObject response = restAPI.createAndGetResponse(getName(), getModuleName(), getInputData(inputData));
+
+// ❌ WRONG — Never try to use HttpClient, OkHttp, or curl
+HttpClient client = HttpClient.newHttpClient();  // DOES NOT EXIST in this framework
+```
+
+### 21.2 Reuse existing entity creation methods from super class (REQUIRED)
+
+Every entity has a standard creation method in its parent class (e.g., `Change.createChangeGetResponse()`). **Always use it** instead of creating custom API utility methods.
+
+```java
+// ✅ CORRECT — Use the parent class method
+createChangeGetResponse(dataIds[0]);
+
+// ❌ WRONG — Reinventing the creation pattern
+ChangeAPIUtil.createChange(dataIds[0]);  // Unnecessary if createChangeGetResponse exists
+
+// ✅ CORRECT — For additional entities of same type, use DataUtil for fresh placeholders
+JSONObject targetData = DataUtil.getInputDataForRestAPI(getModuleName(), getName(), dataIds[0], fields);
+JSONObject targetResponse = restAPI.createAndGetResponse(getName(), getModuleName(), getInputData(targetData));
+```
+
+### 21.3 preProcess runs in admin session; test methods run in user session (CRITICAL)
+
+```java
+// ✅ CORRECT — Create entities in preProcess (admin session = full permissions)
+protected boolean preProcess(String group, String[] dataIds) {
+    createChangeGetResponse(dataIds[0]);  // Works — admin can create
+    return true;
+}
+
+// ❌ WRONG — Creating entities via API inside test method body
+public void myTestMethod() {
+    ChangeAPIUtil.createChange(dataId);  // May FAIL — user may lack permissions
+}
+```
+
+### 21.4 Input data wrapping follows module conventions (REQUIRED)
+
+```java
+// Change module wrapping:
+getInputData(inputData)  // Returns {"change": {...}}
+
+// Request module wrapping:
+new JSONObject().put("request", inputData)  // Returns {"request": {...}}
+
+// ALWAYS use getInputData() helper — don't manually construct wrapper
+```
+
+### 21.5 Core RestAPI methods reference (use the right one)
+
+| Method | Returns | Use when |
+|--------|---------|----------|
+| `create(name, path, data)` | String ID | You only need the entity ID |
+| `createAndGetResponse(name, path, data)` | JSONObject entity | You need ID + title + other fields (MOST COMMON) |
+| `createAndGetFullResponse(path, data)` | JSONObject raw response | You need the full response envelope |
+| `get(path, data)` | JSONObject | Reading entity data |
+| `update(path, data)` | JSONObject | Updating an entity |
+| `delete(path)` | boolean | Deleting an entity |
+| `getEntityIdUsingSearchCriteria(plural, path, data)` | String ID | Finding entity by criteria |
+| `getEntityIDUsingFieldValue(path, field, value)` | String ID | Finding by specific field value |
+
+---
+
+## SECTION 22 — POPUP & DROPDOWN HANDLING RULES
+
+_Learned from: analysis of PopUp.java, ListViewForPopUp.java, ClientFrameworkLocators.java, existing association tests | Date: 2026-03-03_
+
+### 22.1 Use `actions.popUp.listView.columnSearch()` for popup table search (REQUIRED)
+
+When searching inside any popup (regardless of popup class), use the popup-specific column search:
+
+```java
+// ✅ CORRECT — Popup column search
+actions.popUp.listView.columnSearch("Title", LocalStorage.getAsString("targetChangeName1"));
+
+// ❌ WRONG — Main listview column search (searches behind popup)
+actions.listView.columnSearch("Title", LocalStorage.getAsString("targetChangeName1"));
+```
+
+### 22.2 Framework popup filter methods ONLY work for `slide-down-popup` class popups (REQUIRED)
+
+`actions.popUp.listView.selectFilterUsingSearch()` and `selectFilterWithoutSearch()` use locators scoped to `slide-down-popup`:
+```xpath
+//*[contains(concat(' ', normalize-space(@class), ' '), ' slide-down-popup')][last()]
+```
+
+**For non-standard popups** (e.g., CH-286's `association-dialog-popup`), define custom filter locators:
+
+```java
+// ✅ CORRECT for slide-down-popup (standard Attach Request/Problem popups):
+actions.popUp.listView.selectFilterWithoutSearch("All Requests");
+
+// ✅ CORRECT for association-dialog-popup (CH-286 linking changes):
+actions.click(ChangeLocators.LinkingChangePopup.FILTER_DROPDOWN);
+actions.click(ChangeLocators.LinkingChangePopup.FILTER_OPTION.apply("All Changes"));
+
+// ❌ WRONG — trying framework popup filter in non-standard popup:
+actions.popUp.listView.selectFilterWithoutSearch("All Changes"); // Will fail — wrong popup class
+```
+
+### 22.3 Select2 options render at body level — reuse OPTION_ELEMENT pattern (PREFERRED)
+
+Select2 dropdown (`#select2-drop`) is appended directly to `<body>`, not inside the popup container. This means `FormBuilderLocators.OPTION_ELEMENT` works regardless of which popup triggered the Select2:
+
+```java
+// All equivalent — Select2 options are at body level:
+actions.click(ClientFrameworkLocators.FormBuilderLocators.OPTION_ELEMENT.apply("All Changes"));
+// OR define custom locator with same pattern:
+ChangeLocators.LinkingChangePopup.FILTER_OPTION.apply("All Changes");
+// Both find: //div[contains(@class,'select2-result-label') and contains(text(),'All Changes')]
+```
+
+### 22.4 Identify popup type before choosing approach (REQUIRED check)
+
+Before writing popup interaction code, check the popup container class:
+- `slide-down-popup` → Use framework `actions.popUp.*` methods
+- `association-dialog-popup` / `ui-dialog` → Use custom locators for filter/trigger, framework for table operations
+- Always verify via DOM inspection (Playwright snapshot or browser devtools)
+
+### 22.5 Existing module-specific popup locators take precedence (PREFERRED)
+
+Each module defines its own popup locators (e.g., `ChangeLocators.Popup.*`). Follow the existing pattern:
+```java
+// ✅ CORRECT pattern (matches existing tests like attachDetachRequestCausedByChangeRHS):
+actions.click(ChangeLocators.Popup.CLICK_LISTVIEW_FILTERS);       // Module-specific trigger
+actions.click(ChangeLocators.Popup.CLICK_ALL_REQUESTS_FILTERS);   // Module-specific option
+actions.popUp.listView.columnSearch("Subject", value);              // Framework table search
+
+// This mixed approach (module locators + framework methods) is the established pattern
+```
+
+---
+
 ## SECTION 12 — LINKING CHANGES (CH-286) RULES
 
 _Learned from: manually generating 6 test methods for 19 use cases (SDPOD_LINKING_CH_001-019) | Date: 2026-03-03_

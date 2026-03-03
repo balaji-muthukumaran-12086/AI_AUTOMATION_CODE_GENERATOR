@@ -37,6 +37,11 @@ from config.project_config import (
     GECKODRIVER_PATH as _DEFAULT_GECKODRIVER,
     TEST_EXECUTION_TIMEOUT as _TEST_EXECUTION_TIMEOUT,
     HEADLESS as _HEADLESS,
+    SDP_URL as _DEFAULT_SDP_URL,
+    SDP_PORTAL as _DEFAULT_SDP_PORTAL,
+    SDP_ADMIN_EMAIL as _DEFAULT_SDP_ADMIN_EMAIL,
+    SDP_EMAIL_ID as _DEFAULT_SDP_EMAIL_ID,
+    SDP_ADMIN_PASS as _DEFAULT_SDP_ADMIN_PASS,
 )
 
 
@@ -165,26 +170,39 @@ class RunnerAgent:
         self,
         entity_class: str,
         method_name: str,
-        url: str,
+        url: Optional[str] = None,
         email_id: Optional[str] = None,
         portal_name: Optional[str] = None,
         admin_mail_id: Optional[str] = None,
         skip_compile: bool = False,
+        password: Optional[str] = None,
     ) -> RunResult:
         """
         Patch, compile (optional), and execute a single test method.
 
+        All credential/URL parameters default to values from config/project_config.py
+        (the single source of truth).  Pass explicit values only to override.
+
         Args:
             entity_class  : Simple class name, e.g. "Solution"
             method_name   : Method to run, e.g. "createAndShareApprovedPublicSolutionFromDV"
-            url           : Target server URL, e.g. "http://sdpod-auto1:8080/"
-            email_id      : Technician user email (overrides StandaloneDefault.EMAIL_ID)
-            portal_name   : Portal name (overrides StandaloneDefault.PORTAL_NAME)
-            admin_mail_id : Admin email (overrides StandaloneDefault.ADMIN_MAIL_ID)
+            url           : Target server URL (default: SDP_URL from project_config)
+            email_id      : Technician user email (default: SDP_EMAIL_ID from project_config)
+            portal_name   : Portal name (default: SDP_PORTAL from project_config)
+            admin_mail_id : Admin email (default: SDP_ADMIN_EMAIL from project_config)
             skip_compile  : If True, skip compilation (use existing bin/)
+            password      : User password (default: SDP_ADMIN_PASS from project_config)
         """
+        # Resolve defaults from project_config.py (single source of truth)
+        url           = url           or _DEFAULT_SDP_URL
+        email_id      = email_id      or _DEFAULT_SDP_EMAIL_ID
+        portal_name   = portal_name   or _DEFAULT_SDP_PORTAL
+        admin_mail_id = admin_mail_id or _DEFAULT_SDP_ADMIN_EMAIL
+        password      = password      or _DEFAULT_SDP_ADMIN_PASS
+
         print(f"[RunnerAgent] Preparing to run: {entity_class}.{method_name}")
         print(f"[RunnerAgent] Target URL: {url}")
+        print(f"[RunnerAgent] Admin: {admin_mail_id}  |  Email: {email_id}  |  Portal: {portal_name}")
 
         # Stamp browser paths from env into app.properties before the JVM starts
         self._patch_app_properties()
@@ -196,7 +214,7 @@ class RunnerAgent:
 
             try:
                 # 2. Patch StandaloneDefault.java with the provided URL / credentials
-                self._patch_standalone_default(url, email_id, portal_name, admin_mail_id)
+                self._patch_standalone_default(url, email_id, portal_name, admin_mail_id, password)
 
                 # 3. Full project compile (optional)
                 if not skip_compile:
@@ -311,11 +329,12 @@ class RunnerAgent:
         result = self.run_test(
             entity_class=config.get("entity_class", ""),
             method_name=config.get("method_name", ""),
-            url=config.get("url", ""),
+            url=config.get("url"),
             email_id=config.get("email_id"),
             portal_name=config.get("portal_name"),
             admin_mail_id=config.get("admin_mail_id"),
             skip_compile=config.get("skip_compile", False),
+            password=config.get("password"),
         )
 
         state["run_result"] = result.to_dict()
@@ -328,11 +347,14 @@ class RunnerAgent:
     def _patch_standalone_default(
         self,
         url: str,
-        email_id: Optional[str],
-        portal_name: Optional[str],
-        admin_mail_id: Optional[str],
+        email_id: str,
+        portal_name: str,
+        admin_mail_id: str,
+        password: str,
     ) -> None:
-        """Replace SERVER_URL (and optionally EMAIL_ID / PORTAL_NAME) in StandaloneDefault.java."""
+        """Replace SERVER_URL, EMAIL_ID, PORTAL_NAME, ADMIN_MAIL_ID, and DEFAULT_PASSWORD
+        in StandaloneDefault.java.  All values are always provided (resolved from
+        project_config.py defaults in run_test())."""
         content = self._standalone_default.read_text(encoding="utf-8")
 
         # Replace the active (uncommented) SERVER_URL line
@@ -343,32 +365,37 @@ class RunnerAgent:
             flags=re.MULTILINE,
         )
 
-        if email_id:
-            content = re.sub(
-                r'^(\s*protected static final String EMAIL_ID\s*=\s*)"[^"]*"(;)',
-                rf'\1"{email_id}"\2',
-                content,
-                flags=re.MULTILINE,
-            )
+        content = re.sub(
+            r'^(\s*protected static final String EMAIL_ID\s*=\s*)"[^"]*"(;)',
+            rf'\1"{email_id}"\2',
+            content,
+            flags=re.MULTILINE,
+        )
 
-        if portal_name:
-            content = re.sub(
-                r'^(\s*(?:private|protected) static final String PORTAL_NAME\s*=\s*)"[^"]*"(;)',
-                rf'\1"{portal_name}"\2',
-                content,
-                flags=re.MULTILINE,
-            )
+        content = re.sub(
+            r'^(\s*(?:private|protected) static final String PORTAL_NAME\s*=\s*)"[^"]*"(;)',
+            rf'\1"{portal_name}"\2',
+            content,
+            flags=re.MULTILINE,
+        )
 
-        if admin_mail_id:
-            content = re.sub(
-                r'^(\s*private static final String ADMIN_MAIL_ID\s*=\s*)"[^"]*"(;)',
-                rf'\1"{admin_mail_id}"\2',
-                content,
-                flags=re.MULTILINE,
-            )
+        content = re.sub(
+            r'^(\s*private static final String ADMIN_MAIL_ID\s*=\s*)"[^"]*"(;)',
+            rf'\1"{admin_mail_id}"\2',
+            content,
+            flags=re.MULTILINE,
+        )
+
+        content = re.sub(
+            r'^(\s*protected static final String DEFAULT_PASSWORD\s*=\s*)"[^"]*"(;)',
+            rf'\1"{password}"\2',
+            content,
+            flags=re.MULTILINE,
+        )
 
         self._standalone_default.write_text(content, encoding="utf-8")
-        print(f"[RunnerAgent] Patched StandaloneDefault.java → URL={url}")
+        print(f"[RunnerAgent] Patched StandaloneDefault.java → URL={url}, admin={admin_mail_id}, "
+              f"email={email_id}, portal={portal_name}, password=***")
 
     def _patch_main_class(self, entity_class: str, method_name: str) -> None:
         """
@@ -451,9 +478,14 @@ class RunnerAgent:
 
     def _compile_patched_files(self) -> subprocess.CompletedProcess:
         """
-        Always-on fast compile: recompile ONLY the two patched standalone
-        files so the new URL / entity / method are baked into the bytecode.
-        Takes ~1 second vs full project compile (~5 min).
+        Always-on fast compile: recompile the patched standalone files so the
+        new URL / credentials are baked into the bytecode.
+
+        CRITICAL: Must compile BOTH StandaloneDefault.java AND
+        AutomaterSeleniumMain.java.  Java inlines `static final String`
+        constants at compile time — if only StandaloneDefault is recompiled,
+        AutomaterSeleniumMain.class keeps the OLD inlined values for
+        EMAIL_ID, DEFAULT_PASSWORD, PORTAL_NAME, SERVER_URL.
         """
         classpath_parts = [str(self.bin_dir)]
         for jar in self.deps_dir.rglob("*.jar"):
@@ -462,7 +494,7 @@ class RunnerAgent:
 
         files = [
             str(self._standalone_default),
-            # AutomaterSeleniumMain.java is no longer patched — entity/method passed as CLI args
+            str(self._main_class),  # Must recompile — inherits inlined constants from parent
         ]
 
         cmd = [
@@ -472,7 +504,7 @@ class RunnerAgent:
             "-d", str(self.bin_dir),
         ] + files
 
-        print(f"[RunnerAgent] Compiling patched StandaloneDefault.java (fast)...")
+        print(f"[RunnerAgent] Compiling patched StandaloneDefault.java + AutomaterSeleniumMain.java (fast)...")
         result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(self.automater_root))
         if result.returncode != 0:
             print(f"[RunnerAgent] ⚠️  Patch-compile error:\n{result.stderr[:1000]}")

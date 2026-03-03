@@ -221,6 +221,28 @@ Screenshots at: `reports/LOCAL_<methodName>_<timestamp>/screenshots/Success_<ts>
 - If JS returns `undefined`/`null`, `responseString` is null → `response` is null → NPE in callers
 - Base URL is implicit (same as browser session origin)
 
+### Core RestAPI Methods
+| Method | Returns | Use When |
+|--------|---------|----------|
+| `restAPI.create(entityName, apiPath, inputData)` | String ID | Only need entity ID |
+| `restAPI.createAndGetResponse(entityName, apiPath, inputData)` | JSONObject entity | Need ID + title + fields (**most common**) |
+| `restAPI.createAndGetFullResponse(apiPath, inputData)` | JSONObject raw response | Need full response envelope |
+| `restAPI.get(apiPath, inputData)` | JSONObject | Reading entity data |
+| `restAPI.update(apiPath, inputData)` | JSONObject | Updating entity |
+| `restAPI.delete(apiPath)` | boolean | Deleting entity (true if statusCode 2000) |
+| `restAPI.getEntityIdUsingSearchCriteria(plural, path, data)` | String ID | Find by criteria |
+| `restAPI.getEntityIDUsingFieldValue(path, field, value)` | String ID | Find by field value (2-step) |
+
+### Input Data Wrapping
+```java
+JSONObject inputData = getTestCaseDataUsingCaseId(dataId);     // Load JSON + resolve placeholders
+JSONObject response = restAPI.createAndGetResponse(getName(), getModuleName(), getInputData(inputData));
+// getInputData() wraps as {"change": {...}} or {"request": {...}} per module convention
+```
+
+### Auto-Cleanup
+Every `POST` (create) call auto-registers in `DataUtil.cleanUpIds` for automatic cleanup.
+
 ### Session Context During Test Lifecycle
 1. `initializeAdminSession()` → browser logs in as **admin**
 2. `preProcess(group, dataIds)` → runs API calls **in admin session** (correct permissions)
