@@ -877,8 +877,13 @@ void actions.validate.validateFormFieldValues(Map<String, FieldDetails> fields, 
 ### 16.1 Most common patterns
 ```java
 // After creating — check title in details page
-Boolean ok = actions.validate.textContent(
-    ClientFrameworkLocators.DetailsViewLocators.MODULE_TITLE, expectedTitle);
+// ⚠️ WARNING: MODULE_TITLE h1 text includes the display ID prefix (e.g. "SOL-8 MyTitle").
+// actions.validate.textContent(MODULE_TITLE, "MyTitle") will FAIL due to the prefix.
+// ALWAYS use verifyTitleInDetailsPage() which handles the prefix correctly:
+Boolean ok = actions.detailsView.verifyTitleInDetailsPage(expectedTitle);
+
+// If you must use textContent directly, include the display ID in the expected string,
+// or use: actions.validate.textContent(MODULE_TITLE, displayId + " " + expectedTitle)
 
 // After save — check success banner
 actions.validate.successMessageInAlertAndClose("Record saved successfully");

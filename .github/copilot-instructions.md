@@ -164,23 +164,29 @@ selenium*.jar, json.jar, etc.
 ## Running a Test
 
 ### Driver & Environment Paths
-| Resource | Path |
-|----------|------|
-| Firefox binary | `/home/balaji-12086/Desktop/Workspace/Zide/Drivers/firefox/firefox` |
-| Geckodriver | `/home/balaji-12086/Desktop/Workspace/Zide/Drivers/geckodriver` |
-| Dependencies | `/home/balaji-12086/Desktop/Workspace/Zide/dependencies` |
-| Python venv | `.venv/` (activate with `.venv/bin/activate`) |
+
+> All paths below are set via **`config/project_config.py`** (reads from env vars / `.env` file).
+> Override in `.env` — never hardcode machine-specific paths in test code.
+
+| Resource | Config var | Default fallback |
+|----------|-----------|-----------------|
+| Firefox binary | `FIREFOX_BINARY` | `$DRIVERS_DIR/firefox/firefox` |
+| Geckodriver | `GECKODRIVER_PATH` | `$DRIVERS_DIR/geckodriver` |
+| Dependencies (JARs) | `DEPS_DIR` | machine-specific — must set in `.env` |
+| SDP URL | `SDP_URL` | see `project_config.py` |
+| Python venv | — | `.venv/` (activate with `.venv/bin/activate`) |
 
 ```python
-# run_test.py  (current state — Feb 27, 2026)
+# run_test.py — edit RUN_CONFIG to target a different test
 RUN_CONFIG = {
-    "entity_class":  "IncidentRequestNotes",   # last run class — change as needed
-    "method_name":   "createIncidentRequestAndAddNotes",
-    "url":           "https://sdpodqa-auto1.csez.zohocorpin.com:9090/",
-    "admin_mail_id": "jaya.kumar+org1admin1t0@zohotest.com",
-    "email_id":      "jaya.kumar+org1admin1t0@zohotest.com",
-    "portal_name":   "portal1",
-    "skip_compile":  True,   # keep True — full compile is broken
+    "entity_class":  "ChangeDetailsView",       # ENTITY_IMPORT_MAP in runner_agent.py must have entry
+    "method_name":   "attachDetachChildChangesAndVerifyListView",
+    "url":           SDP_URL,                   # from config/project_config.py
+    "admin_mail_id": SDP_ADMIN_EMAIL,
+    "email_id":      SDP_EMAIL_ID,
+    "portal_name":   SDP_PORTAL,
+    "password":      SDP_ADMIN_PASS,
+    "skip_compile":  True,                      # keep True — full compile is broken
 }
 ```
 ```bash
@@ -408,6 +414,315 @@ Additionally **3,209 scenarios have empty `id`** (`@AutomaterCase` old style or 
 
 ---
 
+## Code Generation Rules (REQUIRED — apply on every new test)
+
+### @AutomaterScenario — All 9 Fields (always include all)
+
+```java
+@AutomaterScenario(
+    id          = "SDPOD_AUTO_SOL_DV_243",        // next sequential — run grep to verify
+    group       = "create",                        // MUST exist in preProcess()
+    priority    = Priority.MEDIUM,                 // HIGH / MEDIUM / LOW
+    dataIds     = {SolutionAnnotationConstants.Data.CREATE_PUB_APP_SOL_API},
+    tags        = {},
+    description = "Plain English description",
+    owner       = OwnerConstants.RAJESHWARAN_A,
+    runType     = ScenarioRunType.USER_BASED,      // ⚠️ ALWAYS explicit — default is PORTAL_BASED
+    switchOn    = SwitchToUserSession.AFTER_PRE_PROCESS  // or BEFORE_PRE_PROCESS / NEVER
+)
+```
+
+> ⚠️ **`runType` trap**: Annotation default is `PORTAL_BASED`. **Always write `runType = ScenarioRunType.USER_BASED` explicitly. Never omit it.**
+
+### Test ID Format (per module — do NOT mix prefixes)
+
+| Module | Pattern | Example |
+|---|---|---|
+| Requests ListView | `SDP_REQ_LS_AAA###` | `SDP_REQ_LS_AAA101` |
+| Requests DetailView | `SDP_REQ_DV_AAA###` | `SDP_REQ_DV_AAA115` |
+| Solutions (generic) | `SDPOD_AUTO_SOL_###` | `SDPOD_AUTO_SOL_136` |
+| Solutions ListView | `SDPOD_AUTO_SOL_LV_###` | `SDPOD_AUTO_SOL_LV_180` |
+| Solutions DetailView | `SDPOD_AUTO_SOL_DV_###` | `SDPOD_AUTO_SOL_DV_243` |
+| Changes | `SDPOD_AUTO_CH_LV_###` | `SDPOD_AUTO_CH_LV_492` |
+| Problems | `SDPOD_AUTO_PB_###` | — |
+
+```bash
+# Find next available ID before assigning (example for Solutions DV):
+grep -rn 'id = "SDPOD_AUTO_SOL_DV' SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/ | \
+  sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
+```
+
+### Valid preProcess Groups — Requests module
+
+```
+"create"                  → creates a single request
+"detailView"              → creates request for detail-view tests
+"addTask"                 → creates request + task template
+"addTaskTemplate"         → creates task template only
+"BulkCreate"              → creates requests for bulk operations
+"multipleCreate"          → creates multiple requests
+"rowColor"                → creates request for row-color test
+"customView"              → creates list-view filter via API
+"PinFavorite"             → creates pinned favorite filter
+"assetRequest"            → creates request with asset linkage
+"mixedCreate"             → creates mixed IR+SR requests
+"differentRequest"        → creates requests of different types
+"SubEntity_Resolution"    → creates resolution sub-entity
+"SubEntity_Reminder"      → creates reminder sub-entity
+"SubEntity_createTask"    → creates task sub-entity
+"Associations"            → creates linked associations
+"copyResolution"          → creates request to copy resolution from
+"create_sla"              → creates request with SLA
+"requester_create"        → creates request as requester
+"NoPreprocess"            → ⚡ ZERO API calls, ZERO cleanup — pair with dataIds={}
+```
+
+### Valid preProcess Groups — Solutions module
+
+```
+"create"                     → creates a solution
+"create_cust_sol_temp"       → creates solution with custom template
+"create_cust_temp_topic"     → creates solution with custom template + topic
+"createMultipleSolution"     → creates multiple solutions
+"create_topic"               → creates a topic
+"NoPreprocess"               → ⚡ ZERO API calls — pair with dataIds={}
+```
+
+> ⚠️ **FORBIDDEN**: Inventing group name strings not listed above.
+
+### Role Constants (module-specific — import matters)
+
+```java
+// Requests module only:
+RequestsRole.SDADMIN  |  RequestsRole.FULL_CONTROL  |  RequestsRole.VIEW_ONLY  |  RequestsRole.REQUESTER1
+
+// All other modules:
+Role.SDADMIN  |  ModulesRoleSkeleton.SDADMIN
+```
+
+### Owner Constants — use ONLY these 12
+
+```
+OwnerConstants.UMESH_SUDAN     OwnerConstants.ANTONYRAJAN_D    OwnerConstants.RAJESHWARAN_A
+OwnerConstants.MUTHUSIVABALAN_S  OwnerConstants.VINUTHNA_K     OwnerConstants.NANTHAKUMAR_G
+OwnerConstants.VIGNESH_E       OwnerConstants.RUJENDRAN        OwnerConstants.THILAK_RAJ
+OwnerConstants.PURVA_RAJESH    OwnerConstants.VEERAVEL         OwnerConstants.JAYA_KUMAR
+```
+
+### DataConstants Pattern (REQUIRED — never use raw string literals)
+
+```java
+// 1. Declare in ModuleDataConstants.java:
+public final static TestCaseData MY_KEY = new TestCaseData("my_key", PATH);
+// PATH → "data/<module>/<entity>/<entity>_data.json"
+
+// 2. Use in test method (UI data):
+JSONObject inputData = getTestCaseData(ModuleDataConstants.ModuleData.MY_KEY);
+
+// 3. Use in preProcess (API setup data):
+JSONObject inputData = getTestCaseDataUsingCaseId(dataIds[0]);  // key from AnnotationConstants.Data
+```
+
+> **FORBIDDEN**: `getTestCaseData("my_key")` — never pass raw string to `getTestCaseData()`.
+
+### Data JSON Format Rules
+
+```json
+"my_data_key": {
+  "data": {
+    "subject":   "Test Subject $(unique_string)",
+    "priority":  {"name": "High"},
+    "requester": {"name": "$(user_name)"},
+    "is_public": false
+  }
+}
+```
+
+1. Always wrap with `{"data": {...}}` — no exceptions
+2. Lookup/dropdown fields = `{"name": "Value"}` object, NEVER a flat string
+3. Boolean = `true`/`false`, NOT the string `"true"`
+
+### Data Reuse (CRITICAL — prevents duplicate data entries)
+
+Before creating any new `*_data.json` entry or `DataConstants` constant:
+1. Read the existing `*_data.json` — list all top-level keys
+2. Read `*AnnotationConstants.java → Data` interface for all preProcess data IDs
+3. Read `*DataConstants.java` for all declared `TestCaseData` constants
+
+**Reuse** an existing entry if it covers the same entity creation payload. Only create new entries when the field combination is genuinely different.
+
+### Complete Runtime Placeholder Reference
+
+```
+$(unique_string)             → millisecond timestamp (unique per run)
+$(custom_KEY)                → LocalStorage.fetch("KEY") set by preProcess
+$(custom_solution_template)  → LocalStorage "solution_template"
+$(custom_topic)              → LocalStorage "topic"
+$(user_name)                 → scenario user's display name
+$(user_email_id)             → scenario user's email address
+$(user_id)                   → scenario user's entity ID
+$(admin_email_id)            → admin email
+$(admin_name)                → admin display name
+$(date, N, ahead)            → date N days ahead in milliseconds
+$(datetime, N, ahead)        → datetime N days ahead in milliseconds
+$(mspcustomer_id)            → MSP customer ID (MSP tests only)
+$(mspcustomer_name)          → MSP customer name (MSP tests only)
+```
+
+### Non-Existent Methods — NEVER use these
+
+```java
+actions.listView.doAction()        // ❌ — use rowAction(entityID, actionName)
+actions.listView.selectRecord()    // ❌ — use navigate.toDetailsPageUsingRecordId(id)
+actions.navigate.clickModule()     // ❌ — use navigate.toModule(name)
+LocalAutomationData.Builder.isLocal(Boolean)  // ❌ — deprecated, does not exist
+```
+
+### Complete `actions.navigate` API
+
+```java
+actions.navigate.to(Locator)
+actions.navigate.toAdmin()
+actions.navigate.toModule(String moduleName)
+actions.navigate.toGlobalActionInListview(String name)
+actions.navigate.toLocalActionInListview(String name)
+actions.navigate.toDetailsPageUsingRecordId(String id)
+actions.navigate.toDetailsPageUsingRecordIndex(String index)  // "1"-based String
+actions.navigate.toGlobalActionInDetailsPage(String name)
+actions.navigate.toLeftTabWithNoChildren(String tab)
+actions.navigate.toLeftSubTabWithChildren(String tab)
+actions.navigate.toSubTabInDetailsPage(String tab)
+// All return `this` → chainable:
+actions.navigate.toModule(getModuleName()).toGlobalActionInListview(ConstantName);
+```
+
+### Complete `actions.listView` API
+
+```java
+actions.listView.selectFilter(String filterName, String tableViewName)  // tableViewName can be null
+actions.listView.columnSearch(String column, String value)              // column = display name
+actions.listView.getRecordsInPage()                                     // int
+actions.listView.getFieldValueFromFirstRow(String field)                // field = internal name
+actions.listView.getFieldValueFromRow(String field, String row)         // row = "1"-based String
+actions.listView.rowAction(String entityID, String actionName)
+actions.listView.clickSpotEditField(String recordID, String field)
+actions.listView.selectCheckBoxInListViewPage(String row)               // "1"-based
+actions.listView.selectAllCheckBoxesInListviewPage()
+actions.listView.clearAllCheckBoxInListviewPage()
+actions.listView.clickBulkActionButton(String buttonName)
+actions.listView.checkBulkActionsActionName(String actionName)          // returns boolean
+actions.listView.setTableSettings(JSONObject data, String path)
+actions.listView.sortByColumn(String colName, boolean ascending)
+actions.listView.columnChooser(String column, boolean enable)
+actions.listView.isColumnSelected(String column)
+```
+
+### Complete `actions.detailsView` API
+
+```java
+actions.detailsView.clickSubTab(String subTabName)
+actions.detailsView.clickFromActions(String actionName)
+actions.detailsView.verifyFieldInDetailsPage(String field, String value)   // returns boolean
+actions.detailsView.getFieldValueFromDetailsPage(String field)
+actions.detailsView.getValueFromRhsDetails(String fieldName)
+actions.detailsView.clickRhsDetails(String fieldName)
+actions.detailsView.verifyRecentHistoryDescription(String desc)
+actions.detailsView.verifyTitleInDetailsPage(String expected)              // returns boolean
+actions.detailsView.getTitle()
+// Spot edit:
+actions.detailsView.spotEditFieldUsingSearch(String field, String value)
+actions.detailsView.spotEditTypeField(String field, String value)
+actions.detailsView.spotEditPickList(String field, String value)
+actions.detailsView.spotEditFieldWithoutSearch(String field, String value)
+actions.detailsView.spotEditMultiSelectField(String field, String value)
+```
+
+### Complete `actions.validate` API
+
+```java
+Boolean actions.validate.textContent(Locator locator, String content)
+void    actions.validate.successMessageInAlert(String message)
+void    actions.validate.successMessageInAlertAndClose(String message)
+void    actions.validate.errorMessageInAlert(String message)
+void    actions.validate.errorMessageInAlertAndClose(String message)
+void    actions.validate.verifyMessageInAlert(Boolean isSuccess, String message)
+void    actions.validate.verifyMessageInAlertAndClose(Boolean isSuccess, String message)
+void    actions.validate.customAssert(String expected, String got)
+void    actions.validate.customAssert(Boolean expected, Boolean got)
+void    actions.validate.confirmationBoxTitleAndConfirmationText(String title, String text)
+Boolean actions.validate.validateDate(Locator locator, Long value)
+Boolean actions.validate.validateDateTime(Locator locator, Long value, boolean isTimeField)
+void    actions.validate.validateFormFieldValues(Map<String,FieldDetails> fields, JSONObject inputData)
+```
+
+### Complete `actions.formBuilder` API
+
+```java
+void fillInputForAnEntity(boolean isClientFramework, Map<String,FieldDetails> fields, JSONObject inputData)
+void fillTextField(String name, String value)
+void fillTextAreaField(String name, String value)
+void fillSelectField(String name, String value)
+void fillMultiSelectField(FieldDetails fd, JSONObject inputData, String path)
+void fillHTMLField(String name, String value)
+void fillDateField(String name, Long value)                               // date-only
+void fillDateTimeField(String name, Long value)                           // date + time
+void fillDateTimeFieldInForm(String name, Long value, boolean isTimeField)
+void fillDateTimeFieldInSpotEdit(String name, Long value, boolean isTimeField)
+void fillCriteria(JSONArray criteria)
+void submit()                                                              // FORM_SAVE then FORM_SUBMIT
+void submit(String name)                                                   // click by button name
+
+// Date helpers (PlaceholderUtil):
+Long PlaceholderUtil.getDateInMilliSeconds(int days, int months, int years, boolean isAhead)
+Long PlaceholderUtil.getDateTimeInMilliSeconds(int mins, int hrs, int days, int months, int years, boolean isAhead)
+```
+
+### `actions.windowManager` API
+
+```java
+String actions.windowManager.switchToNewTab(int timeoutSeconds)  // wait + switch, returns handle
+void   actions.windowManager.returnToOriginalTab()
+void   actions.windowManager.switchToTabByIndex(int index)        // 0-based
+void   actions.windowManager.switchToTabByTitle(String title)     // partial match
+void   actions.windowManager.switchToTabByUrl(String url)         // partial match
+void   actions.windowManager.closeTabByIndex(int index)
+void   actions.windowManager.closeAllTabsExceptOriginal()
+```
+
+### `actions.popUp.listView` — Use Inside Popups
+
+When interacting with a table inside **any popup**, always use `actions.popUp.listView` methods, not `actions.listView`:
+
+```java
+// ✅ CORRECT — searching inside popup
+actions.popUp.listView.columnSearch("Title", changeName);
+
+// ❌ WRONG — searches behind the popup in the main list view
+actions.listView.columnSearch("Title", changeName);
+```
+
+> ⚠️ Framework popup filter methods (`selectFilterUsingSearch`, `selectFilterWithoutSearch`) only work for popups with CSS class `slide-down-popup`. For non-standard popups (e.g., `association-dialog-popup`), use custom module locators for the filter trigger + Select2 option pattern for the selection.
+
+### Two-Piece Output Format (REQUIRED — OutputAgent parses these markers)
+
+```java
+// ===== ADD TO: Solution.java =====
+// (only the @AutomaterScenario wrapper method)
+
+// ===== ADD TO: SolutionBase.java =====
+// (only the new implementation method)
+
+// ===== ADD TO: SolutionDataConstants.java =====
+// (only the new TestCaseData constant line)
+
+// ===== ADD TO: solution_data.json =====
+// (only the new JSON data entry)
+```
+
+Each block = **only the additions**. Never output the entire file. Marker must match exact filename.
+
+---
+
 ## CH-286 Linking Changes — Active Test Suite (as of Mar 2, 2026)
 
 > **Feature**: Link parent/child changes in Change module Associations tab
@@ -420,12 +735,12 @@ Additionally **3,209 scenarios have empty `id`** (`@AutomaterCase` old style or 
 
 | # | Method | IDs | Status |
 |---|--------|-----|--------|
-| 1 | `verifyAssociationTabAndAttachOptionsInLHS` | CH_001, CH_005 | ✅ PASSED |
-| 2 | `verifyAttachParentChangePopup` | CH_006-011 | ❌ Fix applied, needs re-run |
-| 3 | `attachParentChangeAndVerifyAssociation` | CH_012-016 | ⏳ Not run |
-| 4 | `detachParentChangeAndVerifyReset` | CH_017 | ⏳ Not run |
-| 5 | `verifyAttachChildChangePopup` | CH_018-019 | ⏳ Not run |
-| 6 | `attachDetachChildChangesAndVerifyListView` | CH_002-004 | ⏳ Not run |
+| 1 | `verifyAssociationTabAndAttachOptionsInLHS` | CH_001, CH_005 | ✅ PASSED (Mar 2) |
+| 2 | `verifyAttachParentChangePopup` | CH_006-011 | ✅ PASSED (Mar 3 11:19) |
+| 3 | `attachParentChangeAndVerifyAssociation` | CH_012-016 | ✅ PASSED (Mar 3 12:10) |
+| 4 | `detachParentChangeAndVerifyReset` | CH_017 | ✅ PASSED (Mar 3 12:26) |
+| 5 | `verifyAttachChildChangePopup` | CH_018-019 | ✅ PASSED (Mar 3 12:29) |
+| 6 | `attachDetachChildChangesAndVerifyListView` | CH_002-004 | ✅ PASSED (Mar 3 12:39) |
 
 ### Key Files
 

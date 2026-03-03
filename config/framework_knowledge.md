@@ -607,6 +607,12 @@ void    clickRhsDetails(String fieldName)
 void    verifyRecentHistoryDescription(String description)
 boolean verifyTitleInDetailsPage(String expectedString)
 String  getTitle()
+// ⚠️ MODULE_TITLE GOTCHA: ClientFrameworkLocators.DetailsViewLocators.MODULE_TITLE
+// resolves to //div[@id='details-middle-container']/descendant::h1
+// The h1 text INCLUDES the display ID prefix (e.g. "SOL-8 MyTitle", "CHG-42 MyTitle").
+// actions.validate.textContent(MODULE_TITLE, "MyTitle") will FAIL because of the prefix.
+// ALWAYS use verifyTitleInDetailsPage("MyTitle") — it does a contains/suffix match
+// and handles the display ID prefix correctly.
 
 // Spot edit methods:
 void spotEditFieldUsingSearch(String field, String value)
