@@ -1,18 +1,18 @@
-<p align="center">
-  <h1 align="center">AI Automation Code Generator</h1>
-  <p align="center">
-    <strong>Generate production-ready Selenium test cases from natural language using an AI-powered agentic pipeline</strong>
-  </p>
-  <p align="center">
-    <a href="#features">Features</a> •
-    <a href="#architecture">Architecture</a> •
-    <a href="#quick-start">Quick Start</a> •
-    <a href="#usage">Usage</a> •
-    <a href="#agents">Agents</a> •
-    <a href="#knowledge-base">Knowledge Base</a> •
-    <a href="#documentation">Documentation</a>
-  </p>
-</p>
+# AI Automation Code Generator
+
+> **Generate production-ready Selenium test cases from natural language using an AI-powered agentic pipeline**
+
+<div align="center">
+
+[Features](#features) •
+[Architecture](#architecture) •
+[Quick Start](#quick-start) •
+[Usage](#usage) •
+[Agents](#agents) •
+[Knowledge Base](#knowledge-base) •
+[Documentation](#documentation)
+
+</div>
 
 ---
 
