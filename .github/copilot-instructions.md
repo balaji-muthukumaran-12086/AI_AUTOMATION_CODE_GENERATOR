@@ -887,6 +887,91 @@ Each entry: `entity_name`, `api_path`, `data_json` path, `default_data_key`
 - **UIScoutAgent** (`ui_scout_agent.py`): After login →
   `create_prerequisites_async()` → cleanup after scouting flows complete
 
+---
+
+### Playwright MCP — Data Creation SOP (Standard Operating Procedure)
+
+> **Context**: When Copilot uses Playwright MCP tools (`browser_navigate`, `browser_click`,
+> `browser_evaluate`, etc.) to debug locators or inspect UI, it may need to **create prerequisite
+> test data** (changes, requests, solutions, etc.) to reach the correct UI state.
+
+#### Fallback Chain (MANDATORY — follow in order)
+
+```
+Need to create prerequisite data during Playwright MCP session?
+│
+├── Step 1: browser_evaluate → sdpAPICall() JS  (PREFERRED — fastest, no UI fragility)
+│   │
+│   │  () => sdpAPICall('/api/v3/changes', 'post',
+│   │    'input_data=' + encodeURIComponent(JSON.stringify({
+│   │      change: { title: "Test Change $(Date.now())", change_type: { name: "Standard" } }
+│   │    }))
+│   │  ).responseJSON
+│   │
+│   ├── Success? → Parse response, extract entity ID, continue debugging
+│   └── Failed (null response / JS error)?
+│       │
+│       ▼
+├── Step 2: Run sdp_api_helper.py via terminal
+│   │
+│   │  .venv/bin/python -c "
+│   │  from agents.sdp_api_helper import SDPAPIHelper
+│   │  helper = SDPAPIHelper()
+│   │  # Use helper methods for complex multi-entity setup
+│   │  "
+│   │
+│   ├── Success? → Entities created, continue in Playwright MCP
+│   └── Failed?
+│       │
+│       ▼
+└── Step 3: Create via UI clicks in Playwright MCP  (LAST RESORT — slowest, most fragile)
+    │
+    │  browser_navigate → module page
+    │  browser_click → "New" button
+    │  browser_fill_form → fill fields
+    │  browser_click → "Save"
+    │
+    └── If this also fails → report to user, do not retry indefinitely
+```
+
+#### sdpAPICall() Quick Reference (for browser_evaluate)
+
+| Module | API Path | Input Wrapper |
+|--------|----------|---------------|
+| Changes | `/api/v3/changes` | `{ "change": {...} }` |
+| Requests | `/api/v3/requests` | `{ "request": {...} }` |
+| Solutions | `/api/v3/solutions` | `{ "solution": {...} }` |
+| Problems | `/api/v3/problems` | `{ "problem": {...} }` |
+| Tasks | `/api/v3/tasks` | `{ "task": {...} }` |
+
+```javascript
+// CREATE — returns response JSON with entity ID
+() => sdpAPICall('/api/v3/changes', 'post',
+  'input_data=' + encodeURIComponent(JSON.stringify({ change: { title: "..." } }))
+).responseJSON
+
+// READ — get entity by ID
+() => sdpAPICall('/api/v3/changes/12345', 'get', '').responseJSON
+
+// DELETE — cleanup after debugging
+() => sdpAPICall('/api/v3/changes/12345', 'del',
+  'input_data=' + encodeURIComponent(JSON.stringify({}))
+).responseJSON
+```
+
+#### Prerequisites
+- Browser must be on a **logged-in SDP page** (any page — JS API is global)
+- Admin session preferred (user sessions may lack permissions for certain entities)
+- Always **clean up created entities** after debugging session via DELETE calls
+
+#### Cleanup Pattern
+After every Playwright MCP debugging session that created test data:
+1. Track all created entity IDs during the session
+2. Before closing, run DELETE for each: `sdpAPICall('/api/v3/<module>/<id>', 'del', ...)`
+3. If session was interrupted, note leftover entity IDs for manual cleanup
+
+---
+
 ### Knowledge Base
 - **ChromaDB** vector store at `knowledge_base/chroma_db/` — 14,637 scenario vectors (210 modules, 17,101 source scenarios — 2,464 collapsed due to duplicate IDs in Java source)
 - `config/project_config.py` → `PROJECT_NAME` drives all ingestion + agent paths
