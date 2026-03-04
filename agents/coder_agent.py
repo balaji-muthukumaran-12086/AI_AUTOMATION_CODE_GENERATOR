@@ -609,6 +609,16 @@ Set<String> actions.jsonArrayToSet(JSONArray arr)
       JSONObject inputData = getTestCaseData(EntityDataConstants.EntityData.EXISTING_KEY_WITH_PLACEHOLDER);
     This REPLACES the need to create a new JSON entry just to vary one field value.
     Decision: existing JSON has $(custom_KEY)? → pre-seed + reuse. No match at all? → create new entry.
+30. preProcess GROUP REUSE (CRITICAL):
+    Before writing ANY preProcess code, READ the existing preProcess() body first.
+    If an existing group (e.g. "create") already calls the API and stores the entity ID + name in LocalStorage:
+    → REUSE that same group value in @AutomaterScenario. Zero new else-if block needed.
+    → Read LocalStorage keys in the test method: getEntityId() + LocalStorage.fetch("entityName")
+    Example: "create" stores LocalStorage(getName(), id) + LocalStorage("changeName", name)
+             → new scenario uses group="create", dataIds={EXISTING_CHANGE_DATA_CONSTANT}
+             → test method reads getEntityId() and LocalStorage.fetch("changeName")
+    Only add a new else-if block when no existing group creates the entities + stores the keys you need.
+    FORBIDDEN: new else-if block that duplicates an existing group's API call + LocalStorage stores.
 """
 
 
@@ -630,7 +640,7 @@ Generate @AutomaterScenario test code. Use tools to read source files before wri
 CRITICAL RULES:
 1. Call list_dir first, then read_file the *Base.java to read preProcess() and existing methods.
 2. API setup (template/topic/entity creation) goes ONLY in preProcess(), NOT in the test method.
-3. Add a new else-if branch to preProcess() — never overwrite existing branches.
+3. preProcess GROUP REUSE: Before adding any preProcess code, READ the existing preProcess() body. If an existing group already creates the entity you need AND stores the IDs in LocalStorage — REUSE that group value in @AutomaterScenario, zero new preProcess code. Only add a new else-if block when no existing group covers it.
 4. Verify every method name via grep_search on *APIUtil.java before referencing it.
 5. Checkboxes: use explicit actions.click(locator); fillInputForAnEntity skips boolean fields.
 6. Button XPath: normalize-space(text())='Add' (not contains) to avoid partial matches.

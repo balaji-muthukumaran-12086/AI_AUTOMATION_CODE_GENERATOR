@@ -279,6 +279,44 @@ group = "newSolution"
 ```
 Only use the exact strings from Section 5.2 and 5.3.
 
+### 5.6 ⭐ GROUP REUSE — prefer reusing existing groups over adding new else-if blocks
+
+Before adding a new else-if branch to `preProcess()`, **READ the existing preProcess() body** first.
+If an existing group already:
+1. Calls the API to create the entity type you need
+2. Stores the entity ID and name in `LocalStorage` under keys you can read
+
+→ **REUSE that group value** in your `@AutomaterScenario`. Zero new preProcess code needed.
+
+```java
+// Example: "create" group in Change.preProcess() already does:
+//   ChangeAPIUtil.createChange(dataIds[0])  → stores LocalStorage(getName(), changeId)
+//                                            → stores LocalStorage("changeName", name)
+
+// ✅ CORRECT — new scenario reuses "create" group, reads LocalStorage directly:
+@AutomaterScenario(id="SDPOD_AUTO_CH_DV_050", group="create", dataIds={ChangeAnnotationConstants.Data.CREATE_CHANGE_API}, ...)
+public void verifyChangeDetailView() { ... }
+
+// In the implementation method, just read LocalStorage:
+String changeId   = getEntityId();                      // = LocalStorage.getAsString(getName())
+String changeName = LocalStorage.fetch("changeName");
+
+// ❌ WRONG — adds redundant else-if block when "create" already serves the purpose:
+} else if ("createForDetailView".equalsIgnoreCase(group)) {   // ← FORBIDDEN duplication
+    ChangeAPIUtil.createChange(dataIds[0]);
+}
+```
+
+**Decision flow before writing any preProcess code:**
+```
+Does an existing group in preProcess() create the entity type I need
+AND store the LocalStorage keys I need?
+  → YES: use that group value. ZERO new preProcess code.
+  → NO:  Add a new else-if block with a new group string.
+```
+
+**FORBIDDEN**: Adding a new `else-if` block for a group that is functionally identical to an existing group (same API call, same LocalStorage keys).
+
 ---
 
 ## SECTION 6 — VALID ANNOTATION CONSTANTS

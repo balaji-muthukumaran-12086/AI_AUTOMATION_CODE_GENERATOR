@@ -490,6 +490,40 @@ grep -rn 'id = "SDPOD_AUTO_SOL_DV' SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/ | \
 
 > ⚠️ **FORBIDDEN**: Inventing group name strings not listed above.
 
+### ⭐ Reuse existing groups — do NOT add new `else-if` blocks needlessly
+
+Before writing any new `preProcess()` code, **read the existing `preProcess()` body** (in `<Entity>Base.java` or `<Entity>.java`). If an existing group already:
+1. Creates the entity type you need via API
+2. Stores the IDs/names you need in `LocalStorage`
+
+→ **Use that same group value** in your `@AutomaterScenario`. No new code in `preProcess()`.
+
+```java
+// Example: "create" already calls ChangeAPIUtil.createChange() and stores:
+//   LocalStorage(getName(), changeId)  →  getEntityId()
+//   LocalStorage("changeName", name)   →  LocalStorage.fetch("changeName")
+
+// ✅ CORRECT — new scenario reuses "create", reads LocalStorage:
+@AutomaterScenario(group = "create", dataIds = {ChangeAnnotationConstants.Data.CREATE_CHANGE_API}, ...)
+public void verifyChangeDetailView() throws Exception {
+    String changeId   = getEntityId();
+    String changeName = LocalStorage.fetch("changeName");
+    ...
+}
+
+// ❌ WRONG — new else-if block in preProcess() when "create" already does the same thing
+} else if ("createForDetailView".equalsIgnoreCase(group)) { // ← DUPLICATION
+    ChangeAPIUtil.createChange(dataIds[0]);
+}
+```
+
+**Decision flow:**
+```
+Does an existing group create the entity I need + store the LocalStorage keys I need?
+  → YES: reuse that group, zero new preProcess code
+  → NO:  add new else-if block with a new group string
+```
+
 ### Role Constants (module-specific — import matters)
 
 ```java

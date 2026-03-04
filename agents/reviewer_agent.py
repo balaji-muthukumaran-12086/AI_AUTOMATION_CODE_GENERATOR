@@ -161,6 +161,15 @@ FRAMEWORK RULES (verify every one):
     call LocalStorage.store("KEY", value) BEFORE getTestCaseData() to resolve the placeholder at read time.
     This avoids new JSON entries entirely. Flag as ERROR if a new JSON entry is created when pre-seeding
     LocalStorage with an existing entry would achieve the same result.
+23. preProcess GROUP REUSE: Flag as ERROR if a new else-if block is added to preProcess() when an existing
+    group already creates the same entity type and stores the same LocalStorage keys.
+    Example: if group="create" already calls createChange(dataIds[0]) and stores LocalStorage(getName(), id)
+    + LocalStorage("changeName", name), then a new group="createForAssoc" with an identical else-if block
+    is a duplication ERROR. The new @AutomaterScenario should simply use group="create" and read
+    getEntityId() + LocalStorage.fetch("changeName") in the test method. Zero new preProcess code needed.
+    Decision: does an existing group create the needed entity + store the needed LocalStorage keys?
+      → YES: reuse that group — new else-if block is an ERROR.
+      → NO:  new else-if block is justified.
 
 Review the provided Java code and identify all issues.
 

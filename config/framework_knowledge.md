@@ -220,6 +220,26 @@ protected boolean preProcess(String group, String[] dataIds) {
 **Critical rule:** group="" means no preProcess setup. dataIds={} when group="".
 **When group is non-empty:** dataIds must reference string constants from `SolutionAnnotationConstants.Data`.
 
+### ⭐ Group Reuse — read preProcess() body before writing new code
+
+If an existing group already creates the entity you need and stores the IDs in LocalStorage:
+- **Reuse that group** in your `@AutomaterScenario` — zero new `preProcess()` code needed.
+- Read the `LocalStorage` keys set by the existing group in your test method body.
+
+```java
+// "create" group already does: createChange(dataIds[0])
+//   → LocalStorage.store(getName(), changeId)
+//   → LocalStorage.store("changeName", name)
+
+// New scenario just reuses "create" and reads from LocalStorage:
+@AutomaterScenario(group = "create", dataIds = {ChangeAnnotationConstants.Data.CREATE_CHANGE_API}, ...)
+public void myNewTest() throws Exception {
+    String id   = getEntityId();                       // works because "create" stored it
+    String name = LocalStorage.fetch("changeName");   // works because "create" stored it
+}
+// ❌ WRONG: adding a new else-if to preProcess() for "createForMyTest" when "create" already covers it
+```
+
 ---
 
 ## 7. DATA LAYER — 3 LEVELS
