@@ -127,7 +127,10 @@ FRAMEWORK RULES (verify every one):
       NOT AutomaterUtil.getPascalValueFromCamelCase(...) — that is WRONG.
 5.  report.endMethodFlowInStepsToReproduce() MUST be in the finally block
 6.  BOTH addSuccessReport() AND addFailureReport() must be present (if/else branches)
-7.  group value MUST match an existing branch in preProcess() — never invent new group strings
+7.  group value MUST match an existing branch in preProcess() — read the PARENT class to find valid groups.
+    preProcess() is ALWAYS in the parent class (e.g. Change.java for DetailsView scenarios,
+    Solution.java for Solution scenarios). Subclasses inherit it or override + call super.preProcess().
+    Never invent new group strings.
 8.  dataIds[] values MUST be string constants from <Entity>AnnotationConstants.Data interface
 9.  UI data loaded via: getTestCaseData(DataConstants.EntityData.CONSTANT) — existing constants only
 10. preProcess data loaded via: getTestCaseDataUsingCaseId(dataIds[0]) — for API setup

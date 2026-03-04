@@ -219,6 +219,33 @@ public void myNewTest() { ... }
 - Stores created entity IDs in `LocalStorage` for the test method to retrieve
 - ONLY known group strings are handled; unknown → silently falls through
 
+### 5.1a preProcess ownership — WHERE the method lives (CRITICAL)
+
+`preProcess()` is **ALWAYS defined in the module parent class**, never in leaf/subclasses.
+Subclasses only inherit it — or at most override it to add their own niche groups and
+then delegate remaining groups to the parent via `return super.preProcess(group, dataIds)`.
+
+```
+Module hierarchy examples:
+
+  Changes:    Change extends Entity          ← owns preProcess() with all group branches
+              DetailsView extends Change     ← inherits preProcess() — no override needed
+
+  Solutions:  SolutionBase extends Entity   ← base helpers/utilities
+              Solution extends SolutionBase ← owns preProcess() with all group branches
+                                               ends with: return super.preProcess(group, dataIds)
+```
+
+**Rule — always read the PARENT class to discover available groups:**
+- Scenario is in `DetailsView.java`? → read `Change.java::preProcess()` for available groups.
+- Scenario is in `Solution.java` or another class extending `Solution`? → read `Solution.java::preProcess()`.
+- Find the parent by checking `class <Subclass> extends <Parent>` at the top of the file.
+
+**Rule — where to add new group else-if blocks:**
+- New group needed only for a specific subclass → override in that subclass + call `super.preProcess()` at end.
+- New group applicable to the whole module → add to the parent class.
+- FORBIDDEN: duplicating a group branch in a subclass when the parent already handles it.
+
 ### 5.2 VALID groups — Requests module
 ```
 "create"                     → creates a single request via API

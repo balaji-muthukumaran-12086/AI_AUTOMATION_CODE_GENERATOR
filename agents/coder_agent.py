@@ -610,15 +610,16 @@ Set<String> actions.jsonArrayToSet(JSONArray arr)
     This REPLACES the need to create a new JSON entry just to vary one field value.
     Decision: existing JSON has $(custom_KEY)? → pre-seed + reuse. No match at all? → create new entry.
 30. preProcess GROUP REUSE (CRITICAL):
-    Before writing ANY preProcess code, READ the existing preProcess() body first.
-    If an existing group (e.g. "create") already calls the API and stores the entity ID + name in LocalStorage:
-    → REUSE that same group value in @AutomaterScenario. Zero new else-if block needed.
-    → Read LocalStorage keys in the test method: getEntityId() + LocalStorage.fetch("entityName")
-    Example: "create" stores LocalStorage(getName(), id) + LocalStorage("changeName", name)
-             → new scenario uses group="create", dataIds={EXISTING_CHANGE_DATA_CONSTANT}
-             → test method reads getEntityId() and LocalStorage.fetch("changeName")
-    Only add a new else-if block when no existing group creates the entities + stores the keys you need.
+    preProcess() is ALWAYS defined in the MODULE PARENT CLASS, NOT in subclasses.
+    DetailsView extends Change → preProcess() is in Change.java (the parent).
+    Solution.java → preProcess() is in Solution.java (which calls super.preProcess() at end).
+    STEP 1: Check 'extends' clause of the target file to identify the parent class.
+    STEP 2: Read the parent class's preProcess() to find all existing group branches.
+    STEP 3: If an existing group creates the entity + stores the needed LocalStorage keys → REUSE it.
+    STEP 4: Only add a new else-if when no existing group covers it; add to parent (module-wide) or
+            subclass override + super.preProcess() (subclass-specific).
     FORBIDDEN: new else-if block that duplicates an existing group's API call + LocalStorage stores.
+    FORBIDDEN: reading only the subclass preProcess — always read the parent.
 """
 
 
@@ -638,9 +639,13 @@ You are an expert Java + Selenium automation engineer for the AutomaterSelenium/
 Generate @AutomaterScenario test code. Use tools to read source files before writing any code.
 
 CRITICAL RULES:
-1. Call list_dir first, then read_file the *Base.java to read preProcess() and existing methods.
+1. Call list_dir first. Check the target class's 'extends' clause to find the PARENT class. preProcess()
+   is ALWAYS defined in the PARENT class (e.g. Change.java, Solution.java), NOT in the subclass (e.g. DetailsView).
+   Read the PARENT class to see available group branches. Subclasses inherit preProcess or override + call super.
 2. API setup (template/topic/entity creation) goes ONLY in preProcess(), NOT in the test method.
-3. preProcess GROUP REUSE: Before adding any preProcess code, READ the existing preProcess() body. If an existing group already creates the entity you need AND stores the IDs in LocalStorage — REUSE that group value in @AutomaterScenario, zero new preProcess code. Only add a new else-if block when no existing group covers it.
+3. preProcess GROUP REUSE: Before adding any preProcess code, READ the existing preProcess() in the PARENT class.
+   If an existing group already creates the entity you need AND stores the IDs in LocalStorage — REUSE that group
+   value in @AutomaterScenario, zero new preProcess code. Only add a new else-if block when no existing group covers it.
 4. Verify every method name via grep_search on *APIUtil.java before referencing it.
 5. Checkboxes: use explicit actions.click(locator); fillInputForAnEntity skips boolean fields.
 6. Button XPath: normalize-space(text())='Add' (not contains) to avoid partial matches.

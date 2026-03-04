@@ -490,9 +490,33 @@ grep -rn 'id = "SDPOD_AUTO_SOL_DV' SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/ | \
 
 > ⚠️ **FORBIDDEN**: Inventing group name strings not listed above.
 
+### Where `preProcess()` lives — always the parent class
+
+`preProcess()` is **always defined in the module parent class**, never in the leaf test class.
+Subclasses inherit it. If a subclass needs its own unique groups it overrides and ends with
+`return super.preProcess(group, dataIds)` to delegate remaining groups up to the parent.
+
+```
+Change.java            (parent — owns preProcess with all group branches)
+DetailsView extends Change   (subclass — inherits preProcess, no override)
+
+Solution.java          (parent — owns preProcess, ends with super.preProcess(...))
+SolutionBase.java      (base helper class, not where groups are defined)
+```
+
+**To find available groups for a scenario in `DetailsView.java`:**
+1. Read `extends` clause → `DetailsView extends Change`
+2. Open `Change.java` → read `preProcess()` for all `equalsIgnoreCase` branches
+3. Those are the valid group values
+
+**To add a new group:**
+- Applies to whole module → add `else-if` to the parent class (`Change.java`, `Solution.java`, etc.)
+- Specific to one subclass only → override in that subclass + `return super.preProcess(group, dataIds)` at end
+- FORBIDDEN: adding an `else-if` to a subclass for what the parent already handles
+
 ### ⭐ Reuse existing groups — do NOT add new `else-if` blocks needlessly
 
-Before writing any new `preProcess()` code, **read the existing `preProcess()` body** (in `<Entity>Base.java` or `<Entity>.java`). If an existing group already:
+Before writing any new `preProcess()` code, **read the parent class's `preProcess()` body**. If an existing group already:
 1. Creates the entity type you need via API
 2. Stores the IDs/names you need in `LocalStorage`
 

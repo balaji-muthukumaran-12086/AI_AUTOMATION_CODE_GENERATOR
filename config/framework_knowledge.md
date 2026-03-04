@@ -172,6 +172,28 @@ public void createUnapprovedPrivateSolutionGT() {
 
 ## 6. preProcess() PATTERN — GROUP → API SETUP MAPPING
 
+### Architecture — where preProcess() lives
+
+`preProcess()` is always defined in the **module parent class**, not in subclasses.
+Subclasses inherit it; if a subclass needs its own unique groups it overrides and calls
+`return super.preProcess(group, dataIds)` at the end to delegate to the parent.
+
+```
+Change.java (parent)     → owns preProcess() → all scenario subclasses inherit it
+DetailsView extends Change → NO preProcess override — uses Change.java's groups
+
+Solution.java (parent)   → owns preProcess() → ends with super.preProcess(group, dataIds)
+SolutionBase.java        → base helper class (Entity setup, not preProcess groups)
+```
+
+**To discover available groups for a scenario: read the parent class (not the subclass).**
+```bash
+# Find parents: check extends clause in the scenario file
+grep -n "class .* extends" <TargetClass>.java
+# Then read preProcess() in that parent class
+grep -n "equalsIgnoreCase" <ParentClass>.java
+```
+
 ```java
 @Override
 protected boolean preProcess(String group, String[] dataIds) {
