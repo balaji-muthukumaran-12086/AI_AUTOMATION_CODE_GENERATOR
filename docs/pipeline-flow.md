@@ -391,3 +391,48 @@ AgentState (shared dict)
 - `web/static/index.html` — "Run once" toggle, copy-paste panel, Clipboard API, target-path hint
 - `agents/pipeline.py` — no changes needed (routing already correct)
 - `config/project_config.py` — optionally add `RUN_ONCE_DEFAULT = False`
+
+---
+
+### Phase 8 — Shared Central ChromaDB (Team-Wide Dedup) 🔲
+
+**Goal:** Eliminate cross-person duplicate generation when multiple team members submit the same or similar feature documents.
+
+#### Problem (why this matters)
+Today, each person runs a **local** `knowledge_base/chroma_db/`. The CoverageAgent only blocks duplicates it has already seen *on that machine*. If Person A generates scenarios for Feature X and Person B later submits the same document, Person B's CoverageAgent has no knowledge of Person A's output → same scenarios are generated again.
+
+#### Architecture
+```
+Shared ChromaDB server  (always-on internal machine)
+       │
+       ├── Nightly cron: rag_indexer.py --reset  (full reindex from Mercurial)
+       │   → keeps the base of ~17,101 existing scenarios always fresh
+       │
+       └── Live upserts from OutputAgent  (after every successful generation)
+           → newly generated scenarios visible to every team member immediately
+
+Each person's tool:
+  CoverageAgent  →  queries shared server  (reads)
+  OutputAgent    →  upserts to shared server (writes, with lock)
+```
+
+#### What needs to be built
+
+| Item | File | Detail |
+|------|------|--------|
+| `CHROMA_SERVER_URL` config | `config/project_config.py` | `None` by default → falls back to local `persist_dir`. Set to `http://<host>:8000` to use shared server. |
+| `VectorStore` mode switch | `knowledge_base/vector_store.py` | If `CHROMA_SERVER_URL` is set, use `chromadb.HttpClient(host, port)` instead of `PersistentClient(persist_dir)` |
+| Write lock for concurrent upserts | `knowledge_base/rag_server.py` | Add a per-collection async lock around upsert endpoint so two OutputAgents don't corrupt the index simultaneously |
+| Nightly cron job | crontab on shared server | `0 2 * * * .venv/bin/python knowledge_base/rag_indexer.py --reset` — runs at 2 AM daily |
+| Pipeline run serialization (bonus) | `web/server.py` | Optional: serialize concurrent `/api/generate` calls per-module to prevent two pipelines racing on the same Java file |
+
+#### Fallback behaviour
+- If `CHROMA_SERVER_URL` is not set (or server unreachable) → silently fall back to local `persist_dir` → same behaviour as today
+- No breaking changes for single-developer use
+
+#### Files to touch
+- `config/project_config.py` — add `CHROMA_SERVER_URL`
+- `knowledge_base/vector_store.py` — HttpClient branch
+- `knowledge_base/rag_server.py` — write lock
+- `agents/coverage_agent.py` — no change needed (uses VectorStore abstraction)
+- `agents/output_agent.py` — no change needed (uses VectorStore abstraction)

@@ -1231,6 +1231,7 @@ After every Playwright MCP debugging session that created test data:
 | **5 — Pipeline Monitoring & Orchestrator** | 🔲 | — | Real-time per-agent monitoring, orchestrator agent, progress UI, OOM/timeout recovery (see spec below) |
 | 6 — Multi-Entity | 🔲 | — | All 10+ entities, regression suite generation |
 | 7 — Feedback Loop | 🔲 | — | Learn from failures, human approval queue |
+| **8 — Shared Central ChromaDB** | 🔲 | — | Single shared ChromaDB server for the whole team — prevents cross-person duplicate generation; nightly reindex from Mercurial; `VectorStore` configurable via `CHROMA_SERVER_URL` in `.env` (local `persist_dir` remains the fallback); write-lock for concurrent OutputAgent upserts (see `docs/pipeline-flow.md` Phase 8 spec) |
 
 ---
 
