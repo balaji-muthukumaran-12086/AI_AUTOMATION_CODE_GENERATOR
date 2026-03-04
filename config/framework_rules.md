@@ -1391,6 +1391,13 @@ find src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/ -name "*.j
 
 _Learned from: analysis of RestAPI.java (503 lines), Change.java preProcess patterns, ClientFrameworkActions hierarchy | Date: 2026-03-03_
 
+> 📖 **API Reference Doc**: `docs/api-doc/SDP_API_Endpoints_Documentation.md`
+> Before writing ANY `preProcess()` API call, check this doc for:
+> - Exact API path (e.g. `api/v3/changes`, `api/v3/requests/{id}/notes`)
+> - Input wrapper key (e.g. `{"change": {...}}`, `{"request": {...}}`)
+> - Available sub-resource paths (notes, tasks, worklogs, approvals, etc.)
+> This doc covers all 16 SDP modules with worked automation case examples.
+
 ### 21.1 All API calls go through browser JavaScript (REQUIRED understanding)
 
 REST API calls in this framework use `sdpAPICall()` JavaScript function executed via Selenium `JavascriptExecutor`. There is **no direct HTTP client**.

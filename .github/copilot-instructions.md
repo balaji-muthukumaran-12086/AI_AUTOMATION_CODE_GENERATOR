@@ -220,6 +220,12 @@ Screenshots at: `reports/LOCAL_<methodName>_<timestamp>/screenshots/Success_<ts>
 
 ## REST API Architecture
 
+> 📖 **API Reference Doc**: `docs/api-doc/SDP_API_Endpoints_Documentation.md` — contains exact V3 API paths, HTTP methods, input wrappers, and worked automation cases for all 16 SDP modules.
+> **When writing any `preProcess()` API call or `RestAPI.*` invocation**, consult this doc for the correct:
+> - API path (e.g. `api/v3/changes`, `api/v3/requests/{id}/notes`)
+> - Input wrapper key (e.g. `{"change": {...}}`, `{"request": {...}}`)
+> - Available sub-resource paths (notes, tasks, worklogs, approvals, etc.)
+
 > ⚠️ **API calls go through the browser via JavaScript** — NOT a direct HTTP client.
 
 - `RestAPI.triggerRestAPI()` calls `executeScript("sdpAPICall(apiPath, method, ...).responseJSON")` → browser executes JS → returns JSON string
@@ -320,6 +326,7 @@ Priority order (first match wins):
 | `sdp_api_helper.py` | `agents/sdp_api_helper.py` |
 | `run_test.py` | `run_test.py` |
 | `setup_framework_bin.sh` | `setup_framework_bin.sh` |
+| **`SDP_API_Endpoints_Documentation.md`** | `docs/api-doc/SDP_API_Endpoints_Documentation.md` — V3 API paths, input wrappers and automation cases for all 16 modules. **Read this before writing any preProcess API call.** |
 
 ---
 
