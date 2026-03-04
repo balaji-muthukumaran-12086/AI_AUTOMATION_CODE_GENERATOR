@@ -688,12 +688,115 @@ VERIFY_IF_PUBLIC.apply(val), VERIFY_HISTORY_COMMENT.apply(val)
 
 ## 19. CRITICAL RULE — ActionUtils / ActionsUtil
 
-**Before writing any logic in `<Entity>Base.java`, ALWAYS check `<Entity>ActionsUtil.java` first.**
+**Before writing ANY test scenario, ALWAYS analyze the entity's `*ActionsUtil.java` and `*APIUtil.java` files first — then reuse existing methods or create missing ones before generating the test method.**
 
-- If the needed UI action already exists as a method in `SolutionActionsUtil` → **call it**, do NOT duplicate the logic.
-- If the action does NOT exist → **add a new static method to `SolutionActionsUtil.java`** first, then call it from `SolutionBase.java`.
-- The same rule applies to `SolutionAPIUtil.java` for any REST API helper logic.
-- Never inline ActionUtil-level logic directly in a `Base.java` method body if it belongs in the util.
+### Rule 0 — Pre-generation analysis workflow (REQUIRED — 4 steps, run first)
+
+> This must run BEFORE any test method code is written. It is not optional.
+
+```
+STEP 1: READ the entity's util files
+  - Find: modules/<module>/<entity>/utils/<Entity>ActionsUtil.java
+  - Find: modules/<module>/<entity>/utils/<Entity>APIUtil.java
+  - List ALL public static methods with signatures and purpose
+  - If a file doesn't exist yet → it must be created before generating scenarios
+
+STEP 2: Map each operation in the new scenario to a method
+  For every navigation / click / form / popup step in the scenario:
+    - REUSE: an existing util method covers it → call it
+    - CREATE NEW: no method covers it → it goes to Step 3
+
+STEP 3: Create missing util methods FIRST (before writing the test method)
+  For each CREATE NEW operation:
+    - Add public static method to <Entity>ActionsUtil.java (UI) or <Entity>APIUtil.java (API)
+    - Granularity: one complete named UI operation (not a single click)
+    - Compile the util file to verify before proceeding
+
+STEP 4: Generate the scenario using only util calls + assertions
+  - Test method body = utility calls + assertions + addSuccessReport/addFailureReport ONLY
+  - If typing actions.click() directly in a test method body → STOP → move to util first
+```
+
+### Rule 1 — Check before writing (REQUIRED, applies to ALL entities)
+
+```
+BEFORE writing any navigation/click/form/popup code in a test method:
+  1. grep -rn "public static" modules/<module>/<entity>/utils/*ActionsUtil.java
+  2. If a matching method exists → CALL IT, do NOT re-inline the logic
+  3. If it does NOT exist → ADD the static method to *ActionsUtil.java first, then call it
+```
+
+### Rule 2 — Where code lives (REQUIRED)
+
+| Logic type | Where it lives | Example |
+|---|---|---|
+| Multi-step UI flow (tab click, popup open, search, select, confirm) | `*ActionsUtil.java` as `public static` method | `ChangeActionsUtil.linkParentChangeViaUI(name, id)` |
+| REST API helper (create/update/delete/link via API) used in preProcess | `*APIUtil.java` as `public static` method | `ChangeAPIUtil.linkChildChanges(parentId, childId1)` |
+| Test assertion / report call | STAYS in test method body | `addSuccessReport("SDPOD_...")` |
+
+### Rule 3 — Class declaration (REQUIRED pattern — no exceptions)
+
+```java
+// ✅ CORRECT — every ActionsUtil class in the codebase follows this exact shape
+public final class ChangeActionsUtil extends Utilities {
+    // ALL methods: public static
+    // extends Utilities → gives access to static fields: actions, report, restAPI
+    
+    public static void openAssociationTab() throws Exception {
+        actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB);
+        actions.waitForAjaxComplete();
+    }
+}
+
+// ❌ WRONG — non-static, not extending Utilities, not final
+public class ChangeActionsUtil {
+    public void openAssociationTab() { ... }  // cannot access actions/report/restAPI
+}
+```
+
+### Rule 4 — Method granularity (REQUIRED)
+
+Each method = **one complete named UI operation** (what a manual tester calls one step).
+
+| Too granular ❌ | Correct granularity ✅ |
+|---|---|
+| `clickAttachDropdown()` | `openAttachParentChangePopup()` — click dropdown + click option + waitForAjax |
+| `clickYesOnDialog()` | `detachParentChange()` — click detach + confirm dialog + click YES + waitForAjax |
+| 6-line open+search+select+associate block | `linkParentChangeViaUI(name, id)` — all 6 lines |
+
+### Rule 5 — Test method body rules (REQUIRED)
+
+```java
+// ✅ CORRECT — test method only contains: utility calls + assertions + report calls
+public void verifySingleParentConstraint() throws Exception {
+    ChangeActionsUtil.openAssociationTab();
+    ChangeActionsUtil.linkParentChangeViaUI(
+        LocalStorage.getAsString("targetChangeName1"), LocalStorage.getAsString("targetChangeId1")
+    );
+    if(actions.isElementPresent(ChangeLocators.LinkingChange.DETACH_PARENT_CHANGE)) {
+        addSuccessReport("SDPOD_LINKING_CH_022: Detach button visible after parent linked");
+    }
+}
+
+// ❌ WRONG — duplicate click/wait blocks inlined in test body
+public void verifySingleParentConstraint() throws Exception {
+    actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB);  // should be utility call
+    actions.waitForAjaxComplete();
+    actions.click(ChangeLocators.LinkingChange.ATTACH_BUTTON_DROPDOWN);
+    actions.click(ChangeLocators.LinkingChange.ATTACH_PARENT_CHANGE_OPTION);
+    actions.waitForAjaxComplete();
+    // ...
+}
+```
+
+### Known entity utility files (always check these before writing inline code)
+
+| Entity | ActionsUtil file | APIUtil file |
+|--------|-----------------|-------------|
+| Changes | `modules/changes/change/utils/ChangeActionsUtil.java` | `modules/changes/change/utils/ChangeAPIUtil.java` |
+| Solutions | `modules/solutions/solution/utils/SolutionActionsUtil.java` | `modules/solutions/solution/utils/SolutionAPIUtil.java` |
+| Requests | `modules/requests/request/utils/RequestApprovalsActionUtils.java` | *(per entity sub-class)* |
+| Problems | *(check modules/problems/)* | `modules/problems/problem/utils/ProblemAPIUtil.java` |
 
 ---
 
@@ -732,6 +835,81 @@ SolutionActionsUtil.uploadFile(SolutionConstants.Attachments.ATTACHMENT_PNG);
 // Verify attachment:
 Boolean attached = SolutionActionsUtil.verifyAttachment(SolutionConstants.Attachments.ATTACHMENT_PNG);
 ```
+
+---
+
+## 20b. ChangeActionsUtil.java — COMPLETE METHOD REFERENCE
+
+All methods are `public static`. Class: `public final class ChangeActionsUtil extends Utilities`.
+
+```java
+// ---- General navigation (pre-existing methods) ----
+static void gotoChangeDetailsPage(String changeId)   // navigate to module → setTableView → columnSearch → toDetailsPage
+
+// ---- File / worklog / approval (pre-existing methods) ----
+static void uploadFileInChange(String fileName)
+static void addWorklog(JSONObject data)
+static void approveChange(String changeId)
+
+// ---- CH-286: Linking Changes UI utilities (added Mar 2026) ----
+// Search inside association-dialog-popup (NOT slide-down-popup — uses custom locators)
+static void columnSearchInAssociationPopup(String column, String value) throws Exception
+// → clicks POPUP_SEARCH_ICON if visible → finds column index via table headers → types in column search input
+
+// Navigate to the LHS Association tab
+static void openAssociationTab() throws Exception
+// → click LHS_ASSOCIATION_TAB + waitForAjaxComplete
+
+// Open Attach dropdown → click "Attach Parent Change" option
+static void openAttachParentChangePopup() throws Exception
+// → click ATTACH_BUTTON_DROPDOWN + click ATTACH_PARENT_CHANGE_OPTION + waitForAjaxComplete
+
+// Open Attach dropdown → click "Attach Child Changes" option
+static void openAttachChildChangesPopup() throws Exception
+// → click ATTACH_BUTTON_DROPDOWN + click ATTACH_CHILD_CHANGES_OPTION + waitForAjaxComplete
+
+// Search for a change by title + click its radio button + click BTN_ASSOCIATE
+static void selectAndAssociateParentInPopup(String changeName, String changeId) throws Exception
+
+// Search for a change by title + click its checkbox + click BTN_ASSOCIATE
+static void selectAndAssociateChildInPopup(String changeName, String changeId) throws Exception
+
+// Combined: openAttachParentChangePopup + selectAndAssociateParentInPopup
+static void linkParentChangeViaUI(String changeName, String changeId) throws Exception
+
+// Combined: openAttachChildChangesPopup + selectAndAssociateChildInPopup
+static void linkChildChangeViaUI(String changeName, String changeId) throws Exception
+
+// Click DETACH_PARENT_CHANGE + confirm dialog ("Confirm"/DETACH_CHANGE) + YES + waitForAjaxComplete
+static void detachParentChange() throws Exception
+
+// Click SELECT_CHILD_CHECKBOX(id) + DETACH_CHILD_CHANGES + confirm + YES + waitForAjaxComplete
+static void detachChildChange(String childChangeId) throws Exception
+```
+
+### When to call which method
+
+```java
+// Full attach flow (most common — one line in test method):
+ChangeActionsUtil.openAssociationTab();
+ChangeActionsUtil.linkParentChangeViaUI(LocalStorage.getAsString("targetChangeName1"),
+                                        LocalStorage.getAsString("targetChangeId1"));
+
+// When you need to open popup but do custom search/selection before associating:
+ChangeActionsUtil.openAssociationTab();
+ChangeActionsUtil.openAttachParentChangePopup();
+ChangeActionsUtil.columnSearchInAssociationPopup("Title", changeName);
+actions.waitForAjaxComplete();
+actions.click(ChangeLocators.LinkingChangePopup.SELECT_RADIO_WITH_ENTITYID.apply(changeId));
+// ... verify something ...
+actions.click(ChangeLocators.LinkingChangePopup.BTN_ASSOCIATE);
+
+// Full detach flows:
+ChangeActionsUtil.detachParentChange();                         // parent detach
+ChangeActionsUtil.detachChildChange(changeId);                  // single child detach
+```
+
+⚠️ **Do NOT inline LHS_ASSOCIATION_TAB click + ATTACH_BUTTON_DROPDOWN + ATTACH_PARENT_CHANGE_OPTION directly in test methods.** These 3 lines = `openAssociationTab()` + `openAttachParentChangePopup()`.
 
 ---
 

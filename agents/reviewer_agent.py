@@ -142,8 +142,14 @@ FRAMEWORK RULES (verify every one):
 19. Navigate methods all return `this` — chaining is valid
 20. For Solution: submit button = SolutionLocators.SolutionCreateForm.SOLUTION_ADD (unapproved)
     or SOLUTION_ADD_APPROVE (approved) — NOT actions.formBuilder.submit()
-21. ALWAYS use SolutionActionsUtil.pageSetup() for list view setup, and SolutionActionsUtil.searchSolutionUsingId()
-    for searching. Never inline this logic in Base methods. Add new methods to ActionsUtil if missing.
+21. ACTIONSUTIL/APIUTIL PATTERN — applies to ALL entities:
+    - NEVER inline actions.click()/actions.navigate()/popup-open sequences directly in *Base.java test methods.
+    - All multi-step UI flows belong in *ActionsUtil.java (public static, extends Utilities).
+    - All preProcess REST API helpers belong in *APIUtil.java.
+    - If inline action code is present in a test method that could be extracted to a util → flag as ERROR.
+    - Known util files: ChangeActionsUtil.java, SolutionActionsUtil.java, RequestApprovalsActionUtils.java.
+    - SolutionActionsUtil: pageSetup(), navigateToSolutions(id), searchSolutionUsingId(id), selectFilter(name).
+    - ChangeActionsUtil: openAssociationTab(), linkParentChangeViaUI(name,id), linkChildChangeViaUI(name,id), detachParentChange(), detachChildChange(id).
 22. DATA REUSE: Flag any new *_data.json entries or AnnotationConstants.Data constants that duplicate
     existing entity creation data. For example, if the module already has "create_change_API" for creating
     a change via preProcess, a new entry like "create_change_for_linking_api" that does the same thing

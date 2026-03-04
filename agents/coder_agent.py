@@ -297,16 +297,37 @@ TWO-PIECE OUTPUT FORMAT
   }
 
 ================================================================
-ACTIONUTIL RULE — CRITICAL (check before writing ANY logic)
+ACTIONUTIL / APIUTIL RULE — MANDATORY 4-STEP WORKFLOW
 ================================================================
 
-BEFORE writing any UI action logic in <Entity>Base.java:
-1. CHECK <Entity>ActionsUtil.java for an existing method that does what you need.
-2. If it EXISTS → call SolutionActionsUtil.method(...) — do NOT duplicate the logic.
-3. If it does NOT exist → ADD a new static method to SolutionActionsUtil.java first, then call it.
-4. Same rule for SolutionAPIUtil.java for any REST API helper logic in preProcess.
+DO NOT write any UI action logic or preProcess API calls until you have completed all 4 steps:
 
-SolutionActionsUtil — existing static methods (use these directly):
+STEP 1 — READ the entity's util files in full:
+  grep_search: "public static" in modules/<module>/<entity>/utils/<Entity>ActionsUtil.java
+  grep_search: "public static" in modules/<module>/<entity>/utils/<Entity>APIUtil.java
+  Then read_file the util files to understand parameter shapes + what each method does.
+  If a util file does not exist yet → it must be created before the scenario.
+
+STEP 2 — MAP each scenario operation to a method:
+  For every navigation/click/form/popup step in the scenario:
+    REUSE: an existing util method covers it → call it
+    CREATE NEW: no method covers it → goes to Step 3
+
+STEP 3 — Create missing methods first:
+  For each CREATE NEW, add public static method to <Entity>ActionsUtil.java (UI) or
+  <Entity>APIUtil.java (preProcess API logic). One method = one complete named UI operation.
+
+STEP 4 — Generate the scenario using only util calls + assertions:
+  Test method body = utility calls + assertions + addSuccessReport/addFailureReport ONLY.
+  If you are writing actions.click(...) directly in a test method body → STOP → move to util first.
+
+Known entity utility files (always discover + read in Step 1):
+  Changes:   modules/changes/change/utils/ChangeActionsUtil.java   + ChangeAPIUtil.java
+  Solutions: modules/solutions/solution/utils/SolutionActionsUtil.java + SolutionAPIUtil.java
+  Requests:  modules/requests/request/utils/RequestApprovalsActionUtils.java
+  Problems:  modules/problems/problem/utils/ProblemAPIUtil.java
+
+SolutionActionsUtil — existing static methods (Changes entity — for reference):
   SolutionActionsUtil.pageSetup()                      // setTableView(LISTVIEW) + selectFilter(ALL_ACTIVE_SOLUTIONS)
   SolutionActionsUtil.navigateToSolutions(entityID)    // toModule + pageSetup + optional checkbox select
   SolutionActionsUtil.searchSolutionUsingId(entityID)  // fetches title via API then columnSearch("Title", title)
@@ -319,6 +340,18 @@ SolutionActionsUtil — existing static methods (use these directly):
 SolutionAPIUtil — existing static methods:
   SolutionAPIUtil.createSolutionTopicAndGetName("topics", inputData)           // creates topic, returns name
   SolutionAPIUtil.createSolutionTemplateAndGetName("solution_templates", inputData) // creates template, stores in LocalStorage
+
+ChangeActionsUtil — existing static linking methods (CH-286):
+  ChangeActionsUtil.openAssociationTab()               // LHS_ASSOCIATION_TAB click + waitForAjaxComplete
+  ChangeActionsUtil.openAttachParentChangePopup()      // dropdown click + ATTACH_PARENT_CHANGE_OPTION + wait
+  ChangeActionsUtil.openAttachChildChangesPopup()      // dropdown click + ATTACH_CHILD_CHANGES_OPTION + wait
+  ChangeActionsUtil.columnSearchInAssociationPopup(col, val) // search inside association-dialog-popup
+  ChangeActionsUtil.selectAndAssociateParentInPopup(name, id)  // columnSearch + radio + associate
+  ChangeActionsUtil.selectAndAssociateChildInPopup(name, id)   // columnSearch + checkbox + associate
+  ChangeActionsUtil.linkParentChangeViaUI(name, id)    // openAttachParentChangePopup + selectAndAssociate
+  ChangeActionsUtil.linkChildChangeViaUI(name, id)     // openAttachChildChangesPopup + selectAndAssociate
+  ChangeActionsUtil.detachParentChange()               // DETACH_PARENT_CHANGE + confirm YES
+  ChangeActionsUtil.detachChildChange(childId)         // SELECT_CHILD_CHECKBOX + DETACH_CHILD_CHANGES + YES
 
 ================================================================
 SOLUTIONCONSTANTS — KEY REFERENCE
@@ -532,7 +565,14 @@ Set<String> actions.jsonArrayToSet(JSONArray arr)
 18. getEntityId() returns LocalStorage.getAsString(getName()) — only valid after preProcess stores it
 19. getInputData(JSONObject) wraps data in {"entityName": {...}} — use for restAPI.create() in preProcess
 20. Navigate methods return `this` — can be chained; all chaining is valid
-21. ALWAYS check SolutionActionsUtil for existing methods before writing inline UI logic. Use pageSetup(), navigateToSolutions(), searchSolutionUsingId(), etc. Add new methods to ActionsUtil if functionality is missing.
+21. ACTIONSUTIL/APIUTIL — MANDATORY 4-STEP WORKFLOW before writing any test code:
+    STEP 1: grep_search "public static" on *ActionsUtil.java and *APIUtil.java for the entity — list all methods.
+    STEP 2: Map each scenario UI operation to existing method (REUSE) or gap (CREATE NEW).
+    STEP 3: Add missing methods to the util file FIRST (compile them), then reference in the test method.
+    STEP 4: Test method body = util calls + assertions ONLY. Never inline actions.click() in test body.
+    Entity util file registry: Changes→ChangeActionsUtil.java/ChangeAPIUtil.java;
+    Solutions→SolutionActionsUtil.java/SolutionAPIUtil.java;
+    Requests→RequestApprovalsActionUtils.java; Problems→ProblemAPIUtil.java.
 22. group="NoPreprocess" means ZERO API calls, ZERO cleanup. Pair with dataIds={} or dataIds={""}. NEVER add preProcess/postProcess logic for this group.
 23. @AutomaterCase is NOT a test. It annotates helper sub-methods in the BASE class only. ALL runnable tests use @AutomaterScenario.
 24. runType TRAP: the annotation default is PORTAL_BASED. ALWAYS write runType=ScenarioRunType.USER_BASED explicitly. Never omit it.
@@ -778,8 +818,9 @@ TOOL USAGE: list_dir → read key files (including *_data.json, *AnnotationConst
             f"1. Use `list_dir` to explore the module folder structure first.\n"
             f"2. Use `read_file` to read the existing *Base.java (or *Trigger.java) file "
             f"   — especially the preProcess() method to understand available groups.\n"
-            f"3. Use `grep_search` to find method signatures in *APIUtil.java / *ActionsUtil.java "
-            f"   before referencing them.\n"
+            f"3. READ *ActionsUtil.java and *APIUtil.java for the entity (use read_file after grep_search \"public static\").\n"
+            f"   Map each scenario UI operation to an existing method (REUSE) or a gap (CREATE NEW in util first).\n"
+            f"   NEVER write actions.click(...) directly in a test method body — put it in a util method.\n"
             f"4. Use `read_file` to check *AnnotationConstants.java for existing Data constants "
             f"   (MUST reuse existing ones in dataIds — do NOT invent new constants).\n"
             f"5. Use `read_file` to check *_data.json for existing data keys and placeholders "

@@ -578,6 +578,130 @@ actions.navigate.clickModule()     // ❌ — use navigate.toModule(name)
 LocalAutomationData.Builder.isLocal(Boolean)  // ❌ — deprecated, does not exist
 ```
 
+---
+
+### ActionUtils / APIUtil Pattern (MANDATORY — apply to every entity)
+
+> **Rule — Enforced by code review**: Any block of UI actions or API calls that appears in more than one test method **MUST** be extracted into the entity's `*ActionsUtil.java` or `*APIUtil.java`. Test method bodies must never contain duplicate interaction sequences.
+
+#### Where to place reusable code
+
+| What | Where | Example file |
+|------|-------|--------------|
+| Multi-step UI flows (navigate, click, form fill, verify) | `modules/<module>/<entity>/utils/<Entity>ActionsUtil.java` | `ChangeActionsUtil.java` |
+| REST API wrapper logic (create / update / delete / link) | `modules/<module>/<entity>/utils/<Entity>APIUtil.java` | `ChangeAPIUtil.java` |
+
+#### Class declaration (REQUIRED — exactly this pattern)
+
+```java
+// ✅ CORRECT
+public final class ChangeActionsUtil extends Utilities {
+    // All methods must be public static
+    // Utilities base class provides: actions, report, restAPI as static fields
+    
+    public static void openAssociationTab() throws Exception {
+        actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB);
+        actions.waitForAjaxComplete();
+    }
+}
+
+// ❌ WRONG — do NOT instantiate, do NOT make non-static
+public class ChangeActionsUtil {
+    public void openAssociationTab() { ... }  // non-static fails — no access to actions
+}
+```
+
+#### Method granularity rules
+
+| Bad — too granular | Good — focused unit of work |
+|---|---|
+| `clickAttachDropdown()` | `openAttachParentChangePopup()` (click dropdown + click option + waitForAjax) |
+| `clickYesOnConfirm()` | `detachParentChange()` (click detach + validate confirm dialog + click YES + waitForAjax) |
+| Inline 6-line open+search+select+associate | `linkParentChangeViaUI(name, id)` (all 6 lines encapsulated) |
+
+Each method should represent **one complete, named UI operation** that a person doing manual testing would describe as a single step.
+
+#### Calling convention in test methods
+
+```java
+// ✅ CORRECT — test method delegates to utility
+public void verifySingleParentConstraint() throws Exception {
+    ChangeActionsUtil.openAssociationTab();
+    ChangeActionsUtil.linkParentChangeViaUI(
+        LocalStorage.getAsString("targetChangeName1"),
+        LocalStorage.getAsString("targetChangeId1")
+    );
+    // Only assertion code stays in the test method
+    if(actions.isElementPresent(ChangeLocators.LinkingChange.DETACH_PARENT_CHANGE)) {
+        addSuccessReport("SDPOD_LINKING_CH_022: Detach button shown after parent linked");
+    }
+}
+
+// ❌ WRONG — inline repeated navigation/click/wait in test body
+public void verifySingleParentConstraint() throws Exception {
+    actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB);   // do not inline
+    actions.waitForAjaxComplete();
+    actions.click(ChangeLocators.LinkingChange.ATTACH_BUTTON_DROPDOWN);
+    actions.click(ChangeLocators.LinkingChange.ATTACH_PARENT_CHANGE_OPTION);
+    actions.waitForAjaxComplete();
+    ...
+}
+```
+
+#### Pre-generation analysis — MANDATORY WORKFLOW (run BEFORE writing any test code)
+
+> **This is the most important rule.** Every new scenario MUST complete all 4 steps before a single line of test code is written.
+
+**Step 1 — READ the entity's util files in full**
+
+For the target `<Entity>` in `modules/<module>/<entity>/utils/`:
+- READ `<Entity>ActionsUtil.java` (or `<Entity>ActionUtils.java`) — list every `public static` method: name, parameters, what UI operation it performs.
+- READ `<Entity>APIUtil.java` — same listing.
+- If either file does not exist yet, note that it must be created before any scenario code is generated.
+
+```bash
+# Discover util files:
+find src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/ -name "*.java" | sort
+# List all existing public methods (then READ the file for parameter shapes + purpose):
+grep -n "public static" <Entity>ActionsUtil.java
+grep -n "public static" <Entity>APIUtil.java
+```
+
+**Step 2 — MAP each operation in the scenario to a method**
+
+Produce a decision table before writing any code:
+
+| Operation in scenario | Existing method? | Decision |
+|---|---|---|
+| Open association tab | `openAssociationTab()` | REUSE |
+| Link parent change | `linkParentChangeViaUI(name, id)` | REUSE |
+| Some new UI flow | *(not found in util file)* | CREATE NEW |
+| API create in preProcess | `ChangeAPIUtil.createChange(data)` | REUSE |
+
+**Step 3 — Create missing methods FIRST (before writing the scenario)**
+
+For each `CREATE NEW` in the decision table:
+1. Add `public static void <methodName>(...) throws Exception { ... }` to `<Entity>ActionsUtil.java`
+2. One method = one complete named UI operation (not a single click; not an entire test)
+3. Compile the util file to verify before proceeding to Step 4
+
+**Step 4 — Generate the scenario using only util calls + assertions**
+
+- Test method body = utility calls + assertions + `addSuccessReport`/`addFailureReport` ONLY
+- Zero inline `actions.click(...)` / `actions.waitForAjaxComplete()` sequences in test body
+- If you catch yourself typing `actions.click(` directly in a test method → STOP → move to util first
+
+#### Known entity utility files (read these in Step 1 before generating)
+
+| Entity | ActionsUtil | APIUtil |
+|--------|-------------|---------|
+| Changes | `modules/changes/change/utils/ChangeActionsUtil.java` | `modules/changes/change/utils/ChangeAPIUtil.java` |
+| Solutions | `modules/solutions/solution/utils/SolutionActionsUtil.java` | `modules/solutions/solution/utils/SolutionAPIUtil.java` |
+| Requests | `modules/requests/request/utils/RequestApprovalsActionUtils.java` | *(per entity sub-class)* |
+| Problems | *(check modules/problems/problem/utils/)* | `modules/problems/problem/utils/ProblemAPIUtil.java` |
+
+---
+
 ### Complete `actions.navigate` API
 
 ```java
