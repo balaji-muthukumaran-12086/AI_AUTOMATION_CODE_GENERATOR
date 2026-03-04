@@ -982,6 +982,7 @@ Each block = **only the additions**. Never output the entire file. Marker must m
 | 5 | `verifyAttachChildChangePopup` | CH_018-019 | ✅ PASSED (Mar 3 12:29) |
 | 6 | `attachDetachChildChangesAndVerifyListView` | CH_002-004 | ✅ PASSED (Mar 3 12:39) |
 | 7 | `verifyHistoryEntryOnLinkingAndUnlinkingChange` | CH_020 | ✅ PASSED (Mar 4) |
+| 8 | `verifyCancelInAssociationPopupDoesNotLink` | CH_021 | ✅ PASSED (Mar 4) |
 
 ### Key Files
 
