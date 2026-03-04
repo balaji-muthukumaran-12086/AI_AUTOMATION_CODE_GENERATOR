@@ -491,6 +491,49 @@ A new `*_data.json` entry is justified ONLY when:
 - Adding new `AnnotationConstants.Data` constants that map to existing JSON keys
 - Duplicating preProcess API setup data under a different name
 
+### 8b.5 ⭐ LocalStorage pre-seed — customize an existing JSON entry without duplicating it (REQUIRED TECHNIQUE)
+
+If a `*_data.json` entry contains `$(custom_KEY)` placeholders and you need to provide a specific
+value for that placeholder, **store it in LocalStorage BEFORE calling `getTestCaseData()`**.
+This lets you reuse the same JSON entry with different runtime values instead of creating a new entry.
+
+How `$(custom_KEY)` resolution works:
+```
+LocalStorage.store("KEY", value)  →  $(custom_KEY) in JSON  →  resolves to value at read time
+```
+
+**In the test method body — pre-seed BEFORE `getTestCaseData()`:**
+```java
+// JSON entry has: "template": {"name": "$(custom_template_name)"}
+
+// ❌ WRONG — creating a new JSON entry just for a different template:
+// "create_change_special_template": { "data": { "template": {"name": "My Special Template"} } }
+
+// ✅ CORRECT — pre-seed LocalStorage, then reuse existing JSON key:
+LocalStorage.store("template_name", LocalStorage.getAsString("targetTemplateName"));  // from preProcess
+JSONObject inputData = getTestCaseData(ChangeDataConstants.ChangeData.CREATE_CHANGE_WITH_TEMPLATE);
+// $(custom_template_name) resolves to whatever is in LocalStorage["template_name"]
+```
+
+**In preProcess (for API setup data with placeholders):**
+```java
+// Storing values in preProcess makes them available to any JSON with $(custom_KEY):
+LocalStorage.store("solution_template", templateName);  // used by $(custom_solution_template)
+LocalStorage.store("topic", topicName);                 // used by $(custom_topic)
+LocalStorage.store("change_id", changeId);              // used by $(custom_change_id)
+```
+
+**Decision flow — apply before every `getTestCaseData()` call:**
+```
+Need a data value (template name, topic, linked entity, etc.) in your JSON?
+  ↓
+  1. Does an existing *_data.json entry have the right shape but with a $(custom_KEY) placeholder?
+     → YES: LocalStorage.store("KEY", value)  then  getTestCaseData(EXISTING_KEY)  ← REUSE
+     → NO:  Does ANY existing entry provide the same payload with fixed values?
+            → YES: getTestCaseData(EXISTING_KEY)  ← REUSE AS-IS
+            → NO:  Create a new *_data.json entry  ← only this case justifies a new entry
+```
+
 ---
 
 ## SECTION 9 — DataConstants PATTERN

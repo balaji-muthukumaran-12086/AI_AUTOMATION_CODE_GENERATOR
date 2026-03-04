@@ -601,6 +601,14 @@ Set<String> actions.jsonArrayToSet(JSONArray arr)
 26. Data JSON: every entry MUST have {"data":{...}} wrapper. Lookup fields must be {"name":"Value"} objects, NOT flat strings. Never omit the wrapper.
 27. DATA REUSE: NEVER create new *_data.json entries or DataConstants if existing ones provide the same entity data (e.g. creating a change). Check the "Existing Data JSON Keys" and "Existing Annotation Constants" sections in context. Reuse existing keys for preProcess group data — only create new entries for genuinely new UI test data that doesn't exist yet.
 28. AnnotationConstants.Data reuse: dataIds values MUST reference existing constants from AnnotationConstants.Data interface. Only add new constants if no existing one matches the required API setup data.
+29. LocalStorage pre-seed technique (CRITICAL — avoids duplicate JSON entries):
+    If an existing *_data.json entry has $(custom_KEY) placeholders and you need a specific value:
+    CALL LocalStorage.store("KEY", value) BEFORE calling getTestCaseData() — the placeholder resolves at read time.
+    Example:
+      LocalStorage.store("template_name", LocalStorage.getAsString("createdTemplateName"));
+      JSONObject inputData = getTestCaseData(EntityDataConstants.EntityData.EXISTING_KEY_WITH_PLACEHOLDER);
+    This REPLACES the need to create a new JSON entry just to vary one field value.
+    Decision: existing JSON has $(custom_KEY)? → pre-seed + reuse. No match at all? → create new entry.
 """
 
 
@@ -638,6 +646,9 @@ DATA REUSE (CRITICAL — prevents duplicate data entries):
     For example: if "create_change_API" already exists for creating a change, REUSE it.
 12. NEVER add new AnnotationConstants.Data constants if an existing one matches.
 13. Only create new *_data.json entries for genuinely new UI test data with unique field combinations.
+14. LocalStorage pre-seed technique: if an existing JSON entry has $(custom_KEY) placeholders,
+    call LocalStorage.store("KEY", value) BEFORE getTestCaseData() — placeholder resolves at read time.
+    This avoids creating new JSON entries just to vary one field. Always try pre-seed before creating new.
 
 TOOL USAGE: list_dir → read key files (including *_data.json, *AnnotationConstants.java) → grep_search to verify methods → write code.
 """.strip()

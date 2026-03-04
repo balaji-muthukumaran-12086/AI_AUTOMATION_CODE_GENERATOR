@@ -280,6 +280,41 @@ public final static TestCaseData SOL_UNAPPROVED_PRIVATE_GENERAL_TEMPLATE =
 ### Runtime placeholders in JSON:
 | Placeholder | Resolved to |
 |---|---|
+| `$(unique_string)` | Millisecond timestamp — unique per run |
+| `$(custom_KEY)` | `LocalStorage.fetch("KEY")` — set by preProcess OR pre-seeded before `getTestCaseData()` |
+| `$(user_name)` | Scenario user’s display name |
+| `$(user_email_id)` | Scenario user’s email |
+| `$(admin_email_id)` | Admin user’s email |
+| `$(date, N, ahead)` | Date N days ahead (milliseconds string) |
+| `$(datetime, N, ahead)` | Datetime N days ahead |
+
+### ⭐ LocalStorage pre-seed — reuse existing JSON entries with custom values (REQUIRED TECHNIQUE)
+
+`$(custom_KEY)` is resolved by `PlaceholderUtil` at the moment `getTestCaseData()` / `getTestCaseDataUsingCaseId()` is called.
+This means: if you call `LocalStorage.store("KEY", value)` **before** `getTestCaseData()`, the placeholder will resolve to that value.
+
+This allows reusing an existing `*_data.json` entry with a custom runtime value **without creating a new JSON entry**.
+
+```java
+// Example: Existing JSON entry has "template": {"name": "$(custom_template_name)"}
+// You want to use a template that was created in preProcess.
+
+// ❌ WRONG — creating a duplicate JSON entry:
+// "create_solution_with_my_template": { "data": { "template": {"name": "My Template"} } }
+
+// ✅ CORRECT — pre-seed LocalStorage before calling getTestCaseData():
+// preProcess already stored: LocalStorage.store("solution_template", "My Template");
+// Then in the test method:
+JSONObject inputData = getTestCaseData(SolutionDataConstants.SolutionData.SOL_WITH_CUSTOM_TEMPLATE);
+// $(custom_solution_template) resolves to "My Template" from LocalStorage
+```
+
+**When to pre-seed vs. when to create a new entry:**
+- `$(custom_KEY)` placeholder exists in JSON and you have the value → `LocalStorage.store("KEY", value)` then reuse
+- Entry has fixed values and all match your test → reuse as-is
+- Genuinely different field combination with no matching entry → create new entry
+| Placeholder | Resolved to |
+|---|---|
 | `$(unique_string)` | Auto unique string per run |
 | `$(custom_topic)` | Topic ID stored in `LocalStorage` by `preProcess` |
 | `$(custom_general_topic)` | General topic ID fetched in preProcess |

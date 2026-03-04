@@ -157,6 +157,10 @@ FRAMEWORK RULES (verify every one):
     existing entity creation data. For example, if the module already has "create_change_API" for creating
     a change via preProcess, a new entry like "create_change_for_linking_api" that does the same thing
     is a duplication ERROR. Only genuinely new field combinations justify a new data entry.
+    PREFERRED ALTERNATIVE: If an existing JSON entry has $(custom_KEY) placeholders, the test method should
+    call LocalStorage.store("KEY", value) BEFORE getTestCaseData() to resolve the placeholder at read time.
+    This avoids new JSON entries entirely. Flag as ERROR if a new JSON entry is created when pre-seeding
+    LocalStorage with an existing entry would achieve the same result.
 
 Review the provided Java code and identify all issues.
 

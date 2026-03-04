@@ -551,6 +551,36 @@ Before creating any new `*_data.json` entry or `DataConstants` constant:
 
 **Reuse** an existing entry if it covers the same entity creation payload. Only create new entries when the field combination is genuinely different.
 
+### ⭐ LocalStorage pre-seed — customize existing JSON entries without duplicating them
+
+If a `*_data.json` entry has `$(custom_KEY)` placeholders, you can provide specific values
+by storing them in LocalStorage **BEFORE** calling `getTestCaseData()`. This is the preferred
+technique to avoid creating new JSON entries just to vary one field value.
+
+```java
+// JSON entry "create_change_with_template" has:
+//   "template": {"name": "$(custom_template_name)"}
+
+// ❌ WRONG — new JSON entry just to use a different template:
+// "create_change_special": { "data": { "template": {"name": "My Template"} } }
+
+// ✅ CORRECT — pre-seed LocalStorage, then reuse existing JSON entry:
+LocalStorage.store("template_name", LocalStorage.getAsString("createdTemplateName")); // set in preProcess
+JSONObject inputData = getTestCaseData(ChangeDataConstants.ChangeData.CREATE_CHANGE_WITH_TEMPLATE);
+// $(custom_template_name) resolves from LocalStorage automatically
+```
+
+**Decision flow before every `getTestCaseData()` call:**
+```
+Need a specific field value (template, topic, linked entity, etc.)?
+  ↓
+  Does existing JSON have $(custom_KEY) placeholder for it?
+  → YES: LocalStorage.store("KEY", value)  then  getTestCaseData(EXISTING_KEY)  [REUSE]
+  → NO:  Does any existing entry provide the same payload with fixed values?
+         → YES: getTestCaseData(EXISTING_KEY)  [REUSE AS-IS]
+         → NO:  Create a new *_data.json entry  [only justified case]
+```
+
 ### Complete Runtime Placeholder Reference
 
 ```
