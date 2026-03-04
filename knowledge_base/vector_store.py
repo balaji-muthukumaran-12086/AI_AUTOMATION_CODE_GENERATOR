@@ -31,7 +31,8 @@ from chromadb.utils import embedding_functions
 # ──────────────────────────────────────────────
 
 def _get_embedding_fn():
-    api_key = os.environ.get("OPENAI_API_KEY")
+    from config.project_config import OPENAI_API_KEY
+    api_key = OPENAI_API_KEY
     if api_key:
         return embedding_functions.OpenAIEmbeddingFunction(
             api_key=api_key,

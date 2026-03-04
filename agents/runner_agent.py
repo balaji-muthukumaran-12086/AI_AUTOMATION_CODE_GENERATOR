@@ -25,9 +25,10 @@ import os
 import re
 import subprocess
 import shutil
+import warnings
 from pathlib import Path
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict
 
 from agents.state import AgentState
 from config.project_config import (
@@ -54,44 +55,139 @@ MAIN_CLASS_PATH = (
     f"{PROJECT_NAME}/src/com/zoho/automater/selenium/standalone/AutomaterSeleniumMain.java"
 )
 
-# Known entity class → fully-qualified import mapping
-# IMPORTANT: Every entity class passed via tests_to_run.json MUST have an entry
-# here. Missing entries cause Class.forName() to receive a simple name instead
-# of a FQCN, throwing ClassNotFoundException that is silently caught by
-# AutomaterSeleniumMain → browser opens then closes → reported as false-PASS.
-ENTITY_IMPORT_MAP = {
-    # ── Solutions ──────────────────────────────────────────────────────────
-    "Solution":              "com.zoho.automater.selenium.modules.solutions.solution.Solution",
-    # ── Requests ───────────────────────────────────────────────────────────
-    "Request":               "com.zoho.automater.selenium.modules.requests.request.Request",
-    "IncidentRequest":       "com.zoho.automater.selenium.modules.requests.request.IncidentRequest",
-    "IncidentRequestNotes":  "com.zoho.automater.selenium.modules.requests.request.IncidentRequestNotes",
-    "ServiceRequest":        "com.zoho.automater.selenium.modules.requests.request.ServiceRequest",
-    "RequestNotes":          "com.zoho.automater.selenium.modules.requests.request.RequestNotes",
-    # ── Problems ───────────────────────────────────────────────────────────
-    "Problem":               "com.zoho.automater.selenium.modules.problems.problem.Problem",
-    # ── Changes ────────────────────────────────────────────────────────────
-    "Change":                "com.zoho.automater.selenium.modules.changes.change.Change",
-    "ChangeDetailsView":     "com.zoho.automater.selenium.modules.changes.change.DetailsView",
-    "CabEvaluationTask":     "com.zoho.automater.selenium.modules.changes.cabevaluationtask.CabEvaluationTask",
-    # ── Releases ───────────────────────────────────────────────────────────
-    "Release":               "com.zoho.automater.selenium.modules.releases.release.Release",
-    "UATTask":               "com.zoho.automater.selenium.modules.releases.uattask.UATTask",
-    # ── Projects & Tasks ───────────────────────────────────────────────────
-    "Project":               "com.zoho.automater.selenium.modules.projects.project.Project",
-    "Task":                  "com.zoho.automater.selenium.modules.tasks.task.Task",
-    # ── Assets ─────────────────────────────────────────────────────────────
-    "Asset":                 "com.zoho.automater.selenium.modules.assets.asset.Asset",
-    "AssetTrigger":          "com.zoho.automater.selenium.modules.admin.automation.triggers.AssetTrigger",
-    # ── Admin — Automation / Triggers ─────────────────────────────────────
-    "ProblemTrigger":        "com.zoho.automater.selenium.modules.admin.automation.triggers.ProblemTrigger",
-    "IncidentRequestTrigger": "com.zoho.automater.selenium.modules.admin.automation.triggers.IncidentRequestTrigger",
-    "ChangeTrigger":         "com.zoho.automater.selenium.modules.admin.automation.triggers.ChangeTrigger",
-    "ServiceRequestTrigger": "com.zoho.automater.selenium.modules.admin.automation.triggers.ServiceRequestTrigger",
-    # ── Admin — Automation / Workflows ────────────────────────────────────
-    "IncidentRequestWorkflow": "com.zoho.automater.selenium.modules.admin.automation.workflows.IncidentRequestWorkflow",
-    # ── Admin — Customization / Additional Fields ──────────────────────────
-    "ProjectUDF":            "com.zoho.automater.selenium.modules.admin.customization.additionalfields.ProjectUDF",}
+# ── Dynamic entity-class → FQCN map ───────────────────────────────────────────
+#
+# Support-class suffixes that are never passed as an entity_class — excluding
+# them from the map avoids noisy duplicate warnings for Locators/Constants/etc.
+# that exist in both requests.task and problems.task, for example.
+_SUPPORT_SUFFIXES = (
+    "Locators", "Constants", "DataConstants", "AnnotationConstants",
+    "Fields", "Base", "APIUtil", "Actions", "Utils", "Helper",
+)
+
+# Aliases: lookup key that DIFFERS from the actual Java filename.
+# Add one entry per alias — never add keys whose name already matches the file.
+#
+# Format: "CallerUsedName": "ActualJavaFileName"
+#   where ActualJavaFileName uniquely identifies one .java file in the modules tree.
+#   If the same filename exists in multiple modules, use the full simple name
+#   to disambiguate via the module prefix pattern below.
+_ENTITY_ALIASES: Dict[str, str] = {
+    # Changes
+    "ChangeDetailsView":     "DetailsView",       # DetailsView.java lives in changes.change
+    "ChangeListView":        "ListView",           # ListView.java → changes (last-found wins; use alias for releases)
+    "ChangeUATTask":         "UATTask",            # UATTask → changes.changetask (scan last-wins)
+    "ChangeReleaseTask":     "ReleaseTask",
+    "ChangeSubmissionTask":  "SubmissionTask",
+    "ChangeReviewTask":      "ReviewTask",
+    "ChangeCloseTask":       "CloseTask",
+    "ChangePlanningTask":    "PlanningTask",
+    # Note: Request/Problem sub-entities (Task, Worklog, Reminder) are in _FQCN_OVERRIDES
+    # with explicit module paths — do not add them here as simple-name aliases.
+}
+
+# For cross-module aliases that resolve to the same simple name, we need the
+# full module path override.  Store those here as {alias_key: full_fqcn}.
+_FQCN_OVERRIDES: Dict[str, str] = {
+    # Releases versions (scan last-wins gives changes; these keep releases)
+    "ReleasesUATTask":       "com.zoho.automater.selenium.modules.releases.releasetask.UATTask",
+    "ReleasesReleaseTask":   "com.zoho.automater.selenium.modules.releases.releasetask.ReleaseTask",
+    "ReleasesSubmissionTask":"com.zoho.automater.selenium.modules.releases.releasetask.SubmissionTask",
+    "ReleasesReviewTask":    "com.zoho.automater.selenium.modules.releases.releasetask.ReviewTask",
+    "ReleasesCloseTask":     "com.zoho.automater.selenium.modules.releases.releasetask.CloseTask",
+    "ReleasesPlanningTask":  "com.zoho.automater.selenium.modules.releases.releasetask.PlanningTask",
+    "ReleasesListView":      "com.zoho.automater.selenium.modules.releases.release.ListView",
+    "ReleasesReleaseWorkflow":"com.zoho.automater.selenium.modules.releases.release.ReleaseWorkflow",
+    # Requests sub-entity versions
+    "RequestTask":           "com.zoho.automater.selenium.modules.requests.task.Task",
+    "RequestWorklog":        "com.zoho.automater.selenium.modules.requests.worklog.Worklog",
+    "RequestReminder":       "com.zoho.automater.selenium.modules.requests.reminder.Reminder",
+    # Problems sub-entity versions
+    "ProblemTask":           "com.zoho.automater.selenium.modules.problems.task.Task",
+    "ProblemWorklog":        "com.zoho.automater.selenium.modules.problems.worklog.Worklog",
+    "ProblemReminder":       "com.zoho.automater.selenium.modules.problems.reminder.Reminder",
+}
+
+
+def _build_entity_import_map() -> Dict[str, str]:
+    """
+    Scan SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/
+    and build a {SimpleClassName: fully.qualified.ClassName} dict automatically.
+
+    Strategy
+    --------
+    Every .java file under the modules/ tree has a path of the form:
+        .../src/<pkg/path>/<ClassName>.java
+    The FQCN is simply the part after `src/` with `/` → `.` and `.java` stripped.
+
+    Support classes (Locators, Constants, Base, etc.) are excluded — they are
+    never used as entity_class values so we skip them to suppress noisy warnings.
+
+    Duplicate runnable class names across modules are warned about once.
+    _FQCN_OVERRIDES is merged in last to provide stable aliases for
+    callers that need the non-default module's version.
+    """
+    _base_src = (
+        Path(__file__).resolve().parents[1]
+        / PROJECT_NAME
+        / "src"
+        / "com" / "zoho" / "automater" / "selenium" / "modules"
+    )
+
+    if not _base_src.exists():
+        warnings.warn(
+            f"[RunnerAgent] modules src dir not found at {_base_src}; "
+            "ENTITY_IMPORT_MAP will be empty — tests may fail with ClassNotFoundException.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        return {}
+
+    src_root = _base_src.parents[4]   # .../SDPLIVE_.../src
+
+    result: Dict[str, str] = {}
+    for java_file in _base_src.rglob("*.java"):
+        simple = java_file.stem
+
+        # Skip support / base classes — never used as entity_class
+        if simple.endswith(_SUPPORT_SUFFIXES):
+            continue
+
+        fqcn = str(java_file.relative_to(src_root)).replace("/", ".").replace(".java", "")
+
+        if simple in result and result[simple] != fqcn:
+            warnings.warn(
+                f"[RunnerAgent] Duplicate entity class name '{simple}': "
+                f"'{result[simple]}' overridden by '{fqcn}'. "
+                f"Use a prefixed alias in _FQCN_OVERRIDES if both are needed.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
+        result[simple] = fqcn
+
+    # Resolve simple-name aliases
+    for alias_key, target_simple in _ENTITY_ALIASES.items():
+        if alias_key in _FQCN_OVERRIDES:
+            continue   # full-path override wins — applied below
+        if target_simple in result:
+            result[alias_key] = result[target_simple]
+        else:
+            warnings.warn(
+                f"[RunnerAgent] Alias '{alias_key}' → '{target_simple}' could not be "
+                f"resolved ('{target_simple}' not in scan). Check _ENTITY_ALIASES.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
+
+    # Apply full-path overrides (highest priority)
+    result.update(_FQCN_OVERRIDES)
+
+    print(f"[RunnerAgent] ENTITY_IMPORT_MAP: {len(result)} classes discovered from src/.")
+    return result
+
+
+# Built once at import time — zero per-test overhead.
+ENTITY_IMPORT_MAP: Dict[str, str] = _build_entity_import_map()
 
 
 class RunResult:
@@ -356,6 +452,10 @@ class RunnerAgent:
         in StandaloneDefault.java.  All values are always provided (resolved from
         project_config.py defaults in run_test())."""
         content = self._standalone_default.read_text(encoding="utf-8")
+
+        # Ensure URL ends with '/' so Java concatenation produces valid URLs
+        # e.g. "https://host:8080" + "app/portal/..." → needs slash separator
+        url = url.rstrip("/") + "/"
 
         # Replace the active (uncommented) SERVER_URL line
         content = re.sub(

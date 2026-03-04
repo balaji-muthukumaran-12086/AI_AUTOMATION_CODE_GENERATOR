@@ -48,31 +48,25 @@ PROJECT_SRC     = _os.path.join(PROJECT_ROOT, "src")
 PROJECT_BIN     = _os.path.join(PROJECT_ROOT, "bin")
 PROJECT_RES     = _os.path.join(PROJECT_ROOT, "resources")
 BASE_DIR        = _BASE_DIR
-# Override DEPS_DIR in .env to point to a different dependencies folder.
-DEPS_DIR        = _os.environ.get("DEPS_DIR", "/home/balaji-12086/Desktop/Workspace/Zide/dependencies")
+DEPS_DIR        = "/home/balaji-12086/Desktop/Workspace/Zide/dependencies"
 
 # ── Browser Driver Paths ────────────────────────────────────────────────────
-# Set these in .env so the project runs identically on any machine.
-# Linux default  : firefox binary under Drivers/firefox/firefox
+# Update these directly when deploying to a new machine.
 # macOS example  : /Applications/Firefox.app/Contents/MacOS/firefox
 # CI/Docker      : /usr/bin/firefox  |  /usr/bin/geckodriver
-_DRIVERS_DIR_DEFAULT = _os.environ.get("DRIVERS_DIR", "/home/balaji-12086/Desktop/Workspace/Drivers")
-DRIVERS_DIR      = _DRIVERS_DIR_DEFAULT
-FIREFOX_BINARY   = _os.environ.get("FIREFOX_BINARY",    _os.path.join(_DRIVERS_DIR_DEFAULT, "firefox", "firefox"))
-GECKODRIVER_PATH = _os.environ.get("GECKODRIVER_PATH",  _os.path.join(_DRIVERS_DIR_DEFAULT, "geckodriver"))
+DRIVERS_DIR      = "/home/balaji-12086/Desktop/Workspace/Drivers"
+FIREFOX_BINARY   = "/home/balaji-12086/Desktop/Workspace/Drivers/firefox/firefox"
+GECKODRIVER_PATH = "/home/balaji-12086/Desktop/Workspace/Drivers/geckodriver"
 
 # ── SDP Test Application Credentials ────────────────────────────────────────
 # Single source of truth for server URL, portal, and credentials.
 # Used by RunnerAgent (patches StandaloneDefault.java at runtime),
 # HealerAgent (Playwright), and run_test.py (CLI runner).
-#
-# Override any of these via environment variables or .env file.
-# Do NOT commit real passwords to source control — use .env for local overrides.
-SDP_URL         = _os.environ.get("SDP_URL",         "https://sdpodqa-auto2.csez.zohocorpin.com:12493/")
-SDP_PORTAL      = _os.environ.get("SDP_PORTAL",      "revampis")
-SDP_ADMIN_EMAIL = _os.environ.get("SDP_ADMIN_EMAIL", "automater-sdpcloudqa+rs2@zohotest.com")
-SDP_EMAIL_ID    = _os.environ.get("SDP_EMAIL_ID",    "automater-sdpcloudqa+rs2sdp-sdguest@zohotest.com")
-SDP_ADMIN_PASS  = _os.environ.get("SDP_ADMIN_PASS",  "Sdpg2@2025")
+SDP_URL         = "https://sdpodqa-auto2.csez.zohocorpin.com:12528/"
+SDP_PORTAL      = "itdesk1"
+SDP_ADMIN_EMAIL = "automater-sdpcloudqa+rs2@zohotest.com"
+SDP_EMAIL_ID    = "automater-sdpcloudqa+rs2sdp-sdguest@zohotest.com"
+SDP_ADMIN_PASS  = "Sdpg2@2025"
 
 # ── Phase 5 — Pipeline Monitoring ─────────────────────────────────────────
 # Per-agent execution timeout in seconds. OrchestratorAgent (future) will kill
@@ -102,16 +96,16 @@ RUNS_LOG_PATH = _os.path.join(_BASE_DIR, "logs", "runs.jsonl")
 # ── Phase 8 — Parallel Execution & Learning ────────────────────────────────
 # Number of tests to run in parallel.  Keep at 2 on a 16 GB machine with Ollama
 # loaded (4.5 GB) — each JVM + Firefox takes ~1 GB.
-PARALLEL_WORKERS = int(_os.environ.get("PARALLEL_WORKERS", "2"))
+PARALLEL_WORKERS = 2
 
 # Path to the curated list of tests for the parallel learning runner.
 TESTS_TO_RUN_PATH = _os.path.join(_BASE_DIR, "tests_to_run.json")
 
 # How many recent learnings to inject into CoderAgent and ReviewerAgent prompts.
-LEARNING_TOP_N = int(_os.environ.get("LEARNING_TOP_N", "10"))
+LEARNING_TOP_N = 10
 
 # How many times the hands-free loop will re-run failing tests after healing.
-LEARNING_RETRIES = int(_os.environ.get("LEARNING_RETRIES", "2"))
+LEARNING_RETRIES = 2
 
 # All learnings extracted from batch runs are appended to this JSONL file.
 LEARNINGS_LOG_PATH = _os.path.join(_BASE_DIR, "logs", "learnings.jsonl")
@@ -119,13 +113,29 @@ LEARNINGS_LOG_PATH = _os.path.join(_BASE_DIR, "logs", "learnings.jsonl")
 # ── Test execution timeout ─────────────────────────────────────────────────
 # Maximum seconds to wait for a single Java test method to complete.
 # Some scenarios (e.g. Workflow, large UDF) can take 20-30 minutes.
-# Override in .env:  TEST_EXECUTION_TIMEOUT=3600  (for very long suites)
 # Default: 1800 seconds (30 minutes) — safe upper bound for any scenario.
-TEST_EXECUTION_TIMEOUT = int(_os.environ.get("TEST_EXECUTION_TIMEOUT", "1800"))
+TEST_EXECUTION_TIMEOUT = 1800
 
 # ── Headless browser mode ──────────────────────────────────────────────────
 # When True, Firefox is launched without a visible window (no Xvfb needed).
 # Useful for CI, Docker, and unattended runs on headless servers.
-# Override in .env:  HEADLESS=true
-# Default: false (headed — shows browser window on the local desktop)
-HEADLESS = _os.environ.get("HEADLESS", "false").lower() in ("1", "true", "yes")
+# Default: False (headed — shows browser window on the local desktop)
+HEADLESS = False
+
+# ── LLM Configuration ─────────────────────────────────────────────────────
+# Provider: "ollama" | "openai" | "openrouter"
+# Switch LLM_PROVIDER to change the active backend. All agents read from here.
+LLM_PROVIDER        = "openrouter"
+
+# OpenRouter
+OPENROUTER_API_KEY  = "REDACTED_OPENROUTER_API_KEY"
+OPENROUTER_MODEL    = "arcee-ai/trinity-large-preview:free"
+OPENROUTER_MAX_TOKENS = 4000
+
+# Ollama (local)
+OLLAMA_MODEL        = "qwen2.5-coder:7b"
+OLLAMA_BASE_URL     = "http://localhost:11434"
+
+# OpenAI direct
+OPENAI_MODEL        = "gpt-4o"
+OPENAI_API_KEY      = ""   # set this if LLM_PROVIDER = "openai"

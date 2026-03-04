@@ -41,7 +41,6 @@ from typing import Any, Optional
 
 import yaml
 import uvicorn
-from dotenv import load_dotenv
 from fastapi import BackgroundTasks, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
@@ -50,7 +49,6 @@ from fastapi.staticfiles import StaticFiles
 # ── Bootstrap paths ──────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BASE_DIR))
-load_dotenv(BASE_DIR / ".env")
 
 from config.project_config import BASE_DIR as PROJECT_BASE_DIR, HG_AGENT_ENABLED, RUNS_LOG_PATH
 

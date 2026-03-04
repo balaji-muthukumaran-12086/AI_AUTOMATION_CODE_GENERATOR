@@ -16,14 +16,10 @@ import sys
 import os
 import argparse
 from pathlib import Path
-from dotenv import load_dotenv
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich import print as rprint
-
-# Load .env
-load_dotenv(Path(__file__).parent / '.env')
 
 console = Console()
 BASE_DIR = str(Path(__file__).resolve().parent)
@@ -108,9 +104,9 @@ def cmd_generate(args):
     console.rule("[bold green]🤖 AI Test Generator Pipeline")
 
     # Only require OpenAI key when actually using OpenAI as provider
-    provider = os.environ.get('LLM_PROVIDER', 'ollama').lower()
-    if provider == 'openai' and not os.environ.get('OPENAI_API_KEY'):
-        console.print("[red]❌ OPENAI_API_KEY not set. Required when LLM_PROVIDER=openai.")
+    from config.project_config import LLM_PROVIDER, OPENAI_API_KEY
+    if LLM_PROVIDER.lower() == 'openai' and not OPENAI_API_KEY:
+        console.print("[red]❌ OPENAI_API_KEY not set in project_config.py. Required when LLM_PROVIDER=openai.")
         sys.exit(1)
 
     from agents.pipeline import run_pipeline

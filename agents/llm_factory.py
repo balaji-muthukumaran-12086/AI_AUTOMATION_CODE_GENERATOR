@@ -27,10 +27,12 @@ Tool-calling support (used by ReAct CoderAgent):
   - ollama              → False (7B models do not reliably support tool calling)
 """
 
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
+from config.project_config import (
+    LLM_PROVIDER,
+    OPENROUTER_API_KEY, OPENROUTER_MODEL, OPENROUTER_MAX_TOKENS,
+    OLLAMA_MODEL, OLLAMA_BASE_URL,
+    OPENAI_MODEL, OPENAI_API_KEY,
+)
 
 # Providers that reliably support LangChain tool-calling / function-calling
 _TOOL_CALLING_PROVIDERS = {"openai", "openrouter"}
@@ -38,7 +40,7 @@ _TOOL_CALLING_PROVIDERS = {"openai", "openrouter"}
 
 def get_provider() -> str:
     """Return the normalised LLM_PROVIDER string."""
-    return os.environ.get("LLM_PROVIDER", "ollama").lower()
+    return LLM_PROVIDER.lower()
 
 
 def supports_tool_calling() -> bool:
@@ -50,8 +52,8 @@ def supports_tool_calling() -> bool:
     """
     if get_provider() not in _TOOL_CALLING_PROVIDERS:
         return False
-    # Free-tier models (e.g. google/gemma-3-4b-it:free) don't support tool calling
-    model = os.environ.get("OPENROUTER_MODEL", "") or os.environ.get("OPENAI_MODEL", "")
+    # Free-tier models (e.g. arcee-ai/trinity-large-preview:free) don't support tool calling
+    model = OPENROUTER_MODEL or OPENAI_MODEL
     if model.endswith(":free"):
         return False
     return True
@@ -59,28 +61,22 @@ def supports_tool_calling() -> bool:
 
 def get_llm(temperature: float = 0.2):
     """
-    Returns a LangChain chat model based on LLM_PROVIDER env variable.
-    Defaults to Ollama if not set.
+    Returns a LangChain chat model based on LLM_PROVIDER in project_config.py.
     """
     provider = get_provider()
 
     if provider == "openrouter":
         from langchain_openai import ChatOpenAI
-        model = os.environ.get("OPENROUTER_MODEL", "openai/gpt-4o-mini")
-        api_key = os.environ.get("OPENROUTER_API_KEY", "")
-        if not api_key:
+        if not OPENROUTER_API_KEY:
             raise EnvironmentError(
-                "LLM_PROVIDER=openrouter but OPENROUTER_API_KEY is not set in .env"
+                "LLM_PROVIDER=openrouter but OPENROUTER_API_KEY is not set in project_config.py"
             )
-        # max_tokens: trial accounts have ~4000 token budget; paid accounts can remove this cap.
-        # Override via OPENROUTER_MAX_TOKENS env var (e.g. 8000 for paid accounts).
-        max_tokens = int(os.environ.get("OPENROUTER_MAX_TOKENS", "3500"))
-        print(f"[LLM] Using OpenRouter → {model}  (max_tokens={max_tokens})")
+        print(f"[LLM] Using OpenRouter → {OPENROUTER_MODEL}  (max_tokens={OPENROUTER_MAX_TOKENS})")
         return ChatOpenAI(
-            model=model,
+            model=OPENROUTER_MODEL,
             temperature=temperature,
-            max_tokens=max_tokens,
-            openai_api_key=api_key,
+            max_tokens=OPENROUTER_MAX_TOKENS,
+            openai_api_key=OPENROUTER_API_KEY,
             openai_api_base="https://openrouter.ai/api/v1",
             default_headers={
                 "HTTP-Referer": "https://github.com/balaji-muthukumaran-12086/AI_AUTOMATION_CODE_GENERATOR",
@@ -90,13 +86,10 @@ def get_llm(temperature: float = 0.2):
 
     elif provider == "openai":
         from langchain_openai import ChatOpenAI
-        model = os.environ.get("OPENAI_MODEL", "gpt-4o")
-        print(f"[LLM] Using OpenAI → {model}")
-        return ChatOpenAI(model=model, temperature=temperature)
+        print(f"[LLM] Using OpenAI → {OPENAI_MODEL}")
+        return ChatOpenAI(model=OPENAI_MODEL, api_key=OPENAI_API_KEY, temperature=temperature)
 
     else:  # default: ollama
         from langchain_ollama import ChatOllama
-        model = os.environ.get("OLLAMA_MODEL", "qwen2.5-coder:7b")
-        base_url = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
-        print(f"[LLM] Using Ollama → {model}  ({base_url})")
-        return ChatOllama(model=model, base_url=base_url, temperature=temperature)
+        print(f"[LLM] Using Ollama → {OLLAMA_MODEL}  ({OLLAMA_BASE_URL})")
+        return ChatOllama(model=OLLAMA_MODEL, base_url=OLLAMA_BASE_URL, temperature=temperature)
