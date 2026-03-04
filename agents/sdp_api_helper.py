@@ -189,12 +189,12 @@ class SDPAPIHelper:
         """
         json_str = json.dumps(entity_data, ensure_ascii=False)
         # sdpAPICall signature: sdpAPICall(apiPath, method, formDataString)
-        # formDataString: 'input_data='+encodeURIComponent(JSON.stringify({...}))
+        # formDataString: 'input_data=' + JSON.stringify({...})  — raw JSON, NOT URL-encoded
         return f"""
             () => {{
                 try {{
                     const payload = {json_str};
-                    const formData = 'input_data=' + encodeURIComponent(JSON.stringify(payload));
+                    const formData = 'input_data=' + JSON.stringify(payload);
                     const result = sdpAPICall('{api_path}', 'post', formData);
                     return result ? result.responseJSON : null;
                 }} catch (e) {{
@@ -212,7 +212,7 @@ class SDPAPIHelper:
                 () => {{
                     try {{
                         const payload = {json_str};
-                        const formData = 'input_data=' + encodeURIComponent(JSON.stringify(payload));
+                        const formData = 'input_data=' + JSON.stringify(payload);
                         const result = sdpAPICall('{api_path}', 'get', formData);
                         return result ? result.responseJSON : null;
                     }} catch (e) {{
@@ -239,7 +239,7 @@ class SDPAPIHelper:
             () => {{
                 try {{
                     const payload = {json_str};
-                    const formData = 'input_data=' + encodeURIComponent(JSON.stringify(payload));
+                    const formData = 'input_data=' + JSON.stringify(payload);
                     const result = sdpAPICall('{api_path}', 'put', formData);
                     return result ? result.responseJSON : null;
                 }} catch (e) {{
@@ -997,8 +997,9 @@ class SDPAPIHelper:
         lines.append(
             "These entities can be recreated via JavaScript in the browser:\n"
             "```javascript\n"
-            "sdpAPICall('apiPath', 'post', 'input_data=' + encodeURIComponent(JSON.stringify(payload))).responseJSON\n"
+            "sdpAPICall('apiPath', 'post', 'input_data=' + JSON.stringify(payload)).responseJSON\n"
             "```\n"
+            "Note: Use raw JSON.stringify — do NOT wrap with encodeURIComponent.\n"
             "Note: 'del' (not 'delete') is used for DELETE calls.\n"
         )
         return "\n".join(lines)
@@ -1024,19 +1025,20 @@ It makes synchronous XHR calls and returns `{responseJSON: <parsed JSON>}`.
 ### Create entity (POST):
 ```javascript
 const result = sdpAPICall('changes', 'post',
-    'input_data=' + encodeURIComponent(JSON.stringify({
+    'input_data=' + JSON.stringify({
         "change": { "title": "My Change", "template": {"name": "General Template"} }
-    }))
+    })
 );
 const entity = result.responseJSON.change;  // {id: "800...", title: "My Change", ...}
 ```
+Do NOT use encodeURIComponent — pass raw JSON string directly.
 
 ### Get entity (GET with criteria):
 ```javascript
 const result = sdpAPICall('changes', 'get',
-    'input_data=' + encodeURIComponent(JSON.stringify({
+    'input_data=' + JSON.stringify({
         "list_info": {"search_criteria": {"field": "title", "condition": "is", "value": "My Change"}}
-    }))
+    })
 );
 ```
 

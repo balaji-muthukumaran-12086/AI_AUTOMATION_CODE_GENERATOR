@@ -902,11 +902,13 @@ Need to create prerequisite data during Playwright MCP session?
 │
 ├── Step 1: browser_evaluate → sdpAPICall() JS  (PREFERRED — fastest, no UI fragility)
 │   │
-│   │  () => sdpAPICall('/api/v3/changes', 'post',
-│   │    'input_data=' + encodeURIComponent(JSON.stringify({
-│   │      change: { title: "Test Change $(Date.now())", change_type: { name: "Standard" } }
-│   │    }))
+│   │  () => sdpAPICall('changes', 'post',
+│   │    'input_data=' + JSON.stringify({
+│   │      change: { title: "Test Change " + Date.now(), change_type: { name: "Standard" } }
+│   │    })
 │   │  ).responseJSON
+│   │
+│   │  ⚠️  Do NOT use encodeURIComponent — pass raw JSON.stringify() directly.
 │   │
 │   ├── Success? → Parse response, extract entity ID, continue debugging
 │   └── Failed (null response / JS error)?
@@ -938,25 +940,25 @@ Need to create prerequisite data during Playwright MCP session?
 
 | Module | API Path | Input Wrapper |
 |--------|----------|---------------|
-| Changes | `/api/v3/changes` | `{ "change": {...} }` |
-| Requests | `/api/v3/requests` | `{ "request": {...} }` |
-| Solutions | `/api/v3/solutions` | `{ "solution": {...} }` |
-| Problems | `/api/v3/problems` | `{ "problem": {...} }` |
-| Tasks | `/api/v3/tasks` | `{ "task": {...} }` |
+| Changes | `changes` | `{ "change": {...} }` |
+| Requests | `requests` | `{ "request": {...} }` |
+| Solutions | `solutions` | `{ "solution": {...} }` |
+| Problems | `problems` | `{ "problem": {...} }` |
+| Tasks | `tasks` | `{ "task": {...} }` |
 
 ```javascript
 // CREATE — returns response JSON with entity ID
-() => sdpAPICall('/api/v3/changes', 'post',
-  'input_data=' + encodeURIComponent(JSON.stringify({ change: { title: "..." } }))
+// Use short path ('changes') OR full path ('/api/v3/changes') — both work
+// CRITICAL: raw JSON.stringify only — do NOT use encodeURIComponent
+() => sdpAPICall('changes', 'post',
+  'input_data=' + JSON.stringify({ change: { title: "Test " + Date.now() } })
 ).responseJSON
 
 // READ — get entity by ID
-() => sdpAPICall('/api/v3/changes/12345', 'get', '').responseJSON
+() => sdpAPICall('changes/12345', 'get').responseJSON
 
 // DELETE — cleanup after debugging
-() => sdpAPICall('/api/v3/changes/12345', 'del',
-  'input_data=' + encodeURIComponent(JSON.stringify({}))
-).responseJSON
+() => sdpAPICall('changes/12345', 'del').responseJSON
 ```
 
 #### Prerequisites
@@ -967,7 +969,7 @@ Need to create prerequisite data during Playwright MCP session?
 #### Cleanup Pattern
 After every Playwright MCP debugging session that created test data:
 1. Track all created entity IDs during the session
-2. Before closing, run DELETE for each: `sdpAPICall('/api/v3/<module>/<id>', 'del', ...)`
+2. Before closing, run DELETE for each: `sdpAPICall('<module>/<id>', 'del').responseJSON`
 3. If session was interrupted, note leftover entity IDs for manual cleanup
 
 ---
