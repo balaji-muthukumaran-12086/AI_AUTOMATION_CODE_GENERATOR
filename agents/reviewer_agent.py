@@ -142,12 +142,15 @@ FRAMEWORK RULES (verify every one):
 19. Navigate methods all return `this` — chaining is valid
 20. For Solution: submit button = SolutionLocators.SolutionCreateForm.SOLUTION_ADD (unapproved)
     or SOLUTION_ADD_APPROVE (approved) — NOT actions.formBuilder.submit()
-21. ACTIONSUTIL/APIUTIL PATTERN — applies to ALL entities:
+21. ACTIONSUTIL/APIUTIL PATTERN — applies to ALL entities (100+ util files exist):
     - NEVER inline actions.click()/actions.navigate()/popup-open sequences directly in *Base.java test methods.
     - All multi-step UI flows belong in *ActionsUtil.java (public static, extends Utilities).
     - All preProcess REST API helpers belong in *APIUtil.java.
     - If inline action code is present in a test method that could be extracted to a util → flag as ERROR.
-    - Known util files: ChangeActionsUtil.java, SolutionActionsUtil.java, RequestApprovalsActionUtils.java.
+    - Every module has a utils/ folder. Discovery: find .../modules/<module>/<entity>/utils/ -name "*.java"
+    - Key util files: ChangeActionsUtil.java, SolutionActionsUtil.java, DashboardActionsUtil.java,
+      MaintenanceActionsUtil.java, ProblemActionsUtil.java, ReleaseActionsUtil.java, ProjectActionsUtil.java,
+      AssetActionsUtil.java, ContractActionsUtil.java, AdminActionsUtil.java, RequestAPIUtil.java.
     - SolutionActionsUtil: pageSetup(), navigateToSolutions(id), searchSolutionUsingId(id), selectFilter(name).
     - ChangeActionsUtil: openAssociationTab(), linkParentChangeViaUI(name,id), linkChildChangeViaUI(name,id), detachParentChange(), detachChildChange(id).
 22. DATA REUSE: Flag any new *_data.json entries or AnnotationConstants.Data constants that duplicate

@@ -321,11 +321,23 @@ STEP 4 — Generate the scenario using only util calls + assertions:
   Test method body = utility calls + assertions + addSuccessReport/addFailureReport ONLY.
   If you are writing actions.click(...) directly in a test method body → STOP → move to util first.
 
-Known entity utility files (always discover + read in Step 1):
-  Changes:   modules/changes/change/utils/ChangeActionsUtil.java   + ChangeAPIUtil.java
-  Solutions: modules/solutions/solution/utils/SolutionActionsUtil.java + SolutionAPIUtil.java
-  Requests:  modules/requests/request/utils/RequestApprovalsActionUtils.java
-  Problems:  modules/problems/problem/utils/ProblemAPIUtil.java
+Known entity utility files (100+ util files exist — ALWAYS use discovery in STEP 1):
+  # Discovery command (run this for any entity):
+  # find src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/ -name "*.java" | sort
+
+  # Sample registry (not exhaustive — filesystem is the source of truth):
+  Changes:     changes/change/utils/ChangeActionsUtil.java + ChangeAPIUtil.java
+  Downtime:    changes/downtime/utils/DowntimeActionsUtil.java + DowntimeAPIUtil.java
+  Solutions:   solutions/solution/utils/SolutionActionsUtil.java + SolutionAPIUtil.java
+  Requests:    requests/request/utils/RequestAPIUtil.java
+  Problems:    problems/problem/utils/ProblemActionsUtil.java + ProblemAPIUtil.java
+  Releases:    releases/release/utils/ReleaseActionsUtil.java + ReleaseAPIUtil.java
+  Projects:    projects/project/utils/ProjectActionsUtil.java + ProjectAPIUtil.java
+  Assets:      assets/asset/utils/AssetActionsUtil.java + AssetAPIUtil.java
+  Dashboard:   general/dashboard/utils/DashboardActionsUtil.java + DashboardAPIUtil.java
+  Maintenance: maintenance/utils/MaintenanceActionsUtil.java + MaintenanceAPIUtil.java
+  Contracts:   contracts/contract/utils/ContractActionsUtil.java + ContractAPIUtil.java
+  Admin:       admin/utils/AdminActionsUtil.java + AdminAPIUtil.java
 
 SolutionActionsUtil — existing static methods (Changes entity — for reference):
   SolutionActionsUtil.pageSetup()                      // setTableView(LISTVIEW) + selectFilter(ALL_ACTIVE_SOLUTIONS)
@@ -570,9 +582,18 @@ Set<String> actions.jsonArrayToSet(JSONArray arr)
     STEP 2: Map each scenario UI operation to existing method (REUSE) or gap (CREATE NEW).
     STEP 3: Add missing methods to the util file FIRST (compile them), then reference in the test method.
     STEP 4: Test method body = util calls + assertions ONLY. Never inline actions.click() in test body.
-    Entity util file registry: Changes→ChangeActionsUtil.java/ChangeAPIUtil.java;
+    Entity util file registry (100+ files — always use find/grep_search to discover):
+    Changes→ChangeActionsUtil.java/ChangeAPIUtil.java;
     Solutions→SolutionActionsUtil.java/SolutionAPIUtil.java;
-    Requests→RequestApprovalsActionUtils.java; Problems→ProblemAPIUtil.java.
+    Problems→ProblemActionsUtil.java/ProblemAPIUtil.java;
+    Releases→ReleaseActionsUtil.java/ReleaseAPIUtil.java;
+    Projects→ProjectActionsUtil.java/ProjectAPIUtil.java;
+    Assets→AssetActionsUtil.java/AssetAPIUtil.java;
+    Dashboard→DashboardActionsUtil.java/DashboardAPIUtil.java;
+    Maintenance→MaintenanceActionsUtil.java/MaintenanceAPIUtil.java;
+    Contracts→ContractActionsUtil.java/ContractAPIUtil.java;
+    Admin→AdminActionsUtil.java/AdminAPIUtil.java;
+    Requests→RequestAPIUtil.java. Every entity has a utils/ folder.
 22. group="NoPreprocess" means ZERO API calls, ZERO cleanup. Pair with dataIds={} or dataIds={""}. NEVER add preProcess/postProcess logic for this group.
 23. @AutomaterCase is NOT a test. It annotates helper sub-methods in the BASE class only. ALL runnable tests use @AutomaterScenario.
 24. runType TRAP: the annotation default is PORTAL_BASED. ALWAYS write runType=ScenarioRunType.USER_BASED explicitly. Never omit it.

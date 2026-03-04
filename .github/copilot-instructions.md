@@ -693,12 +693,33 @@ For each `CREATE NEW` in the decision table:
 
 #### Known entity utility files (read these in Step 1 before generating)
 
-| Entity | ActionsUtil | APIUtil |
-|--------|-------------|---------|
-| Changes | `modules/changes/change/utils/ChangeActionsUtil.java` | `modules/changes/change/utils/ChangeAPIUtil.java` |
-| Solutions | `modules/solutions/solution/utils/SolutionActionsUtil.java` | `modules/solutions/solution/utils/SolutionAPIUtil.java` |
-| Requests | `modules/requests/request/utils/RequestApprovalsActionUtils.java` | *(per entity sub-class)* |
-| Problems | *(check modules/problems/problem/utils/)* | `modules/problems/problem/utils/ProblemAPIUtil.java` |
+> **The list below is NOT exhaustive.** Every module in this codebase has a `utils/`
+> sub-folder. Always run the discovery command first for whatever entity you are working on:
+
+```bash
+find src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/ -name "*.java" | sort
+```
+
+**Comprehensive module registry** (sample — filesystem is the source of truth):
+
+| Module | Entity | ActionsUtil | APIUtil |
+|--------|--------|-------------|---------|
+| changes | change | `changes/change/utils/ChangeActionsUtil.java` | `changes/change/utils/ChangeAPIUtil.java` |
+| changes | downtime | `changes/downtime/utils/DowntimeActionsUtil.java` | `changes/downtime/utils/DowntimeAPIUtil.java` |
+| solutions | solution | `solutions/solution/utils/SolutionActionsUtil.java` | `solutions/solution/utils/SolutionAPIUtil.java` |
+| requests | request | — | `requests/request/utils/RequestAPIUtil.java` |
+| problems | problem | `problems/problem/utils/ProblemActionsUtil.java` | `problems/problem/utils/ProblemAPIUtil.java` |
+| releases | release | `releases/release/utils/ReleaseActionsUtil.java` | `releases/release/utils/ReleaseAPIUtil.java` |
+| projects | project | `projects/project/utils/ProjectActionsUtil.java` | `projects/project/utils/ProjectAPIUtil.java` |
+| assets | asset | `assets/asset/utils/AssetActionsUtil.java` | `assets/asset/utils/AssetAPIUtil.java` |
+| general | dashboard | `general/dashboard/utils/DashboardActionsUtil.java` | `general/dashboard/utils/DashboardAPIUtil.java` |
+| maintenance | — | `maintenance/utils/MaintenanceActionsUtil.java` | `maintenance/utils/MaintenanceAPIUtil.java` |
+| contracts | contract | `contracts/contract/utils/ContractActionsUtil.java` | `contracts/contract/utils/ContractAPIUtil.java` |
+| admin | — | `admin/utils/AdminActionsUtil.java` | `admin/utils/AdminAPIUtil.java` |
+| admin | workflows | `admin/automation/workflows/utils/WorkflowsActionsUtil.java` | `...WorkflowsAPIUtil.java` |
+| admin | businessrules | `admin/automation/businessrules/utils/BusinessRulesActionsUtil.java` | `...BusinessRulesAPIUtil.java` |
+
+> If the entity is not in this table, run the discovery command — it will have a `utils/` folder.
 
 ---
 

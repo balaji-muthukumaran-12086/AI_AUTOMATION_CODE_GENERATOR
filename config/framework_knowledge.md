@@ -789,14 +789,31 @@ public void verifySingleParentConstraint() throws Exception {
 }
 ```
 
-### Known entity utility files (always check these before writing inline code)
+### Known entity utility files (run discovery — do NOT rely on this table alone)
 
-| Entity | ActionsUtil file | APIUtil file |
-|--------|-----------------|-------------|
-| Changes | `modules/changes/change/utils/ChangeActionsUtil.java` | `modules/changes/change/utils/ChangeAPIUtil.java` |
-| Solutions | `modules/solutions/solution/utils/SolutionActionsUtil.java` | `modules/solutions/solution/utils/SolutionAPIUtil.java` |
-| Requests | `modules/requests/request/utils/RequestApprovalsActionUtils.java` | *(per entity sub-class)* |
-| Problems | *(check modules/problems/)* | `modules/problems/problem/utils/ProblemAPIUtil.java` |
+> **Every module has a `utils/` folder.** The table below is a reference sample.
+> Always run the discovery command for the entity you are working on:
+
+```bash
+find src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/ -name "*.java" | sort
+```
+
+| Module | Entity | ActionsUtil file | APIUtil file |
+|--------|--------|-----------------|-------------|
+| changes | change | `changes/change/utils/ChangeActionsUtil.java` | `changes/change/utils/ChangeAPIUtil.java` |
+| changes | downtime | `changes/downtime/utils/DowntimeActionsUtil.java` | `changes/downtime/utils/DowntimeAPIUtil.java` |
+| solutions | solution | `solutions/solution/utils/SolutionActionsUtil.java` | `solutions/solution/utils/SolutionAPIUtil.java` |
+| requests | request | `requests/request/utils/RequestAPIUtil.java` | — |
+| problems | problem | `problems/problem/utils/ProblemActionsUtil.java` | `problems/problem/utils/ProblemAPIUtil.java` |
+| releases | release | `releases/release/utils/ReleaseActionsUtil.java` | `releases/release/utils/ReleaseAPIUtil.java` |
+| projects | project | `projects/project/utils/ProjectActionsUtil.java` | `projects/project/utils/ProjectAPIUtil.java` |
+| assets | asset | `assets/asset/utils/AssetActionsUtil.java` | `assets/asset/utils/AssetAPIUtil.java` |
+| general | dashboard | `general/dashboard/utils/DashboardActionsUtil.java` | `general/dashboard/utils/DashboardAPIUtil.java` |
+| maintenance | — | `maintenance/utils/MaintenanceActionsUtil.java` | `maintenance/utils/MaintenanceAPIUtil.java` |
+| contracts | contract | `contracts/contract/utils/ContractActionsUtil.java` | `contracts/contract/utils/ContractAPIUtil.java` |
+| admin | — | `admin/utils/AdminActionsUtil.java` | `admin/utils/AdminAPIUtil.java` |
+
+> If the entity is not listed, run the discovery command — it will have util files.
 
 ---
 
