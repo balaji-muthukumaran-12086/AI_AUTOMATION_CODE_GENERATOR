@@ -1185,6 +1185,14 @@ Need to create prerequisite data during Playwright MCP session?
 | Solutions | `solutions` | `{ "solution": {...} }` |
 | Problems | `problems` | `{ "problem": {...} }` |
 | Tasks | `tasks` | `{ "task": {...} }` |
+| Releases | `releases` | `{ "release": {...} }` |
+| Assets | `assets` | `{ "asset": {...} }` |
+| Projects | `projects` | `{ "project": {...} }` |
+| Purchase Orders | `purchase_orders` | `{ "purchase_order": {...} }` |
+| Contracts | `contracts` | `{ "contract": {...} }` |
+| CMDB (Business Views) | `business_views` | `{ "business_view": {...} }` |
+
+> Full API paths, required fields, and sub-resource patterns for every module are in [`docs/api-doc/SDP_API_Endpoints_Documentation.md`](docs/api-doc/SDP_API_Endpoints_Documentation.md). Read the relevant module section before creating prerequisite data in a new module.
 
 ```javascript
 // CREATE — returns response JSON with entity ID
@@ -1199,6 +1207,11 @@ Need to create prerequisite data during Playwright MCP session?
 
 // DELETE — cleanup after debugging
 () => sdpAPICall('changes/12345', 'del').responseJSON
+
+// SUB-RESOURCE create (e.g. note on a request) — use full path with parent ID
+() => sdpAPICall('requests/8000000012345/notes', 'post',
+  'input_data=' + JSON.stringify({ note: { description: "Test note " + Date.now() } })
+).responseJSON
 ```
 
 #### Prerequisites
