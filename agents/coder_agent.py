@@ -55,6 +55,96 @@ def _load_recent_learnings() -> str:
         return ''
 
 
+def _get_api_reference(module_path: str) -> str:
+    """
+    Extract the relevant API endpoints section from SDP_API_Endpoints_Documentation.md
+    for the given module_path (e.g. 'modules/changes/change').
+
+    Returns the core endpoints table + automation cases subsection for that module,
+    capped at 120 lines to stay within prompt budget. Returns '' if not found.
+    """
+    doc_path = Path(__file__).resolve().parents[1] / 'docs' / 'api-doc' / 'SDP_API_Endpoints_Documentation.md'
+    if not doc_path.exists():
+        return ''
+
+    # Map module_path segment → doc section keyword
+    _MODULE_TO_DOC_SECTION: dict[str, str] = {
+        'requests':      'Module 1 — Requests',
+        'request':       'Module 1 — Requests',
+        'changes':       'Module 2 — Changes',
+        'change':        'Module 2 — Changes',
+        'problems':      'Module 3 — Problems',
+        'problem':       'Module 3 — Problems',
+        'releases':      'Module 4 — Releases',
+        'release':       'Module 4 — Releases',
+        'assets':        'Module 5 — Assets',
+        'asset':         'Module 5 — Assets',
+        'solutions':     'Module 6 — Solutions',
+        'solution':      'Module 6 — Solutions',
+        'projects':      'Module 7 — Projects',
+        'project':       'Module 7 — Projects',
+        'purchaseorders': 'Module 8 — Purchase Orders',
+        'contracts':     'Module 9 — Contracts',
+        'contract':      'Module 9 — Contracts',
+        'cmdb':          'Module 10 — CMDB',
+        'users':         'Module 11 — Users',
+        'admin':         'Module 12 — Admin',
+    }
+
+    parts = module_path.strip('/').split('/')
+    # Try both the module segment (index 1) and entity segment (index 2)
+    section_key = None
+    for seg in parts:
+        if seg in _MODULE_TO_DOC_SECTION:
+            section_key = _MODULE_TO_DOC_SECTION[seg]
+            break
+    if not section_key:
+        return ''
+
+    try:
+        all_lines = doc_path.read_text(encoding='utf-8').splitlines()
+    except Exception:
+        return ''
+
+    # Find the start of the matching top-level section (## heading)
+    section_start = None
+    for i, line in enumerate(all_lines):
+        if line.startswith('## ') and section_key in line:
+            section_start = i
+            break
+    if section_start is None:
+        return ''
+
+    # Find the start of the next top-level section (## ) to bound this section
+    section_end = len(all_lines)
+    for i in range(section_start + 1, len(all_lines)):
+        if all_lines[i].startswith('## '):
+            section_end = i
+            break
+
+    section_lines = all_lines[section_start:section_end]
+
+    # Within the section, find the Automation Cases subsection (### X.Y Automation Cases)
+    auto_cases_start = None
+    for i, line in enumerate(section_lines):
+        if line.startswith('### ') and 'Automation Cases' in line:
+            auto_cases_start = i
+            break
+
+    # Build output: core endpoints table (up to automation cases) + full automation cases
+    if auto_cases_start is not None:
+        # Endpoints: from section start to just before automation cases (cap at 50 lines)
+        endpoints_block = section_lines[:min(auto_cases_start, 50)]
+        # Automation cases: from auto_cases_start to end (cap at 70 lines)
+        auto_block = section_lines[auto_cases_start: auto_cases_start + 70]
+        combined = endpoints_block + [''] + auto_block
+    else:
+        # No automation cases subsection found — return first 100 lines of section
+        combined = section_lines[:100]
+
+    return '\n'.join(combined).strip()
+
+
 SYSTEM_PROMPT = """
 You are an expert Java test automation engineer for Zoho ServiceDesk Plus (SDP).
 You write test cases using the AutomaterSelenium framework.
@@ -781,9 +871,19 @@ TOOL USAGE: list_dir → read key files (including *_data.json, *AnnotationConst
             f"{recent_learnings}"
         ) if recent_learnings else ""
 
+        # Inject SDP API reference for the module (endpoints + automation cases)
+        api_ref = _get_api_reference(module_path)
+        api_ref_block = (
+            f"\n\n================================================================\n"
+            f"SDP REST API REFERENCE FOR THIS MODULE (use these exact paths/wrappers in preProcess API calls)\n"
+            f"================================================================\n"
+            f"{api_ref}"
+        ) if api_ref else ""
+
         prompt = (
             f"{grammar_rules}\n\n"
             f"{context}\n\n"
+            f"{api_ref_block}\n\n"
             f"{learnings_block}\n\n"
             f"## Scenarios to Generate:\n"
             + '\n'.join(scenarios_to_generate) +
