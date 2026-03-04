@@ -91,6 +91,32 @@ MODULE_ENTITY_MAP: dict[str, dict[str, str]] = {
         "data_json": "resources/entity/data/releases/release/release_data.json",
         "default_data_key": "api_valid_input",
     },
+    # ── Modules added Mar 4, 2026 (data_json paths are conventional; files may not
+    #    exist yet — load_data_json guards with a warning and returns {} if missing)
+    "assets/asset": {
+        "entity_name": "asset",
+        "api_path": "assets",
+        "data_json": "resources/entity/data/assets/asset/asset_data.json",
+        "default_data_key": "api_valid_input",
+    },
+    "projects/project": {
+        "entity_name": "project",
+        "api_path": "projects",
+        "data_json": "resources/entity/data/projects/project/project_data.json",
+        "default_data_key": "api_valid_input",
+    },
+    "purchases/purchase_order": {
+        "entity_name": "purchase_order",
+        "api_path": "purchase_orders",
+        "data_json": "resources/entity/data/purchases/purchase_order/purchase_order_data.json",
+        "default_data_key": "api_valid_input",
+    },
+    "contracts/contract": {
+        "entity_name": "contract",
+        "api_path": "contracts",
+        "data_json": "resources/entity/data/contracts/contract/contract_data.json",
+        "default_data_key": "api_valid_input",
+    },
 }
 
 
@@ -109,6 +135,23 @@ class APICallRecord:
     data_key: str = ""       # the data JSON key used (if available from report)
 
     def is_create(self) -> bool:
+        """Return True for any POST call — both top-level and sub-resource creates.
+
+        Previously this returned False for sub-resource POSTs (e.g.
+        ``requests/{id}/notes``) because it checked ``"/" not in self.path``.
+        That caused sub-resource creates to be silently ignored in cleanup
+        tracking.  Any POST is a create, regardless of path depth.
+        """
+        return self.method == "POST"
+
+    def is_top_level_create(self) -> bool:
+        """Return True only for POSTs that create a root-level entity.
+
+        Use this when you need to distinguish ``POST /changes`` (creates a
+        Change that needs its own cleanup entry) from
+        ``POST /changes/{id}/notes`` (creates a note that is deleted
+        automatically when its parent is deleted).
+        """
         return self.method == "POST" and "/" not in self.path
 
     def is_delete(self) -> bool:
@@ -1048,13 +1091,19 @@ sdpAPICall('changes/8000000065944', 'del');
 ```
 
 ### Common API paths:
-| Entity   | POST path  | Wrapper key    |
-|----------|-----------|----------------|
-| Change   | changes   | {"change":{}}  |
-| Request  | requests  | {"request":{}} |
-| Solution | solutions | {"solution":{}}|
-| Problem  | problems  | {"problem":{}} |
-| Task     | tasks     | {"task":{}}    |
+| Entity         | POST path       | Wrapper key              |
+|----------------|-----------------|---------------------------|
+| Change         | changes         | {"change":{}}             |
+| Request        | requests        | {"request":{}}            |
+| Solution       | solutions       | {"solution":{}}           |
+| Problem        | problems        | {"problem":{}}            |
+| Task           | tasks           | {"task":{}}               |
+| Release        | releases        | {"release":{}}            |
+| Asset          | assets          | {"asset":{}}              |
+| Project        | projects        | {"project":{}}            |
+| Purchase Order | purchase_orders | {"purchase_order":{}}     |
+| Contract       | contracts       | {"contract":{}}           |
+| CMDB View      | business_views  | {"business_view":{}}      |
 
 ### Response format:
 ```json
