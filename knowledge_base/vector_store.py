@@ -554,6 +554,89 @@ class VectorStore:
         print(f"[VectorStore] 📥 Indexed {len(ids)} generated scenario(s) into ChromaDB")
         return len(ids)
 
+    # ── Framework doc indexing (framework_rules.md / framework_knowledge.md) ──
+
+    def build_from_framework_docs(
+        self,
+        docs: list[dict],
+        batch_size: int = 100,
+        reset: bool = False,
+    ) -> int:
+        """
+        Ingest parsed .md section chunks into the `automater_framework` collection.
+        Each doc must contain: id, content, embed_text, doc_type, section_number,
+        section_title, source_file.
+        Returns count of documents added (or updated via upsert).
+        """
+        if reset:
+            self.client.delete_collection(self.FRAMEWORK_COLLECTION)
+            self._framework = self.client.get_or_create_collection(
+                name=self.FRAMEWORK_COLLECTION,
+                embedding_function=self._embed_fn,
+                metadata={"hnsw:space": "cosine"},
+            )
+
+        if not docs:
+            return 0
+
+        # Use upsert so re-runs update existing sections without duplication
+        for i in range(0, len(docs), batch_size):
+            batch = docs[i:i + batch_size]
+            self._framework.upsert(
+                ids=[d['id'] for d in batch],
+                documents=[d['embed_text'] for d in batch],
+                metadatas=[{
+                    'doc_type':       d['doc_type'],           # "rules" | "knowledge"
+                    'section_number': d['section_number'],
+                    'section_title':  d['section_title'][:200],
+                    'source_file':    d['source_file'],
+                    'content':        d['content'][:4000],
+                } for d in batch],
+            )
+        return len(docs)
+
+    def search_framework_docs(
+        self,
+        query: str,
+        doc_type_filter: Optional[str] = None,
+        top_k: int = 5,
+    ) -> list[dict]:
+        """
+        Semantic search over indexed framework .md sections.
+        Optionally filter by doc_type ('rules' or 'knowledge').
+        Returns list of { id, doc_type, section_number, section_title, content, distance }.
+        """
+        total = self._framework.count()
+        if total == 0:
+            return []
+
+        where: dict = {}
+        if doc_type_filter:
+            where = {"doc_type": {"$eq": doc_type_filter}}
+
+        kwargs: dict = {
+            "query_texts": [query],
+            "n_results": min(top_k, total),
+            "include": ["metadatas", "distances"],
+        }
+        if where:
+            kwargs["where"] = where
+
+        results = self._framework.query(**kwargs)
+        output = []
+        for i, doc_id in enumerate(results['ids'][0]):
+            meta = results['metadatas'][0][i]
+            output.append({
+                'id':             doc_id,
+                'doc_type':       meta.get('doc_type', ''),
+                'section_number': meta.get('section_number', 0),
+                'section_title':  meta.get('section_title', ''),
+                'source_file':    meta.get('source_file', ''),
+                'content':        meta.get('content', ''),
+                'distance':       results['distances'][0][i],
+            })
+        return output
+
     @property
     def scenario_count(self) -> int:
         return self._scenarios.count()
@@ -565,6 +648,10 @@ class VectorStore:
     @property
     def help_topic_count(self) -> int:
         return self._help_topics.count()
+
+    @property
+    def framework_docs_count(self) -> int:
+        return self._framework.count()
 
 
 # ── CLI ───────────────────────────────────────────────────

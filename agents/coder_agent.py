@@ -766,18 +766,11 @@ TOOL USAGE: list_dir → read key files (including *_data.json, *AnnotationConst
         base_dir: str = None,
     ):
         self.base = Path(base_dir) if base_dir else Path(__file__).resolve().parents[1]
-        # Build effective system prompt = base + validated rules doc + deep knowledge
-        self._system_prompt = (
-            SYSTEM_PROMPT
-            + "\n\n================================================================\n"
-            + "VALIDATED FRAMEWORK RULES (authoritative — overrides any conflicting info above)\n"
-            + "================================================================\n"
-            + self._RULES_DOC
-            + "\n\n================================================================\n"
-            + "DEEP FRAMEWORK KNOWLEDGE (lifecycle traps, LocalStorage, REST session context, known pitfalls)\n"
-            + "================================================================\n"
-            + self._KNOWLEDGE_DOC
-        )
+        # System prompt = base rules only.
+        # Full framework_rules.md / framework_knowledge.md are injected per-call via RAG
+        # (get_relevant_framework_sections) to avoid burning ~40K tokens on every generation.
+        # Fallback: if the RAG collection is not yet indexed, _build_prompt() injects full docs.
+        self._system_prompt = SYSTEM_PROMPT
         self.llm = llm or get_llm(temperature=0.1)
         self.ctx_builder = context_builder or ContextBuilder(str(self.base))
         self.store = vector_store or VectorStore(
@@ -849,6 +842,23 @@ TOOL USAGE: list_dir → read key files (including *_data.json, *AnnotationConst
         )
         grammar_rules = self.ctx_builder.get_framework_rules_summary()
 
+        # RAG-retrieve the most relevant framework_rules.md / framework_knowledge.md sections
+        # for this specific scenario.  Replaces wholesale ~40K-token injection with ~2K tokens.
+        fw_sections = self.ctx_builder.get_relevant_framework_sections(feature_query, top_k=6)
+        if not fw_sections:
+            # Fallback: automater_framework collection not yet indexed — inject full docs.
+            # Run `python -m knowledge_base.rag_indexer` once to avoid this fallback.
+            fw_sections = (
+                "--- framework_rules.md ---\n" + self._RULES_DOC
+                + "\n\n--- framework_knowledge.md ---\n" + self._KNOWLEDGE_DOC
+            )
+        framework_block = (
+            "\n\n================================================================\n"
+            "RELEVANT FRAMEWORK RULES & KNOWLEDGE (RAG-retrieved for this scenario)\n"
+            "================================================================\n"
+            f"{fw_sections}"
+        ) if fw_sections else ""
+
         scenarios_to_generate = []
         for sc in scenarios:
             scenarios_to_generate.append(
@@ -883,6 +893,7 @@ TOOL USAGE: list_dir → read key files (including *_data.json, *AnnotationConst
         prompt = (
             f"{grammar_rules}\n\n"
             f"{context}\n\n"
+            f"{framework_block}\n\n"
             f"{api_ref_block}\n\n"
             f"{learnings_block}\n\n"
             f"## Scenarios to Generate:\n"

@@ -286,6 +286,54 @@ class ContextBuilder:
 
         return '\n'.join(lines)
 
+    def get_relevant_framework_sections(
+        self,
+        query: str,
+        doc_type: Optional[str] = None,
+        top_k: int = 5,
+    ) -> str:
+        """
+        RAG-retrieve the most relevant sections from framework_rules.md /
+        framework_knowledge.md for the given generation query.
+
+        doc_type: 'rules' | 'knowledge' | None (search both)
+        Returns formatted Markdown text ready for prompt injection.
+        Falls back to empty string if the collection is empty (not yet indexed).
+        """
+        # Lazy-load VectorStore so ContextBuilder stays loosely coupled
+        if not hasattr(self, '_vector_store') or self._vector_store is None:
+            try:
+                from knowledge_base.vector_store import VectorStore
+                self._vector_store = VectorStore(
+                    persist_dir=str(self.base / 'knowledge_base' / 'chroma_db')
+                )
+            except Exception:
+                self._vector_store = None
+                return ''
+
+        try:
+            results = self._vector_store.search_framework_docs(
+                query, doc_type_filter=doc_type, top_k=top_k
+            )
+        except Exception:
+            return ''
+
+        if not results:
+            return ''
+
+        lines = []
+        seen_titles: set[str] = set()
+        for r in results:
+            title = r['section_title']
+            if title in seen_titles:
+                continue
+            seen_titles.add(title)
+            source_label = '(rules)' if r.get('doc_type') == 'rules' else '(knowledge)'
+            lines.append(f"### {title} {source_label}")
+            lines.append(r['content'])
+            lines.append('')
+        return '\n'.join(lines)
+
     def get_framework_rules_summary(self) -> str:
         """Short grammar rules string for system prompt."""
         grammar = self._get_grammar()

@@ -172,6 +172,58 @@ def _chunk_java_file(content: str, max_chars: int = 6000) -> list[str]:
     return chunks
 
 
+# ── Framework .md section parser ──────────────────────────────────────────────
+
+def _parse_md_sections(md_path: Path, doc_type: str) -> list[dict]:
+    """
+    Split a Markdown file into sections delimited by ## (H2) or ### (H3) headers.
+    Returns a list of dicts ready for VectorStore.build_from_framework_docs().
+
+    Each dict: { id, content, embed_text, doc_type, section_number, section_title, source_file }
+    """
+    text = md_path.read_text(encoding='utf-8', errors='ignore')
+    lines = text.splitlines(keepends=True)
+
+    sections: list[dict] = []
+    current_title: str = md_path.stem
+    current_lines: list[str] = []
+    section_num: int = 0
+
+    def _flush(title: str, content_lines: list[str], num: int) -> None:
+        body = ''.join(content_lines).strip()
+        if len(body) < 30:          # skip empty / near-empty sections
+            return
+        # Build embed_text: title + first 500 chars of content for better retrieval
+        embed_text = (
+            f"doc_type={doc_type} | section={title} | "
+            + body[:500]
+        )
+        # Stable id based on doc_type + section number
+        sec_id = f"fwdoc_{doc_type}_{md_path.stem}_sec{num}"
+        sections.append({
+            'id':             sec_id,
+            'content':        body,
+            'embed_text':     embed_text,
+            'doc_type':       doc_type,
+            'section_number': num,
+            'section_title':  title,
+            'source_file':    md_path.name,
+        })
+
+    for line in lines:
+        if line.startswith('## ') or line.startswith('### '):
+            _flush(current_title, current_lines, section_num)
+            current_title = line.lstrip('#').strip()
+            current_lines = []          # header captured in current_title; body starts below
+            section_num += 1
+        else:
+            current_lines.append(line)
+
+    # flush the last section
+    _flush(current_title, current_lines, section_num)
+    return sections
+
+
 # ── RagIndexer ─────────────────────────────────────────────────────────────────
 
 class RagIndexer:
@@ -190,7 +242,7 @@ class RagIndexer:
         self.kb_raw         = self.base / "knowledge_base/raw"
 
     def run(self, reset_source_files: bool = False, reset_scenarios: bool = False,
-            reset_help_topics: bool = False):
+            reset_help_topics: bool = False, reset_framework_docs: bool = False):
         """
         Full indexing run:
           1. Populate automater_scenarios from scenarios_flat.json
@@ -239,17 +291,26 @@ class RagIndexer:
         # ── Step 5: Help topics from SDP help guide ───────────────────
         help_topics_json = self.kb_raw / "help_topics_flat.json"
         if help_topics_json.exists():
-            print(f"\n[5/5] Indexing SDP help guide topics from {help_topics_json.name}...")
+            print(f"\n[5/6] Indexing SDP help guide topics from {help_topics_json.name}...")
             added = store.build_from_help_topics(str(help_topics_json), reset=reset_help_topics)
             print(f"      ✅ {added} new help-doc records added. Total: {store.help_topic_count}")
         else:
-            print(f"\n[5/5] ⚠️  help_topics_flat.json not found — run ingestion/help_doc_crawler.py first")
+            print(f"\n[5/6] ⚠️  help_topics_flat.json not found — run ingestion/help_doc_crawler.py first")
+
+        # ── Step 6: Framework .md section embeddings ──────────────────
+        print(f"\n[6/6] Indexing framework_rules.md + framework_knowledge.md sections...")
+        if reset_framework_docs:
+            store.build_from_framework_docs([], reset=True)  # wipe collection first
+        fw_added = self.index_framework_docs(store)
+        print(f"      ✅ {fw_added} framework doc sections indexed. "
+              f"Total: {store.framework_docs_count}")
 
         print("\n" + "="*60)
         print(f"  ✅ RAG index complete!")
         print(f"     Scenarios     : {store.scenario_count}")
         print(f"     Source chunks : {store.source_file_count}")
         print(f"     Help topics   : {store.help_topic_count}")
+        print(f"     Framework docs: {store.framework_docs_count}")
         print("="*60 + "\n")
 
     def _collect_source_docs(self) -> list[dict]:
@@ -429,6 +490,31 @@ class RagIndexer:
 
         return docs
 
+    def index_framework_docs(self, store) -> int:
+        """
+        Parse framework_rules.md and framework_knowledge.md into sections and
+        ingest them into the ChromaDB `automater_framework` collection.
+        Returns total number of sections indexed.
+        """
+        config_dir = self.base / 'config'
+        rules_path     = config_dir / 'framework_rules.md'
+        knowledge_path = config_dir / 'framework_knowledge.md'
+
+        all_sections: list[dict] = []
+        for md_path, doc_type in [(rules_path, 'rules'), (knowledge_path, 'knowledge')]:
+            if not md_path.exists():
+                print(f"  ⚠️  {md_path.name} not found — skipping")
+                continue
+            sections = _parse_md_sections(md_path, doc_type)
+            print(f"  📄 {md_path.name}: {len(sections)} sections parsed")
+            all_sections.extend(sections)
+
+        if not all_sections:
+            return 0
+
+        added = store.build_from_framework_docs(all_sections, reset=False)
+        return added
+
     def _build_embed_text(
         self, content: str, file_type: str, class_name: str,
         module_path: str, entity: str, module: str,
@@ -520,6 +606,7 @@ if __name__ == "__main__":
     reset_src    = "--reset-source" in sys.argv
     reset_sc     = "--reset-scenarios" in sys.argv
     reset_help   = "--reset-help-topics" in sys.argv
+    reset_fw     = "--reset-framework-docs" in sys.argv
     reset_all    = "--reset" in sys.argv
 
     indexer = RagIndexer(base_dir=str(base))
@@ -527,4 +614,5 @@ if __name__ == "__main__":
         reset_source_files=reset_src or reset_all,
         reset_scenarios=reset_sc or reset_all,
         reset_help_topics=reset_help or reset_all,
+        reset_framework_docs=reset_fw or reset_all,
     )
