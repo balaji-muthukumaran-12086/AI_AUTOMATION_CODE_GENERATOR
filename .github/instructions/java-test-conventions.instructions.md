@@ -1,0 +1,84 @@
+---
+description: "Use when editing Java test files, writing @AutomaterScenario annotations, creating Locators interfaces, writing ActionsUtil/APIUtil methods, or modifying test base classes in the AutomaterSelenium framework."
+applyTo: ["SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/**/*.java", "AutomaterSelenium/src/**/*.java"]
+---
+
+# Java Test Conventions — AutomaterSelenium
+
+## @AutomaterScenario — All 9 Fields Required
+
+```java
+@AutomaterScenario(
+    id          = "SDPOD_AUTO_...",
+    group       = "...",
+    priority    = Priority.MEDIUM,
+    dataIds     = {...},
+    tags        = {},
+    description = "...",
+    owner       = OwnerConstants.RAJESHWARAN_A,
+    runType     = ScenarioRunType.USER_BASED,      // NEVER omit — default is PORTAL_BASED
+    switchOn    = SwitchToUserSession.AFTER_PRE_PROCESS
+)
+```
+
+Always grep for the next sequential ID before assigning:
+```bash
+grep -rn 'id = "SDPOD_AUTO_SOL_DV' SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/ | sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
+```
+
+## Boolean / Checkbox Trap
+
+`fillInputForAnEntity` calls `getValueAsStringFromInputUsingAPIPath()` which returns `null` for JSON booleans → boolean fields are **silently skipped**. Handle checkboxes manually:
+```java
+actions.click(Locators.CHECKBOX_LOCATOR);  // explicit click
+```
+
+## ActionUtils / APIUtil Pattern (Mandatory)
+
+Test method body = utility calls + assertions ONLY. No inline `actions.click()` sequences.
+
+```java
+// ✅ Correct
+public void verifyDetailView() throws Exception {
+    ChangeActionsUtil.openAssociationTab();
+    ChangeActionsUtil.linkParentChangeViaUI(name, id);
+    if (actions.isElementPresent(locator)) {
+        addSuccessReport("ID: Description");
+    }
+}
+
+// ❌ Wrong — inline actions in test body
+public void verifyDetailView() throws Exception {
+    actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB);
+    actions.waitForAjaxComplete();
+    // ... more inline actions
+}
+```
+
+## preProcess Groups
+
+- `preProcess()` lives in the **parent class** (e.g., `Change.java`, `Solution.java`)
+- Read parent's existing groups before adding new ones
+- Reuse existing groups when they create the same entity type + store the same LocalStorage keys
+- FORBIDDEN: Inventing group names not defined in the parent class
+
+## Select2 Dropdowns
+
+Options render in `<div class="select2-drop">` appended to `<body>`, NOT inside parent dialog:
+```java
+"//div[contains(@class,'select2-result-label') and contains(text(),'...')]"
+```
+
+## Non-Existent Methods — Never Use
+
+```java
+actions.listView.doAction()        // ❌ use rowAction(entityID, actionName)
+actions.listView.selectRecord()    // ❌ use navigate.toDetailsPageUsingRecordId(id)
+actions.navigate.clickModule()     // ❌ use navigate.toModule(name)
+```
+
+## Locator Best Practices
+
+- Use `normalize-space(text())='Add'` for exact button text match (prevents matching "Add And Approve")
+- Locator interfaces use `String` constants with XPath expressions
+- Group locators by UI area (e.g., `SolutionCreateForm`, `SolutionDetailView`, `LinkingChange`)
