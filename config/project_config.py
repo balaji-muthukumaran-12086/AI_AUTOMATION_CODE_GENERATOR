@@ -93,6 +93,11 @@ MONITORING_HEARTBEAT_S = 10
 # Loaded on server startup so run history survives restarts.
 RUNS_LOG_PATH = _os.path.join(_BASE_DIR, "logs", "runs.jsonl")
 
+# ── Team Mode — Concurrent Pipeline Limits ──────────────────────────────────
+# Max simultaneous pipeline runs allowed (prevents OOM when team is active).
+# Queued runs wait until a slot opens. 2 is safe on 16 GB with Ollama loaded.
+MAX_CONCURRENT_RUNS = 2
+
 # ── Phase 8 — Parallel Execution & Learning ────────────────────────────────
 # Number of tests to run in parallel.  Keep at 2 on a 16 GB machine with Ollama
 # loaded (4.5 GB) — each JVM + Firefox takes ~1 GB.

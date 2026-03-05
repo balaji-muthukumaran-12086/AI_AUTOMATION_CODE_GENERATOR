@@ -50,7 +50,7 @@ from fastapi.staticfiles import StaticFiles
 BASE_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BASE_DIR))
 
-from config.project_config import BASE_DIR as PROJECT_BASE_DIR, HG_AGENT_ENABLED, RUNS_LOG_PATH
+from config.project_config import BASE_DIR as PROJECT_BASE_DIR, HG_AGENT_ENABLED, RUNS_LOG_PATH, MAX_CONCURRENT_RUNS
 
 # ── In-memory run store ───────────────────────────────────────────────────────
 # run_id → {status, messages, errors, files, metadata, started_at, finished_at}
@@ -64,6 +64,9 @@ _loop: asyncio.AbstractEventLoop | None = None
 
 # Thread lock protecting writes to logs/runs.jsonl
 _runs_file_lock = threading.Lock()
+
+# Semaphore to limit concurrent pipeline runs (prevents OOM with multiple team users)
+_run_semaphore = threading.Semaphore(MAX_CONCURRENT_RUNS)
 
 # Maps log-message prefixes → stage name for UI stage-progress indicator
 _AGENT_STAGE_MAP = {
@@ -198,102 +201,112 @@ def _run_pipeline_thread(
     All log messages are pushed to the SSE queue.
     """
     run = _runs[run_id]
-    run["status"] = "running"
-    _threads[run_id] = threading.current_thread()
-    _persist_runs()  # persist "running" status immediately
 
-    def _log(msg: str):
-        run["messages"].append(msg)
-        _push(run_id, "log", msg)
-        # Detect agent stage transitions → push stage event + persist checkpoint
-        for prefix, stage in _AGENT_STAGE_MAP.items():
-            if prefix in msg:
-                _push(run_id, "stage", stage)
-                _persist_runs()
-                break
-
-    _log(f"[{datetime.now().strftime('%H:%M:%S')}] 🚀 Pipeline started")
-    if source_document:
-        _log(f"[{datetime.now().strftime('%H:%M:%S')}] 📄 Document: {Path(source_document).name}")
-    if feature_description:
-        _log(f"[{datetime.now().strftime('%H:%M:%S')}] 📝 Feature: {feature_description[:120]}...")
-    mode_hint = " (⚡ direct — Planner+Coverage bypassed)" if generation_mode == "from_testcases" else ""
-    _log(f"[{datetime.now().strftime('%H:%M:%S')}] 🔧 Mode: {generation_mode}{mode_hint} | Modules: {', '.join(target_modules) or 'auto-detect'}")
+    # Acquire semaphore to limit concurrent runs (prevents OOM)
+    _push(run_id, "log", f"[{datetime.now().strftime('%H:%M:%S')}] ⏳ Waiting for pipeline slot ({MAX_CONCURRENT_RUNS} max concurrent)...")
+    _run_semaphore.acquire()
 
     try:
-        from agents.pipeline import _build_initial_state
-        initial_state = _build_initial_state(
-            feature_description=feature_description,
-            source_document=source_document,
-            target_modules=target_modules,
-            generation_mode=generation_mode,
-            hg_config=hg_config,
-        )
-        final_state = _pipeline.invoke(initial_state)
+        run["status"] = "running"
+        _threads[run_id] = threading.current_thread()
+        _persist_runs()  # persist "running" status immediately
 
-        # Stream all pipeline messages
-        for msg in final_state.get("messages", []):
-            _log(msg)
+        def _log(msg: str):
+            run["messages"].append(msg)
+            _push(run_id, "log", msg)
+            # Detect agent stage transitions → push stage event + persist checkpoint
+            for prefix, stage in _AGENT_STAGE_MAP.items():
+                if prefix in msg:
+                    _push(run_id, "stage", stage)
+                    _persist_runs()
+                    break
 
-        # Stream errors if any
-        for err in final_state.get("errors", []):
-            run["errors"].append(err)
-            _push(run_id, "error", err)
+        _log(f"[{datetime.now().strftime('%H:%M:%S')}] 🚀 Pipeline started")
+        if source_document:
+            _log(f"[{datetime.now().strftime('%H:%M:%S')}] 📄 Document: {Path(source_document).name}")
+        if feature_description:
+            _log(f"[{datetime.now().strftime('%H:%M:%S')}] 📝 Feature: {feature_description[:120]}...")
+        mode_hint = " (⚡ direct — Planner+Coverage bypassed)" if generation_mode == "from_testcases" else ""
+        _log(f"[{datetime.now().strftime('%H:%M:%S')}] 🔧 Mode: {generation_mode}{mode_hint} | Modules: {', '.join(target_modules) or 'auto-detect'}")
 
-        # Collect generated files
-        output_paths = final_state.get("final_output_paths", [])
-        run["files"] = output_paths
-        run["generated_dir"] = final_state.get("generated_dir", "")
-        run["document_metadata"] = final_state.get("document_metadata", {})
-        run["affected_modules"] = final_state.get("affected_modules", [])
-        run["hg_result"] = final_state.get("hg_result", {})
+        try:
+            from agents.pipeline import _build_initial_state
+            initial_state = _build_initial_state(
+                feature_description=feature_description,
+                source_document=source_document,
+                target_modules=target_modules,
+                generation_mode=generation_mode,
+                hg_config=hg_config,
+            )
+            final_state = _pipeline.invoke(initial_state)
 
-        # Log hg branch if committed
-        hg_res = run["hg_result"]
-        if hg_res.get("branch_name"):
-            branch = hg_res['branch_name']
-            if hg_res.get("success"):
-                _log(f"[{datetime.now().strftime('%H:%M:%S')}] 🔀 hg branch: {branch} — {hg_res.get('message','')}")
+            # Stream all pipeline messages
+            for msg in final_state.get("messages", []):
+                _log(msg)
+
+            # Stream errors if any
+            for err in final_state.get("errors", []):
+                run["errors"].append(err)
+                _push(run_id, "error", err)
+
+            # Collect generated files
+            output_paths = final_state.get("final_output_paths", [])
+            run["files"] = output_paths
+            run["generated_dir"] = final_state.get("generated_dir", "")
+            run["document_metadata"] = final_state.get("document_metadata", {})
+            run["affected_modules"] = final_state.get("affected_modules", [])
+            run["hg_result"] = final_state.get("hg_result", {})
+
+            # Log hg branch if committed
+            hg_res = run["hg_result"]
+            if hg_res.get("branch_name"):
+                branch = hg_res['branch_name']
+                if hg_res.get("success"):
+                    _log(f"[{datetime.now().strftime('%H:%M:%S')}] 🔀 hg branch: {branch} — {hg_res.get('message','')}")
+                else:
+                    _log(f"[{datetime.now().strftime('%H:%M:%S')}] ⚠️ hg partial: {hg_res.get('message','')}")
+
+            file_count = len(output_paths)
+            had_errors = bool(final_state.get("errors"))
+
+            if file_count > 0:
+                run["status"] = "success"
+                _log(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Done — {file_count} file(s) generated")
+                _push(run_id, "files", output_paths)
+            elif had_errors:
+                run["status"] = "failed"
+                _log(f"[{datetime.now().strftime('%H:%M:%S')}] ❌ Pipeline finished with errors — check details")
             else:
-                _log(f"[{datetime.now().strftime('%H:%M:%S')}] ⚠️ hg partial: {hg_res.get('message','')}")
+                run["status"] = "success"
+                _log(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Pipeline complete (no new files — may be duplicates)")
+            _persist_runs()
 
-        file_count = len(output_paths)
-        had_errors = bool(final_state.get("errors"))
+        except SystemExit:
+            # Raised by /api/runs/{run_id}/stop endpoint via ctypes
+            if run["status"] != "stopped":
+                run["status"] = "stopped"
+            _log(f"[{datetime.now().strftime('%H:%M:%S')}] ⏹ Generation stopped manually")
+            _persist_runs()
 
-        if file_count > 0:
-            run["status"] = "success"
-            _log(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Done — {file_count} file(s) generated")
-            _push(run_id, "files", output_paths)
-        elif had_errors:
+        except Exception as exc:
             run["status"] = "failed"
-            _log(f"[{datetime.now().strftime('%H:%M:%S')}] ❌ Pipeline finished with errors — check details")
-        else:
-            run["status"] = "success"
-            _log(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Pipeline complete (no new files — may be duplicates)")
-        _persist_runs()
+            err_msg = f"Pipeline error: {exc}"
+            run["errors"].append(err_msg)
+            _log(f"[{datetime.now().strftime('%H:%M:%S')}] ❌ {err_msg}")
+            _push(run_id, "error", err_msg)
+            _persist_runs()
 
-    except SystemExit:
-        # Raised by /api/runs/{run_id}/stop endpoint via ctypes
-        if run["status"] != "stopped":
-            run["status"] = "stopped"
-        _log(f"[{datetime.now().strftime('%H:%M:%S')}] ⏹ Generation stopped manually")
-        _persist_runs()
-
-    except Exception as exc:
-        run["status"] = "failed"
-        err_msg = f"Pipeline error: {exc}"
-        run["errors"].append(err_msg)
-        _log(f"[{datetime.now().strftime('%H:%M:%S')}] ❌ {err_msg}")
-        _push(run_id, "error", err_msg)
-        _persist_runs()
+        finally:
+            run["finished_at"] = datetime.now().isoformat()
+            _threads.pop(run_id, None)
+            _persist_runs()  # final state checkpoint
+            _push(run_id, "done", {"status": run["status"], "files": run.get("files", []), "hg_branch": run.get("hg_result", {}).get("branch_name", "")})
+            # Signal SSE stream to close
+            _push(run_id, "__close__", None)
 
     finally:
-        run["finished_at"] = datetime.now().isoformat()
-        _threads.pop(run_id, None)
-        _persist_runs()  # final state checkpoint
-        _push(run_id, "done", {"status": run["status"], "files": run.get("files", []), "hg_branch": run.get("hg_result", {}).get("branch_name", "")})
-        # Signal SSE stream to close
-        _push(run_id, "__close__", None)
+        # Always release the semaphore so the next queued run can proceed
+        _run_semaphore.release()
 
 
 # ── Routes ────────────────────────────────────────────────────────────────────
@@ -334,6 +347,7 @@ async def generate(
     modules: str = Form(default=""),
     mode: str = Form(default="new_feature"),
     hg_enabled: bool = Form(default=False),
+    submitted_by: str = Form(default=""),
     file: Optional[UploadFile] = File(default=None),
 ):
     """
@@ -384,6 +398,7 @@ async def generate(
         "affected_modules":[],
         "document_metadata": {},
         "hg_result":       {},
+        "submitted_by":    submitted_by.strip()[:50],
         "started_at":      datetime.now().isoformat(),
         "finished_at":     None,
     }
@@ -457,6 +472,7 @@ async def list_runs():
                 "source_document": r["source_document"],
                 "mode":            r["mode"],
                 "files_count":     len(r["files"]),
+                "submitted_by":    r.get("submitted_by", ""),
                 "started_at":      r["started_at"],
                 "finished_at":     r["finished_at"],
             }
@@ -549,6 +565,7 @@ async def get_stats():
             },
             "cpu_percent": cpu,
             "active_runs": sum(1 for r in _runs.values() if r["status"] in ("running", "queued")),
+            "max_concurrent": MAX_CONCURRENT_RUNS,
             "total_runs":  len(_runs),
         }
     except ImportError:

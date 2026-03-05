@@ -309,6 +309,8 @@
     </div>
     <div class="header-right">
       <div class="stats-bar" id="stats-bar" style="display:none">
+        <span id="stats-runs" title="Active pipeline runs / max concurrent" style="font-weight:600">🔄 0/2</span>
+        <span style="color:#555">│</span>
         <span id="stats-label">RAM:</span>
         <span id="stats-ram">—</span>
         <span class="mem-track"><span class="mem-fill" id="mem-fill" style="width:0%"></span></span>
@@ -342,9 +344,9 @@
       <div class="or-divider">OR</div>
 
       <div class="field">
-        <label for="feature-text">Feature Description / User Story</label>
+        <label for="feature-text">Feature Description / Use Cases</label>
         <textarea id="feature-text"
-          placeholder="Describe the feature to be tested, e.g.:&#10;'Create an incident request with auto-escalation when SLA is breached. Technician should receive an email notification, and the request status should change to Overdue.'"
+          placeholder="Single use case:&#10;  Create a change and verify the detail view shows correct title&#10;&#10;Multiple use cases (one per line):&#10;  Create an incident request with high priority&#10;  Add a note to an existing request&#10;  Verify SLA escalation on overdue requests&#10;&#10;Or paste a full feature description..."
           rows="6"></textarea>
       </div>
 
@@ -364,6 +366,12 @@
           <option value="regression">🔄 Regression — regenerate/extend regression suite</option>
           <option value="from_testcases">⚡ From Test Cases — Excel/CSV test case sheet (skip Planner)</option>
         </select>
+      </div>
+
+      <div class="field">
+        <label for="submitted-by">Your Name</label>
+        <input type="text" id="submitted-by"
+               placeholder="e.g. Balaji, Rajeshwaran, Umesh" />
       </div>
 
       <div id="hg-row" class="field" style="flex-direction:row;align-items:center;gap:10px;display:none;">
@@ -421,7 +429,7 @@
         <table>
           <thead>
             <tr>
-              <th>Run ID</th><th>Source</th><th>Mode</th><th>Status</th>
+              <th>Run ID</th><th>Submitted By</th><th>Source</th><th>Mode</th><th>Status</th>
               <th>Files</th><th>Started</th><th>Duration</th><th></th>
             </tr>
           </thead>
@@ -507,6 +515,7 @@ async function startGeneration() {
   const modules = document.getElementById('modules-input').value.trim();
   const mode    = document.getElementById('mode-select').value;
   const hgEnabled = document.getElementById('hg-enabled').checked;
+  const submittedBy = document.getElementById('submitted-by').value.trim();
 
   if (!feature && !selectedFile) {
     showToast('⚠️ Please enter a feature description or upload a document.', 'err');
@@ -522,6 +531,8 @@ async function startGeneration() {
   fd.append('modules', modules);
   fd.append('mode',    mode);
   fd.append('hg_enabled', hgEnabled ? 'true' : 'false');
+  fd.append('submitted_by', submittedBy);
+  if (submittedBy) localStorage.setItem('ai_gen_submitted_by', submittedBy);
   if (selectedFile) fd.append('file', selectedFile);
 
   // UI: loading state
@@ -704,7 +715,7 @@ async function loadHistory() {
     const tbody = document.getElementById('history-rows');
     tbody.innerHTML = '';
     if (!data.runs.length) {
-      tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text-dim);text-align:center;padding:12px">No runs yet</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="9" style="color:var(--text-dim);text-align:center;padding:12px">No runs yet</td></tr>';
       document.getElementById('alert-banner').style.display = 'none';
       return;
     }
@@ -721,8 +732,10 @@ async function loadHistory() {
         : (r.status === 'running' ? '⏳' : '—');
       const started = new Date(r.started_at).toLocaleTimeString();
       const src = r.source_document || (r.feature ? r.feature.slice(0,40)+'…' : '—');
+      const who = r.submitted_by || '—';
       tr.innerHTML = `
         <td><code style="font-size:11px;color:var(--blue)">${r.run_id}</code></td>
+        <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${who}">${who}</td>
         <td title="${r.source_document || r.feature}" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${src}</td>
         <td>${r.mode}</td>
         <td><span class="st st-${r.status}">${r.status}</span></td>
@@ -794,6 +807,11 @@ async function loadStats() {
     document.getElementById('stats-bar').style.display = 'flex';
     document.getElementById('stats-ram').textContent = `${d.memory.used_gb}/${d.memory.total_gb} GB`;
     document.getElementById('stats-cpu').textContent = `CPU: ${Math.round(d.cpu_percent)}%`;
+    const active = d.active_runs || 0;
+    const max = d.max_concurrent || 2;
+    const runsEl = document.getElementById('stats-runs');
+    runsEl.textContent = `🔄 ${active}/${max}`;
+    runsEl.style.color = active >= max ? '#e74c3c' : active > 0 ? '#f39c12' : '#66bb6a';
     const pct = d.memory.percent;
     const fill = document.getElementById('mem-fill');
     fill.style.width = pct + '%';
@@ -858,6 +876,10 @@ async function init() {
   if (Notification && Notification.permission === 'default') {
     Notification.requestPermission();
   }
+
+  // Restore saved name from localStorage
+  const savedName = localStorage.getItem('ai_gen_submitted_by');
+  if (savedName) document.getElementById('submitted-by').value = savedName;
 
   // Refresh history every 5s while page is open
   setInterval(loadHistory, 5000);

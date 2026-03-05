@@ -1,0 +1,16 @@
+UseCase ID,Severity,Description
+SDPOD_MODULE_001,Showstopper,"Short title of the use case
+
+Steps: Module -> Page -> Action -> Sub-action
+
+Expected Result: Describe what should happen after performing the steps."
+SDPOD_MODULE_002,Major,"Another use case title
+
+Steps: Module -> List View -> Click on record -> Detail View -> Verify field
+
+Expected Result: The field should display the expected value."
+SDPOD_MODULE_003,Minor,"Edge case or negative scenario title
+
+Steps: Module -> Form -> Submit without mandatory fields
+
+Expected Result: Validation error should be shown for each mandatory field."
