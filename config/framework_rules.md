@@ -1639,3 +1639,92 @@ Linking is done via the `rel/` sub-path under changes API:
 // Body for child link (multiple):
 {"child_changes":[{"child_changes":{"id":"<id1>"}},{"child_changes":{"id":"<id2>"}}]}
 ```
+
+---
+
+### 12.7 Workflow Boundary Tests — Stage-Based vs Flat-Status Module Rule (CH-2320)
+
+> **SOURCE OF TRUTH**: Applies to all workflow statement-tuple-limit boundary tests.
+
+#### Module classification
+
+| Module | Type | `@Override` needed for `_UI()` tests? |
+|--------|------|---------------------------------------|
+| Incident Request | Flat-status | ❌ Delegate to base `verifyStatementTupleLimitRejectionOnOverflow_UI()` |
+| Problem | Flat-status | ❌ Delegate to base |
+| Service Request | Flat-status | ❌ Delegate to base |
+| Change | **Stage-based** | ✅ MUST `@Override` — blank canvas has counted FlowNodes |
+| Release | **Stage-based** | ✅ MUST `@Override` — blank canvas has counted FlowNodes |
+
+#### Why this matters
+
+For flat-status modules, a blank canvas opened via `createNewBlankWorkflowInCanvas()` starts
+with only a Start/End marker (not counted by the server). Dragging 100 FieldUpdate nodes →
+server counts 100 statements → exactly at limit → base `_UI()` works correctly.
+
+For stage-based modules (Change, Release), the blank canvas already contains Submission +
+Close/Closure stage FlowNodes that **are counted** by the server. Dragging 100 FieldUpdate nodes
+gives `baseCount + 100 > 100` → always exceeds the limit → the "accept at max" test always fails.
+
+#### Required override pattern (stage-based modules)
+
+```java
+@Override
+protected void verifyStatementTupleLimitRejectionOnOverflow_UI() throws Exception {
+    LocalStorage.store("workFlowModuleName", "change"); // or "release"
+    // Step 1 — API pre-create a proper workflow with real stage IDs
+    WorkflowsAPIUtil.createWorkflowViaAPI(
+        getTestCaseData(WorkflowsDataConstants.WorkflowsData.CREATE_WORKFLOW_CHANGE_TRANSITION_VIA_API));
+    String workflowId = LocalStorage.getAsString("workflowId");
+    String wfName     = LocalStorage.getAsString("workFlowName");
+
+    // Step 2 — Self-calibrate: GET the workflow to count actual server statements
+    int baseCount = 4; // conservative default
+    try {
+        JSONObject wfResp = restAPI.get("workflows/" + workflowId, null);
+        if (wfResp != null && wfResp.optJSONObject("workflow") != null) {
+            org.json.JSONArray stmts = wfResp.getJSONObject("workflow").optJSONArray("statements");
+            if (stmts != null) baseCount = stmts.length();
+        }
+    } catch (Exception ignore) {}
+
+    // Step 3 — Drag only the delta to reach/exceed the limit
+    int dragsNeeded = WorkflowsConstants.TupleLimit.DEFAULT_STATEMENT_LIMIT - baseCount + 1;
+    try {
+        WorkflowsActionsUtil.openExistingWorkflowInCanvas("Change", wfName); // or "Release"
+        actions.click(WorkflowsLocators.Listview.WORKFLOW_RHS_TOGGLE_BUTTON);
+        for (int i = 1; i <= dragsNeeded; i++) {
+            // ... drag FieldUpdate node and configure ...
+        }
+        actions.click(WorkflowsLocators.Listview.SAVE_MORE);
+        actions.click(WorkflowsLocators.Listview.SAVE_CLOSE);
+        actions.waitForAjaxComplete();
+        // WORKFLOW_CANCEL_LOCATOR present = canvas stayed open = rejected = PASS
+        if (actions.isElementPresent(WorkflowsLocators.Listview.WORKFLOW_CANCEL_LOCATOR)) {
+            addSuccessReport("...");
+            actions.click(WorkflowsLocators.Listview.WORKFLOW_CANCEL_LOCATOR);
+        } else {
+            addFailureReport("...", "...");
+        }
+    } finally {
+        restAPI.delete("workflows/" + workflowId);
+    }
+}
+```
+
+#### Verifying workflow save — ALWAYS use API, NEVER re-open by clicking name
+
+After `createWorkflow()` saves, verifying by calling `openExistingWorkflowInCanvas()` is **fragile**:
+the list-view locator `//a[contains(@class,'workflow-name') and contains(text(),'...')]` may miss
+due to timing or filter state. Use API search instead:
+
+```java
+// ✅ CORRECT — API confirmation is authoritative
+String workflowId = restAPI.getEntityIdUsingSearchCriteria("workflows", "workflows", searchData);
+if (workflowId != null && !workflowId.isEmpty()) {
+    addSuccessReport("Workflow saved — confirmed by API id=" + workflowId);
+} else {
+    addFailureReport("Workflow not found via API after UI creation", workflowName);
+}
+```
+```

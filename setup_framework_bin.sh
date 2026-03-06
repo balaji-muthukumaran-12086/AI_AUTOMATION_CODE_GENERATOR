@@ -18,7 +18,7 @@
 set -e
 
 WORKSPACE="$(cd "$(dirname "$0")" && pwd)"
-DEPS="$WORKSPACE/../dependencies"
+DEPS="$WORKSPACE/../dependencies17"
 FW_SRC="$WORKSPACE/AutomaterSeleniumFramework/src"
 BIN="$WORKSPACE/SDPLIVE_LATEST_AUTOMATER_SELENIUM/bin"
 FW_DIR="$WORKSPACE/AutomaterSeleniumFramework"

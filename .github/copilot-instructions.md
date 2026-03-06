@@ -1047,6 +1047,128 @@ RUN_CONFIG = {
 
 ---
 
+## CH-2320 Workflow Statement Tuple Limit — Boundary Test Suite (as of Mar 2026)
+
+> **Feature**: Statement tuple limit raised from 100 → 150 (connector limit 250 → 300)
+> **Feature doc**: `docs/Feature_Document/CH-2320...md`
+> **Pattern**: Each module gets 4 tests: API-reject(101), API-accept(100), UI-reject(101), UI-accept(100)
+
+### Boundary Test Methods (all 5 modules implemented)
+
+| Module | Class | IDs |
+|--------|-------|-----|
+| Incident Request | `IncidentRequestWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_IR_001–004` ✅ PASSING |
+| Change | `ChangeWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_CH_001–004` ✅ PASSING |
+| Problem | `ProblemWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_PB_001–004` |
+| Service Request | `ServiceRequestWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_SR_001–004` |
+| Release | `ReleaseWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_RL_001–004` |
+
+### Stage-Based vs Flat-Status Module Classification
+
+> **CRITICAL**: This distinction determines which `_UI()` implementation pattern to use.
+
+| Module | Type | Blank canvas starts with | Override required? |
+|--------|------|--------------------------|-------------------|
+| Incident Request | Flat-status | Start + End (not counted) | ❌ Use base `_UI()` |
+| Problem | Flat-status | Start + End (not counted) | ❌ Use base `_UI()` |
+| Service Request | Flat-status | Start + End (not counted) | ❌ Use base `_UI()` |
+| Change | **Stage-based** | Start + Submission + Close + End (counted!) | ✅ Must `@Override` |
+| Release | **Stage-based** | Start + Submission + Closure + End (counted!) | ✅ Must `@Override` |
+
+**Rule**: If a module uses Stages (not Statuses), the blank canvas starts with stage FlowNodes that the server counts in the statement tuple. Dragging 100 FieldUpdate nodes = 100 + baseCount > limit → always over limit. You must `@Override` `_UI()` methods in that module's workflow class.
+
+### Recommended Pattern for UI Boundary Tests
+
+**Stage-based modules (Change, Release)** — `@Override` required:
+```java
+@Override
+protected void verifyStatementTupleLimitRejectionOnOverflow_UI() throws Exception {
+    LocalStorage.store("workFlowModuleName", "change"); // lowercase module key!
+    WorkflowsAPIUtil.createWorkflowViaAPI(
+        getTestCaseData(WorkflowsDataConstants.WorkflowsData.CREATE_WORKFLOW_CHANGE_TRANSITION_VIA_API));
+    String workflowId = LocalStorage.getAsString("workflowId");
+    String wfName     = LocalStorage.getAsString("workFlowName");
+
+    // Self-calibrate: actual baseCount may differ from assumption.
+    int baseCount = 4; // Start + Submission + Close + End (conservative default)
+    try {
+        JSONObject wfResp = restAPI.get("workflows/" + workflowId, null);
+        if (wfResp != null && wfResp.optJSONObject("workflow") != null) {
+            org.json.JSONArray stmts = wfResp.getJSONObject("workflow").optJSONArray("statements");
+            if (stmts != null) baseCount = stmts.length();
+        }
+    } catch (Exception ignore) {}
+
+    int dragsNeeded = WorkflowsConstants.TupleLimit.DEFAULT_STATEMENT_LIMIT - baseCount + 1; // 101 total
+    try {
+        WorkflowsActionsUtil.openExistingWorkflowInCanvas("Change", wfName);
+        actions.click(WorkflowsLocators.Listview.WORKFLOW_RHS_TOGGLE_BUTTON);
+        for (int i = 1; i <= dragsNeeded; i++) {
+            JSONObject fu = new JSONObject()
+                .put("name", "FU_Overflow_" + i + "_" + System.currentTimeMillis())
+                .put("field", "Impact").put("field_value", "Affects Business")
+                .put("Setup_alternate_path_on_error", false);
+            actions.dragAndDrop(WorkflowsLocators.Listview.DRAG_NODE_LOCATOR.apply("Field"),
+                                WorkflowsLocators.Listview.DROP_CANVAS_LOCATOR);
+            createFieldUpdate(fu);
+        }
+        actions.click(WorkflowsLocators.Listview.SAVE_MORE);
+        actions.click(WorkflowsLocators.Listview.SAVE_CLOSE);
+        actions.waitForAjaxComplete();
+        if (actions.isElementPresent(WorkflowsLocators.Listview.WORKFLOW_CANCEL_LOCATOR)) {
+            addSuccessReport("[CH-2320 UI] canvas correctly rejected " + (baseCount + dragsNeeded) + " statements");
+            actions.click(WorkflowsLocators.Listview.WORKFLOW_CANCEL_LOCATOR);
+        } else {
+            addFailureReport("limit NOT enforced", "Expected rejection");
+        }
+    } finally {
+        restAPI.delete("workflows/" + workflowId);
+    }
+}
+```
+
+**Flat-status modules (IR, Problem, SR)** — delegate to base:
+```java
+public void verifyIRWorkflowStatementTupleLimitRejectionOnOverflow() {
+    try { verifyStatementTupleLimitRejectionOnOverflow(); }
+    catch (Exception e) { addFailureReport("Error in " + getMethodName(), e.toString()); }
+}
+```
+
+### Verifying UI Workflow Creation (CORRECT PATTERN)
+
+After creating a workflow via `createWorkflow()` or `WorkflowsAPIUtil.createWorkflowViaAPI()`, **do NOT re-open the workflow in canvas by clicking its name in the list view** — this is fragile (timing, filter state). Instead, use API search:
+
+```java
+// ✅ CORRECT — API confirmation of save
+String workflowId = restAPI.getEntityIdUsingSearchCriteria("workflows", "workflows", searchData);
+if (workflowId != null && !workflowId.isEmpty()) {
+    addSuccessReport("Workflow saved and confirmed via API — id=" + workflowId);
+} else {
+    addFailureReport("Workflow not found via API search after UI creation", workflowName);
+}
+
+// ❌ WRONG — fragile UI re-open
+WorkflowsActionsUtil.openExistingWorkflowInCanvas("Change", workflowName);  // may fail on timing
+if (actions.isElementPresent(WorkflowsLocators.Listview.WORKFLOW_RHS_TOGGLE_BUTTON)) { ... }
+```
+
+### Data Constants for Workflow API Creation
+
+| Module | DataConstants key | JSON data key |
+|--------|------------------|---------------|
+| Change | `WorkflowsDataConstants.WorkflowsData.CREATE_WORKFLOW_CHANGE_TRANSITION_VIA_API` | `create_workflow_change_transition_via_api` |
+| Release | `WorkflowsDataConstants.WorkflowsData.CREATE_WORKFLOW_RELEASE_TRANSITION_VIA_API` | `create_workflow_release_transition_via_api` |
+| Incident | `WorkflowsDataConstants.WorkflowsData.CREATE_WORKFLOW_TRANSITION_VIA_API` | `create_workflow_transition_via_api` |
+
+### runner_agent.py `_parse_success()` Fix (Mar 2026)
+
+Two bugs were fixed in the HTML report override block:
+1. **Wrong class string**: Was `'class=" error message-detail'` (leading space) — never matched actual `class="error message-detail default"`. Fixed: `'class="error message-detail'`
+2. **Missing True→False demotion**: Old code only promoted `False→True`; never caught HTML FAILs when stdout falsely showed PASS signals. Fixed: added `else:` branch to demote when `'scenario-result FAIL' in content`
+
+---
+
 ## AI Orchestrator Pipeline
 
 > **Vision**: Generate automation test cases from feature documents with zero manual intervention.

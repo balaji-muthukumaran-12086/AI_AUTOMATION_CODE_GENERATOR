@@ -277,6 +277,7 @@ class RunnerAgent:
         admin_mail_id: Optional[str] = None,
         skip_compile: bool = False,
         password: Optional[str] = None,
+        skip_cleanup: bool = False,
     ) -> RunResult:
         """
         Patch, compile (optional), and execute a single test method.
@@ -293,6 +294,8 @@ class RunnerAgent:
             admin_mail_id : Admin email (default: SDP_ADMIN_EMAIL from project_config)
             skip_compile  : If True, skip compilation (use existing bin/)
             password      : User password (default: SDP_ADMIN_PASS from project_config)
+            skip_cleanup  : If True, pass -DskipCleanup=true to the JVM so postProcess()
+                            and finally-block deletes are skipped — useful for debugging.
         """
         # Resolve defaults from project_config.py (single source of truth)
         url           = url           or _DEFAULT_SDP_URL
@@ -344,7 +347,7 @@ class RunnerAgent:
                     )
 
                 # 4. Execute — entity class FQCN and method name passed as CLI args
-                run_result = self._execute(entity_class, method_name)
+                run_result = self._execute(entity_class, method_name, skip_cleanup=skip_cleanup)
                 success = self._parse_success(run_result.stdout, run_result.stderr)
                 report_path = self._find_latest_report(method_name)
 
@@ -663,7 +666,7 @@ class RunnerAgent:
         src_list_file.unlink(missing_ok=True)
         return result
 
-    def _execute(self, entity_class: str, method_name: str) -> subprocess.CompletedProcess:
+    def _execute(self, entity_class: str, method_name: str, skip_cleanup: bool = False) -> subprocess.CompletedProcess:
         """Run the compiled AutomaterSeleniumMain class, streaming output live.
         
         New execution model: entity class (FQCN) and method name are passed as
@@ -681,6 +684,11 @@ class RunnerAgent:
 
         cmd = [
             "java",
+        ]
+        if skip_cleanup:
+            cmd.append("-DskipCleanup=true")
+            print("[RunnerAgent] skip_cleanup=True → passing -DskipCleanup=true to JVM (postProcess/finally deletes disabled)")
+        cmd += [
             "-cp", classpath,
             "com.zoho.automater.selenium.standalone.AutomaterSeleniumMain",
             fqcn,          # args[0]: fully-qualified entity class name

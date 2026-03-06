@@ -43,14 +43,15 @@ the copied problem is searchable in the Problems listview.
 """
 
 RUN_CONFIG = {
-    "entity_class":  "AdminChangeWorkflow",
-    "method_name":   "createChangeWorkflowWithAllNodeTypesAndVerify",
+    "entity_class":  "AdminIncidentRequestWorkflow",
+    "method_name":   "verifyIRWorkflowWith100TasksOpenedInCanvas",  # IR_009
     "url":           SDP_URL,
     "admin_mail_id": SDP_ADMIN_EMAIL,
     "email_id":      SDP_EMAIL_ID,
     "portal_name":   SDP_PORTAL,
     "password":      SDP_ADMIN_PASS,
     "skip_compile":  True,   # keep True — full compile is broken
+    "skip_cleanup":  True,   # keep created data alive for inspection in UI
 }
 
 DEPS_DIR            = _DEPS_DIR           # from config/project_config.py → dependencies17
@@ -126,6 +127,7 @@ if __name__ == "__main__":
             portal_name=RUN_CONFIG.get("portal_name"),
             skip_compile=RUN_CONFIG.get("skip_compile", True),
             password=RUN_CONFIG.get("password"),
+            skip_cleanup=RUN_CONFIG.get("skip_cleanup", False),
         )
 
         print(f"\n{'='*60}")
