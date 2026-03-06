@@ -40,33 +40,35 @@ HG_BRANCH_PREFIX = "feature/AI_GEN_"
 
 # ── Derived paths (do not edit) ────────────────────────────────────────────
 import os as _os
+from dotenv import load_dotenv as _load_dotenv
 
 _BASE_DIR = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+_load_dotenv(_os.path.join(_BASE_DIR, ".env"))
 
 PROJECT_ROOT    = _os.path.join(_BASE_DIR, PROJECT_NAME)
 PROJECT_SRC     = _os.path.join(PROJECT_ROOT, "src")
 PROJECT_BIN     = _os.path.join(PROJECT_ROOT, "bin")
 PROJECT_RES     = _os.path.join(PROJECT_ROOT, "resources")
 BASE_DIR        = _BASE_DIR
-DEPS_DIR        = "/home/balaji-12086/Desktop/Workspace/Zide/dependencies17"
+DEPS_DIR        = _os.environ.get("DEPS_DIR", "/home/balaji-12086/Desktop/Workspace/Zide/dependencies17")
 
 # ── Browser Driver Paths ────────────────────────────────────────────────────
 # Update these directly when deploying to a new machine.
 # macOS example  : /Applications/Firefox.app/Contents/MacOS/firefox
 # CI/Docker      : /usr/bin/firefox  |  /usr/bin/geckodriver
-DRIVERS_DIR      = "/home/balaji-12086/Desktop/Workspace/Drivers"
-FIREFOX_BINARY   = "/home/balaji-12086/Desktop/Workspace/Drivers/firefox/firefox"
-GECKODRIVER_PATH = "/home/balaji-12086/Desktop/Workspace/Drivers/geckodriver"
+DRIVERS_DIR      = _os.environ.get("DRIVERS_DIR", "/home/balaji-12086/Desktop/Workspace/Drivers")
+FIREFOX_BINARY   = _os.environ.get("FIREFOX_BINARY", _os.path.join(DRIVERS_DIR, "firefox", "firefox"))
+GECKODRIVER_PATH = _os.environ.get("GECKODRIVER_PATH", _os.path.join(DRIVERS_DIR, "geckodriver"))
 
 # ── SDP Test Application Credentials ────────────────────────────────────────
 # Single source of truth for server URL, portal, and credentials.
 # Used by RunnerAgent (patches StandaloneDefault.java at runtime),
 # HealerAgent (Playwright), and run_test.py (CLI runner).
-SDP_URL         = "https://sdpod-am2.csez.zohocorpin.com:45532/"
-SDP_PORTAL      = "change"
-SDP_ADMIN_EMAIL = "REDACTED_EMAIL"
-SDP_EMAIL_ID    = "REDACTED_EMAIL"
-SDP_ADMIN_PASS  = "REDACTED_PASSWORD"
+SDP_URL         = _os.environ.get("SDP_URL", "")
+SDP_PORTAL      = _os.environ.get("SDP_PORTAL", "")
+SDP_ADMIN_EMAIL = _os.environ.get("SDP_ADMIN_EMAIL", "")
+SDP_EMAIL_ID    = _os.environ.get("SDP_EMAIL_ID", SDP_ADMIN_EMAIL)
+SDP_ADMIN_PASS  = _os.environ.get("SDP_ADMIN_PASS", "")
 
 # ── Phase 5 — Pipeline Monitoring ─────────────────────────────────────────
 # Per-agent execution timeout in seconds. OrchestratorAgent (future) will kill
@@ -133,14 +135,14 @@ HEADLESS = False
 LLM_PROVIDER        = "openrouter"
 
 # OpenRouter
-OPENROUTER_API_KEY  = "REDACTED_OPENROUTER_API_KEY"
-OPENROUTER_MODEL    = "arcee-ai/trinity-large-preview:free"
-OPENROUTER_MAX_TOKENS = 4000
+OPENROUTER_API_KEY  = _os.environ.get("OPENROUTER_API_KEY", "")
+OPENROUTER_MODEL    = _os.environ.get("OPENROUTER_MODEL", "arcee-ai/trinity-large-preview:free")
+OPENROUTER_MAX_TOKENS = int(_os.environ.get("OPENROUTER_MAX_TOKENS", "4000"))
 
 # Ollama (local)
 OLLAMA_MODEL        = "qwen2.5-coder:7b"
 OLLAMA_BASE_URL     = "http://localhost:11434"
 
 # OpenAI direct
-OPENAI_MODEL        = "gpt-4o"
-OPENAI_API_KEY      = ""   # set this if LLM_PROVIDER = "openai"
+OPENAI_MODEL        = _os.environ.get("OPENAI_MODEL", "gpt-4o")
+OPENAI_API_KEY      = _os.environ.get("OPENAI_API_KEY", "")
