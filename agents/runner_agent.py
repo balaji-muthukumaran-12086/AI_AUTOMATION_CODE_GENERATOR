@@ -98,6 +98,11 @@ _FQCN_OVERRIDES: Dict[str, str] = {
     "ReleasesPlanningTask":  "com.zoho.automater.selenium.modules.releases.releasetask.PlanningTask",
     "ReleasesListView":      "com.zoho.automater.selenium.modules.releases.release.ListView",
     "ReleasesReleaseWorkflow":"com.zoho.automater.selenium.modules.releases.release.ReleaseWorkflow",
+    "AdminChangeWorkflow":         "com.zoho.automater.selenium.modules.admin.automation.workflows.ChangeWorkflow",
+    "AdminIncidentRequestWorkflow":"com.zoho.automater.selenium.modules.admin.automation.workflows.IncidentRequestWorkflow",
+    "AdminServiceRequestWorkflow": "com.zoho.automater.selenium.modules.admin.automation.workflows.ServiceRequestWorkflow",
+    "AdminProblemWorkflow":        "com.zoho.automater.selenium.modules.admin.automation.workflows.ProblemWorkflow",
+    "AdminReleaseWorkflow":        "com.zoho.automater.selenium.modules.admin.automation.workflows.ReleaseWorkflow",
     # Requests sub-entity versions
     "RequestTask":           "com.zoho.automater.selenium.modules.requests.task.Task",
     "RequestWorklog":        "com.zoho.automater.selenium.modules.requests.worklog.Worklog",
@@ -346,14 +351,26 @@ class RunnerAgent:
                 # ── HTML report override ─────────────────────────────────────
                 # 1. If _parse_success returned False but the HTML report says
                 #    PASS (cleanup NPE on no-display env), promote to True.
-                # 2. If _parse_success returned True but the report directory is
+                # 2. If _parse_success returned True but the HTML report says
+                #    FAIL (e.g. _parse_success missed the error — see leading-space
+                #    class-check bug), demote to False.  This is the authoritative
+                #    override: the HTML report is the ground truth.
+                # 3. If _parse_success returned True but the report directory is
                 #    empty (no HTML written — test never ran), demote to False.
                 if report_path:
                     html_file = Path(report_path) / "ScenarioReport.html"
-                    if not success and html_file.exists():
+                    if html_file.exists():
                         content = html_file.read_text(encoding="utf-8", errors="ignore")
-                        if 'data-result="FAIL"' not in content and 'data-result="PASS"' in content:
-                            success = True
+                        if not success:
+                            # Promote False→True only when HTML has NO failure markers
+                            if 'data-result="FAIL"' not in content and 'data-result="PASS"' in content:
+                                success = True
+                        else:
+                            # Demote True→False when HTML's overall result is FAIL
+                            # ScenarioReport writes: class="scenario-result FAIL"
+                            if 'scenario-result FAIL' in content:
+                                print("[RunnerAgent] ⚠️  HTML report shows scenario-result FAIL — overriding _parse_success True→False")
+                                success = False
                     elif success and not html_file.exists():
                         # Report dir was created by LocalSetupManager but test
                         # exited before writing the HTML → treat as failure.
@@ -897,10 +914,10 @@ class RunnerAgent:
             try:
                 with open(report_path) as _f:
                     html_content = _f.read()
-                # addFailureReport → <div class=" error message-detail ...">
-                # This CSS class only appears on actual failure step elements,
-                # not in the stylesheet selectors (those use .error without quotes).
-                if 'class=" error message-detail' in html_content:
+                # addFailureReport → <div class="error message-detail default">
+                # ScenarioReport.java: .addClass(messageType + " message-detail " + messageClass).addClass("default")
+                # jsoup normalises trailing spaces, so the class has NO leading space.
+                if 'class="error message-detail' in html_content:
                     return False
                 # Report exists, written cleanly, and no error entries → PASS
                 return True
