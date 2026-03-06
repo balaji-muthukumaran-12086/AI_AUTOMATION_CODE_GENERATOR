@@ -379,6 +379,16 @@ Additionally **3,209 scenarios have empty `id`** (`@AutomaterCase` old style or 
 
 ---
 
+### Codecheck NeedBraces violations — inline catch blocks (Mar 7, 2026)
+**Status**: ✅ Fixed (hg rev 5323)
+**Root cause**: Zoho uses **Checkstyle** (not PMD). PMD's `IfStmtsMustUseBraces` was deprecated in PMD 6.2.0. The active Checkstyle rule is `NeedBraces`, which covers ALL block statements: `if`, `else`, `for`, `while`, `catch`, `finally`.
+**Violation pattern** (FORBIDDEN): `} catch (Exception ignore) {}`  ← inline empty catch
+**Fix**: Expand ALL catch blocks to multi-line with explicit `{ }` on separate lines.
+**Disambiguation**: `Error in codecheck invocation` = Zoho's codecheck **server infrastructure crash** (not a code violation). When violations exist, the report lists file paths, line numbers, and rule names.
+**Files fixed**: `ChangeWorkflow.java`, `ProblemWorkflow.java`, `ReleaseWorkflow.java`, `Workflow.java`, `WorkflowsAPIUtil.java`
+
+---
+
 ### SDPOD_AUTO_IR_NOTES_001 — `createIncidentRequestAndAddNotes` (Feb 26, 2026)
 **Status**: ✅ Compiled & placed correctly
 **Issue**: Scenario was in wrong module (`Solution.java`/`SolutionBase.java`) — should be in Requests.
@@ -1053,15 +1063,19 @@ RUN_CONFIG = {
 > **Feature doc**: `docs/Feature_Document/CH-2320...md`
 > **Pattern**: Each module gets 4 tests: API-reject(101), API-accept(100), UI-reject(101), UI-accept(100)
 
-### Boundary Test Methods (all 5 modules implemented)
+### Boundary Test Methods (all 6 modules implemented — all PASSING as of Mar 7, 2026)
 
-| Module | Class | IDs |
-|--------|-------|-----|
-| Incident Request | `IncidentRequestWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_IR_001–004` ✅ PASSING |
-| Change | `ChangeWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_CH_001–004` ✅ PASSING |
-| Problem | `ProblemWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_PB_001–004` |
-| Service Request | `ServiceRequestWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_SR_001–004` |
-| Release | `ReleaseWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_RL_001–004` |
+| Module | Class | IDs | Status |
+|--------|-------|-----|--------|
+| Incident Request | `IncidentRequestWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_IR_001–009` | ✅ PASSING |
+| Change | `ChangeWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_CH_001–009` | ✅ PASSING |
+| Problem | `ProblemWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_PB_001–009` | ✅ PASSING |
+| Service Request | `ServiceRequestWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_SR_001–008` | ✅ PASSING |
+| Release | `ReleaseWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_RL_001–005` | ✅ PASSING |
+| Asset | `AssetWorkflow.java` | `SDPOD_WF_TUPLE_LIMIT_AS_001–009` | ✅ PASSING |
+
+> Core 4 tests per module: API-reject(101 stmts), API-accept(100 stmts), UI-reject, UI-accept.
+> Tests 005+ cover hybrid, connector-limit, and canvas-open boundary conditions.
 
 ### Stage-Based vs Flat-Status Module Classification
 
@@ -1070,10 +1084,11 @@ RUN_CONFIG = {
 | Module | Type | Blank canvas starts with | Override required? |
 |--------|------|--------------------------|-------------------|
 | Incident Request | Flat-status | Start + End (not counted) | ❌ Use base `_UI()` |
-| Problem | Flat-status | Start + End (not counted) | ❌ Use base `_UI()` |
 | Service Request | Flat-status | Start + End (not counted) | ❌ Use base `_UI()` |
+| Problem | Flat-status | Start + End (not counted) | ✅ Must `@Override` — blank canvas lacks status nodes needed for transition loop; pre-creates minimal workflow via API with real status IDs |
 | Change | **Stage-based** | Start + Submission + Close + End (counted!) | ✅ Must `@Override` |
 | Release | **Stage-based** | Start + Submission + Closure + End (counted!) | ✅ Must `@Override` |
+| Asset | **Special** | N/A (requires `sub_module` field in API payload) | ✅ Must `@Override` — base Workflow.java does not inject `sub_module` |
 
 **Rule**: If a module uses Stages (not Statuses), the blank canvas starts with stage FlowNodes that the server counts in the statement tuple. Dragging 100 FieldUpdate nodes = 100 + baseCount > limit → always over limit. You must `@Override` `_UI()` methods in that module's workflow class.
 
@@ -1127,11 +1142,29 @@ protected void verifyStatementTupleLimitRejectionOnOverflow_UI() throws Exceptio
 }
 ```
 
-**Flat-status modules (IR, Problem, SR)** — delegate to base:
+**Flat-status modules (IR, SR)** — delegate to base:
 ```java
 public void verifyIRWorkflowStatementTupleLimitRejectionOnOverflow() {
     try { verifyStatementTupleLimitRejectionOnOverflow(); }
     catch (Exception e) { addFailureReport("Error in " + getMethodName(), e.toString()); }
+}
+```
+
+**Problem** — flat-status but MUST `@Override` (blank canvas lacks status transition nodes):
+```java
+// ProblemWorkflow overrides both _UI() methods.
+// Uses resolveStatusApiPathAndName() to get [statusApiPath, "Open", "Closed"],
+// resolves actual status IDs via TriggerAPIUtil.getEntityIdforCriteriaValue(),
+// calls fetchStageStatuses() which returns null (flat-status path),
+// builds minimal workflow via API (4 nodes: Start + Open + Closed + End),
+// then GET workflow → count actual statements (baseCount), drag delta = limit - baseCount + 1.
+@Override
+protected void verifyStatementTupleLimitRejectionOnOverflow_UI() throws Exception {
+    String[] statusInfo = resolveStatusApiPathAndName();
+    String pendingStatusId = TriggerAPIUtil.getEntityIdforCriteriaValue(statusInfo[0], statusInfo[1]);
+    String closedStatusId  = TriggerAPIUtil.getEntityIdforCriteriaValue(statusInfo[0], statusInfo[2]);
+    JSONArray pendingStatuses = fetchStageStatuses(statusInfo[0], pendingStatusId); // returns null for Problem
+    // ... build minimal workflow via API with real status IDs, self-calibrate baseCount, then drag delta
 }
 ```
 
@@ -1166,6 +1199,40 @@ if (actions.isElementPresent(WorkflowsLocators.Listview.WORKFLOW_RHS_TOGGLE_BUTT
 Two bugs were fixed in the HTML report override block:
 1. **Wrong class string**: Was `'class=" error message-detail'` (leading space) — never matched actual `class="error message-detail default"`. Fixed: `'class="error message-detail'`
 2. **Missing True→False demotion**: Old code only promoted `False→True`; never caught HTML FAILs when stdout falsely showed PASS signals. Fixed: added `else:` branch to demote when `'scenario-result FAIL' in content`
+
+---
+
+## GitHub Push from hg Repo (Mar 7, 2026)
+
+> **Context**: If Zoho's hg push server is broken ("Error in codecheck invocation"), push to
+> GitHub as a backup. Both `.git/` and `.hg/` can coexist in the same directory.
+
+```bash
+cd SDPLIVE_LATEST_AUTOMATER_SELENIUM/
+git init && git checkout -b "FEATURE_BRANCH_NAME"
+git add src/ resources/ .gitignore .classpath .project .hgignore
+git -c user.name="Balaji_M" -c user.email="balaji-12086@zohocorp.com" commit -m "Desc"
+git remote add origin https://github.com/balaji-muthukumaran-12086/AI_Feature_Branch.git
+git push -u origin FEATURE_BRANCH_NAME
+```
+
+### GitHub auth (Linux — no keychain):
+
+**SSH key (permanent):** Add `~/.ssh/id_ed25519.pub` → github.com → Settings → SSH keys, then:
+```bash
+ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts
+git remote set-url origin git@github.com:balaji-muthukumaran-12086/AI_Feature_Branch.git
+git push -u origin FEATURE_BRANCH_NAME
+```
+
+**PAT (one-time):** Generate at github.com → Settings → Developer settings → PAT → scope `repo`:
+```bash
+git remote set-url origin https://balaji-muthukumaran-12086:TOKEN@github.com/balaji-muthukumaran-12086/AI_Feature_Branch.git
+git push -u origin FEATURE_BRANCH_NAME
+# Remove token from URL after push: git remote set-url origin https://github.com/...
+```
+
+> `remote: Repository not found` = EITHER repo missing OR credentials wrong (GitHub gives the same error for both).
 
 ---
 

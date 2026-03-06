@@ -1791,3 +1791,95 @@ actions.clickByName(GlobalConstants.Actions.ASSOCIATE);
 9. **Existing popup locators pattern**: Each module defines its own popup locators in `ChangeLocators.Popup.*`, `ChangeLocators.LinkingChangePopup.*` etc. — these are module-specific, not framework-level
 
 ---
+
+## ASSET WORKFLOW — Special Sub-Module Pattern (CH-2320, rev 5322)
+
+### Why Asset workflow is different
+Asset workflows require a `sub_module` field in the API payload that specifies which asset type the workflow applies to (e.g., `"Computers"`, `"Printers"`, etc.). The base `Workflow.java` methods do not inject this field, so ALL Asset workflow boundary tests must `@Override` the base methods to add it.
+
+### Key API pattern
+```java
+// ✅ CORRECT — inject sub_module before create
+JSONObject workflowPayload = buildWorkflowPayload(...);
+workflowPayload.optJSONObject("workflow").put("sub_module", "Computers");
+JSONObject response = restAPI.createAndGetFullResponse("workflows", workflowPayload);
+```
+
+### `Workflow.java` stage config additions (rev 5322)
+- Added `"Asset"` key to the module→stage-config mapping in `Workflow.java`
+- Added `"Asset"` → `"asset_workflows"` entry to the API key mapping
+- AssetWorkflow overrides: `verifyStatementTupleLimitRejectionOnOverflow()`, `verifyStatementTupleLimitAcceptedAtMaximum()`, `verifyStatementTupleLimitRejectionOnOverflow_UI()`, `verifyStatementTupleLimitAcceptedAtMaximum_UI()`, plus hybrid boundary tests
+
+### Test IDs
+`SDPOD_WF_TUPLE_LIMIT_AS_001–009` — API-reject(001), API-accept(002), UI-reject(003), UI-accept(004), hybrid tests (005–008), canvas-open-with-100-tasks (009)
+
+---
+
+## GIT + HG COEXISTENCE AND GITHUB PUSH
+
+### Can you have both `.git/` and `.hg/` in the same directory?
+**Yes.** Running `git init` inside an existing hg repo creates `.git/` alongside `.hg/`. They do not interfere. This is a valid way to push a feature branch to GitHub when the hg remote is broken.
+
+### Parent git repo safety
+If the parent git repo (e.g., `ai-automation-qa/`) has the hg project directory in `.gitignore`, the nested `git init` inside that subdirectory is fully isolated and safe.
+
+### Setting up a git repo inside an hg project for GitHub push
+```bash
+cd SDPLIVE_LATEST_AUTOMATER_SELENIUM/
+git init
+git checkout -b "MY_FEATURE_BRANCH_NAME"
+
+# Create .gitignore (exclude compiled bins, hg metadata, reports)
+cat > .gitignore << 'EOF'
+bin/
+build/
+product_package/
+logs/
+reports/
+.hg/
+src.zip
+EOF
+
+git add src/ resources/ .gitignore .classpath .project .hgignore
+git -c user.name="Name" -c user.email="email@example.com" \
+    commit -m "Feature: description"
+
+git remote add origin https://github.com/USERNAME/REPO.git
+git push -u origin MY_FEATURE_BRANCH_NAME
+```
+
+### GitHub push authentication — Linux (no keychain)
+
+`git credential-osxkeychain` is macOS-only — not available on Linux.
+
+On Linux, two options:
+
+**Option A — SSH key (recommended, permanent):**
+```bash
+# Check existing SSH key
+cat ~/.ssh/id_ed25519.pub
+# Add this key to: github.com → Settings → SSH and GPG keys → New SSH key
+# Then switch remote to SSH:
+git remote set-url origin git@github.com:USERNAME/REPO.git
+# Accept GitHub host fingerprint once:
+ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts
+git push -u origin MY_BRANCH
+```
+
+**Option B — Personal Access Token (one-time):**
+```bash
+# 1. Create PAT at: github.com → Settings → Developer settings →
+#    Personal access tokens → Tokens (classic) → Generate → select "repo"
+# 2. Embed token in URL:
+git remote set-url origin https://USERNAME:TOKEN@github.com/USERNAME/REPO.git
+git push -u origin MY_BRANCH
+# ⚠️ Remove token from URL after push (security):
+git remote set-url origin https://github.com/USERNAME/REPO.git
+```
+
+### GitHub error messages interpreted
+| Error | Real cause |
+|-------|-----------|
+| `remote: Repository not found` | EITHER repo doesn't exist OR credentials missing — GitHub gives same error for both |
+| `Permission denied (publickey)` | SSH key not added to GitHub account |
+| `fatal: Authentication failed` | Wrong password / revoked PAT |

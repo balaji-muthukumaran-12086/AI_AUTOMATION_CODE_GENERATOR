@@ -1648,13 +1648,21 @@ Linking is done via the `rel/` sub-path under changes API:
 
 #### Module classification
 
-| Module | Type | `@Override` needed for `_UI()` tests? |
-|--------|------|---------------------------------------|
-| Incident Request | Flat-status | ❌ Delegate to base `verifyStatementTupleLimitRejectionOnOverflow_UI()` |
-| Problem | Flat-status | ❌ Delegate to base |
-| Service Request | Flat-status | ❌ Delegate to base |
-| Change | **Stage-based** | ✅ MUST `@Override` — blank canvas has counted FlowNodes |
-| Release | **Stage-based** | ✅ MUST `@Override` — blank canvas has counted FlowNodes |
+| Module | Type | `@Override` pattern for `_UI()` tests |
+|--------|------|----------------------------------------|
+| Incident Request | Flat-status | ❌ Delegate to base — blank canvas has no counted nodes |
+| Service Request | Flat-status | ❌ Delegate to base — blank canvas has no counted nodes |
+| Problem | Flat-status | ✅ `@Override` needed — pre-creates workflow via API (blank canvas lacks status nodes required for transition loop) |
+| Change | **Stage-based** | ✅ `@Override` needed — blank canvas Submission/Close FlowNodes are counted by server |
+| Release | **Stage-based** | ✅ `@Override` needed — blank canvas Submission/Closure FlowNodes are counted by server |
+| Asset | **Special** | ✅ `@Override` needed — requires `sub_module` injection in API payload; flat-status per sub_module, base won't inject it |
+
+> ⚠️ **Correction from March 7, 2026**: `Problem` is flat-status but still needs `@Override`
+> because `createNewBlankWorkflowInCanvas()` produces a canvas without status nodes, causing
+> the FieldUpdate drag loop to fail to build valid transitions. Solution: override to pre-create
+> a minimal Problem workflow with genuine status IDs via API (`resolveStatusApiPathAndName()` +
+> `fetchStageStatuses()` returns `null` to trigger the flat-status builder path), then calibrate
+> `baseCount` from the actual server-recorded statement count before dragging the delta.
 
 #### Why this matters
 
@@ -1727,4 +1735,108 @@ if (workflowId != null && !workflowId.isEmpty()) {
     addFailureReport("Workflow not found via API after UI creation", workflowName);
 }
 ```
+
+---
+
+## SECTION 13 — ZOHO CODECHECK / CHECKSTYLE RULES
+
+> **Root cause of hg push failures (March 7, 2026)**: Zoho uses **Checkstyle** (not PMD).
+> PMD's `IfStmtsMustUseBraces` was deprecated in PMD 6.2.0. The equivalent Checkstyle rule is
+> **`NeedBraces`** which covers ALL block statements: `if`, `else`, `for`, `while`, `do`,
+> `try`, `catch`, `finally`.
+
+### 13.1 `NeedBraces` — Inline catch blocks FORBIDDEN
+
+```java
+// ❌ WRONG — inline empty catch violates NeedBraces
+try {
+    someCall();
+} catch (Exception ignore) {}
+
+// ✅ CORRECT — multi-line with explicit braces on separate lines
+try {
+    someCall();
+} catch (Exception ignore) {
+    // intentionally empty
+}
+```
+
+### 13.2 ALL single-statement if/for/while bodies must use braces
+
+```java
+// ❌ WRONG
+if (condition) doSomething();
+
+for (int i = 0; i < n; i++) doSomething(i);
+
+// ✅ CORRECT
+if (condition) {
+    doSomething();
+}
+
+for (int i = 0; i < n; i++) {
+    doSomething(i);
+}
+```
+
+### 13.3 "Error in codecheck invocation" — what it really means
+
+`Error in codecheck invocation` from the Zoho hg push server is a **server infrastructure
+crash** (the codecheck runner itself fails before analyzing any code). It does NOT mean your
+code has violations. This specific error message is NOT followed by a list of violations.
+
+> If you see actual Checkstyle violations, they appear as a separate report listing file paths,
+> line numbers, and rule names (e.g., `NeedBraces`, `MagicNumber`, etc.).
+> The "invocation error" is a Zoho infra issue — escalate to the integration team.
+
+### 13.4 Quick scan for NeedBraces violations before pushing
+
+```bash
+# Find all single-statement if/for/while/catch without braces
+grep -rn "} catch (Exception[^)]*) {}" src/ --include="*.java"
+grep -rn "} catch ([^)]*) {}" src/ --include="*.java"
+# Also check for single-line if/else/for without braces:
+grep -rn "^\s*if (.*)[^{]$\|^\s*else [^{]\|^\s*for (.*)[^{]$" src/ --include="*.java" | grep -v "//"
+```
+
+---
+
+## SECTION 14 — TASK NODE CONNECTOR PORTS (Workflow)
+
+### 14.1 Task nodes require specific ports when `has_error_path=true`
+
+When a Task FlowNode is created with `has_error_path: true`, the connection ports change:
+
+| Port name | Direction | Meaning |
+|-----------|-----------|---------|
+| `output_Completed` | Exit (success) | Task completed without error |
+| `output_Overdue` | Exit (error) | Task overdue / error path |
+| `input_Requested` | Entry | Inbound connection into the task |
+
+Generic `input`/`output` port names only work for nodes without error paths. Using them
+on `has_error_path=true` Task nodes causes the workflow API to return a connection error.
+
+```java
+// ✅ CORRECT — Task with error path
+JSONObject taskConn = new JSONObject()
+    .put("source", taskNodeId).put("sourcePort", "output_Completed")
+    .put("target", nextNodeId).put("targetPort", "input_Requested");
+
+// ErrorPath connection
+JSONObject errorConn = new JSONObject()
+    .put("source", taskNodeId).put("sourcePort", "output_Overdue")
+    .put("target", errorHandlerNodeId).put("targetPort", "input_Requested");
+
+// ❌ WRONG — generic ports fail for has_error_path=true Task nodes
+JSONObject badConn = new JSONObject()
+    .put("source", taskNodeId).put("sourcePort", "output")
+    .put("target", nextNodeId).put("targetPort", "input");
+```
+
+### 14.2 Task connector chain fix — `createWorkflowWithNTasks()`
+
+> Fixed in rev 5320 (March 6, 2026): The `createWorkflowWithNTasks()` helper in `Workflow.java`
+> was using generic `input`/`output` ports for Task nodes that have `has_error_path=true`.
+> This caused IR_007 and IR_009 (connector-limit boundary tests) to fail with API rejection.
+> Fix: always use `Completed`/`Overdue` ports for Task nodes and `input_Requested` for all targets.
 ```
