@@ -48,7 +48,7 @@ PROJECT_SRC     = _os.path.join(PROJECT_ROOT, "src")
 PROJECT_BIN     = _os.path.join(PROJECT_ROOT, "bin")
 PROJECT_RES     = _os.path.join(PROJECT_ROOT, "resources")
 BASE_DIR        = _BASE_DIR
-DEPS_DIR        = "/home/balaji-12086/Desktop/Workspace/Zide/dependencies"
+DEPS_DIR        = "/home/balaji-12086/Desktop/Workspace/Zide/dependencies17"
 
 # ── Browser Driver Paths ────────────────────────────────────────────────────
 # Update these directly when deploying to a new machine.
@@ -62,11 +62,11 @@ GECKODRIVER_PATH = "/home/balaji-12086/Desktop/Workspace/Drivers/geckodriver"
 # Single source of truth for server URL, portal, and credentials.
 # Used by RunnerAgent (patches StandaloneDefault.java at runtime),
 # HealerAgent (Playwright), and run_test.py (CLI runner).
-SDP_URL         = "https://sdpodqa-auto2.csez.zohocorpin.com:12528/"
-SDP_PORTAL      = "itdesk1"
-SDP_ADMIN_EMAIL = "automater-sdpcloudqa+rs2@zohotest.com"
-SDP_EMAIL_ID    = "automater-sdpcloudqa+rs2sdp-sdguest@zohotest.com"
-SDP_ADMIN_PASS  = "Sdpg2@2025"
+SDP_URL         = "https://sdpod-am2.csez.zohocorpin.com:45532/"
+SDP_PORTAL      = "change"
+SDP_ADMIN_EMAIL = "REDACTED_EMAIL"
+SDP_EMAIL_ID    = "REDACTED_EMAIL"
+SDP_ADMIN_PASS  = "REDACTED_PASSWORD"
 
 # ── Phase 5 — Pipeline Monitoring ─────────────────────────────────────────
 # Per-agent execution timeout in seconds. OrchestratorAgent (future) will kill

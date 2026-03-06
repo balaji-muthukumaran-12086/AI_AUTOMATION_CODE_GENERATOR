@@ -497,29 +497,29 @@ grep -rn 'id = "SDPOD_AUTO_SOL_DV' SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/ | \
 
 > ⚠️ **FORBIDDEN**: Inventing group name strings not listed above.
 
-### Where `preProcess()` lives — always the parent class
+### Where `preProcess()` lives — check subclass first, then parent
 
-`preProcess()` is **always defined in the module parent class**, never in the leaf test class.
-Subclasses inherit it. If a subclass needs its own unique groups it overrides and ends with
-`return super.preProcess(group, dataIds)` to delegate remaining groups up to the parent.
+`preProcess()` is often defined in the module parent class, but **subclasses can and do
+override it**. Always check the **subclass first** for a `preProcess()` override before
+looking in the parent.
 
 ```
-Change.java            (parent — owns preProcess with all group branches)
-DetailsView extends Change   (subclass — inherits preProcess, no override)
+Change.java            (parent — owns preProcess with all group branches by default)
+DetailsView extends Change   (subclass — if no override, inherits parent's preProcess)
+ChangeWorkflow extends Workflow  (may have its own preProcess override for workflow-specific groups)
 
 Solution.java          (parent — owns preProcess, ends with super.preProcess(...))
 SolutionBase.java      (base helper class, not where groups are defined)
 ```
 
-**To find available groups for a scenario in `DetailsView.java`:**
-1. Read `extends` clause → `DetailsView extends Change`
-2. Open `Change.java` → read `preProcess()` for all `equalsIgnoreCase` branches
-3. Those are the valid group values
+**Discovery order (mandatory):**
+1. Open the leaf/subclass file → look for its own `preProcess()` method
+2. If found: that is authoritative. Check if it ends with `return super.preProcess(group, dataIds)` — if yes, also read the parent
+3. If not found: open the parent class (from `extends` clause) and read its `preProcess()`
 
 **To add a new group:**
 - Applies to whole module → add `else-if` to the parent class (`Change.java`, `Solution.java`, etc.)
 - Specific to one subclass only → override in that subclass + `return super.preProcess(group, dataIds)` at end
-- FORBIDDEN: adding an `else-if` to a subclass for what the parent already handles
 
 ### ⭐ Reuse existing groups — do NOT add new `else-if` blocks needlessly
 

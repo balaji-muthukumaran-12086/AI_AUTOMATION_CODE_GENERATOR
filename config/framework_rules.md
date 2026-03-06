@@ -221,9 +221,10 @@ public void myNewTest() { ... }
 
 ### 5.1a preProcess ownership — WHERE the method lives (CRITICAL)
 
-`preProcess()` is **ALWAYS defined in the module parent class**, never in leaf/subclasses.
-Subclasses only inherit it — or at most override it to add their own niche groups and
-then delegate remaining groups to the parent via `return super.preProcess(group, dataIds)`.
+`preProcess()` is typically defined in the module parent class, **but subclasses can and do
+override it**. Always **check the subclass first** for a `preProcess()` override before
+looking in the parent. If the subclass overrides it, that is the authoritative implementation.
+If no override in the subclass, fall back to the parent class.
 
 ```
 Module hierarchy examples:
@@ -234,12 +235,15 @@ Module hierarchy examples:
   Solutions:  SolutionBase extends Entity   ← base helpers/utilities
               Solution extends SolutionBase ← owns preProcess() with all group branches
                                                ends with: return super.preProcess(group, dataIds)
+
+  Workflows:  Workflow extends Entity       ← base groups only
+              ChangeWorkflow extends Workflow ← may override preProcess() for module-specific groups
 ```
 
-**Rule — always read the PARENT class to discover available groups:**
-- Scenario is in `DetailsView.java`? → read `Change.java::preProcess()` for available groups.
-- Scenario is in `Solution.java` or another class extending `Solution`? → read `Solution.java::preProcess()`.
-- Find the parent by checking `class <Subclass> extends <Parent>` at the top of the file.
+**Rule — discover available groups (CHECK IN ORDER):**
+1. Check the leaf/subclass file for a `preProcess()` override — if present, read it first.
+2. If the subclass ends with `return super.preProcess(group, dataIds)`, also read the parent.
+3. Check `class <Subclass> extends <Parent>` at the top of the file to find the parent.
 
 **Rule — where to add new group else-if blocks:**
 - New group needed only for a specific subclass → override in that subclass + call `super.preProcess()` at end.
