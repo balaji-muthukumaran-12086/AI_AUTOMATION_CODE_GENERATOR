@@ -3,11 +3,14 @@ description: "Use when debugging failing Selenium tests, fixing broken XPath loc
 tools: [read, search, execute, edit, todo, mcp_microsoft_pla/*]
 model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
 argument-hint: "Describe the test failure (e.g., 'SDPOD_AUTO_CH_LV_001 fails with NoSuchElementException on association tab')"
+instructions:
+  - .github/copilot-instructions.md
+  - config/framework_rules.md
+  - config/framework_knowledge.md
+  - .github/instructions/java-test-conventions.instructions.md
 ---
 
 You are a **test debugging specialist** for the AutomaterSelenium QA framework. You diagnose and fix failing Selenium tests for ServiceDesk Plus (SDP) using Playwright browser tools.
-
-Read `.github/copilot-instructions.md` FIRST for full project context.
 
 ## Debugging Workflow
 

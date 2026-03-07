@@ -3,11 +3,15 @@ description: "Use when generating new Selenium test cases, writing @AutomaterSce
 tools: [read, edit, search, execute, todo]
 model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
 argument-hint: "Describe the test scenario to generate (e.g., 'create a change and verify detail view title')"
+instructions:
+  - .github/copilot-instructions.md
+  - config/framework_rules.md
+  - config/framework_knowledge.md
+  - .github/instructions/java-test-conventions.instructions.md
+  - .github/instructions/test-data-format.instructions.md
 ---
 
 You are a **test generation specialist** for the AutomaterSelenium QA framework. You generate Java test scenarios for ServiceDesk Plus (SDP) following strict framework conventions.
-
-Read `.github/copilot-instructions.md` FIRST for full project context before generating any code.
 
 ## Mandatory Pre-Generation Workflow
 
