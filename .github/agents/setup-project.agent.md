@@ -187,27 +187,34 @@ After both files are updated, show this summary (mask the password):
 - `.env` → SDP_URL, SDP_PORTAL, SDP_ADMIN_EMAIL, SDP_EMAIL_ID, SDP_ADMIN_PASS, DEPS_DIR, DRIVERS_DIR, FIREFOX_BINARY, GECKODRIVER_PATH
 
 **Next steps:**
-1. Run `./setup_framework_bin.sh` once to compile the framework
-2. Use `@test-generator` to generate new test cases
-3. Use `/run-test EntityClass.methodName` to run a test
-
-Would you like me to run `./setup_framework_bin.sh` now to compile the framework? (yes/no)
+1. Compiling the framework now... (see below)
+2. Once done — use `@test-generator` and attach your use-case document
+3. The agent will generate, compile, and run the test for you automatically
 ```
 
 ---
 
-## Step 7 — Optional: compile framework
+## Step 7 — Compile framework automatically
 
-If the user says yes (or "y", "sure", "go ahead"):
+Always run this immediately after Step 6 — no need to ask the user:
 
 ```bash
 cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
 ./setup_framework_bin.sh 2>&1
 ```
 
-Report success or failure. If it fails, show the last 20 lines of output and suggest:
-- Check that `DEPS_DIR` points to a valid directory containing JAR files
-- Ensure JDK 11+ is on `PATH` (`java -version`)
+If it **succeeds**, show:
+```
+✅ Framework compiled successfully. You're all set!
+
+Just open @test-generator and attach your use-case document (.xlsx, .csv, .md, or plain text).
+The agent will generate, compile, and run the tests for you.
+```
+
+If it **fails**, show the last 20 lines and ask the user to fix:
+- `DEPS_DIR` must point to a valid directory containing JAR files
+- JDK 11+ must be on `PATH` — verify with `java -version`
+- Re-run `@setup-project` with the corrected `deps=` value if needed
 
 ---
 

@@ -138,20 +138,66 @@ Open the **parent class** (e.g., `Change.java`, `Solution.java`) and read `prePr
 ## Output Format
 Use the two-piece format with `// ===== ADD TO: FileName.java =====` markers for each file changed.
 
-## Post-Generation — ChromaDB Indexing (REQUIRED after every code write)
+## Post-Generation Steps (run ALL of these in order after writing code)
 
-After writing all generated code to the Java source files, run the RAG indexer so the Coverage Agent treats these scenarios as "already covered" in future pipeline runs:
+### Step P1 — Compile the module
+
+Run a targeted compile for only the files you just edited:
+
+```bash
+DEPS=/home/balaji-12086/Desktop/Workspace/Zide/dependencies
+BIN=/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/SDPLIVE_LATEST_AUTOMATER_SELENIUM/bin
+SRC=/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/SDPLIVE_LATEST_AUTOMATER_SELENIUM/src
+CP="$BIN:$(find "$DEPS" -name "*.jar" | tr '\n' ':')"
+javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
+  "$SRC/com/zoho/automater/selenium/modules/<module>/<entity>/common/<Entity>Locators.java" \
+  "$SRC/com/zoho/automater/selenium/modules/<module>/<entity>/<EntityBase>.java"
+```
+
+Replace `<module>`, `<entity>`, `<Entity>` with the actual values for the generated scenario.
+Also include any other files you edited (DataConstants, ActionsUtil, APIUtil, etc.).
+
+If compile **fails**: show the errors, fix them, and recompile before proceeding.
+
+### Step P2 — Patch `run_test.py` and run the test
+
+Update `run_test.py` so `RUN_CONFIG` points to the newly generated scenario:
+
+```python
+# In run_test.py, find and update:
+RUN_CONFIG = {
+    "entity_class":  "<EntityClass>",     # e.g. "SolutionBase", "ChangeDetailsView"
+    "method_name":   "<methodName>",      # exact method name from the generated @AutomaterScenario
+    ...
+    "skip_compile":  True,
+}
+```
+
+Then run the test:
+```bash
+cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
+.venv/bin/python run_test.py 2>&1 | tail -50
+```
+
+After the run, check for the report:
+```bash
+ls -t SDPLIVE_LATEST_AUTOMATER_SELENIUM/reports/ | head -5
+```
+
+Report to the user:
+- ✅ PASSED — show the report path
+- ❌ FAILED — show the last 30 lines of output and ask the user if they want to invoke `@test-debugger`
+
+### Step P3 — Index into ChromaDB
+
+Run the RAG indexer so the Coverage Agent treats this scenario as already covered:
 
 ```bash
 cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
 .venv/bin/python -m knowledge_base.rag_indexer
 ```
 
-Expected output: `[RAGIndexer] ✅ Indexed N scenario(s) into ChromaDB`
-
-If the command fails (non-fatal — do NOT retry in a loop):
-- Report the error output to the user
-- Continue — the generated code is still valid; ChromaDB will be updated next time the full pipeline runs via `OutputAgent`
+If this fails (non-fatal — do NOT retry): report the error but do not block. ChromaDB will be updated next time `python main.py` runs.
 
 **Why this matters**: ChromaDB is queried by `CoverageAgent` before planning new tests. Without indexing, a scenario generated here will be treated as a coverage gap and regenerated the next time `python main.py` runs on the same feature.
 
