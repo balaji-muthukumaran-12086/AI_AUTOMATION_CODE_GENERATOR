@@ -43,8 +43,8 @@ the copied problem is searchable in the Problems listview.
 """
 
 RUN_CONFIG = {
-    "entity_class":  "AdminIncidentRequestWorkflow",
-    "method_name":   "verifyIRWorkflowWith100TasksOpenedInCanvas",  # IR_009
+    "entity_class":  "AdminAssetWorkflow",
+    "method_name":   "verifyAssetWorkflowStatementTupleLimitRejectionOnOverflow",  # AS_001
     "url":           SDP_URL,
     "admin_mail_id": SDP_ADMIN_EMAIL,
     "email_id":      SDP_EMAIL_ID,

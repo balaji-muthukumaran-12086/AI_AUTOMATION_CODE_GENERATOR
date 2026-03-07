@@ -79,9 +79,17 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
 
     # ── Routing logic ───────────────────────────────────────
 
-    def route_after_output(state: AgentState) -> Literal["runner", "__end__"]:
-        """Run the test only if run_config was provided in the initial state."""
-        return "runner" if state.get("run_config") else "__end__"
+    def route_after_output(state: AgentState) -> Literal["runner", "hg", "__end__"]:
+        """Run the test only if run_config was provided in the initial state.
+        Skip directly to END (bypassing hg) when HG is disabled and there is no runner."""
+        has_run_config = bool(state.get("run_config"))
+        if has_run_config:
+            return "runner"
+        # No runner — go to hg only when enabled; otherwise straight to END
+        if HG_AGENT_ENABLED:
+            return "hg"
+        print("[Pipeline] run_config not provided — skipping runner and hg.")
+        return "__end__"
 
     def route_after_ingestion(state: AgentState) -> Literal["planner", "coder"]:
         """
@@ -97,13 +105,14 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
             return "coder"
         return "planner"
 
-    def route_after_runner(state: AgentState) -> Literal["healer", "__end__"]:
-        """Activate the healer if the test failed, otherwise end."""
+    def route_after_runner(state: AgentState) -> Literal["healer", "hg", "__end__"]:
+        """Activate the healer if the test failed.
+        After success (or no healer needed) go to hg only when enabled."""
         run_result = state.get("run_result", {})
         if run_result and not run_result.get("success", True):
             print("[Pipeline] Test FAILED → activating HealerAgent 🩺")
             return "healer"
-        return "__end__"
+        return "hg" if HG_AGENT_ENABLED else "__end__"
 
     def route_after_review(state: AgentState) -> Literal["coder", "output"]:
         """If there are revision requests AND we haven't hit max revisions → re-run coder."""
@@ -159,14 +168,17 @@ def build_pipeline(base_dir: str = None) -> StateGraph:
     })
     graph.add_conditional_edges("output", route_after_output, {
         "runner":    "runner",
-        "__end__":   "hg",
+        "hg":        "hg",
+        "__end__":   END,
     })
     graph.add_conditional_edges("runner", route_after_runner, {
         "healer":  "healer",
-        "__end__": "hg",
+        "hg":      "hg",
+        "__end__": END,
     })
-    graph.add_edge("healer", "hg")
-    graph.add_edge("hg", END)
+    graph.add_edge("healer", "hg" if HG_AGENT_ENABLED else END)
+    if HG_AGENT_ENABLED:
+        graph.add_edge("hg", END)
 
     return graph.compile()
 

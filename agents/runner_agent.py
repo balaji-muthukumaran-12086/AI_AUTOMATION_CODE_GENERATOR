@@ -103,6 +103,7 @@ _FQCN_OVERRIDES: Dict[str, str] = {
     "AdminServiceRequestWorkflow": "com.zoho.automater.selenium.modules.admin.automation.workflows.ServiceRequestWorkflow",
     "AdminProblemWorkflow":        "com.zoho.automater.selenium.modules.admin.automation.workflows.ProblemWorkflow",
     "AdminReleaseWorkflow":        "com.zoho.automater.selenium.modules.admin.automation.workflows.ReleaseWorkflow",
+    "AdminAssetWorkflow":          "com.zoho.automater.selenium.modules.admin.automation.workflows.AssetWorkflow",
     # Requests sub-entity versions
     "RequestTask":           "com.zoho.automater.selenium.modules.requests.task.Task",
     "RequestWorklog":        "com.zoho.automater.selenium.modules.requests.worklog.Worklog",
@@ -903,6 +904,12 @@ class RunnerAgent:
             "TimeoutException",
             "WebDriverException",
             "AssertionException",
+            "AssertionError",                     # Java stdlib assertion (≠ framework AssertionException)
+            "StaleElementReferenceException",     # element gone between find and interact
+            "ElementNotInteractableException",    # element present but not clickable/typeable
+            "IllegalStateException",              # driver/session invalidated mid-test
+            "IndexOutOfBoundsException",          # list/array mishandling in test logic
+            "ClassNotFoundException",             # entity class missing from ENTITY_IMPORT_MAP
         ]
         for marker in java_fail_markers:
             if marker in combined:

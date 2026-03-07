@@ -48,6 +48,7 @@ Usage (LangGraph):
 import os
 import re
 import json
+import difflib
 import shutil
 import subprocess
 from pathlib import Path
@@ -66,6 +67,7 @@ from config.project_config import (
     SDP_PORTAL,
     SDP_ADMIN_EMAIL,
     SDP_ADMIN_PASS,
+    HEALER_MAX_DEPTH,
 )
 
 
@@ -208,7 +210,23 @@ class HealerAgent:
             state["messages"] = [msg]
             return state
 
-        print("[HealerAgent] 🩺 Test failed — activating healer...")
+        # ── Depth guard: prevent infinite heal→fail→heal loops ────────────
+        current_depth = state.get("heal_depth", 0)
+        if current_depth >= HEALER_MAX_DEPTH:
+            msg = (f"[HealerAgent] ⛔ Heal depth cap reached ({current_depth}/{HEALER_MAX_DEPTH}) "
+                   "— aborting to prevent infinite loop. Increase HEALER_MAX_DEPTH in .env if needed.")
+            print(msg)
+            state["heal_result"] = HealResult(
+                healed=False,
+                failure_type=FAILURE_OTHER,
+                fix_description=f"Heal depth cap reached ({HEALER_MAX_DEPTH}) — manual fix required",
+                error=msg,
+            ).to_dict()
+            state["messages"] = [msg]
+            return state
+
+        state["heal_depth"] = current_depth + 1
+        print(f"[HealerAgent] 🩺 Test failed — activating healer (attempt {current_depth + 1}/{HEALER_MAX_DEPTH})...")
 
         # Resolve entity source files from run_config
         entity_class = run_config.get("entity_class", "Solution")
@@ -458,6 +476,7 @@ Reply with ONLY the category name (e.g. LOCATOR_FAILURE). No explanation."""
                 content = Path(target_file).read_text(encoding="utf-8")
                 if fix["old_line"] in content:
                     new_content = content.replace(fix["old_line"], fix["new_line"], 1)
+                    self._show_patch_diff(target_file, content, new_content)
                     Path(target_file).write_text(new_content, encoding="utf-8")
                     patched_files.append(target_file)
                     print(f"[HealerAgent] ✅ Patched: {target_file}")
@@ -572,6 +591,7 @@ Reply with ONLY the category name (e.g. LOCATOR_FAILURE). No explanation."""
 
         if old_code and old_code in content:
             new_content = content.replace(old_code, new_code, 1)
+            self._show_patch_diff(target_file, content, new_content)
             Path(target_file).write_text(new_content, encoding="utf-8")
             patched_files.append(target_file)
             print(f"[HealerAgent] ✅ Code patch applied to {target_file}")
@@ -642,7 +662,9 @@ Reply with ONLY the category name (e.g. LOCATOR_FAILURE). No explanation."""
             old_code = fix.get("old_code", "")
             new_code = fix.get("new_code", "")
             if old_code and old_code in content:
-                Path(target_file).write_text(content.replace(old_code, new_code, 1), encoding="utf-8")
+                new_content = content.replace(old_code, new_code, 1)
+                self._show_patch_diff(target_file, content, new_content)
+                Path(target_file).write_text(new_content, encoding="utf-8")
                 patched_files.append(target_file)
 
         if not patched_files:
@@ -659,6 +681,23 @@ Reply with ONLY the category name (e.g. LOCATOR_FAILURE). No explanation."""
         )
 
     # ── Playwright helpers ────────────────────────────────────────────────
+
+    @staticmethod
+    def _show_patch_diff(file_path: str, old_content: str, new_content: str) -> None:
+        """Print a unified diff of a file patch to stdout for audit purposes."""
+        diff_lines = list(difflib.unified_diff(
+            old_content.splitlines(keepends=True),
+            new_content.splitlines(keepends=True),
+            fromfile=f"a/{Path(file_path).name}",
+            tofile=f"b/{Path(file_path).name}",
+            lineterm="",
+        ))
+        if diff_lines:
+            print(f"[HealerAgent] 📝 Patch diff for {Path(file_path).name}:")
+            for line in diff_lines[:60]:   # cap at 60 lines to avoid flooding logs
+                print(f"  {line}")
+            if len(diff_lines) > 60:
+                print(f"  ... ({len(diff_lines) - 60} more line(s) omitted)")
 
     def _take_snapshot(self, page, label: str) -> str:
         """Save a screenshot + return path."""

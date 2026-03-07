@@ -17,12 +17,11 @@ from typing import Any
 
 from agents.state import AgentState
 from knowledge_base.vector_store import VectorStore
+from config.project_config import COVERAGE_DUPLICATE_THRESHOLD, COVERAGE_GAP_THRESHOLD
 
 
-DUPLICATE_THRESHOLD = 0.90   # cosine similarity >= this → likely duplicate
-                             # (lowered from 0.92 — enriched query format gives ~0.91
-                             #  for exact descriptions when method_name differs)
-GAP_THRESHOLD       = 0.70   # cosine similarity < this  → genuine new scenario
+DUPLICATE_THRESHOLD = COVERAGE_DUPLICATE_THRESHOLD   # cosine similarity >= this → likely duplicate
+GAP_THRESHOLD       = COVERAGE_GAP_THRESHOLD         # cosine similarity < this  → genuine new scenario
 
 
 class CoverageAgent:

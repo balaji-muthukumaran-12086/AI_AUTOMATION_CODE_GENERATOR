@@ -100,7 +100,10 @@ public class Solution extends SolutionBase {
         dataIds     = {},                             // ← {} when group=""
         tags        = {},
         owner       = OwnerConstants.RAJESHWARAN_A,
-        runType     = ScenarioRunType.USER_BASED,
+        runType     = ScenarioRunType.USER_BASED,   // USER_BASED = no cross-test side effects
+        // Use PORTAL_BASED for scenarios that trigger side effects impacting other tests
+        // in the suite (e.g. business rules, SLA, automation rules). PORTAL_BASED runs in
+        // isolation — effects are scoped and cleaned up within that session.
         description = "Creating Unapproved Private solution using general template"
     )
     public void createUnapprovedPrivateSolutionGT() {
@@ -326,9 +329,18 @@ public final static TestCaseData SOL_UNAPPROVED_PRIVATE_GENERAL_TEMPLATE =
 | `$(custom_KEY)` | `LocalStorage.fetch("KEY")` — set by preProcess OR pre-seeded before `getTestCaseData()` |
 | `$(user_name)` | Scenario user’s display name |
 | `$(user_email_id)` | Scenario user’s email |
+| `$(user_id)` | Scenario user’s entity ID |
 | `$(admin_email_id)` | Admin user’s email |
+| `$(admin_name)` | Admin user’s display name |
 | `$(date, N, ahead)` | Date N days ahead (milliseconds string) |
 | `$(datetime, N, ahead)` | Datetime N days ahead |
+| `$(mspcustomer_id)` | MSP customer ID (MSP tests only) |
+| `$(mspcustomer_name)` | MSP customer name (MSP tests only) |
+| `$(mspcustomer_email)` | MSP customer email (MSP tests only) |
+| `$(common_string)` | Timestamp + partName (unique per run) |
+| `$(rest_api, method, apiPath, inputDataKey, storageKey)` | Calls REST API, stores result in LocalStorage |
+| `$(local_storage, store, key, value)` | Stores value in LocalStorage at resolve time |
+| `$(local_storage, get, key)` | Reads value from LocalStorage at resolve time |
 
 ### ⭐ LocalStorage pre-seed — reuse existing JSON entries with custom values (REQUIRED TECHNIQUE)
 
@@ -355,12 +367,6 @@ JSONObject inputData = getTestCaseData(SolutionDataConstants.SolutionData.SOL_WI
 - `$(custom_KEY)` placeholder exists in JSON and you have the value → `LocalStorage.store("KEY", value)` then reuse
 - Entry has fixed values and all match your test → reuse as-is
 - Genuinely different field combination with no matching entry → create new entry
-| Placeholder | Resolved to |
-|---|---|
-| `$(unique_string)` | Auto unique string per run |
-| `$(custom_topic)` | Topic ID stored in `LocalStorage` by `preProcess` |
-| `$(custom_general_topic)` | General topic ID fetched in preProcess |
-| `$(custom_solution_template)` | Template name stored in `LocalStorage` by `preProcess` |
 
 ---
 
@@ -431,22 +437,6 @@ actions.formBuilder.submit("Save");         // clicks specific named button
 // For solution-specific buttons, use actions.click(SolutionLocators.SolutionCreateForm.SOLUTION_ADD)
 // or actions.click(SolutionLocators.SolutionCreateForm.SOLUTION_ADD_APPROVE)
 ```
-
-### solution.json — field_type routing per field
-
-| field name | field_type | data_path | How filled |
-|---|---|---|---|
-| `id` | `is_custom: true` | `id` | `fillInputForCustomField()` — no-op |
-| `template` | `select` | `template.name` | Click dropdown → search → click option |
-| `title` | `input` | `title` | `actions.type(input[name=title], value)` |
-| `keywords` | `input` | `keywords` | `actions.type(input[name=keywords], value)` |
-| `description` | `html` | `description` | Switch to ZE iframe → type |
-| `is_public` | `input` | `is_public` | `actions.type(input[name=is_public], value)` |
-| `topic` | `select` | `topic.name` | Click dropdown → search → click option |
-| `operation_comment` | `input` | `operation_comment` | `actions.type(input[name=operation_comment], value)` |
-| `expiry_date` | `datetime` | `expiry_date.value` | fillDateTimeField (if value in JSON) |
-| `review_date` | `datetime` | `review_date.value` | fillDateTimeField (if value in JSON) |
-| `solution_count` | `is_custom: true` | `solution_count` | `fillInputForCustomField()` — no-op |
 
 ### Key rules derived from FormBuilder analysis
 1. `fillInputForAnEntity` iterates ALL fields from conf JSON. Fields absent in test data JSON → silently skipped.
@@ -526,32 +516,6 @@ addSuccessReport("message");
 addFailureReport("what failed", "why / actual value");
 ```
 
----
-
-## 11. COMPLETE STRICT RULES FOR CODE GENERATION
-
-1. **Two-piece output always:** wrapper in `<Entity>.java` + implementation in `<Entity>Base.java`
-2. **ID format:** `SDPOD_AUTO_<MODULE>_<AREA>_NNN` — check existing file for last number
-3. **@Override + super.method()** — both mandatory in annotation wrapper, NOTHING ELSE
-4. **report.startMethodFlowInStepsToReproduce(AutomaterVariables.SCENARIO_START.apply(getMethodName()))** — FIRST line of implementation, NO other form
-5. **report.endMethodFlowInStepsToReproduce()** — must be in `finally` block
-6. **Both addSuccessReport AND addFailureReport** — both required in if/else
-7. **group must exist in preProcess()** — never invent new group strings
-8. **dataIds values** — must match string constants in `<Entity>AnnotationConstants.Data`
-9. **Data loaded in impl** — use `getTestCaseData(DataConstants.EntityData.CONSTANT)` for UI data
-10. **Data loaded in preProcess** — use `getTestCaseDataUsingCaseId(dataIds[0])` for API data
-11. **No invented constants** — all Locators, Fields, Constants must exist in their respective files
-12. **No hardcoded XPath/CSS/IDs** — always use Locators.java constants
-13. **No System.out.println** — use `report.addCaseFlow()`
-14. **LocalStorage.store(key, value)** in preProcess → **LocalStorage.fetch(key)** in implementation
-15. **Datetime fields** set separately via `actions.formBuilder.fillDateField()`, not via `fillInputForAnEntity()`
-16. **`actions.listView.doAction()` does NOT exist** — use `actions.listView.rowAction(entityID, actionName)` instead
-17. **`actions.listView.selectRecord()` does NOT exist** — navigate via `actions.navigate.toDetailsPageUsingRecordId(id)` instead
-18. **`getEntityId()`** = `LocalStorage.getAsString(getName())` — only valid AFTER preProcess stores the ID
-19. **`cleanUpData()`** is automatic — REST creates via `DataUtil` auto-deleted after test
-20. **`getInputData(JSONObject)`** wraps data in `{"solution": {...}}` — use for `restAPI.create()` in preProcess
-
-````
 
 ---
 
@@ -702,64 +666,6 @@ void clickSpotEditField(String field)
 void clickSpotEditFieldWithInternalName(String field)
 ```
 
----
-
-## 17. SolutionFields.java — COMPLETE CONSTANT REFERENCE
-
-```java
-// isCustom=true → SKIPPED by fillInputForAnEntity (no-op)
-SolutionFields.ID                 // ("id",               "id",                INPUT,    custom=true)
-SolutionFields.TEMPLATE           // ("template",         "template.name",     SELECT,   custom=false)
-SolutionFields.TITLE              // ("title",            "title",             INPUT,    custom=false)
-SolutionFields.KEYWORDS           // ("keywords",         "keywords",          INPUT,    custom=false)
-SolutionFields.DESCRIPTION        // ("description",      "description",       HTML,     custom=false)
-SolutionFields.IS_PUBLIC          // ("is_public",        "is_public",         INPUT,    custom=false)
-SolutionFields.TOPIC              // ("topic",            "topic.name",        SELECT,   custom=false)
-SolutionFields.OPERATION_COMMENT  // ("operation_comment","operation_comment", INPUT,    custom=false)
-SolutionFields.EXPIRY_DATE        // ("expiry_date",      "expiry_date.value", DATETIME, custom=false)
-SolutionFields.REVIEW_DATE        // ("review_date",      "review_date.value", DATETIME, custom=false)
-SolutionFields.SOLUTION_COUNT     // ("solution_count",   "solution_count",    null,     custom=true)
-```
-
----
-
-## 18. SolutionLocators.java — COMPLETE REFERENCE
-
-### SolutionLocators.SolutionListview
-```java
-SOL_NEW_TOPIC, SOL_NEW_TOPIC_NAME, SOL_NEW_TOPIC_SAVE, TOPIC_MOVE_SAVE
-SOL_APPROVE_COMMENTS                   // id="operation_comment"
-SUBMIT_APPROVAL_POPUP                  // id="toEmailSearch"
-APP_ACTIONS_APPROVE, APP_ACTIONS_REJECT
-CLICK_ROW_ACTIONS_WITH_ENTITYID.apply(entityId)
-ACTIONS_LIST.apply(action)
-SELECT_SOL_CHECKBOX_WITH_ENTITYID.apply(entityId)
-```
-
-### SolutionLocators.SolutionCreateForm
-```java
-SOLUTION_IS_PUBLIC, SOLUTION_KEYWORD
-SOLUTION_ADD             // unapproved → "Add" button
-SOLUTION_ADD_APPROVE     // approved → "Add And Approve" button
-SOLUTION_SAVE            // edit → "Save" button
-SOLUTION_SAVE_APPROVE    // edit → "Save and Approve" button
-SOLUTION_ALL_USERGROUPS  // All users radio button
-```
-
-### SolutionLocators.SolutionDetailView
-```java
-DETAIL_VIEW_EDIT_BUTTON, DETAIL_VIEW_DELETE_BUTTON, DETAIL_VIEW_FORWARD_BUTTON
-DETAIL_VIEW_ACTIONS                    // id="quickaction"
-DETAIL_VIEW_ACTIONS_APP_SOL            // Actions → Approve
-SOL_LIKE_BUTTON, SOL_DISLIKE_BUTTON, SOL_LIKE_COUNT, SOL_DISLIKE_COUNT
-SOL_LIKED_TEXT, SOL_DISLIKED_TEXT
-SOLUTION_COMMENTS_TAB, SOLUTION_HISTORY_TAB
-SOLUTION_COMMENTS_TEXT_FIELD, SOLUTION_COMMENTS_SAVE
-ATTACH_SOLUTION, DETACH_SOLUTION, LINK_SOLUTION
-VERIFY_COMMENT_VALUE.apply(val), VERIFY_KEYWORD_VALUE.apply(val)
-VERIFY_DESCRIPTION_CONTENT.apply(val), VERIFY_TOPIC_VALUE.apply(val)
-VERIFY_IF_PUBLIC.apply(val), VERIFY_HISTORY_COMMENT.apply(val)
-```
 
 ---
 
@@ -831,37 +737,53 @@ public class ChangeActionsUtil {
 }
 ```
 
-### Rule 4 — Method granularity (REQUIRED)
+### Rule 4 — Method design: parameterized and generic (REQUIRED)
 
-Each method = **one complete named UI operation** (what a manual tester calls one step).
+The goal is **one well-parameterized method that handles the heavy lifting** — not a family of thin
+methods that differ only by one argument. Use parameters to segregate flow branches.
 
-| Too granular ❌ | Correct granularity ✅ |
+| Thin/duplicated ❌ | Parameterized/generic ✅ |
 |---|---|
-| `clickAttachDropdown()` | `openAttachParentChangePopup()` — click dropdown + click option + waitForAjax |
-| `clickYesOnDialog()` | `detachParentChange()` — click detach + confirm dialog + click YES + waitForAjax |
-| 6-line open+search+select+associate block | `linkParentChangeViaUI(name, id)` — all 6 lines |
+| `openAttachParentChangePopup()` + `openAttachChildChangePopup()` | `openAttachChangePopup(String type)` — type = `"parent"` or `"child"` |
+| `linkChange1()` + `linkChange2()` | `linkChangeViaUI(String name, String id)` — one method, called twice |
+| `verifyParentLinkInTab()` + `verifyChildLinkInTab()` | `verifyLinkInAssociationTab(String type, String expectedName)` |
+| Single `actions.click()` for a one-off step | Fine to leave inline — no need to extract one-liners |
+
+**Decision rule:**
+- Will this sequence appear in more than one test? → extract to util, parameterize to cover all variants
+- Is it a one-off `actions.click()` or `actions.getText()` specific to this single scenario? → leave it inline
+- Two util methods differ by only 1 argument? → collapse into one method with that argument as parameter
 
 ### Rule 5 — Test method body rules (REQUIRED)
 
+Test method body should read like a manual test script. The bulk of UI interaction lives in util.
+Minimal `actions.click()` / `actions.getText()` inline is acceptable for **truly one-off, scenario-specific
+steps** that would not be reused anywhere else. What is FORBIDDEN is duplicating the same
+multi-step sequence across multiple test methods without extracting it.
+
 ```java
-// ✅ CORRECT — test method only contains: utility calls + assertions + report calls
-public void verifySingleParentConstraint() throws Exception {
+// ✅ CORRECT — util does heavy lifting, test method reads like a script
+public void verifyParentAndChildLinking() throws Exception {
     ChangeActionsUtil.openAssociationTab();
-    ChangeActionsUtil.linkParentChangeViaUI(
-        LocalStorage.getAsString("targetChangeName1"), LocalStorage.getAsString("targetChangeId1")
-    );
-    if(actions.isElementPresent(ChangeLocators.LinkingChange.DETACH_PARENT_CHANGE)) {
-        addSuccessReport("SDPOD_LINKING_CH_022: Detach button visible after parent linked");
+    ChangeActionsUtil.openAttachChangePopup("parent");           // parameterized
+    ChangeActionsUtil.searchAndSelectChangeInPopup(
+        LocalStorage.getAsString("targetChangeName1"));
+    ChangeActionsUtil.confirmAssociation();
+    // one-off inline check is acceptable:
+    String count = actions.getText(ChangeLocators.LinkingChange.RECORDS_COUNT);
+    if ("1".equals(count)) {
+        addSuccessReport("SDPOD_LINKING_CH_012: parent linked, count=1");
+    } else {
+        addFailureReport("Count mismatch", "Expected 1, got " + count);
     }
 }
 
-// ❌ WRONG — duplicate click/wait blocks inlined in test body
-public void verifySingleParentConstraint() throws Exception {
-    actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB);  // should be utility call
+// ❌ WRONG — same multi-step sequence copy-pasted across 3 test methods
+public void verifyParentLinking() throws Exception {
+    actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB); // duplicated in 3 methods
     actions.waitForAjaxComplete();
     actions.click(ChangeLocators.LinkingChange.ATTACH_BUTTON_DROPDOWN);
     actions.click(ChangeLocators.LinkingChange.ATTACH_PARENT_CHANGE_OPTION);
-    actions.waitForAjaxComplete();
     // ...
 }
 ```
@@ -892,43 +814,6 @@ find src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/ -name "*.j
 
 > If the entity is not listed, run the discovery command — it will have util files.
 
----
-
-## 20. SolutionActionsUtil.java — COMPLETE METHOD REFERENCE
-
-```java
-// Instance method (needs SolutionActionsUtil instance):
-void addValueToEditor(String message)           // types into ZE HTML editor iframe
-
-// Static methods (call as SolutionActionsUtil.method(...)):
-static void   pressEscapeKey()                  // Robot-based Escape key press
-static void   uploadFile(String fileName)       // attaches a file in the detail view
-static void   searchSolutionUsingId(String entityID)  // fetches title via API, does columnSearch("Title", title)
-static void   selectFilter(String filterName)   // selects filter if not already selected
-static void   pageSetup()                       // setTableView(LISTVIEW) + selectFilter(ALL_ACTIVE_SOLUTIONS_FILTER)
-static void   navigateToSolutions(String entityID)  // toModule("solutions") + pageSetup() + optionally selects checkbox
-static Boolean verifyAttachment(String fileName)    // clicks attachment count, verifies file name
-```
-
-### Key usage patterns
-```java
-// Standard navigation to solutions list view:
-SolutionActionsUtil.pageSetup();   // or navigateToSolutions(null) for full navigation
-
-// Navigate to solutions and navigate to specific record's details page:
-actions.navigate.toModule(getModuleName());
-SolutionActionsUtil.pageSetup();
-actions.navigate.toDetailsPageUsingRecordId(getEntityId());
-
-// Search for a specific solution in list view:
-SolutionActionsUtil.searchSolutionUsingId(getEntityId());
-
-// Upload attachment:
-SolutionActionsUtil.uploadFile(SolutionConstants.Attachments.ATTACHMENT_PNG);
-
-// Verify attachment:
-Boolean attached = SolutionActionsUtil.verifyAttachment(SolutionConstants.Attachments.ATTACHMENT_PNG);
-```
 
 ---
 
@@ -1005,117 +890,9 @@ ChangeActionsUtil.detachChildChange(changeId);                  // single child 
 
 ⚠️ **Do NOT inline LHS_ASSOCIATION_TAB click + ATTACH_BUTTON_DROPDOWN + ATTACH_PARENT_CHANGE_OPTION directly in test methods.** These 3 lines = `openAssociationTab()` + `openAttachParentChangePopup()`.
 
----
 
-## 21. SolutionAPIUtil.java — COMPLETE METHOD REFERENCE
 
-```java
-// Both methods are static:
-static String createSolutionTopicAndGetName(String apiPath, JSONObject inputData)
-    // POST to apiPath, returns topic name
-    // apiPath = "topics"
-    // Used in preProcess for group="create_topic"
 
-static String createSolutionTemplateAndGetName(String apiPath, JSONObject inputData)
-    // POST to apiPath, stores name in LocalStorage.store("solution_template_name", name), returns name
-    // apiPath = "solution_templates"
-    // Used in preProcess for group="create_cust_sol_temp"
-```
-
----
-
-## 21b. Validator.java — COMPLETE METHOD REFERENCE
-
-Access via: `actions.validate`
-
-```java
-// Text match
-Boolean textContent(Locator locator, String content)                        // trims + compares element text
-
-// Notification banners
-void    successMessageInAlert(String message)                               // assert success banner
-void    successMessageInAlertAndClose(String message)                       // assert + close success banner
-void    errorMessageInAlert(String message)                                 // assert error banner
-void    errorMessageInAlertAndClose(String message)                         // assert + close error banner
-void    verifyMessageInAlert(Boolean isSuccess, String message)             // isSuccess=true→success
-void    verifyMessageInAlertAndClose(Boolean isSuccess, String message)     // same + close
-boolean isSuccessNotification(String notificationClass)                     // low-level class check
-
-// Assertion helpers
-void    customAssert(String expected, String got)                           // throws on mismatch
-void    customAssert(Boolean expected, Boolean got)                         // boolean assertion
-void    confirmationBoxTitleAndConfirmationText(String title, String text)   // dialog verification
-
-// Date validation
-Boolean validateDate(Locator locator, Long value)                           // verify date display
-Boolean validateDateTime(Locator locator, Long value, boolean isTimeField)  // verify datetime display
-
-// Form validation
-void    validateFormFieldValues(Map<String,FieldDetails> fields, JSONObject inputData)  // bulk verify
-```
-
----
-
-## 21c. WindowManager — COMPLETE METHOD REFERENCE
-
-Access via: `actions.windowManager`
-
-```java
-// Open new context (tab/window)
-String switchToNewTab(int timeoutSeconds)          // waits, switches to new tab, returns handle
-String switchToNewWindow(int timeoutSeconds)       // alias
-String switchToNewBrowserContext(int timeoutSec)   // generic alias
-
-// Return to origin
-void returnToOriginalTab()
-void returnToOriginalWindow()   // alias
-
-// Switch by index (0-based) / title / URL
-void switchToTabByIndex(int index)
-void switchToTabByTitle(String title)    // partial title match
-void switchToTabByUrl(String url)        // partial URL match
-void switchToWindowByIndex(int index)   // aliases
-void switchToWindowByTitle(String title)
-void switchToWindowByUrl(String url)
-
-// Close
-void closeTabByIndex(int index)
-void closeAllTabsExceptOriginal()
-void closeWindowByIndex(int index)          // aliases
-void closeAllWindowsExceptOriginal()
-```
-
-**Pattern**:
-```java
-actions.click(SomeLocators.LINK_WITH_NEW_TAB);
-actions.windowManager.switchToNewTab(10);
-// ... assertions in new tab ...
-actions.windowManager.returnToOriginalTab();
-```
-
----
-
-## 21d. RandomUtil — COMPLETE METHOD REFERENCE
-
-```java
-// Random alphabetic string
-String RandomUtil.generateRandomString(int length)
-String RandomUtil.generateRandomString(int length, String prefix)
-
-// Case variants
-String RandomUtil.generateRandomLowercaseString(int length)
-String RandomUtil.generateRandomUppercaseString(int length, String prefix)
-
-// Alphanumeric
-String RandomUtil.generateRandomAlphaNumericString(int length)
-String RandomUtil.generateRandomAlphaNumericString(int length, String prefix)
-
-// Random pick
-String RandomUtil.randomChoice(String[] options)
-    // e.g. RandomUtil.randomChoice(new String[]{"High","Medium","Low"})
-```
-
-> Use `$(unique_string)` in JSON test data. Use `RandomUtil` in Java code when you need a runtime-generated unique value.
 
 ---
 
@@ -1217,31 +994,6 @@ public void createIncidentRequestAndAddNotes() {
 }
 ```
 
-### Call Super Method
-_Learned from: IncidentRequestNotes.createIncidentRequestAndAddNotes | Date: 2026-02-27_
-
-This pattern involves calling a super class method to ensure that all necessary setup and validation are performed before executing additional steps in the test.
-
-**Applies to:** Any test that extends a base class and needs to perform common actions defined in the superclass.
-
-```java
-public void createIncidentRequestAndAddNotes() {
-	super.createIncidentRequestAndAddNotes();
-}
-```
-
-### Inherit and Extend Base Method
-_Learned from: IncidentRequestNotes.createIncidentRequestAndAddNotes | Date: 2026-02-27_
-
-Reuse existing test logic by inheriting from a base class method and extending it with additional functionality.
-
-**Applies to:** Any scenario where tests need to perform common actions followed by specific steps.
-
-```java
-public void createIncidentRequestAndAddNotes() {
-	super.createIncidentRequestAndAddNotes();
-}
-```
 ### IncidentRequestWorkflow.createWorkflowOfIncidentRequest
 **Product Area**: Admin > Automation > Workflows > Incident Request
 **Status (last run)**: FAILED ❌
@@ -1311,18 +1063,6 @@ Then the test:
 ---
 
 
-### Framework-Level Test Setup and Validation
-_Learned from: ProjectUDF.filterUdfByDataTypeNumeric | Date: 2026-03-02_
-
-This pattern demonstrates setting up test data via API calls, structuring UI interactions, and validating success messages using the AutomaterSelenium framework.
-
-**Applies to:** Tests requiring setup of test data through APIs and validation of UI interactions in the AutomaterSelenium framework.
-
-```java
-public void filterUdfByDataTypeNumeric() {
-    super.filterUdfByDataTypeNumeric();
-}
-```
 ### ProjectUDF.filterUdfByDataTypeNumeric
 **Product Area**: Admin > Customization > Additional Fields (UDF) > Project Module
 **Status (last run)**: PASSED ✅
@@ -1426,8 +1166,12 @@ String getEntityIDUsingFieldValue(String apiPath, String fieldName, String value
 - `status_code != 2000` → throws `BadResponseException`
 
 ### Auto-Cleanup Mechanism
-Every `POST` (create) call automatically pushes the entity ID + API path to `DataUtil.cleanUpIds` stack.
-The framework's `postProcess` or test lifecycle calls cleanup on these IDs automatically.
+Every `POST` (create) call automatically registers the entity for cleanup in two structures:
+- `DataUtil.cleanUpIds` — `HashMap<String, String>` mapping API path → entity ID
+- `DataUtil.cleanUpCalls` — `Stack<String>` of API paths in LIFO (last-in-first-out) order
+
+Cleanup iterates the Stack in LIFO order — child entities are deleted before parent entities (prevents foreign-key constraint errors).
+Cleanup skips roles, technician, requester, and sites (no deletion needed).
 When writing custom `postProcess`, you can also call `restAPI.delete("changes/".concat(id))` directly.
 
 ### Input Data Wrapping Pattern
@@ -1813,10 +1557,6 @@ JSONObject response = restAPI.createAndGetFullResponse("workflows", workflowPayl
 ### Test IDs
 `SDPOD_WF_TUPLE_LIMIT_AS_001–009` — API-reject(001), API-accept(002), UI-reject(003), UI-accept(004), hybrid tests (005–008), canvas-open-with-100-tasks (009)
 
----
-
-## GIT + HG COEXISTENCE AND GITHUB PUSH
-
 ### Can you have both `.git/` and `.hg/` in the same directory?
 **Yes.** Running `git init` inside an existing hg repo creates `.git/` alongside `.hg/`. They do not interfere. This is a valid way to push a feature branch to GitHub when the hg remote is broken.
 
@@ -1883,3 +1623,512 @@ git remote set-url origin https://github.com/USERNAME/REPO.git
 | `remote: Repository not found` | EITHER repo doesn't exist OR credentials missing — GitHub gives same error for both |
 | `Permission denied (publickey)` | SSH key not added to GitHub account |
 | `fatal: Authentication failed` | Wrong password / revoked PAT |
+
+---
+
+## FRAMEWORK SOURCE ANALYSIS — Mar 2026
+*Sourced from `automater-selenium-framework-2.0.0.zip` and 6 randomly-selected scenario files*
+
+---
+
+## Complete Placeholder Reference (PlaceholderUtil.java)
+
+Pattern matched: `$(placeholder)` with optional nested `$(...)` inside.  
+`DataUtil.getTestCaseDataUsingFilePath()` runs up to **3 refill passes** for nested placeholders.
+
+| Placeholder | Resolves to |
+|-------------|-------------|
+| `$(unique_string)` | `System.currentTimeMillis()` as string |
+| `$(common_string)` | `currentTimeMillis() + "_" + CommonVariables.partName` |
+| `$(user_name)` | Scenario user's display name (`getDisplayId()`) |
+| `$(user_email_id)` | Scenario user's email (`getMailId()`) |
+| `$(user_id)` | Scenario user's entity ID (`getEntityId()`) |
+| `$(admin_email_id)` | Admin email from `SessionDetails` |
+| `$(admin_name)` | Admin display name from `SessionDetails` |
+| `$(mspcustomer_id)` | First MSP customer ID from API search |
+| `$(mspcustomer_name)` | First MSP customer name from API search |
+| `$(mspcustomer_email)` | First MSP customer email from API search |
+| `$(date, N, ahead)` or `$(date, N, behind)` | Date N days ahead/behind in millis |
+| `$(datetime, N, ahead)` | Datetime N days ahead in millis |
+| `$(custom_KEY)` | `LocalStorage.fetch("KEY")` — strips `custom_` prefix |
+| `$(rest_api, method, entity, path, dataId)` | Calls RestAPI (see table below) |
+| `$(local_storage, store, key, value)` | Stores value in LocalStorage, returns value |
+| `$(local_storage, get, key)` | Reads from LocalStorage by key |
+
+### `$(rest_api, ...)` methods
+
+| Method arg | API call | Returns |
+|------------|----------|---------|
+| `get` | `RestAPI.getEntityIdUsingSearchCriteria(entity, path, data)` | entity ID string |
+| `post` | `RestAPI.create(entity, path, data)` | created entity ID |
+| `getResponse` | `RestAPI.get(path, null)` then extracts `dataPath` field | field value |
+| `search` | `RestAPI.getEntityIDUsingFieldValue(entity, path, dataId)` | entity ID |
+| `getFieldValue` | `RestAPI.get(path, listInfoData)` + traverses `dataPath` array | field value |
+
+> LocalStorage is also seeded: after any `rest_api` placeholder resolves, the value is
+> automatically stored under `dataId` key in LocalStorage.
+
+### URL `$[custom_KEY]` (square brackets) in `rest_api` paths
+
+Inside a `$(rest_api, ...)` URL, use `$[custom_KEY]` (square brackets) to embed a LocalStorage
+value into the URL itself — e.g., `requests/$[custom_request]/notes`.
+
+---
+
+## DataUtil Caching Behaviour
+
+`DataUtil.getTestCaseDataUsingFilePath()` caches loaded JSON entries by `filePath_id` key in a
+session-scoped singleton. If the same `TestCaseData` is called multiple times in one test run,
+disk is read only once — subsequent calls return the cached (pre-placeholder-resolved) copy.
+
+> **Implication**: If you call `LocalStorage.store(key, newValue)` AFTER the first `getTestCaseData()`
+> call, and expect `$(custom_key)` to pick up the new value on a second call — it WON'T, because
+> the cache returns the already-resolved string. Pre-seed LocalStorage **before** the first
+> `getTestCaseData()` call for the same `TestCaseData` key.
+
+---
+
+## `cleanUp()` — Singletons Destroyed After Every Test
+
+`EntityCase.cleanUp()` is called in `execute()` finally block after every test (pass or fail):
+
+```
+LocalStorage.destroy()           // all store() data gone
+AutomaterReport.destroy()
+RestAPI.destroy()
+ClientFrameworkActions.destroy()
+EntityMetaDetails.destroy()      // entity config JSON cache gone
+DataUtil.destroy()               // JSON data cache gone
+ScenarioReport.destroy()
+DriverUtil.reset()               // browser driver state reset
+```
+
+There is zero state leakage between test runs. Each scenario starts completely fresh.
+
+---
+
+## Report Flow — What `addSuccessReport` / `addFailureReport` do internally
+
+```
+addSuccessReport(msg):
+  report.addCaseFlow(msg)                   → adds green row to log
+  actions.captureScreenshot(msg)            → saves screenshot, label = msg
+  report.addRowToReport(desc, msg, config)  → adds HTML row with annotations info
+
+addFailureReport(msg, reason):
+  if(failureMessage empty) → failureMessage.append(msg); failure.basicFailureWithReason(...)
+  report.addCaseFlowForError(msg + reason)  → red row in log
+  actions.captureScreenshot(FAILURE, ...)   → failure screenshot
+  scenarioDetails.setSuccess(false)         → marks overall test FAILED
+  report.addRowToReport(desc, msg, config)  → HTML row
+
+addReport(msg)  [smart variant]:
+  if failureMessage.length() == 0 → addSuccessReport(msg)
+  else                            → addFailureReport(msg, failureMessage.toString())
+  clearFailureMessage() called automatically after every addReport
+```
+
+`configuration` string embedded in each report row contains:
+- Scenario `id`, `owner`, class/method name, role name, user display ID + email, duration
+
+---
+
+## preProcess switch/case vs if/else-if — Preference Guide
+
+| Situation | Recommended style |
+|-----------|-------------------|
+| 1–2 groups | Simple `if` / `if-else` |
+| 3 groups | Either — `if/else-if` still readable |
+| 4+ groups | `switch(group)` — easier to read and extend |
+| Single "always true" base class | `return true` unconditionally (e.g. NotificationsRulesBase) |
+
+`switch` example (RequestApprovalsBase pattern):
+```java
+@Override
+protected boolean preProcess(String group, String[] dataIds) {
+    try {
+        switch(group) {
+            case "IncidentRequest":
+                RequestAPIUtil.createIncidentRequest(dataIds[0]);
+                break;
+            case "IncidentRequestWithApproval":
+                RequestAPIUtil.createIncidentRequest();
+                RequestApprovalsAPIUtils.submitForApprovalAPI(LocalStorage.getAsString("request"), dataIds[0]);
+                break;
+        }
+        return true;
+    } catch(Exception exception) {
+        report.addCaseFlow("preProcess exception: " + exception);
+        addFailureReport("Pre-process failed", exception.getMessage());
+        return false;
+    }
+}
+```
+
+---
+
+## Multi-level Class Inheritance Pattern
+
+Entity class hierarchies can be more than 2 levels deep:
+
+```
+Entity
+  └─ TaskBase extends Entity
+       └─ ProjectMilestoneTaskBase extends TaskBase
+            └─ ProjectMilestoneTask (leaf — @AutomaterSuite, @AutomaterScenario methods)
+```
+
+Each level can override `preProcess()`, `postProcess()`, and `getEntityConfigurationName()`.
+The leaf class calling `super.preProcess(group, dataIds)` chains up the hierarchy.
+
+> Always check EVERY level of the inheritance chain when a group isn't being found.
+> Use `super.preProcess()` at the end of subclass `preProcess()` to fall through to parent.
+
+---
+
+## @AutomaterCase vs @AutomaterScenario — When To Use Each
+
+| Annotation | Class | Parameters | Runner calls directly? | Use for |
+|-----------|-------|-----------|----------------------|---------|
+| `@AutomaterScenario` | `<Entity>.java` (leaf) | None — no Java params | Yes — via reflection | Standalone test case entries |
+| `@AutomaterCase` | `*Base.java` | Any Java params | No — called by other methods | Reusable parameterized steps |
+
+`@AutomaterCase` example — parameterized helper:
+```java
+@AutomaterCase(description = "Fill module form and optionally submit")
+public void fillModuleTemplate(TestCaseData testCaseData, String submit) {
+    JSONObject inputData = getTestCaseData(testCaseData);
+    actions.formBuilder.fillInputForAnEntity(fieldsConfig.isClientFramework(), fieldsConfig.getFields(), inputData);
+    if(submit != null) {
+        actions.click(MaintenanceLocators.Form.MODULE_FORM_SUBMIT_BUTTON.apply(submit));
+    }
+}
+```
+
+---
+
+## postProcess Conditional Cleanup Pattern
+
+`postProcess(String method)` receives the **Java method name** of the test that just finished.
+Use `contains()`, `startsWith()`, or `equalsIgnoreCase()` for selective cleanup:
+
+```java
+@Override
+protected void postProcess(String method) {
+    try {
+        if(method.contains("Notification")) {
+            NotificationRulesAPIUtil.uncheckNotificationRuleAPI();
+        }
+        if(method.startsWith("createWith")) {
+            SomeAPIUtil.deleteCreatedEntity(LocalStorage.getAsString(getName()));
+        }
+    } catch(Exception exception) {
+        // cleanup failures are intentionally suppressed — test already finished
+    }
+}
+```
+
+> Cleanup failures in `postProcess` should be silently swallowed — the test result is already
+> recorded and the cleanup failure should not retroactively fail a passed test.
+
+---
+
+## LocalSetupManager — How Local Run Detection Works
+
+`LocalSetupManager.isLocalSetup()` checks ONLY:
+```java
+System.getProperty("automation.local.setup", "false")
+```
+
+This is set in `run_test.py` via the `-D` JVM argument. The class does NOT access
+`CommonVariables` at all — because `CommonVariables` has a static initializer that loads
+`Constants`, which depends on Aalam framework classes not present on developer machines.
+
+```java
+// ✅ Safe to call anywhere — no CommonVariables dependency:
+if(LocalSetupManager.isLocalSetup()) {
+    String serverUrl = LocalSetupManager.getServerUrl();
+    String admin     = LocalSetupManager.getAdminUser1();
+}
+
+// ❌ NEVER do this in code that runs locally:
+String serverUrl = CommonVariables.SERVER_URL_NAME;  // triggers static init → crash
+```
+
+`LocalSetupManager.configure(LocalAutomationData)` sets the local environment:
+- `serverUrlName`, `adminUser1` / `adminUser1Pwd`, `portalName`
+- `buildName` (= report folder name prefix)
+- `browserType`, `headless`
+- `localSetupBrowserPath` (geckodriver path), `localSetupChromeBrowserPath` (browser binary)
+- Calls `setupReportDirectory(reportName)` — creates the `reports/LOCAL_<name>/` folder
+
+---
+
+## BeforeAndAfterCaseActions — Lifecycle Phase Order
+
+Full lifecycle from `BeforeAndAfterCaseActionsFramework`:
+```
+1. assignConstantsToTemp()      — transfer Aalam metadata (framework)
+2. assignCommonVariables()      — init CommonVariables (framework)
+3. prerequisiteActions()        — resetStateVariables + configureAalam + loadSessionDetails + loadScenarioDetails + setupDownloadFolder
+4. beforeBrowserLaunch()        — pre-launch validations (framework)
+5. checkAndLaunchBrowser()      — launch browser if quitBrowser=true or driver=null
+6. afterBrowserLaunch()         — window size set in driver class, not here
+7. beforeLogin()                — INTENTIONALLY EMPTY — login handled in Entity.java
+8. login()                      — INTENTIONALLY EMPTY — login handled in Entity.java/LoginUtil.java
+9. afterLogin()                 — set startTime, is_logged_in=true, useCaseStarted=true
+```
+
+Login is handled by `Entity.java`'s `initializeAdminSession()` → `LoginUtil.login()` call,
+NOT by the before/after lifecycle. The `BeforeAndAfterCaseActions.login()` override is a no-op.
+
+---
+
+## SolutionBase.createSolution() — Pattern for storing entity in LocalStorage
+
+```java
+// Standard pattern for preProcess API create + LocalStorage storage:
+private void createSolution(String dataId) throws Exception {
+    JSONObject inputData = getTestCaseDataUsingCaseId(dataId);
+    JSONObject solutionResponse = restAPI.createAndGetResponse(getName(), getModuleName(), getInputData(inputData));
+    LocalStorage.store(getName(), solutionResponse.optString("id"));    // "solution" → entity ID
+    LocalStorage.store("Title",   solutionResponse.optString("title")); // human-readable title
+}
+```
+
+- `getName()` → `"solution"` (from `getEntityConfigurationName()`)
+- `getModuleName()` → `"solutions"` (plural, from entity config JSON)
+- `getInputData(JSONObject)` wraps with the module's API input key: `{"solution": {...}}`
+- `restAPI.createAndGetResponse()` returns the created entity's JSON object (not just the ID)
+- Always store BOTH the ID (under `getName()`) and the display title for assertions
+
+---
+
+## Skeleton Scaffolding — Complete File/Folder Map (from GenerateSkeletonForAnEntity.java, Mar 2026)
+
+`GenerateSkeletonForAnEntity` reads templates from `base/skeleton/` and stamps out a full module scaffold.
+Run it by setting `MODULE_NAME` and `ENTITY_NAME` (both PascalCase) and executing `main()`.
+
+### Naming rules
+| Source | Operation | Result example |
+|--------|-----------|----------------|
+| `ENTITY_NAME = "ChangeWorkflow"` | `UPPER_CAMEL → LOWER_UNDERSCORE` | `change_workflow` (conf/data filenames) |
+| `change_workflow` | `.replaceAll("_", "")` | `changeworkflow` (Java package folder) |
+| `ENTITY_NAME.toUpperCase()` | Java `.toUpperCase()` | `CHANGEWORKFLOW` (constant name in Entities file — **no underscore splitting**) |
+
+### Complete artifact map
+```
+modules/<module_lower>/
+  <MODULE>Entities.java           ← entity name string constants (auto-appended per entity)
+  <MODULE>Role.java               ← module role constants (extends Role)
+  <entity_nounderscore>/          ← e.g. changeworkflow/
+    <ENTITY_NAME>.java            ← parent class (extends Entity, @AutomaterSuite)
+    common/
+      <ENTITY_NAME>Constants.java
+      <ENTITY_NAME>DataConstants.java
+      <ENTITY_NAME>Fields.java
+      <ENTITY_NAME>Locators.java
+
+resources/entity/conf/<module>/   <entity_snake>.json
+resources/entity/data/<module>/<entity_snake>/<entity_snake>_data.json
+resources/entity/roles/<module>.json
+```
+
+### What is NOT generated (must be manual)
+- `<Entity>Base.java` (implementation split class — only for complex multi-scenario entities)
+- `<Entity>AnnotationConstants.java` (test-data ID constants for `@AutomaterScenario dataIds`)
+- `utils/<Entity>ActionsUtil.java` and `utils/<Entity>APIUtil.java`
+- Module-level skips: if `<MODULE>Entities.java` already exists, it is not overwritten — only the new entity constant is appended
+
+### entity_skeleton.json initial shape
+```json
+{
+  "name":                "<entity_snake>",
+  "plural_name":         "",
+  "module":              "<module_lower>",
+  "api_path":            "",
+  "is_client_framework": true,
+  "field_details": [
+    { "name": "id", "field_type": "input", "data_path": "id", "is_custom": true }
+  ]
+}
+```
+`plural_name` and `api_path` are always empty — must be filled (e.g. `"changes"`) before tests run.
+
+### Constants inner-class structure (generated)
+```java
+public final class <Entity>Constants {
+    public final class ListviewGlobalActions    { }   // global button labels
+    public final class ListviewLocalActions     { }   // row action labels
+    public final class DetailsPageGlobalActions { }   // detail view buttons
+    public final class DetailsPageTabs          { }   // LHS/sub-tab names
+}
+```
+All 4 are `public final class` (NOT `static`).
+
+### Locators minimal structure (generated)
+```java
+public final class <Entity>Locators {
+    public final class Listview { }   // populated manually
+}
+```
+Additional named inner classes (e.g. `DetailView`, `Form`, `AssociationsTab`) added manually.
+
+### `getEntityConfigurationName()` returns the snake_case entity name
+This string is used as the lookup key to load `resources/entity/conf/<module>/<name>.json`.
+Example: `"change_workflow"` → loads `conf/changes/change_workflow.json`.
+
+### Real-world pattern: simple entity = no Base class
+Simple entities (e.g., `ESMdirectory`) put `@AutomaterScenario` methods directly in the parent class.
+No `Base` split needed when there are only 1-3 scenario methods and no shared preProcess complexity.
+Some simple modules also place `<Entity>ApiUtil.java` in `common/` instead of a `utils/` subdirectory.
+
+### preProcess stub from skeleton
+```java
+@Override
+protected boolean preProcess(String group, String[] dataIds) {
+    return false;   // skeleton stub — ALWAYS returns false → tests will be skipped
+}
+```
+**Must** be replaced with actual implementation (even if just `return true;` for NoPreprocess).
+
+---
+
+## AutoGenerateConstantFiles — How Constants Are Auto-Generated (Mar 2026)
+# Source: AutoGenerateConstantFiles.java (full read)
+
+`AutoGenerateConstantFiles.main()` watches the `resources/entity/` tree and regenerates
+Java constant files from the resource JSON files. It detects the **most recently modified**
+file and dispatches to one of three generators.
+
+### Dispatch map: resource file → Java file
+
+| Edited resource | Generated file | Behaviour |
+|---|---|---|
+| `resources/entity/conf/<m>/<entity>.json` | `modules/<m>/<entity>/common/<Entity>Fields.java` | Full regeneration (wipes existing fields) |
+| `resources/entity/data/<m>/<entity>/<entity>_data.json` | `modules/<m>/<entity>/common/<Entity>DataConstants.java` | Inner class appended or replaced (idempotent) |
+| `resources/entity/roles/<module>.json` | `modules/<module>/<Module>Role.java` | Full regeneration |
+
+### DataConstants inner class: name derivation
+
+File `change_workflow_data.json` → `getPascalValue("change_workflow_data") = "ChangeWorkflowData"` → inner class `ChangeWorkflowData`.  
+File `solution_data.json` → inner class `SolutionData`.
+
+Generated structure:
+```java
+public final class ChangeDataConstants {
+    public final static class ChangeWorkflowData {
+        public final static String PATH = "data" + File.separator + "changes"
+            + File.separator + "change_workflow" + File.separator + "change_workflow_data.json";
+
+        public final static TestCaseData CREATE_CHANGE_API = new TestCaseData("create_change_api", PATH);
+        // one line per top-level JSON key
+    }
+    // additional inner classes for other data files in same entity
+}
+```
+
+### Constant name = `dataId.toUpperCase()`
+
+No camelCase splitting — just raw `.toUpperCase()`. Consequence:
+- `"create_change_api"` → `CREATE_CHANGE_API` ✅
+- `"createChangeApi"` → `CREATECHANGEAPI` ❌ (unreadable — always use snake_case keys)
+
+### FieldDetails constructor — 6 parameters
+
+```java
+new FieldDetails(
+    String name,        // field display name
+    String apiPath,     // data_path from conf JSON
+    String apiKey,      // data_key from conf JSON  ← separate field, not same as apiPath
+    FieldType type,     // null if field_type empty in conf
+    boolean isCustom,
+    boolean isUDF
+)
+```
+
+Constant name formula: `fieldName.replace("-","_").replace(" ","_").toUpperCase()`
+
+### Two separate DataConstants classes per entity
+
+| Class | Purpose | Used by |
+|-------|---------|---------|
+| `<Entity>DataConstants.<InnerClass>.KEY` | Test-method UI input data | `getTestCaseData(DataConstants.Data.KEY)` |
+| `<Entity>AnnotationConstants.Data.KEY` | preProcess data IDs | `@AutomaterScenario(dataIds = {...})` |
+
+These are **NOT interchangeable**. DataConstants holds all test data entries.
+AnnotationConstants.Data holds only the subset passed as `dataIds[]` to `preProcess()`.
+
+### Complete data-to-constant workflow
+
+```
+1. Add entry to <entity>_data.json (snake_case key!)
+   ↓
+2. Run AutoGenerateConstantFiles.main()
+   ↓
+3. <Entity>DataConstants.<EntityData>.MY_KEY constant appears
+   ↓
+4. Use in test:  getTestCaseData(<Entity>DataConstants.<EntityData>.MY_KEY)
+5. Use in preProcess dataId:  add to <Entity>AnnotationConstants.Data (manual still)
+```
+
+> Step 5 is still manual — `AnnotationConstants.java` is NOT auto-generated.
+
+### Fields.java regeneration from conf
+
+When `conf/<entity>.json` is saved:
+- Each `field_details` array entry → one `public final static FieldDetails` line
+- `field_type` string → `FieldType.<UPPERCASE>` enum value
+- Empty `field_type` → `null` (valid — means no form-fill type)
+- `data_key` (from conf) → `apiKey` param (third arg) — distinct from `data_path` (second arg)
+
+### Role constants
+
+`resources/entity/roles/<module>.json` format:
+```json
+{ "full_control": { ... }, "view_only": { ... } }
+```
+Each top-level key → `public final static String FULL_CONTROL = "full_control";`
+Keys with spaces are invalid Java identifiers — always use snake_case.
+
+---
+
+## createUserByRole — Role System Architecture
+
+### Flow (called during admin session, before switchToUserSession)
+
+```
+Entity.run()
+  → initializeScenario(roleId)  →  initializeAdminSession()  →  assignPermission(roleId)
+  → createUserByRole("TECHNICIAN", moduleName, roleId, scenarioUser)
+        ├── getRoleDetails(moduleName, roleId)
+        │     1. reads general.json  (sdadmin / sdsite_admin / sdguest / helpdeskconfig)
+        │     2. if not found: reads <moduleName>.json
+        │     general.json match ALWAYS wins (returns on first match)
+        ├── getUserId(scenarioUser)   → searches users API by email_id → sets entityId
+        ├── handleExistingUserRole()  or  handleNewUserRole()
+        │     is_technician=true  → createTechnician()  (also checkCustomRole + checkProjectRole)
+        │     is_technician=false → createRequester()
+        └── LocalStorage.store("TECHNICIAN", user.getEntityId())
+```
+
+### Two key files
+
+| File | Content | Loaded by |
+|------|---------|----------|
+| `roles/general.json` | `sdadmin`, `sdsite_admin`, `sdguest`, `helpdeskconfig` | always first |
+| `roles/<module>.json` | module-specific roles (Solution_FullControl etc.) | fallback |
+
+### is_technician flag — determines code path
+
+- `true` → `createTechnician()` → assigns built-in SDP role + creates custom role permissions if absent
+- `false` → `createRequester()` → creates requester user with portal login
+
+### SDADMIN special case — no session split
+
+When scenario user email = admin email and `role = Role.SDADMIN`:
+- preProcess: admin session
+- `switchToUserSession()`: logs in as admin again (same account)
+- Test method: **also admin session**
+- Safe to call API methods inside test method body (no permission restrictions)
+- Simplest pattern: `group = "NoPreprocess", dataIds = {}, role = Role.SDADMIN` → zero setup, test runs as admin

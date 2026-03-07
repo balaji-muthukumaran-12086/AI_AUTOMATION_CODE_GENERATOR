@@ -114,6 +114,19 @@ LEARNING_TOP_N = 10
 # How many times the hands-free loop will re-run failing tests after healing.
 LEARNING_RETRIES = 2
 
+# ── Coverage Agent — duplicate detection thresholds ────────────────────────
+# These control how aggressively CoverageAgent filters planned scenarios before
+# code generation.  Raising DUPLICATE_THRESHOLD makes fewer things "duplicate"
+# (useful when KB has many near-miss descriptions); lowering it filters more.
+# GAP_THRESHOLD: scenarios scoring below this are considered genuinely new.
+COVERAGE_DUPLICATE_THRESHOLD = float(_os.environ.get("COVERAGE_DUPLICATE_THRESHOLD", "0.90"))
+COVERAGE_GAP_THRESHOLD       = float(_os.environ.get("COVERAGE_GAP_THRESHOLD",       "0.70"))
+
+# ── HealerAgent — self-healing loop depth cap ──────────────────────────────
+# Maximum times HealerAgent may attempt to heal the same test in a single
+# pipeline run.  Prevents infinite patch→fail→heal loops.
+HEALER_MAX_DEPTH = int(_os.environ.get("HEALER_MAX_DEPTH", "2"))
+
 # All learnings extracted from batch runs are appended to this JSONL file.
 LEARNINGS_LOG_PATH = _os.path.join(_BASE_DIR, "logs", "learnings.jsonl")
 
@@ -146,3 +159,72 @@ OLLAMA_BASE_URL     = "http://localhost:11434"
 # OpenAI direct
 OPENAI_MODEL        = _os.environ.get("OPENAI_MODEL", "gpt-4o")
 OPENAI_API_KEY      = _os.environ.get("OPENAI_API_KEY", "")
+
+
+# ── Configuration validation ────────────────────────────────────────────────
+
+class ConfigError(RuntimeError):
+    """Raised when a required configuration value is missing or invalid."""
+
+
+def validate_config(strict: bool = False) -> list[str]:
+    """
+    Check that critical config values are set before starting the pipeline.
+
+    Args:
+        strict: If True, raise ConfigError on the first missing value.
+                If False (default), return a list of warning strings so callers
+                can decide whether to abort or just print warnings.
+
+    Returns:
+        List of human-readable warning strings (empty = all OK).
+
+    Raises:
+        ConfigError: If strict=True and any required value is missing.
+    """
+    warnings_out: list[str] = []
+
+    def _warn(msg: str) -> None:
+        if strict:
+            raise ConfigError(msg)
+        warnings_out.append(msg)
+
+    # SDP connection (without a URL tests cannot run)
+    if not SDP_URL:
+        _warn("SDP_URL is not set — tests cannot run without a target SDP instance. "
+              "Set SDP_URL in your .env file.")
+    if not SDP_ADMIN_EMAIL:
+        _warn("SDP_ADMIN_EMAIL is not set — no admin credentials for login/API calls.")
+    if not SDP_ADMIN_PASS:
+        _warn("SDP_ADMIN_PASS is not set — authentication will fail at runtime.")
+    if not SDP_PORTAL:
+        _warn("SDP_PORTAL is not set — portal name is required to build the SDP URL.")
+
+    # LLM provider credentials
+    if LLM_PROVIDER == "openai" and not OPENAI_API_KEY:
+        _warn("LLM_PROVIDER='openai' but OPENAI_API_KEY is empty — LLM calls will fail. "
+              "Set OPENAI_API_KEY in your .env file.")
+    if LLM_PROVIDER == "openrouter" and not OPENROUTER_API_KEY:
+        _warn("LLM_PROVIDER='openrouter' but OPENROUTER_API_KEY is empty — LLM calls will fail. "
+              "Set OPENROUTER_API_KEY in your .env file.")
+
+    # Browser driver paths
+    if not _os.path.isfile(FIREFOX_BINARY):
+        _warn(f"FIREFOX_BINARY not found at '{FIREFOX_BINARY}'. "
+              "Set FIREFOX_BINARY or DRIVERS_DIR in your .env file.")
+    if not _os.path.isfile(GECKODRIVER_PATH):
+        _warn(f"GECKODRIVER_PATH not found at '{GECKODRIVER_PATH}'. "
+              "Set GECKODRIVER_PATH or DRIVERS_DIR in your .env file.")
+
+    # Java dependencies
+    if not _os.path.isdir(DEPS_DIR):
+        _warn(f"DEPS_DIR not found at '{DEPS_DIR}'. "
+              "Set DEPS_DIR in your .env file to the directory containing your JAR files.")
+
+    # Knowledge base
+    chroma_dir = _os.path.join(BASE_DIR, "knowledge_base", "chroma_db")
+    if not _os.path.isdir(chroma_dir):
+        _warn("ChromaDB knowledge base not found. "
+              "Run 'python -m ingestion.run_ingestion' to build it before using CoverageAgent.")
+
+    return warnings_out

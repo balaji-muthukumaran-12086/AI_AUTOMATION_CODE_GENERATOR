@@ -55,6 +55,7 @@ class AgentState(TypedDict):
 
     # ── Healer Agent ──────────────────────────────────────
     heal_result: dict                 # HealResult.to_dict() — populated when test fails and healer activates
+    heal_depth: int                   # Number of heal attempts made this run (capped by HEALER_MAX_DEPTH)
 
     # ── Hg Agent (Phase 3) ────────────────────────────────
     hg_config: dict                   # Opt-in. { repo_root, branch_name, commit_msg, push, remote }

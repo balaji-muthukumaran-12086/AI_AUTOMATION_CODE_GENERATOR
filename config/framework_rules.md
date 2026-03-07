@@ -136,7 +136,8 @@ Priority.LOW
 - **Default in the annotation definition = `ScenarioRunType.PORTAL_BASED`**
 - **Most tests use `ScenarioRunType.USER_BASED`**
 - **ALWAYS write `runType = ScenarioRunType.USER_BASED` explicitly. Never omit it.**
-- Only use `PORTAL_BASED` when specifically testing portal (requester) views.
+- Use `PORTAL_BASED` for scenarios that have **side effects on other test cases** in the suite — e.g. business rules, SLA triggers, automation rules. These scenarios must run in **isolation**: their effects are scoped and cleaned up within their own session so they don't contaminate other tests running in the same suite.
+- `USER_BASED` is for scenarios whose execution does not affect the global state seen by other test cases in the suite.
 
 ```java
 // CORRECT
@@ -147,11 +148,17 @@ runType = ScenarioRunType.USER_BASED
 ```
 
 ### 2.4 switchOn — valid values and when to use
-```java
-SwitchToUserSession.AFTER_PRE_PROCESS   // DEFAULT — switch user AFTER API data setup
-SwitchToUserSession.BEFORE_PRE_PROCESS  // rare — switch user BEFORE data creation (e.g. requester tests)
-SwitchToUserSession.NEVER               // no session switch at all
-```
+
+Controls **when the browser session switches from admin → scenario user** during the test lifecycle:
+
+| Value | When session switches | Implication |
+|---|---|---|
+| `AFTER_PRE_PROCESS` | After `preProcess()` completes | **preProcess runs as admin** — REST API calls have full permissions. ✅ Default for almost all tests. |
+| `BEFORE_PRE_PROCESS` | Before `preProcess()` runs | preProcess runs as the scenario user — only use when the scenario user must perform the setup themselves (e.g. requester creating their own request in preProcess). |
+| `NEVER` | Never — stays in admin session | No session switch; both preProcess and test method run as admin. |
+
+> ⚠️ **NPE trap with `BEFORE_PRE_PROCESS`**: If a non-admin scenario user does not have permission to create templates/topics/entities, the `sdpAPICall` JS returns null → `response` is null → NPE in preProcess. Only use `BEFORE_PRE_PROCESS` when you explicitly need preProcess in the user session.
+
 When in doubt, use `AFTER_PRE_PROCESS` (or simply omit this field and let default apply).
 
 ### 2.5 tags — valid values
@@ -388,16 +395,24 @@ OwnerConstants.JAYA_KUMAR
 
 ### 6.3 ScenarioRunType constants
 ```java
-ScenarioRunType.USER_BASED    // ← use this for 95% of tests
-ScenarioRunType.PORTAL_BASED
+ScenarioRunType.USER_BASED    // ← use for scenarios with no cross-test side effects
+ScenarioRunType.PORTAL_BASED  // ← use for isolated scenarios that affect global state
 ```
+
+**When to use which:**
+- `USER_BASED` — scenario does not trigger side effects that would impact other tests running in the same suite (e.g. standard CRUD scenarios).
+- `PORTAL_BASED` — scenario triggers automation-level side effects (business rules, SLA, workflow automation) that could interfere with other test cases. These run in isolation: the scenario executes and its effects are cleaned up within that isolated session before the next test runs.
+
+> ⚠️ **PORTAL_BASED in a UserBased flow is SKIPPED, not FAILED.**
+> `EntityCase` checks: if `scenarioDetails.getRunType() == PORTAL_BASED` and `sessionDetails.getGroupType().equalsIgnoreCase("UserBased")` then scenario is skipped (`scenarioDetails.setRestrictRerun(true)`). This is an incompatible-run-type skip, not a test failure.
 
 ### 6.4 SwitchToUserSession constants
 ```java
-SwitchToUserSession.AFTER_PRE_PROCESS   // ordinal 1 — default
-SwitchToUserSession.BEFORE_PRE_PROCESS  // ordinal 0
-SwitchToUserSession.NEVER               // ordinal 2
+SwitchToUserSession.AFTER_PRE_PROCESS   // ordinal 1 — default: preProcess in admin session, test method in user session
+SwitchToUserSession.BEFORE_PRE_PROCESS  // ordinal 0: both preProcess AND test method run in user session
+SwitchToUserSession.NEVER               // ordinal 2: no session switch — everything in admin session
 ```
+> See Section 2.4 for full explanation and NPE trap.
 
 ---
 
@@ -425,14 +440,6 @@ grep -rn 'id = "SDPOD_AUTO_SOL_LV' SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/ | \
 # → SDPOD_AUTO_SOL_LV_179  →  next = SDPOD_AUTO_SOL_LV_180
 ```
 
-### 7.3 Last known IDs (as of rules document creation)
-```
-Solutions ListView  : SDPOD_AUTO_SOL_LV_179   → next: 180
-Solutions DetailView: SDPOD_AUTO_SOL_DV_242   → next: 243
-Solutions generic   : SDPOD_AUTO_SOL_135      → next: 136
-Changes ListView    : SDPOD_AUTO_CH_LV_491    → next: 492
-Requests ListView   : SDP_REQ_LS_AAA100+      (check live)
-```
 ⚠️ **Always run the grep command above before assigning an ID to avoid duplicates.**
 
 ---
@@ -871,50 +878,6 @@ actions.validate.successMessageInAlertAndClose("Saved successfully");
 
 ---
 
-## SECTION 14 — REQUIRED IMPORTS REFERENCE
-
-### 14.1 Base imports for a Requests leaf class
-```java
-import com.zoho.automater.selenium.base.ScenarioRunType;
-import com.zoho.automater.selenium.base.annotations.AutomaterScenario;
-import com.zoho.automater.selenium.base.annotations.AutomaterSuite;
-import com.zoho.automater.selenium.base.common.AutomaterVariables;
-import com.zoho.automater.selenium.base.common.Priority;
-import com.zoho.automater.selenium.base.common.SwitchToUserSession;
-import com.zoho.automater.selenium.base.utils.AutomaterUtil;
-import com.zoho.automater.selenium.modules.GlobalConstants;
-import com.zoho.automater.selenium.modules.OwnerConstants;
-import com.zoho.automater.selenium.modules.requests.RequestsRole;
-import com.zoho.automater.selenium.modules.requests.request.Request;
-import com.zoho.automater.selenium.modules.requests.request.common.RequestConstants;
-import com.zoho.automater.selenium.modules.requests.request.common.RequestDataConstants;
-import com.zoho.automater.selenium.modules.requests.request.common.RequestFields;
-import com.zoho.automater.selenium.modules.requests.request.common.RequestLocators;
-import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
-```
-
-### 14.2 Base imports for a Solutions leaf class
-```java
-import com.zoho.automater.selenium.base.ScenarioRunType;
-import com.zoho.automater.selenium.base.annotations.AutomaterScenario;
-import com.zoho.automater.selenium.base.annotations.AutomaterSuite;
-import com.zoho.automater.selenium.base.common.AutomaterVariables;
-import com.zoho.automater.selenium.base.common.Priority;
-import com.zoho.automater.selenium.base.utils.AutomaterUtil;
-import com.zoho.automater.selenium.modules.OwnerConstants;
-import com.zoho.automater.selenium.modules.Role;
-import com.zoho.automater.selenium.modules.solutions.solution.SolutionBase;
-import com.zoho.automater.selenium.modules.solutions.solution.common.SolutionAnnotationConstants;
-import com.zoho.automater.selenium.modules.solutions.solution.common.SolutionDataConstants;
-import com.zoho.automater.selenium.modules.solutions.solution.common.SolutionFields;
-import com.zoho.automater.selenium.modules.solutions.solution.common.SolutionLocators;
-import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
-```
-
----
-
 ## SECTION 15 — QUICK CHECKLISTS
 
 ### 15.1 New test scenario checklist
@@ -1333,16 +1296,21 @@ public void verifySingleParentConstraint() throws Exception {
 }
 ```
 
-### 20.3 Each utility method = one complete named UI operation (REQUIRED)
+### 20.3 Util methods must be generic and parameterized (REQUIRED)
 
-Not too granular (single click) and not too broad (entire test). Right size = one step a manual tester would name:
+**One well-parameterized method beats a family of thin duplicates.** Use method arguments to
+segregate flow branches instead of creating twin methods that differ by one value.
 
-| Too granular ❌ | Correct ✅ |
+| Thin/duplicated ❌ | Parameterized/generic ✅ |
 |---|---|
-| `clickAssociationTab()` | `openAssociationTab()` — tab click + wait |
-| `clickAttachDropdown()` | `openAttachParentChangePopup()` — dropdown click + option click + wait |
-| `clickYes()` | `detachParentChange()` — detach click + confirm dialog + YES + wait |
-| Inline 6-line search+select+associate | `linkParentChangeViaUI(name, id)` |
+| `openAttachParentChangePopup()` + `openAttachChildChangePopup()` | `openAttachChangePopup(String type)` |
+| `linkChange1()` + `linkChange2()` | `linkChangeViaUI(String name, String id)` |
+| `verifyParentLinkInTab()` + `verifyChildLinkInTab()` | `verifyLinkInAssociationTab(String type, String name)` |
+
+**Decision rule before creating a new util method:**
+- Will this sequence appear in more than one test? → extract + parameterize to cover all variants
+- Do two existing util methods differ by only 1 argument? → merge into one parameterized method
+- Is it a one-off `actions.click()` / `actions.getText()` unique to one scenario? → leave inline
 
 ### 20.4 Class declaration shape (REQUIRED — no exceptions)
 
@@ -1354,10 +1322,16 @@ public final class <Entity>ActionsUtil extends Utilities {
 }
 ```
 
-### 20.5 Never duplicate logic between two test methods (REQUIRED)
+### 20.5 Inline actions in test body — when OK vs FORBIDDEN
 
-If the same 2+ lines appear in two test methods → they belong in a utility method.
-Sign of violation: running `grep -A5 "LHS_ASSOCIATION_TAB" DetailsView.java` shows the same tab click in 10+ methods → extract to `openAssociationTab()`.
+**OK —** minimal `actions.click()` / `actions.getText()` inline for a **truly one-off, scenario-specific
+step** that is not reused anywhere else.
+
+**FORBIDDEN —** duplicating the same multi-step sequence (2+ lines) across multiple test methods
+without extracting it to a util. Sign of violation:
+```bash
+grep -A5 "LHS_ASSOCIATION_TAB" DetailsView.java  # same tab click in 10+ methods → extract it
+```
 
 ### 20.6 Known entity utility files — ALWAYS discover first, do NOT rely on this table alone
 
@@ -1542,11 +1516,11 @@ actions.popUp.listView.columnSearch("Subject", value);              // Framework
 
 ---
 
-## SECTION 12 — LINKING CHANGES (CH-286) RULES
+## SECTION 24 — LINKING CHANGES (CH-286) RULES
 
 _Learned from: manually generating 6 test methods for 19 use cases (SDPOD_LINKING_CH_001-019) | Date: 2026-03-03_
 
-### 12.1 LHS Association Tab vs RHS Associations (REQUIRED)
+### 24.1 LHS Association Tab vs RHS Associations (REQUIRED)
 
 Linking Changes uses a **dedicated LHS Association tab**, NOT the RHS accordion. Always navigate via:
 ```java
@@ -1557,7 +1531,7 @@ actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB);
 actions.click(ChangeLocators.AssociationTab.RHS_ASSOCIATIONS);
 ```
 
-### 12.2 Parent = Radio, Child = Checkbox (REQUIRED)
+### 24.2 Parent = Radio, Child = Checkbox (REQUIRED)
 
 Parent change popup uses **radio buttons** (single selection). Child changes popup uses **checkboxes** (multi-selection, max 25).
 
@@ -1573,7 +1547,7 @@ actions.click(ChangeLocators.LinkingChangePopup.SELECT_CHECKBOX_WITH_ENTITYID.ap
 actions.click(ChangeLocators.LinkingChangePopup.SELECT_CHECKBOX_WITH_ENTITYID.apply(parentId));
 ```
 
-### 12.3 Mutual Exclusion — Parent OR Child, Never Both (REQUIRED)
+### 24.3 Mutual Exclusion — Parent OR Child, Never Both (REQUIRED)
 
 A change can only be a parent OR a child. After linking as one type, the other option must disappear from the Attach dropdown.
 
@@ -1589,7 +1563,7 @@ assertTrue(actions.isElementPresent(ChangeLocators.LinkingChange.ATTACH_PARENT_C
 assertTrue(actions.isElementPresent(ChangeLocators.LinkingChange.ATTACH_CHILD_CHANGES_OPTION));
 ```
 
-### 12.4 preProcess Must Create 3 Changes (REQUIRED for linking tests)
+### 24.4 preProcess Must Create 3 Changes (REQUIRED for linking tests)
 
 Linking tests need at minimum 3 changes: 1 source (navigated to in UI) + 2 targets (potential parents/children). The preProcess group `CREATE_CHANGES_FOR_LINKING` handles this.
 
@@ -1601,7 +1575,7 @@ Linking tests need at minimum 3 changes: 1 source (navigated to in UI) + 2 targe
 // All stored in LocalStorage
 ```
 
-### 12.5 Popup Column Search — Use the correct method per popup type (REQUIRED)
+### 24.5 Popup Column Search — Use the correct method per popup type (REQUIRED)
 
 **Standard SDP association popups** (`slide-down-popup` class — e.g., Attach Request, Attach Problem):
 ```java
@@ -1624,7 +1598,7 @@ actions.listView.columnSearch("Title", LocalStorage.getAsString("targetChangeNam
 
 **Rule**: always check the popup container CSS class before choosing which search method to use.
 
-### 12.6 API Contract for Linking (REQUIRED)
+### 24.6 API Contract for Linking (REQUIRED)
 
 Linking is done via the `rel/` sub-path under changes API:
 - `PUT api/v3/changes/{id}/rel/parent_change` — link parent
@@ -1642,7 +1616,7 @@ Linking is done via the `rel/` sub-path under changes API:
 
 ---
 
-### 12.7 Workflow Boundary Tests — Stage-Based vs Flat-Status Module Rule (CH-2320)
+### 24.7 Workflow Boundary Tests — Stage-Based vs Flat-Status Module Rule (CH-2320)
 
 > **SOURCE OF TRUTH**: Applies to all workflow statement-tuple-limit boundary tests.
 
@@ -1738,14 +1712,14 @@ if (workflowId != null && !workflowId.isEmpty()) {
 
 ---
 
-## SECTION 13 — ZOHO CODECHECK / CHECKSTYLE RULES
+## SECTION 25 — ZOHO CODECHECK / CHECKSTYLE RULES
 
 > **Root cause of hg push failures (March 7, 2026)**: Zoho uses **Checkstyle** (not PMD).
 > PMD's `IfStmtsMustUseBraces` was deprecated in PMD 6.2.0. The equivalent Checkstyle rule is
 > **`NeedBraces`** which covers ALL block statements: `if`, `else`, `for`, `while`, `do`,
 > `try`, `catch`, `finally`.
 
-### 13.1 `NeedBraces` — Inline catch blocks FORBIDDEN
+### 25.1 `NeedBraces` — Inline catch blocks FORBIDDEN
 
 ```java
 // ❌ WRONG — inline empty catch violates NeedBraces
@@ -1761,7 +1735,7 @@ try {
 }
 ```
 
-### 13.2 ALL single-statement if/for/while bodies must use braces
+### 25.2 ALL single-statement if/for/while bodies must use braces
 
 ```java
 // ❌ WRONG
@@ -1779,7 +1753,7 @@ for (int i = 0; i < n; i++) {
 }
 ```
 
-### 13.3 "Error in codecheck invocation" — what it really means
+### 25.3 "Error in codecheck invocation" — what it really means
 
 `Error in codecheck invocation` from the Zoho hg push server is a **server infrastructure
 crash** (the codecheck runner itself fails before analyzing any code). It does NOT mean your
@@ -1789,7 +1763,7 @@ code has violations. This specific error message is NOT followed by a list of vi
 > line numbers, and rule names (e.g., `NeedBraces`, `MagicNumber`, etc.).
 > The "invocation error" is a Zoho infra issue — escalate to the integration team.
 
-### 13.4 Quick scan for NeedBraces violations before pushing
+### 25.4 Quick scan for NeedBraces violations before pushing
 
 ```bash
 # Find all single-statement if/for/while/catch without braces
@@ -1801,9 +1775,9 @@ grep -rn "^\s*if (.*)[^{]$\|^\s*else [^{]\|^\s*for (.*)[^{]$" src/ --include="*.
 
 ---
 
-## SECTION 14 — TASK NODE CONNECTOR PORTS (Workflow)
+## SECTION 26 — TASK NODE CONNECTOR PORTS (Workflow)
 
-### 14.1 Task nodes require specific ports when `has_error_path=true`
+### 26.1 Task nodes require specific ports when `has_error_path=true`
 
 When a Task FlowNode is created with `has_error_path: true`, the connection ports change:
 
@@ -1833,10 +1807,620 @@ JSONObject badConn = new JSONObject()
     .put("target", nextNodeId).put("targetPort", "input");
 ```
 
-### 14.2 Task connector chain fix — `createWorkflowWithNTasks()`
+### 26.2 Task connector chain fix — `createWorkflowWithNTasks()`
 
 > Fixed in rev 5320 (March 6, 2026): The `createWorkflowWithNTasks()` helper in `Workflow.java`
 > was using generic `input`/`output` ports for Task nodes that have `has_error_path=true`.
 > This caused IR_007 and IR_009 (connector-limit boundary tests) to fail with API rejection.
 > Fix: always use `Completed`/`Overdue` ports for Task nodes and `input_Requested` for all targets.
+
+---
+
+## SECTION 27 — EntityCase LIFECYCLE & REPORTING (from framework source analysis, Mar 2026)
+
+### 27.1 `addReport(String message)` — smart single-argument variant
+
+`EntityCase` has **three** reporting methods, not two:
+
+```java
+addSuccessReport(String message)                  // always success
+addFailureReport(String message, String reason)   // always failure
+addReport(String message)                         // SMART: success if no failureMessage, else failure
 ```
+
+`addReport(message)` inspects `failureMessage.length()`:
+- `== 0` → calls `addSuccessReport(message)` + takes success screenshot
+- `> 0`  → calls `addFailureReport(message, failureMessage.toString())` + takes failure screenshot
+
+Use `addReport(message)` after `appendFailureMessage(...)` calls to let the accumulated
+failure buffer decide the outcome automatically.
+
+### 27.2 `clearFailureMessage()` is called automatically after every `addReport()` call
+
+`addReport()` → `clearFailureMessage()` at end. This resets the buffer so the NEXT step
+starts clean. Do NOT call `clearFailureMessage()` manually unless you want to discard
+accumulated failures mid-step.
+
+### 27.3 `cleanUp()` destroys ALL singletons at end of every test
+
+`EntityCase.cleanUp()` is called in the `finally` block of `execute()` (the Aalam runner entry point):
+
+```
+LocalStorage.destroy()          // All LocalStorage.store() data is gone
+AutomaterReport.destroy()       // Report instance cleared
+RestAPI.destroy()               // RestAPI instance cleared
+ClientFrameworkActions.destroy()
+EntityMetaDetails.destroy()     // Entity config cache cleared
+DataUtil.destroy()              // JSON data cache cleared  ← important for tests that reload data
+ScenarioReport.destroy()
+DriverUtil.reset()
+```
+
+> **Impact**: LocalStorage is completely fresh for each test run. There is NO state leakage
+> between separate test method runs. If two scenarios depend on the same data, each must
+> recreate it in its own `preProcess()`.
+
+### 27.4 `addSuccessReport()` auto-captures screenshot; skipping screenshot is framework-controlled
+
+`addReport(..., isSuccess=true)`:
+1. Calls `report.addCaseFlow(message)` — adds row to log
+2. Calls `actions.captureScreenshot(message)` — takes screenshot with label = the success message
+
+`addReport(..., isSuccess=false)`:
+1. Calls `report.addCaseFlowForError(...)` — marks row red in log
+2. Calls `actions.captureScreenshot(ScreenshotStatus.FAILURE, failureMessage)` — screenshot named with FAILURE prefix
+3. Sets `scenarioDetails.setSuccess(false)` — marks overall test as failed
+
+### 27.5 Local vs production constructor branch (EntityCase constructor)
+
+```java
+// Local run (LocalSetupManager.isLocalSetup() == true):
+failure = LocalFailureTemplates.getInstance();          // NO CommonObject
+report  = AutomaterReport.getInstance(null);
+actions = ClientFrameworkActions.getInstance(driver, failure);
+
+// Production run:
+CommonObject commonObject = new CommonObject(driver, failureMessage);
+failure = commonObject.getFailure();
+report  = AutomaterReport.getInstance(commonObject.getReport());
+actions = ClientFrameworkActions.getInstance(commonObject.getDriver(), failure);
+```
+
+> **RULE**: Never call `new CommonObject(...)` or access `CommonVariables` in code that
+> must also run locally. Always check `LocalSetupManager.isLocalSetup()` first.
+
+---
+
+## SECTION 28 — preProcess PATTERNS (from scenario analysis, Mar 2026)
+
+### 28.1 Use `switch(group)` for preProcess with 4+ groups
+
+`if/else‑if` chains become hard to read beyond 3 branches. `RequestApprovalsBase.java` shows
+the preferred `switch` pattern:
+
+```java
+@Override
+protected boolean preProcess(String group, String[] dataIds) {
+    try {
+        switch(group) {
+            case "IncidentRequest":
+                RequestAPIUtil.createIncidentRequest(dataIds[0]);
+                break;
+            case "IncidentRequestWithApproval":
+                RequestAPIUtil.createIncidentRequest();
+                RequestApprovalsAPIUtils.submitForApprovalAPI(LocalStorage.getAsString("request"), dataIds[0]);
+                break;
+            // ...
+        }
+        return true;
+    } catch(Exception exception) {
+        return false;
+    }
+}
+```
+
+> ⚠️ The `catch` block must call `addFailureReport(...)` for visibility — returning `false`
+> silently is acceptable but then the test is skipped with NO failure row in the report.
+
+### 28.2 Prefer `addFailureReport` inside preProcess catch (not silent `return false`)
+
+```java
+// ✅ BETTER — failure visible in ScenarioReport:
+} catch(Exception exception) {
+    report.addCaseFlow("Exception occurred while pre processing: " + exception);
+    addFailureReport("Pre-process failed", exception.getMessage());
+    return false;
+}
+
+// ❌ SILENT — test is skipped; no error in report, impossible to debug remotely:
+} catch(Exception exception) {
+    return false;
+}
+```
+
+### 28.3 postProcess can use method name pattern to conditionally clean up
+
+```java
+@Override
+protected void postProcess(String method) {
+    try {
+        if(method.contains("Notification")) {
+            NotificationRulesAPIUtil.uncheckNotificationRuleAPI();
+        }
+    } catch(Exception exception) {
+        // cleanup failure — intentionally suppressed
+    }
+}
+```
+
+The `method` parameter is the **Java method name** of the test that just ran.
+Use `contains()` or `startsWith()` for partial matching.
+
+### 28.4 NoPreprocess equivalent — just `return true` unconditionally
+
+```java
+@Override
+protected boolean preProcess(String arg0, String[] arg1) {
+    return true;   // equivalent to group="NoPreprocess" — no API setup needed
+}
+```
+
+This is valid. `NotificationsRulesBase` uses this pattern — the `group` parameter is
+ignored entirely and the method always returns `true`.
+
+---
+
+## SECTION 29 — ANNOTATION TYPES: @AutomaterScenario vs @AutomaterCase (Mar 2026)
+
+### 29.1 `@AutomaterScenario` — independent, self-contained test
+
+- Placed on methods in `<Entity>.java` (the thin wrapper class)
+- Each method maps to ONE test case in the Aalam runner
+- Takes NO method parameters — data comes from `dataIds[]` + LocalStorage
+- Has all 9 annotation fields: `id`, `group`, `priority`, `dataIds`, `tags`, `description`, `owner`, `runType`, `switchOn`
+- **Called directly by framework via reflection** (no parameter injection)
+
+### 29.2 `@AutomaterCase` — reusable parameterized sub-action
+
+- Placed on helper methods in `*Base.java`
+- Takes explicit Java parameters (e.g. `TestCaseData testCaseData, String submit`)
+- Called from `@AutomaterScenario` methods or from other base methods
+- Has only `description` field — no `id`, `group`, `priority`, `owner`
+- The `MaintenanceBase.fillModuleTemplate(TestCaseData, String)` pattern is a good example
+
+```java
+// @AutomaterCase — parameterized helper called from test body or other scenarios
+@AutomaterCase(description = "Fill the module creation form")
+public void fillModuleTemplate(TestCaseData testCaseData, String submit) {
+    JSONObject inputData = getTestCaseData(testCaseData);
+    actions.formBuilder.fillInputForAnEntity(...);
+    if(submit != null) {
+        actions.click(MaintenanceLocators.Form.MODULE_FORM_SUBMIT_BUTTON.apply(submit));
+    }
+}
+```
+
+---
+
+## SECTION 30 — REPORT WRAPPING PATTERN (Mar 2026)
+
+### 30.1 Always wrap test body in `startMethodFlowInStepsToReproduce` / `endMethodFlowInStepsToReproduce`
+
+```java
+public void myTestMethod() throws Exception {
+    report.startMethodFlowInStepsToReproduce(AutomaterVariables.CASE_START.apply(getMethodName()));
+    try {
+        // ... test logic ...
+        addSuccessReport("My assertion message");
+    } catch(Exception exception) {
+        addFailureReport("Internal error occurred: " + getMethodName(), exception.getMessage());
+    } finally {
+        report.endMethodFlowInStepsToReproduce();
+    }
+}
+```
+
+> `CASE_START` / `SCENARIO_START` produces a formatted label. `getMethodName()` reads from
+> the stack trace (2 levels up) — always call it at the FIRST line before any other method calls.
+
+### 30.2 `getMethodName()` must be called at the OUTERMOST stack frame of the method
+
+`EntityCase.getMethodName()` reads `Thread.currentThread().getStackTrace()[2]` — exactly
+2 levels above its own frame. Call it as the FIRST thing in the test body before any delegation.
+
+```java
+// ✅ CORRECT
+public void createSomething() {
+    String methodName = getMethodName();  // first
+    report.startMethodFlowInStepsToReproduce(AutomaterVariables.CASE_START.apply(methodName));
+    // ...
+}
+
+// ❌ WRONG — calling getMethodName() inside a utility will return wrong frame
+SomeUtil.doStuff(getMethodName());   // BAD if called nested
+```
+```
+---
+
+## SECTION 31 — SKELETON SCAFFOLDING & ENTITY FILE STRUCTURE (Mar 2026)
+# Source: GenerateSkeletonForAnEntity.java + base/skeleton/ templates + esmdirectory live example
+
+### 31.1 What the skeleton generates (required reading before creating a new entity)
+
+`GenerateSkeletonForAnEntity.java` generates a full entity scaffold by setting two PascalCase
+constants and running `main()`. It creates exactly these files:
+
+```
+modules/<module_lower>/                         ← Module root
+  <MODULE_NAME>Entities.java                    ← Entity name string constants
+  <MODULE_NAME>Role.java                        ← Role constants (extends Role)
+  <entity_nounderscore>/                        ← Entity package (snake → no underscores)
+    <ENTITY_NAME>.java                          ← Parent class (extends Entity, @AutomaterSuite)
+    common/
+      <ENTITY_NAME>Constants.java               ← Action/tab string constants
+      <ENTITY_NAME>DataConstants.java           ← TestCaseData key constants
+      <ENTITY_NAME>Fields.java                  ← FieldDetails map entries
+      <ENTITY_NAME>Locators.java                ← XPath/By locator constants
+
+resources/entity/conf/<module_lower>/
+  <entity_snake>.json                           ← Field config (from entity_skeleton.json)
+
+resources/entity/data/<module_lower>/<entity_snake>/
+  <entity_snake>_data.json                      ← Test input data (empty initially)
+
+resources/entity/roles/
+  <module_lower>.json                           ← Role definitions (empty initially)
+```
+
+### 31.2 Naming derivations (how names are computed)
+
+| Input | Conversion | Use |
+|---|---|---|
+| `MODULE_NAME = "Changes"` | `.toLowerCase()` → `"changes"` | Folder path |
+| `ENTITY_NAME = "ChangeWorkflow"` | `UPPER_CAMEL → LOWER_UNDERSCORE` → `"change_workflow"` | Snake-case name, conf/data filenames |
+| `ENTITY_NAME = "ChangeWorkflow"` | snake without underscores → `"changeworkflow"` | Java package folder name |
+| `ENTITY_NAME.toUpperCase()` | `"CHANGEWORKFLOW"` (no underscore) | Constant name in Entities file — **known quirk** |
+
+> ⚠️ **Quirk**: `ENTITY_NAME.toUpperCase()` is a raw string uppercase — it does NOT insert underscores.
+> `"ChangeWorkflow"` → `"CHANGEWORKFLOW"` in `<MODULE_NAME>Entities.java`, not `"CHANGE_WORKFLOW"`.
+
+### 31.3 Files the skeleton does NOT generate (must be added manually)
+
+| File | Pattern | Purpose |
+|------|---------|---------|
+| `<ENTITY_NAME>Base.java` | `modules/<m>/<e>/<EntityNameBase.java>` | Implementation class (if parent/Base split is used) |
+| `<ENTITY_NAME>AnnotationConstants.java` | `common/` | `@AutomaterScenario dataIds` constants |
+| `utils/<ENTITY_NAME>ActionsUtil.java` | `utils/` | Reusable UI interaction helpers |
+| `utils/<ENTITY_NAME>APIUtil.java` | `utils/` | Reusable REST API helpers |
+
+> **Simple modules** (e.g., `esmdirectory`) skip the parent/Base split entirely — all `@AutomaterScenario`
+> methods live directly in `<ENTITY_NAME>.java`. Only complex modules need a `Base` class.
+> Some simple modules also place `ApiUtil` in `common/` instead of `utils/`.
+
+### 31.4 `<ENTITY_NAME>.java` (parent class) — skeleton-generated structure
+
+```java
+@AutomaterSuite(
+    role  = ModulesRoleSkeleton.SDADMIN,  // replaced with module-specific Role after setup
+    owner = ""
+)
+public class ChangeWorkflow extends Entity {
+
+    public ChangeWorkflow(WebDriver driver, StringBuffer failureMessage) {
+        super(driver, failureMessage);
+    }
+
+    @Override
+    protected String getEntityConfigurationName() {
+        return "change_workflow";        // snake_case entity name — used to load conf JSON
+    }
+
+    @Override
+    protected void assignPermission(String role) throws Exception {
+        super.assignPermission(role);
+    }
+
+    @Override
+    protected boolean preProcess(String group, String[] dataIds) {
+        return false;                    // must be implemented — skeleton is a stub
+    }
+
+    @Override
+    protected void postProcess(String group) {
+                                         // must be implemented for cleanup
+    }
+}
+```
+
+### 31.5 `<ENTITY_NAME>Constants.java` — skeleton inner-class structure
+
+The skeleton always generates these 4 inner classes (all `public final class`, NOT static):
+```java
+public final class ChangeConstants {
+    public final class ListviewGlobalActions    { }   // e.g. "New Change", "Export"
+    public final class ListviewLocalActions     { }   // e.g. "Edit", "Delete" (row actions)
+    public final class DetailsPageGlobalActions { }   // e.g. "Add Task", "Approve"
+    public final class DetailsPageTabs          { }   // e.g. "Notes", "Associations"
+}
+```
+
+### 31.6 `<ENTITY_NAME>Locators.java` — skeleton Listview stub
+
+```java
+public final class ChangeLocators {
+    public final class Listview { }   // populated manually with XPath/By locators
+    // Additional groupings added manually: DetailView, Form, AssociationsTab, etc.
+}
+```
+
+### 31.7 `entity_skeleton.json` — initial conf file template
+
+```json
+{
+  "name":                "<entity_snake>",
+  "plural_name":         "",            ← must fill (e.g. "changes")
+  "module":              "<module>",
+  "api_path":            "",            ← must fill (e.g. "changes")
+  "is_client_framework": true,
+  "field_details": [
+    { "name": "id", "field_type": "input", "data_path": "id", "is_custom": true }
+  ]
+}
+```
+Fill `plural_name` and `api_path` before writing any tests. Add field_details for each UI field.
+
+### 31.8 `<MODULE_NAME>Entities.java` — entity name registry
+
+Used to look up entity string keys for API calls and navigation:
+```java
+public final class ChangesEntities {
+    public final static String CHANGE          = "change";
+    public final static String CHANGEWORKFLOW  = "change_workflow";  // ← no underscore in key name
+}
+```
+`appendEntityNameInModulesFile()` auto-appends the new constant when skeleton is run.
+
+### 31.9 `<MODULE_NAME>Role.java` — module role constants
+
+```java
+public final class ChangesRole extends Role {
+    // Module-specific role constants added manually
+    // E.g.: public final static String FULL_CONTROL = "Full Control";
+}
+```
+Used in `@AutomaterSuite(role = ChangesRole.FULL_CONTROL)`.
+
+---
+
+## SECTION 32 — AUTO-GENERATED CONSTANT FILES (AutoGenerateConstantFiles.java, Mar 2026)
+# Source: AutoGenerateConstantFiles.java (full read)
+# Trigger: run `main()` after modifying any file under resources/entity/
+
+### 32.1 What triggers what
+
+| Modified resource file location | Generated/updated Java file |
+|---|---|
+| `resources/entity/conf/<module>/<entity>.json` | `<Entity>Fields.java` — fully regenerated |
+| `resources/entity/data/<module>/<entity>/<entity>_data.json` | `<Entity>DataConstants.java` — inner class appended or replaced |
+| `resources/entity/roles/<module>.json` | `<Module>Role.java` — fully regenerated |
+
+The tool finds the **most recently modified** file under `resources/entity/` and dispatches.
+Only one file is processed per run. Edit one file at a time, then run.
+
+### 32.2 DataConstants inner class naming rule (CRITICAL)
+
+The inner class name inside `*DataConstants.java` is derived from the **data filename** (not
+the entity name) via `getPascalValue()` = `LOWER_UNDERSCORE → UPPER_CAMEL`:
+
+```
+change_workflow_data.json  →  inner class ChangeWorkflowData
+solution_data.json         →  inner class SolutionData
+request_data.json          →  inner class RequestData
+```
+
+**Inner class structure written:**
+```java
+public final static class ChangeWorkflowData {
+    public final static String PATH = "data" + File.separator + "changes"
+        + File.separator + "change_workflow" + File.separator + "change_workflow_data.json";
+
+    public final static TestCaseData MY_TEST_KEY = new TestCaseData("my_test_key", PATH);
+    // one constant per top-level key in the JSON
+}
+```
+
+### 32.3 DataConstants constant naming rule
+
+```java
+// JSON key               → Java constant name
+"my_test_key"             → MY_TEST_KEY              // .toUpperCase() only — underscores come from snake_case
+"createChange"            → CREATECHANGE             // camelCase key loses word boundary — prefer snake_case keys!
+```
+
+**Rule**: Always use `snake_case` keys in `*_data.json` so the generated constant is readable.
+
+### 32.4 DataConstants is idempotent — safe to re-run
+
+- If the inner class block already exists: it is **replaced** (split on `innerClassName + " {"`)
+- If it is new: it is **appended** before the last `}` of the outer class
+- Running multiple times on the same file does not create duplicate inner classes
+
+### 32.5 FieldDetails constructor — 6-parameter form (REQUIRED)
+
+Generated by `generateEntityFiles()`:
+```java
+// With field_type:
+public final static FieldDetails FIELD_NAME = new FieldDetails(
+    "field_name",        // display/field name
+    "api.path.to.value", // data_path from conf JSON
+    "api_key",           // data_key from conf JSON (separate field from data_path)
+    FieldType.SELECT,    // FieldType enum — uppercase of field_type string
+    false,               // isCustom
+    false                // isUDF
+);
+
+// Without field_type (null in conf):
+public final static FieldDetails FIELD_NAME = new FieldDetails(
+    "field_name", "api.path", "api_key", null, false, false
+);
+```
+
+> ⚠️ **`FieldDetails` takes 6 parameters**, not 4. Missing `isUDF` = compile error.
+
+### 32.6 FieldDetails constant naming rule
+
+```java
+fieldName.replace("-", "_").replace(" ", "_").toUpperCase()
+// "my-field"   → MY_FIELD
+// "my field"   → MY_FIELD
+// "my_field"   → MY_FIELD
+```
+
+### 32.7 FieldType enum values (from conf → generated code)
+
+`field_type` string in conf JSON → `FieldType.<CONST>` in generated Java:
+
+**Handled by `fillInputForAnEntity` switch statement:**
+```
+"input"           → FieldType.INPUT
+"select"          → FieldType.SELECT
+"multiselect"     → FieldType.MULTISELECT
+"html"            → FieldType.HTML
+"date"            → FieldType.DATE
+"datetime"        → FieldType.DATETIME
+"textarea"        → FieldType.TEXTAREA
+"criteria"        → FieldType.CRITERIA
+"pickList"        → FieldType.PICKLIST        (⚠️ camelCase value — not "picklist")
+"attachment"      → FieldType.ATTACHMENT
+```
+
+**NOT handled by `fillInputForAnEntity` (no switch case — silently skipped):**
+```
+"checkbox"        → FieldType.CHECKBOX        (click manually via locator)
+"radio"           → FieldType.RADIO            (click manually via locator)
+"selectonly"      → FieldType.SELECTONLY
+"selectaction"    → FieldType.SELECTACTION
+"mappedfield"     → FieldType.MAPPEDFIELD
+"systemSelect"    → FieldType.SYSTEMSELECT    (⚠️ camelCase value)
+"selectRelationship" → FieldType.SELECTRELATIONSHIP  (⚠️ camelCase value)
+"ipaddress"       → FieldType.IPADDRESS
+```
+
+```
+""  / null    → null  (no FieldType argument)
+```
+
+> ⚠️ The 3 camelCase values (`"pickList"`, `"systemSelect"`, `"selectRelationship"`) must be used **exactly as-is** in conf JSON. Using all-lowercase will cause the switch to fall through silently.
+
+### 32.8 Role constants naming rule
+
+JSON key → constant name: `roleDetail.toUpperCase()` (no other transformation).
+`"Full Control"` → `FULL CONTROL` (with space — **invalid Java identifier**).
+**Rule**: Role JSON keys must use only alphanumeric + underscore. Use `"full_control"` not `"Full Control"`.
+
+### 32.9 Workflow to add a new test data entry (complete steps)
+
+1. Add the new key-value entry to `<entity>_data.json` (use snake_case key)
+2. Run `AutoGenerateConstantFiles.main()` (or equivalent — it finds the most recently modified file)
+3. The corresponding `TestCaseData` constant is auto-appended to `<Entity>DataConstants.<InnerClass>`
+4. Reference in test: `<Entity>DataConstants.<InnerClass>.MY_NEW_KEY`
+5. Reference in `@AutomaterScenario(dataIds = {<Entity>AnnotationConstants.Data.MY_KEY})` — this is a DIFFERENT constants class used only for preProcess dataIds
+
+---
+
+## SECTION 33 — ROLE SYSTEM: createUserByRole, Role JSON, SDADMIN semantics (Mar 2026)
+
+### 33.1 createUserByRole — full internal flow
+
+Called from `Entity.assignPermission()` in the **admin session**, before any `switchToUserSession()`:
+
+```
+assignPermission(roleId)
+  └── createUserByRole("TECHNICIAN", moduleName, roleId, scenarioUser)
+        ├── getRoleDetails(moduleName, roleId)         // reads general.json first, module.json as fallback
+        ├── getUserId(scenarioUser)                    // searches users API by email → sets entityId on User
+        ├── if entityId != null → handleExistingUserRole()
+        │     ├── is_technician=true  → updateTechnician() if role mismatch, else store entityId in LocalStorage
+        │     └── is_technician=false → createRequester()
+        └── if entityId == null → handleNewUserRole()
+              ├── is_technician=true  → createTechnician()
+              └── is_technician=false → createRequester()
+```
+
+`createTechnician()` also calls `checkCustomRole()` and `checkProjectRole()` — both create the custom/project role via UI if it doesn't exist in SDP yet.
+
+### 33.2 getRoleDetails() lookup order
+
+1. Reads `resources/entity/roles/general.json` (always first)
+   - Contains: `sdadmin`, `sdsite_admin`, `sdguest`, `helpdeskconfig`
+2. If the roleId is NOT found in general.json, reads `resources/entity/roles/<moduleName>.json`
+   - If same key in both, **general.json wins** (first match returns)
+
+Implication: if you define a custom role with the same key name as a general role, the general one silently overrides it. Use unique keys per module.
+
+### 33.3 Role JSON structure — complete reference
+
+```json
+// Technician with custom SDP role (most common):
+"Solution_FullControl": {
+  "user": {
+    "roles": [{"name": "Solution_FullControl"}],
+    "default_project_role": {"name": "Project Admin"},
+    "purchase_order_approver": "true",
+    "approval_limit": "-1"
+  },
+  "custom_roles": {
+    "Solution_FullControl": {
+      "permissions": [
+        {"name": "ViewSolutions"},
+        {"name": "CreateSolutions"},
+        {"name": "ModifySolutions"},
+        {"name": "DeleteSolutions"},
+        {"name": "SolutionsApprove"}
+      ],
+      "description": "Technician with full permissions"
+    }
+  },
+  "is_technician": true
+}
+
+// Requester (no custom_roles, no roles[]):
+"Solution_Requester": {
+  "user": {
+    "description": "Requester with same department",
+    "login_user": true,
+    "requester_allowed_to_view": "own_requests",
+    "purchase_order_approver": true,
+    "approval_limit": -1,
+    "service_request_approver": true
+  },
+  "is_technician": false
+}
+```
+
+**Fields**:
+- `is_technician: true` → `createTechnician()` path; `false` → `createRequester()` path
+- `custom_roles.<name>.permissions` → framework auto-creates this custom role in SDP if absent
+- `roles[].name` → the built-in SDP role to assign (SDAdmin, HelpdeskConfig, etc.)
+- Requester entries: `login_user: true` required for portal login
+
+### 33.4 SDADMIN = no session split (CRITICAL)
+
+When `@AutomaterSuite(role = Role.SDADMIN)` and scenario user email = admin email:
+- `initializeAdminSession()` → browser logged in as admin
+- `preProcess()` runs in admin session ✅
+- `switchToUserSession()` → calls `LoginUtil.login(this, scenarioUser)` which logs in as the same admin account again
+- Test method runs in **admin session** too ✅
+
+**Consequence**: API calls inside the test method body are **safe** when `role = Role.SDADMIN` — unlike non-admin roles where test method body runs in restricted user session.
+
+**Consequence**: `NoPreprocess` + `Role.SDADMIN` = the simplest possible scenario: no API setup, no session switch, test method runs as admin. Use this combination for admin-only UI tests that need no prerequisite data.
+
+### 33.5 SDADMIN vs module-specific roles — when to use each
+
+| Role | When to use |
+|------|------------|
+| `Role.SDADMIN` | Testing admin-only features; no need to validate permission boundaries |
+| `SolutionsRole.SOLUTION_FULLCONTROL` | Testing that a technician WITH a specific role can perform an action |
+| `SolutionsRole.SOLUTION_VIEWONLY` | Testing that view-only users CANNOT perform certain actions |
+| `SolutionsRole.SOLUTION_REQUESTER` | Testing requester portal experience |
