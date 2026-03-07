@@ -138,6 +138,25 @@ Open the **parent class** (e.g., `Change.java`, `Solution.java`) and read `prePr
 ## Output Format
 Use the two-piece format with `// ===== ADD TO: FileName.java =====` markers for each file changed.
 
+## Post-Generation — ChromaDB Indexing (REQUIRED after every code write)
+
+After writing all generated code to the Java source files, run the RAG indexer so the Coverage Agent treats these scenarios as "already covered" in future pipeline runs:
+
+```bash
+cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
+.venv/bin/python -m knowledge_base.rag_indexer
+```
+
+Expected output: `[RAGIndexer] ✅ Indexed N scenario(s) into ChromaDB`
+
+If the command fails (non-fatal — do NOT retry in a loop):
+- Report the error output to the user
+- Continue — the generated code is still valid; ChromaDB will be updated next time the full pipeline runs via `OutputAgent`
+
+**Why this matters**: ChromaDB is queried by `CoverageAgent` before planning new tests. Without indexing, a scenario generated here will be treated as a coverage gap and regenerated the next time `python main.py` runs on the same feature.
+
+---
+
 ## Constraints
 - DO NOT generate full file contents — only additions
 - DO NOT invent preProcess group names not listed in parent class
