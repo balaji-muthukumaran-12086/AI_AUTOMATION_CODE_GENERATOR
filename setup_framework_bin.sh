@@ -28,7 +28,30 @@ echo "======================================================"
 echo "  AutomaterSeleniumFramework  →  SDPLIVE bin/ compiler"
 echo "======================================================"
 
-# ── 1. Verify paths exist ─────────────────────────────────────────────────────
+# ── 0. Check hg-managed folders exist (gitignored — must be cloned via hg) ───
+MISSING_HG=0
+if [ ! -d "$WORKSPACE/AutomaterSeleniumFramework" ]; then
+  echo "❌ AutomaterSeleniumFramework/ not found."
+  echo "   This folder is managed via Mercurial (hg) and is NOT included in the git clone."
+  echo "   Clone it with:"
+  echo "     cd $WORKSPACE"
+  echo "     hg clone <AutomaterSeleniumFramework-repo-url> AutomaterSeleniumFramework"
+  echo "     cd AutomaterSeleniumFramework && hg update $TARGET_BRANCH"
+  MISSING_HG=$((MISSING_HG + 1))
+fi
+if [ ! -d "$WORKSPACE/SDPLIVE_LATEST_AUTOMATER_SELENIUM" ]; then
+  echo "❌ SDPLIVE_LATEST_AUTOMATER_SELENIUM/ not found."
+  echo "   This folder is managed via Mercurial (hg) and is NOT included in the git clone."
+  echo "   Clone it with:"
+  echo "     cd $WORKSPACE"
+  echo "     hg clone <SDPLIVE_LATEST_AUTOMATER_SELENIUM-repo-url> SDPLIVE_LATEST_AUTOMATER_SELENIUM"
+  MISSING_HG=$((MISSING_HG + 1))
+fi
+if [ "$MISSING_HG" -gt 0 ]; then
+  echo ""
+  echo "⚠️  Please clone the missing Mercurial repo(s) above, then re-run this script."
+  exit 1
+fi
 for path in "$DEPS" "$FW_SRC" "$BIN"; do
   if [ ! -d "$path" ]; then
     echo "❌ Directory not found: $path"

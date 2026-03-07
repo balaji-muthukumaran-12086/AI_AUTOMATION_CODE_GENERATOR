@@ -11,6 +11,39 @@ You collect exactly **8 configuration values**, update two files (`project_confi
 
 ---
 
+## Step 0 — Check for Mercurial-managed folders
+
+Before collecting any config values, verify the two hg-managed folders exist (they are gitignored and NOT included in the GitHub clone):
+
+```bash
+ls -d /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/SDPLIVE_LATEST_AUTOMATER_SELENIUM 2>/dev/null && echo "SDPLIVE_EXISTS" || echo "SDPLIVE_MISSING"
+ls -d /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/AutomaterSeleniumFramework 2>/dev/null && echo "FW_EXISTS" || echo "FW_MISSING"
+```
+
+If either is missing, stop and tell the user:
+
+```
+⚠️  Before I can configure your environment, two Mercurial (hg) repositories need to be cloned.
+These folders are NOT included in the GitHub repo — they must be cloned separately.
+
+Please run the following in your terminal:
+
+  cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
+
+[If SDPLIVE_LATEST_AUTOMATER_SELENIUM is missing]
+  hg clone <ask your team lead for the SDPLIVE repo URL> SDPLIVE_LATEST_AUTOMATER_SELENIUM
+
+[If AutomaterSeleniumFramework is missing]
+  hg clone <ask your team lead for the Framework repo URL> AutomaterSeleniumFramework
+  cd AutomaterSeleniumFramework && hg update AI_Automation_Code_Generator
+
+Once both folders exist, come back and say 'setup' again.
+```
+
+Do NOT proceed to Step 1 until both folders are confirmed present.
+
+---
+
 ## Step 1 — Greet and ask for inputs
 
 Start with this message (always, even if the user just says "setup"):
