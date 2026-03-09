@@ -81,7 +81,9 @@ drivers_path =
 
 If you select `new`, the agent asks for your **full name** and **Zoho Corp ID**, then registers you in `OwnerConstants.java` automatically.
 
-The agent will: clone the hg branch, set your owner, write `.env`, update `config/project_config.py`, and compile the framework.
+The agent will: clone the hg branch, create a `Testcase/` folder for use-case document tracking, set your owner, write `.env`, update `config/project_config.py`, and verify framework classes.
+
+> **Note**: The framework JAR is already in the `dependencies/` folder — no separate framework repo clone is needed. Only the test-case branch is cloned via Mercurial.
 
 ---
 
@@ -112,9 +114,12 @@ Clone the test-case branch:
 hg clone -b SDPLIVE_LATEST_AUTOMATER_SELENIUM \
   https://USERNAME:PASSWORD@zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium \
   SDPLIVE_LATEST_AUTOMATER_SELENIUM
+
+# Create the Testcase folder for use-case document tracking
+mkdir -p SDPLIVE_LATEST_AUTOMATER_SELENIUM/Testcase
 ```
 
-Compile the framework:
+Verify framework classes (the JAR is already in `dependencies/` — no framework repo needed):
 ```bash
 ./setup_framework_bin.sh
 ```
@@ -161,12 +166,35 @@ Reports appear at: `SDPLIVE_LATEST_AUTOMATER_SELENIUM/reports/LOCAL_<method>_<ti
    - **Attach a document**: Drag a `.md`, `.txt`, `.xls`, `.xlsx`, or `.csv` file into the chat and type `@test-generator`
    - **Use-case docs folder**: Place documents in `docs/UseCase/` or `docs/Feature_Document/` for reference
 
+### Multi-project targeting
+
+If you have multiple test-case branches cloned (e.g., 5 different feature projects), specify which one to target:
+
+```
+@test-generator project=SDPLIVE_UI_AUTOMATION_BRANCH create a change and verify the detail view
+@test-generator generate in SDPLIVE_FEATURE_X: add notes to an incident request
+```
+
+If no `project=` is specified, the agent uses the default from `config/project_config.py`.
+
+### CSV / Spreadsheet documents
+
+The agent supports a canonical CSV use-case format with these key columns:
+- **UseCase ID** — maps to test scenario IDs
+- **Severity** — maps to `Priority` (Critical→HIGH, Major→MEDIUM, Minor→LOW)
+- **Module** / **Sub-Module** — determines module placement
+- **Description** / **Impact Area** / **Pre-Requisite** — drives scenario generation
+- **UI To-be-automated** — filter gate (only `Yes` rows are processed)
+
+For `.xlsx` files with **multiple sheets**, the agent exports each sheet to a separate CSV, merges all rows, and applies the filter + grouping logic on the combined set.
+
 The agent will:
 - Read framework rules and knowledge files
 - Analyze the use case and identify the correct module/entity
 - Check existing data entries and reuse where possible
 - Generate Java test code (annotation wrapper + base implementation + data JSON + constants)
 - Output code blocks with `// ===== ADD TO: <filename> =====` markers
+- Save a copy of the uploaded document to `{PROJECT}/Testcase/` for traceability
 
 > **Tip**: For best results, be specific about what module (requests, solutions, changes, etc.) and what actions (create, edit, verify, add notes, etc.) the test should cover.
 
@@ -198,3 +226,5 @@ The agent can:
 | VPN / connection errors | Connect to Zoho VPN first |
 | `BUILD FAILED` | Use targeted compile — full project compile is broken (see `copilot-instructions.md`) |
 | `OWNER_CONSTANT` empty | Re-run `@setup-project setup` |
+| `Project folder not found` | Run `@setup-project setup` for the missing branch, or check the folder name in `project=` |
+| Multiple projects, wrong target | Use `@test-generator project=BRANCH_NAME` to target the correct one |
