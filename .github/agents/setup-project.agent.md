@@ -92,17 +92,15 @@ Now copy the form below, fill in your values, and paste it back:
 ```
 owner        = <number from list above, or "new">
 hg_username  = 
-hg_password  = 
 branch       = SDPLIVE_LATEST_AUTOMATER_SELENIUM
 deps_path    = 
 ```
 
 > **owner** — Your number from the list above (e.g., `5` for BALAJI_M), or `new` if you're not listed
 > **hg_username** — Your zrepository username (e.g., `balaji-12086`)
-> **hg_password** — Your zrepository password
-> ⓘ *Used only once in the `hg clone` command. Never written to `.env`, `.hgrc`, or any config file. Discarded immediately after clone completes.*
 > **branch** — The hg branch to clone (default pre-filled — change only if needed)
 > **deps_path** — Absolute path to the Java JARs folder (e.g., `/home/you/dependencies`)
+> ⓘ *Hg password is NOT collected here — you'll enter it directly in the terminal when the clone command runs.*
 ````
 
 ### If `generate_and_run`:
@@ -111,7 +109,6 @@ deps_path    =
 ```
 owner        = <number from list above, or "new">
 hg_username  = 
-hg_password  = 
 branch       = SDPLIVE_LATEST_AUTOMATER_SELENIUM
 deps_path    = 
 
@@ -125,8 +122,6 @@ drivers_path =
 
 > **owner** — Your number from the list above (e.g., `5` for BALAJI_M), or `new` if you're not listed
 > **hg_username** — Your zrepository username (e.g., `balaji-12086`)
-> **hg_password** — Your zrepository password
-> ⓘ *Used only once in the `hg clone` command. Never written to `.env`, `.hgrc`, or any config file. Discarded immediately after clone completes.*
 > **branch** — The hg branch to clone (default pre-filled — change only if needed)
 > **deps_path** — Absolute path to the Java JARs folder (e.g., `/home/you/dependencies`)
 > **sdp_url** — Full URL of your SDP instance (e.g., `https://sdpodqa-auto1.csez.zohocorpin.com:9090/`)
@@ -135,6 +130,7 @@ drivers_path =
 > **tech_email** — Technician / scenario user email (e.g., `tech@zohotest.com`)
 > **password** — Common password for both SDP accounts
 > **drivers_path** — Absolute path to Firefox + geckodriver folder (e.g., `/home/you/Drivers`)
+> ⓘ *Hg password is NOT collected here — you'll enter it directly in the terminal when the clone command runs.*
 ````
 
 ---
@@ -147,16 +143,14 @@ Accept values in any of these formats:
 - Natural sentence
 
 Extract and label each value.
-- If `SETUP_MODE` is `generate_only`: 5 values are required (owner, hg username, password, branch, deps_path)
-- If `SETUP_MODE` is `generate_and_run`: all 11 values are required
+- If `SETUP_MODE` is `generate_only`: 4 values are required (owner, hg username, branch, deps_path)
+- If `SETUP_MODE` is `generate_and_run`: all 10 values are required
 
 If any required value is missing, ask only for the missing ones.
-The hg password is used **only** for the clone command — it is NEVER stored in any file.
 
 **Validation rules (always):**
 - Owner: a valid number from the presented list, OR the string `new`
 - Hg username: non-empty string
-- Hg password: non-empty string
 - Branch name: non-empty string (no spaces, no slashes) — this also becomes PROJECT_NAME
 - Dependencies path: absolute path (starts with `/`)
 
@@ -174,14 +168,24 @@ If validation fails on any value, tell the user which one is invalid and ask the
 
 ## Step 3 — Clone the test-case repo (if missing)
 
-Use the hg username and password to clone. The password is used ONLY in this command and never persisted.
+The hg clone command will prompt the user for their credentials directly in the terminal. **Do NOT embed credentials in the URL.**
 
 ### Clone the test-case branch (if folder missing from Step 0)
 
+Tell the user:
+```
+📦 Cloning the test-case branch now...
+The terminal will prompt you for your zrepository username and password.
+Please enter them when asked.
+```
+
+Then run:
 ```bash
 cd {WORKSPACE_DIR}
-hg clone --branch "{BRANCH_NAME}" "https://{HG_USERNAME}:{HG_PASSWORD}@zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium" "{BRANCH_NAME}" 2>&1
+hg clone --branch "{BRANCH_NAME}" "https://zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium" "{BRANCH_NAME}" 2>&1
 ```
+
+> ⚠️ The command runs interactively — Mercurial will prompt for `http authorization required / realm` username and password in the terminal. The user types them directly. Credentials are **never stored** in any file.
 
 If the clone fails:
 - Authentication error → tell user to verify hg username/password
@@ -191,9 +195,11 @@ If the clone fails:
 If the folder already exists from Step 0, **switch to the requested branch** instead:
 ```bash
 cd {WORKSPACE_DIR}/{BRANCH_NAME}
-hg pull "https://{HG_USERNAME}:{HG_PASSWORD}@zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium" 2>&1
+hg pull "https://zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium" 2>&1
 hg update "{BRANCH_NAME}" 2>&1
 ```
+
+> The `hg pull` may also prompt for credentials interactively — same process.
 
 ### Create Testcase/ folder
 
@@ -427,9 +433,10 @@ If it **fails**, show the last 20 lines and ask the user to fix:
 
 ## Important rules
 
-- **NEVER print the password in plain text** — always mask it as `●●●●●●●●` in confirmations and summaries
+- **NEVER print the password in plain text** — always mask SDP passwords as `●●●●●●●●` in confirmations and summaries
+- **NEVER embed hg credentials in clone URLs** — let the terminal prompt the user interactively
 - **NEVER modify any line in `.env` other than the 5 SDP keys**
 - **NEVER modify `project_config.py` other than the `PROJECT_NAME` line**
-- If the user provides all values in their initial message (via key=value or inline), skip Step 1/1b and go directly to Step 3. Infer `SETUP_MODE` from which keys are present: if SDP URL / deps / drivers are provided → `generate_and_run`; if only hg credentials → `generate_only`. The `owner` field still must be resolved — if missing, show the owner list and ask
+- If the user provides all values in their initial message (via key=value or inline), skip Step 1/1b and go directly to Step 3. Infer `SETUP_MODE` from which keys are present: if SDP URL / deps / drivers are provided → `generate_and_run`; if only hg username → `generate_only`. The `owner` field still must be resolved — if missing, show the owner list and ask
 - `FIREFOX_BINARY` and `GECKODRIVER_PATH` are always derived from `DRIVERS_DIR` as `{DRIVERS_DIR}/firefox/firefox` and `{DRIVERS_DIR}/geckodriver` — never ask for them separately
 - If the user initially chose `generate_only` and later wants to enable execution, they can re-run `@setup-project setup` and choose "Generate and Run" — the agent will only ask for the missing SDP/path values

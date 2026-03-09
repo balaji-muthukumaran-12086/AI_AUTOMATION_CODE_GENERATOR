@@ -109,10 +109,10 @@ SDP_ADMIN_PASS=yourpassword
 DRIVERS_DIR=/absolute/path/to/Drivers
 ```
 
-Clone the test-case branch:
+Clone the test-case branch (Mercurial will prompt for your username and password in the terminal):
 ```bash
 hg clone -b SDPLIVE_LATEST_AUTOMATER_SELENIUM \
-  https://USERNAME:PASSWORD@zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium \
+  https://zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium \
   SDPLIVE_LATEST_AUTOMATER_SELENIUM
 
 # Create the Testcase folder for use-case document tracking
