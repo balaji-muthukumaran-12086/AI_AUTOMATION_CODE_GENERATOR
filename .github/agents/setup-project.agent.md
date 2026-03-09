@@ -172,11 +172,11 @@ If validation fails on any value, tell the user which one is invalid and ask the
 
 ---
 
-## Step 3 — Clone the Mercurial repos (if missing)
+## Step 3 — Clone the test-case repo (if missing)
 
 Use the hg username and password to clone. The password is used ONLY in this command and never persisted.
 
-### 3a — Clone the test-case branch (if folder missing from Step 0)
+### Clone the test-case branch (if folder missing from Step 0)
 
 ```bash
 cd {WORKSPACE_DIR}
@@ -193,22 +193,6 @@ If the folder already exists from Step 0, **switch to the requested branch** ins
 cd {WORKSPACE_DIR}/{BRANCH_NAME}
 hg pull "https://{HG_USERNAME}:{HG_PASSWORD}@zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium" 2>&1
 hg update "{BRANCH_NAME}" 2>&1
-```
-
-### 3b — AutomaterSeleniumFramework (NOT cloned for normal users)
-
-> The `AutomaterSeleniumFramework/` repo is a **development-only dependency** that ships
-> pre-compiled in the `bin/` folder of the test-case branch. Normal users do NOT need to
-> clone it. The `setup_framework_bin.sh` script in Step 9 compiles it only if the folder
-> already exists locally.
-
-**Skip this step entirely.** If the framework folder is missing, that is expected — just
-inform the user:
-
-```
-ℹ️  AutomaterSeleniumFramework/ is not present — that's fine.
-    The pre-compiled framework classes in {BRANCH_NAME}/bin/ will be used.
-    (Only the framework maintainer needs this repo.)
 ```
 
 ---
@@ -336,7 +320,7 @@ print("Updated keys:", list(updates.keys()))
 
 ## Step 7 — Confirm success
 
-After all files are updated and repos cloned, show this summary:
+After all files are updated and the repo is cloned, show this summary:
 
 ```
 ✅ Setup complete! Here's what was configured:
@@ -364,8 +348,8 @@ After all files are updated and repos cloned, show this summary:
 Then continue for both modes:
 
 ```
-**Repos cloned/updated:**
-- `{BRANCH_NAME}/` ← test-case hg branch
+**Repo cloned/updated:**
+- `{BRANCH_NAME}/` ← test-case hg branch (framework JAR is in dependencies/)
 
 **Owner:**
 `OwnerConstants.{RESOLVED_OWNER_CONSTANT}` — all generated test scenarios will use this owner.
@@ -403,17 +387,11 @@ grep -q "^{BRANCH_NAME}/" {WORKSPACE_DIR}/.gitignore || echo "{BRANCH_NAME}/" >>
 
 ---
 
-## Step 9 — Compile framework (only if generate_and_run AND AutomaterSeleniumFramework/ exists)
+## Step 9 — Verify framework classes (only if generate_and_run)
 
 > **Skip this entire step if `SETUP_MODE` is `generate_only`** — compilation is not needed for code generation.
 
-Check if the framework source folder exists:
-
-```bash
-ls -d {WORKSPACE_DIR}/AutomaterSeleniumFramework 2>/dev/null && echo "FW_PRESENT" || echo "FW_ABSENT"
-```
-
-**If `FW_PRESENT`** — run the compile script:
+The framework is provided as a pre-compiled JAR in the `dependencies/` folder — there is **no need to clone any framework repo**. Run the setup script to verify the pre-compiled classes are in place:
 
 ```bash
 cd {WORKSPACE_DIR}
@@ -422,7 +400,7 @@ cd {WORKSPACE_DIR}
 
 If it **succeeds**, show:
 ```
-✅ Framework compiled successfully. You're all set!
+✅ Framework classes verified. You're all set!
 
 Just open @test-generator and attach your use-case document (.xlsx, .csv, .md, or plain text).
 The agent will generate, compile, and run the tests for you.
@@ -432,18 +410,6 @@ If it **fails**, show the last 20 lines and ask the user to fix:
 - `DEPS_DIR` must point to a valid directory containing JAR files
 - JDK 11+ must be on `PATH` — verify with `java -version`
 - Re-run `@setup-project` with the corrected `deps=` value if needed
-
-**If `FW_ABSENT`** — skip compilation and show:
-
-```
-✅ Setup complete! You're all set.
-
-ℹ️  AutomaterSeleniumFramework/ is not present, so framework compilation was skipped.
-    The pre-compiled classes in {BRANCH_NAME}/bin/ will be used instead.
-
-Just open @test-generator and attach your use-case document (.xlsx, .csv, .md, or plain text).
-The agent will generate, compile, and run the tests for you.
-```
 
 ---
 
