@@ -99,7 +99,8 @@ deps_path    =
 
 > **owner** — Your number from the list above (e.g., `5` for BALAJI_M), or `new` if you're not listed
 > **hg_username** — Your zrepository username (e.g., `balaji-12086`)
-> **hg_password** — Your zrepository password (will NOT be stored in any file)
+> **hg_password** — Your zrepository password
+> ⓘ *Used only once in the `hg clone` command. Never written to `.env`, `.hgrc`, or any config file. Discarded immediately after clone completes.*
 > **branch** — The hg branch to clone (default pre-filled — change only if needed)
 > **deps_path** — Absolute path to the Java JARs folder (e.g., `/home/you/dependencies`)
 ````
@@ -124,7 +125,8 @@ drivers_path =
 
 > **owner** — Your number from the list above (e.g., `5` for BALAJI_M), or `new` if you're not listed
 > **hg_username** — Your zrepository username (e.g., `balaji-12086`)
-> **hg_password** — Your zrepository password (will NOT be stored in any file)
+> **hg_password** — Your zrepository password
+> ⓘ *Used only once in the `hg clone` command. Never written to `.env`, `.hgrc`, or any config file. Discarded immediately after clone completes.*
 > **branch** — The hg branch to clone (default pre-filled — change only if needed)
 > **deps_path** — Absolute path to the Java JARs folder (e.g., `/home/you/dependencies`)
 > **sdp_url** — Full URL of your SDP instance (e.g., `https://sdpodqa-auto1.csez.zohocorpin.com:9090/`)
