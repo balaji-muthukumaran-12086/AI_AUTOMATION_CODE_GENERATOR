@@ -49,6 +49,31 @@ JSONObject inputData = getTestCaseData(ChangeDataConstants.ChangeData.CREATE_CHA
 
 For dynamic values, use `$(custom_KEY)` placeholders in JSON + `LocalStorage.store("KEY", value)` before `getTestCaseData()`.
 
+## Test Data Loading Methods — Correct Context (REQUIRED)
+
+Three methods exist for loading test data. **Each has a specific context — mixing them is FORBIDDEN.**
+
+| Method | Where to use | Parameter |
+|--------|-------------|-----------|
+| `getTestCaseData(TestCaseData)` | **Test method body** | `DataConstants` constant |
+| `getTestCaseDataUsingCaseId(dataIds[N])` | **preProcess() only** | Raw string from `dataIds` array |
+| `DataUtil.getTestCaseDataUsingFilePath(path, caseId)` | **APIUtil files** (static methods) | Explicit file path + case ID |
+
+```java
+// ✅ CORRECT — preProcess
+JSONObject inputData = getTestCaseDataUsingCaseId(dataIds[0]);
+
+// ✅ CORRECT — APIUtil (static, no Entity context)
+JSONObject data = DataUtil.getTestCaseDataUsingFilePath(
+    AutomaterUtil.getResourceFolderPath() + PATH, caseId);
+
+// ✅ CORRECT — test method body
+JSONObject inputData = getTestCaseData(SolutionDataConstants.SolutionData.MY_KEY);
+
+// ❌ FORBIDDEN — getTestCaseDataUsingCaseId in APIUtil (no Entity instance)
+// ❌ FORBIDDEN — getTestCaseDataUsingFilePath in preProcess (use getTestCaseDataUsingCaseId)
+```
+
 ## ActionUtils / APIUtil Pattern (Mandatory)
 
 Test method body = utility calls + assertions ONLY. No inline `actions.click()` sequences.

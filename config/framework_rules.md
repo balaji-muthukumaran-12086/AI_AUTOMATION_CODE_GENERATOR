@@ -611,12 +611,63 @@ public final static TestCaseData MY_NEW_DATA = new TestCaseData("my_new_data_key
 - The `PATH` constant uses `File.separator` and points to `data/<module>/<entity>/<entity>_data.json`
 - The first string argument **must exactly match** the top-level key in the JSON file
 
-### 9.2 Usage in test method
+### 9.2 Test Data Loading Methods — Correct Context (REQUIRED)
+
+Three methods exist for loading test data. **Each has a specific use context — mixing them is FORBIDDEN.**
+
+| Method | Where to use | Parameter | Auto-path? |
+|--------|-------------|-----------|------------|
+| `getTestCaseData(TestCaseData)` | **Test method body** | `DataConstants` constant | ✅ from TestCaseData object |
+| `getTestCaseDataUsingCaseId(dataIds[N])` | **preProcess() only** | Raw string from `dataIds` array | ✅ `data/<module>/<entity>/<entity>_data.json` |
+| `DataUtil.getTestCaseDataUsingFilePath(path, caseId)` | **APIUtil files** (static methods) | Explicit file path + case ID string | ❌ manual path |
+
+**Rules:**
+1. **`getTestCaseDataUsingCaseId(String)`** — Instance method on Entity. Uses `getModuleName()` + `getName()` to auto-build the file path. **ONLY use inside `preProcess()` where the `dataIds` parameter is available.**
+2. **`DataUtil.getTestCaseDataUsingFilePath(path, caseId)`** — Static method on DataUtil. Takes an explicit file path. **Use in `*APIUtil.java` files** where there is no Entity instance. Define a `PATH` constant in the APIUtil class.
+3. **`getTestCaseData(TestCaseData)`** — Instance method on Entity. Takes a `TestCaseData` constant from `*DataConstants.java`. **Use in test method bodies** for loading UI form data.
+
+```java
+// ✅ CORRECT — preProcess uses getTestCaseDataUsingCaseId
+protected boolean preProcess(String group, String[] dataIds) {
+    if ("create".equalsIgnoreCase(group)) {
+        JSONObject inputData = getTestCaseDataUsingCaseId(dataIds[0]);
+    }
+}
+
+// ✅ CORRECT — APIUtil uses DataUtil.getTestCaseDataUsingFilePath
+public final class ChangeAPIUtil extends Utilities {
+    private static final String PATH = "data" + File.separator + "changes"
+        + File.separator + "change" + File.separator + "change_data.json";
+
+    public static String createChange(String caseId) throws Exception {
+        JSONObject data = DataUtil.getTestCaseDataUsingFilePath(
+            AutomaterUtil.getResourceFolderPath() + PATH, caseId);
+        // ...
+    }
+}
+
+// ✅ CORRECT — test method uses getTestCaseData
+public void myTestMethod() throws Exception {
+    JSONObject inputData = getTestCaseData(ChangeDataConstants.ChangeData.CREATE_CHANGE);
+}
+
+// ❌ FORBIDDEN — getTestCaseDataUsingCaseId in APIUtil (no Entity instance context)
+public static void createEntity(String caseId) {
+    JSONObject data = getTestCaseDataUsingCaseId(caseId);  // WRONG — static, no dataIds
+}
+
+// ❌ FORBIDDEN — getTestCaseDataUsingFilePath in preProcess (use getTestCaseDataUsingCaseId)
+protected boolean preProcess(String group, String[] dataIds) {
+    JSONObject data = DataUtil.getTestCaseDataUsingFilePath(PATH, dataIds[0]);  // WRONG
+}
+```
+
+### 9.3 Usage in test method
 ```java
 JSONObject inputData = getTestCaseData(RequestDataConstants.RequestData.MY_NEW_DATA);
 ```
 
-### 9.3 FORBIDDEN — string literals as data keys
+### 9.4 FORBIDDEN — string literals as data keys
 ```java
 // WRONG — never use a raw string
 JSONObject inputData = getTestCaseData("IR_Valid_Input");
@@ -625,7 +676,7 @@ JSONObject inputData = getTestCaseData("IR_Valid_Input");
 JSONObject inputData = getTestCaseData(RequestDataConstants.RequestData.IR_VALID_INPUT);
 ```
 
-### 9.4 FORBIDDEN — inline JSONObject construction for test/API data (CRITICAL)
+### 9.5 FORBIDDEN — inline JSONObject construction for test/API data (CRITICAL)
 
 All entity test data (UI form inputs AND preProcess API payloads) MUST be defined in
 `*_data.json` files and loaded via `getTestCaseData()` or `getTestCaseDataUsingCaseId()`.

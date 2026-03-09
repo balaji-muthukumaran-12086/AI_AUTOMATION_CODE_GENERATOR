@@ -549,6 +549,62 @@ JSONObject inputData = getTestCaseDataUsingCaseId(dataIds[0]);  // key from Anno
 
 > **FORBIDDEN**: `getTestCaseData("my_key")` — never pass raw string to `getTestCaseData()`.
 
+### ⚠️ Test Data Loading Methods — Correct Context (REQUIRED)
+
+Three methods exist for loading test data. **Each has a specific context where it MUST be used — mixing them is FORBIDDEN.**
+
+| Method | Where to use | Parameter | Auto-path? |
+|--------|-------------|-----------|------------|
+| `getTestCaseData(TestCaseData)` | **Test method body** | `DataConstants` constant | ✅ from TestCaseData object |
+| `getTestCaseDataUsingCaseId(dataIds[N])` | **preProcess() only** | Raw string from `dataIds` array | ✅ `data/<module>/<entity>/<entity>_data.json` |
+| `DataUtil.getTestCaseDataUsingFilePath(path, caseId)` | **APIUtil files** (static methods) | Explicit file path + case ID string | ❌ manual path |
+
+#### Rules
+
+1. **`getTestCaseDataUsingCaseId(String)`** — Instance method on Entity. Uses `getModuleName()` + `getName()` to build the path automatically. **ONLY use inside `preProcess()` where `dataIds` array is available as a parameter.** The `dataIds` come from `@AutomaterScenario(dataIds = {...})`.
+
+2. **`DataUtil.getTestCaseDataUsingFilePath(path, caseId)`** — Static method on DataUtil. Takes an explicit file path. **Use in `*APIUtil.java` files** where there is no Entity instance context. Define a `PATH` constant in the APIUtil class.
+
+3. **`getTestCaseData(TestCaseData)`** — Instance method on Entity. Takes a `TestCaseData` constant from `*DataConstants.java`. **Use in test method bodies** for loading UI form data.
+
+```java
+// ✅ CORRECT — preProcess uses getTestCaseDataUsingCaseId with dataIds
+protected boolean preProcess(String group, String[] dataIds) {
+    if ("create".equalsIgnoreCase(group)) {
+        JSONObject inputData = getTestCaseDataUsingCaseId(dataIds[0]);
+        // ...
+    }
+}
+
+// ✅ CORRECT — APIUtil uses DataUtil.getTestCaseDataUsingFilePath with explicit path
+public final class SolutionAPIUtil extends Utilities {
+    private static final String PATH = "data" + File.separator + "solutions"
+        + File.separator + "solution" + File.separator + "solution_data.json";
+
+    public static String createTopic(String caseId) throws Exception {
+        JSONObject data = DataUtil.getTestCaseDataUsingFilePath(
+            AutomaterUtil.getResourceFolderPath() + PATH, caseId);
+        // ...
+    }
+}
+
+// ✅ CORRECT — test method uses getTestCaseData with DataConstants
+public void myTestMethod() throws Exception {
+    JSONObject inputData = getTestCaseData(SolutionDataConstants.SolutionData.MY_KEY);
+    // ...
+}
+
+// ❌ FORBIDDEN — getTestCaseDataUsingCaseId inside APIUtil (no Entity context)
+public static void createEntity(String caseId) {
+    JSONObject data = getTestCaseDataUsingCaseId(caseId);  // WRONG — static context, no dataIds
+}
+
+// ❌ FORBIDDEN — getTestCaseDataUsingFilePath inside preProcess (use getTestCaseDataUsingCaseId)
+protected boolean preProcess(String group, String[] dataIds) {
+    JSONObject data = DataUtil.getTestCaseDataUsingFilePath(PATH, dataIds[0]);  // WRONG
+}
+```
+
 ### DataConstants inner class naming (REQUIRED — read before writing any constant reference)
 
 The inner class name inside `*DataConstants.java` is derived from the **data filename** via `LOWER_UNDERSCORE → UPPER_CAMEL`:

@@ -27,6 +27,16 @@ Every data entry must follow this format:
 4. **Key naming**: snake_case matching the `TestCaseData` constant name (e.g., `SOL_UNAPPROVED_PUB` → `sol_unapproved_pub`)
 5. **ALL entity data MUST live in `*_data.json`** — NEVER construct JSONObject inline in Java code. Use `$(custom_KEY)` placeholders + `LocalStorage.store()` for dynamic values instead of building JSON in code.
 
+## Loading Methods — Use the Right One
+
+| Method | Where to use | Parameter |
+|--------|-------------|-----------|
+| `getTestCaseData(TestCaseData)` | **Test method body** | `DataConstants` constant |
+| `getTestCaseDataUsingCaseId(dataIds[N])` | **preProcess() only** | Raw string from `dataIds` array |
+| `DataUtil.getTestCaseDataUsingFilePath(path, caseId)` | **APIUtil files** (static methods) | Explicit file path + case ID |
+
+FORBIDDEN: `getTestCaseDataUsingCaseId()` in APIUtil files. FORBIDDEN: `getTestCaseDataUsingFilePath()` in preProcess.
+
 ## Data Reuse (Critical)
 
 Before creating any new entry:
