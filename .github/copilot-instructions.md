@@ -529,7 +529,9 @@ OwnerConstants.ELANGO_S        OwnerConstants.SANTHIYA_PR      OwnerConstants.KA
 
 > **No silent fallback**: If `HG_USERNAME` is not set or not found in the mapping, the user
 > is asked for their name. `fuzzy_match_owner(name)` then finds the closest constant.
-> If no match, the user picks from the full list.
+> If no match, the user is registered as a new owner via `register_new_owner(hg_username, name, email)`,
+> which appends the constant to `OwnerConstants.java`, adds the mapping to `_OWNER_MAP`,
+> and updates `.env`.
 
 ### DataConstants Pattern (REQUIRED — never use raw string literals)
 

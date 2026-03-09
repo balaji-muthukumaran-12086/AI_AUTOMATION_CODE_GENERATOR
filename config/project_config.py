@@ -175,6 +175,91 @@ def fuzzy_match_owner(name: str) -> str | None:
 
 OWNER_CONSTANT = resolve_owner_constant()
 
+
+def register_new_owner(hg_username: str, full_name: str, email: str) -> str:
+    """Register a brand-new team member in OwnerConstants.java, _OWNER_MAP, and .env.
+
+    Args:
+        hg_username: The Mercurial username (e.g. 'priya-sharma').
+        full_name:   Display name (e.g. 'Priya Sharma') — converted to PRIYA_SHARMA.
+        email:       Zoho Corp email (e.g. 'priya.sharma@zohocorp.com').
+
+    Returns:
+        The new constant name (e.g. 'PRIYA_SHARMA').
+    """
+    import re
+
+    # Derive constant name from full_name: "Priya Sharma" → "PRIYA_SHARMA"
+    constant = re.sub(r'[^a-zA-Z0-9]+', '_', full_name.strip()).strip('_').upper()
+    if not constant:
+        raise ValueError(f"Cannot derive constant from name: {full_name!r}")
+
+    # ── 1. Append to OwnerConstants.java ──────────────────────────────────
+    owner_java = _os.path.join(
+        PROJECT_SRC,
+        "com", "zoho", "automater", "selenium", "modules", "OwnerConstants.java",
+    )
+    if not _os.path.isfile(owner_java):
+        raise FileNotFoundError(f"OwnerConstants.java not found at {owner_java}")
+
+    with open(owner_java, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    # Check if constant already exists
+    if re.search(rf'\b{re.escape(constant)}\b', content):
+        print(f"OwnerConstants.{constant} already exists in Java file — skipping Java edit.")
+    else:
+        # Insert new constant before the closing brace
+        new_line = f'\n\tpublic static final String {constant} = "{email}";\n'
+        content = content.rstrip()
+        if content.endswith("}"):
+            content = content[:-1] + new_line + "\n}\n"
+        with open(owner_java, "w", encoding="utf-8") as f:
+            f.write(content)
+        print(f"Added OwnerConstants.{constant} to {owner_java}")
+
+    # ── 2. Append to _OWNER_MAP in this file ──────────────────────────────
+    config_py = _os.path.join(_BASE_DIR, "config", "project_config.py")
+    hg_key = hg_username.strip().lower()
+    if hg_key not in _OWNER_MAP:
+        _OWNER_MAP[hg_key] = constant
+        # Also persist to the file so future runs pick it up
+        with open(config_py, "r", encoding="utf-8") as f:
+            py_content = f.read()
+        # Find the closing brace of _OWNER_MAP dict — insert before it
+        insert_marker = '\n}\n\n\ndef resolve_owner_constant'
+        new_entry = f'    "{hg_key}":{" " * max(1, 19 - len(hg_key))}"{constant}",\n'
+        py_content = py_content.replace(
+            insert_marker,
+            f'\n    {new_entry.strip()}\n}}\n\n\ndef resolve_owner_constant',
+        )
+        with open(config_py, "w", encoding="utf-8") as f:
+            f.write(py_content)
+        print(f"Added '{hg_key}' → '{constant}' to _OWNER_MAP in project_config.py")
+    else:
+        print(f"'{hg_key}' already in _OWNER_MAP — skipping.")
+
+    # ── 3. Update .env ────────────────────────────────────────────────────
+    env_path = _os.path.join(_BASE_DIR, ".env")
+    if _os.path.isfile(env_path):
+        with open(env_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        patched = []
+        found_owner = False
+        for line in lines:
+            if line.startswith("OWNER_CONSTANT="):
+                patched.append(f"OWNER_CONSTANT={constant}\n")
+                found_owner = True
+            else:
+                patched.append(line)
+        if not found_owner:
+            patched.append(f"OWNER_CONSTANT={constant}\n")
+        with open(env_path, "w", encoding="utf-8") as f:
+            f.writelines(patched)
+        print(f"Set OWNER_CONSTANT={constant} in .env")
+
+    return constant
+
 # ── Phase 5 — Pipeline Monitoring ─────────────────────────────────────────
 # Per-agent execution timeout in seconds. OrchestratorAgent (future) will kill
 # a stuck agent after this many seconds and mark it TIMED_OUT.
