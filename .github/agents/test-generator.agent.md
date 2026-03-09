@@ -96,8 +96,14 @@ Match the use-case noun to the correct module — NEVER default to whatever file
 - problem → `modules/problems/problem/`
 
 ### Step 2 — Read Entity Util Files
+
+First resolve the project folder dynamically:
 ```bash
-find SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/ -name "*.java" | sort
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+```
+Then list the util files:
+```bash
+find "$PROJECT/src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/" -name "*.java" | sort
 ```
 List every `public static` method in `*ActionsUtil.java` and `*APIUtil.java`.
 
@@ -114,7 +120,6 @@ Open the **parent class** (e.g., `Change.java`, `Solution.java`) and read `prePr
 Before writing the `owner` field, resolve the configured owner:
 
 ```bash
-cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
 .venv/bin/python -c "from config.project_config import OWNER_CONSTANT; print(OWNER_CONSTANT)"
 ```
 
@@ -139,9 +144,24 @@ Use the output value (e.g., `BALAJI_M`, `RAJESHWARAN_A`) in all generated annota
 - **`runType`**: Annotation default is `PORTAL_BASED` — ALWAYS write `USER_BASED` explicitly
 - **Data keys**: Use `DataConstants` — NEVER pass raw strings to `getTestCaseData()`
 - **Non-existent methods**: Never use `actions.listView.doAction()`, `actions.listView.selectRecord()`, `actions.navigate.clickModule()`
+- **Inline JSON**: NEVER build test data with `new JSONObject().put(...)` chains — ALL data goes in `*_data.json`
+- **Checkstyle NeedBraces**: ALL blocks require braces (`if`, `else`, `for`, `while`, `catch`, `finally`) — inline `} catch (Exception e) {}` is FORBIDDEN
 
-### Test Method Body
-- ONLY utility calls + assertions + `addSuccessReport`/`addFailureReport`
+### Test Method Body Structure (REQUIRED)
+```java
+public void myTestMethod() throws Exception {
+    report.startMethodFlowInStepsToReproduce(
+        AutomaterUtil.getPascalValueFromCamelCase(getMethodName()));
+    try {
+        // utility calls + assertions + addSuccessReport/addFailureReport ONLY
+    } catch (Exception e) {
+        addFailureReport(getMethodName(), e.getMessage());
+        throw e;
+    } finally {
+        report.endMethodFlowInStepsToReproduce();
+    }
+}
+```
 - Zero inline `actions.click(...)` sequences — delegate to `*ActionsUtil.java`
 - If you type `actions.click(` in a test method → STOP → move to util first
 
@@ -152,12 +172,15 @@ Use the two-piece format with `// ===== ADD TO: FileName.java =====` markers for
 
 ### Step P1 — Compile the module
 
-Run a targeted compile for only the files you just edited:
+Resolve paths dynamically, then compile only the files you edited:
 
 ```bash
-DEPS=/home/balaji-12086/Desktop/Workspace/Zide/dependencies
-BIN=/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/SDPLIVE_LATEST_AUTOMATER_SELENIUM/bin
-SRC=/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/SDPLIVE_LATEST_AUTOMATER_SELENIUM/src
+eval $(.venv/bin/python -c "
+from config.project_config import DEPS_DIR, PROJECT_ROOT
+print(f'DEPS={DEPS_DIR}')
+print(f'BIN={PROJECT_ROOT}/bin')
+print(f'SRC={PROJECT_ROOT}/src')
+")
 CP="$BIN:$(find "$DEPS" -name "*.jar" | tr '\n' ':')"
 javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
   "$SRC/com/zoho/automater/selenium/modules/<module>/<entity>/common/<Entity>Locators.java" \
@@ -185,13 +208,13 @@ RUN_CONFIG = {
 
 Then run the test:
 ```bash
-cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
 .venv/bin/python run_test.py 2>&1 | tail -50
 ```
 
 After the run, check for the report:
 ```bash
-ls -t SDPLIVE_LATEST_AUTOMATER_SELENIUM/reports/ | head -5
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+ls -t "$PROJECT/reports/" | head -5
 ```
 
 Report to the user:
@@ -203,7 +226,6 @@ Report to the user:
 Run the RAG indexer so the Coverage Agent treats this scenario as already covered:
 
 ```bash
-cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
 .venv/bin/python -m knowledge_base.rag_indexer
 ```
 

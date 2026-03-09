@@ -14,8 +14,21 @@ You are a **test debugging specialist** for the AutomaterSelenium QA framework. 
 
 ## Debugging Workflow
 
+### Step 0 — Resolve Dynamic Paths
+Before any file access, resolve the active project folder:
+```bash
+eval $(.venv/bin/python -c "
+from config.project_config import DEPS_DIR, PROJECT_ROOT, PROJECT_NAME
+print(f'DEPS={DEPS_DIR}')
+print(f'BIN={PROJECT_ROOT}/bin')
+print(f'SRC={PROJECT_ROOT}/src')
+print(f'PROJECT={PROJECT_NAME}')
+")
+```
+Use `$PROJECT`, `$BIN`, `$SRC`, `$DEPS` for all paths below.
+
 ### Step 1 — Analyze the Failure
-1. Read the ScenarioReport.html from `SDPLIVE_LATEST_AUTOMATER_SELENIUM/reports/LOCAL_<method>_<timestamp>/`
+1. Read the ScenarioReport.html from `$PROJECT/reports/LOCAL_<method>_<timestamp>/`
 2. Identify failure type: `LOCATOR | API | LOGIC | COMPILE`
 3. Read the Java test code to understand what was expected
 
@@ -29,8 +42,14 @@ You are a **test debugging specialist** for the AutomaterSelenium QA framework. 
 
 ### Step 3 — Fix and Validate
 1. Update the locator in `*Locators.java`
-2. Compile the module (targeted compile, NOT full project)
-3. Run the test via `run_test.py`
+2. Targeted compile (NEVER full project — it's broken with 67 errors):
+```bash
+CP="$BIN:$(find "$DEPS" -name "*.jar" | tr '\n' ':')"
+javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
+  "$SRC/com/zoho/automater/selenium/modules/<module>/<entity>/common/<Entity>Locators.java" \
+  "$SRC/com/zoho/automater/selenium/modules/<module>/<entity>/<EntityBase>.java"
+```
+3. Run the test via `.venv/bin/python run_test.py 2>&1 | tail -50`
 
 ## Data Creation via sdpAPICall() (Mandatory Fallback Chain)
 
