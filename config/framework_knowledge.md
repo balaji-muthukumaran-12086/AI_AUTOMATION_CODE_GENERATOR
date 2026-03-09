@@ -1,10 +1,4 @@
 # AutomaterSelenium Framework — Complete Knowledge Base
-# Learned from: Solution.java, SolutionBase.java, solution_data.json,
-#               SolutionDataConstants.java, SolutionAnnotationConstants.java,
-#               SolutionFields.java, SolutionLocators.java, SolutionConstants.java
-#               Entity.java, FieldDetails.java, FormBuilder.java, FieldType.java,
-#               ClientFrameworkActions.java, Navigate.java, ListView.java,
-#               DetailsView.java, SolutionActionsUtil.java, SolutionAPIUtil.java
 
 ---
 
