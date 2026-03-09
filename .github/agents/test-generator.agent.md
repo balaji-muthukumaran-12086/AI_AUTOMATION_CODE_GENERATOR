@@ -28,24 +28,34 @@ If the file is a spreadsheet, convert it to CSV first before parsing:
 # Install openpyxl if not already installed
 .venv/bin/pip install openpyxl -q
 
-# Convert XLS/XLSX to CSV
+# Convert XLS/XLSX to CSV (handles multiple sheets → one CSV per sheet)
 .venv/bin/python -c "
-import sys, csv
+import sys, csv, os
 try:
     import openpyxl
     wb = openpyxl.load_workbook(sys.argv[1], data_only=True)
+    base = os.path.splitext(sys.argv[1])[0]
     for sheet in wb.sheetnames:
         ws = wb[sheet]
-        out = sys.argv[1].replace('.xlsx','').replace('.xls','') + '_' + sheet + '.csv'
+        out = base + '_' + sheet.replace(' ', '_') + '.csv'
         with open(out, 'w', newline='', encoding='utf-8') as f:
             csv.writer(f).writerows(ws.values)
         print('Wrote:', out)
+    print('Total sheets:', len(wb.sheetnames))
 except Exception as e:
     print('Error:', e)
 " <uploaded_file_path>
 ```
-If the file is already `.csv`, skip this step and read it directly.
-Once you have the CSV, read it row by row. Treat the **first row as column headers**. Each subsequent row is one use-case entry.
+
+**Multi-sheet handling:**
+- Each sheet is exported as a separate CSV file (e.g., `UseCases_Admin.csv`, `UseCases_CMDB.csv`)
+- After conversion, **read ALL generated CSVs** — not just the first one
+- Each sheet's CSV has its own header row (row 1). Apply the same column mapping to every sheet
+- Merge all rows from all sheets into a single candidate list before filtering and grouping
+- If a sheet has different/missing columns (e.g., a "Summary" sheet without `UseCase ID`), skip that sheet and report it
+
+If the file is already `.csv`, skip conversion and read it directly — a single `.csv` = one sheet.
+Once you have the CSV(s), read each row by row. Treat the **first row as column headers**. Each subsequent row is one use-case entry.
 
 ---
 
