@@ -1220,10 +1220,44 @@ actions.click(SolutionLocators.SolutionCreateForm.SOLUTION_IS_PUBLIC_1);  // exp
 ```
 Never put `"is_public": true` in entity conf and expect it to be toggled by `fillInputForAnEntity`.
 
-### 20.4 `actions.click(locator)` already calls `waitForAjaxComplete()` BEFORE clicking
-No need to add a manual `waitForAjaxComplete()` after clicking. Adding it creates a double-wait.
-The wait happens BEFORE the click, not after — page transition happens after the click.
-If the next action fails, add `Thread.sleep(1000)` not `waitForAjaxComplete()`.
+### 20.4 `waitForAjaxComplete()` — use ONLY where required (CRITICAL)
+
+`actions.click(locator)` already calls `waitForAjaxComplete()` **BEFORE** clicking. This means:
+- The **next** `actions.click()` will wait for the previous click's AJAX to finish before executing
+- Between two consecutive `actions.click()` calls, a manual `waitForAjaxComplete()` is **ALWAYS redundant**
+
+**When `waitForAjaxComplete()` IS needed:**
+- After `actions.type()` / `actions.sendKeys()` that triggers AJAX (e.g., search fields, Select2 dropdowns)
+- After `executeScript()` that modifies the page
+- Before non-click reads (`getText`, `isElementPresent`, `validate.*`) if the preceding click triggered AJAX
+
+**When `waitForAjaxComplete()` is REDUNDANT (NEVER add):**
+- Between two consecutive `actions.click()` calls — the second click already waits
+- After `actions.click()` when the next action is also `actions.click()`
+- After `actions.navigate.*` calls — they already include waits internally
+
+```java
+// ❌ REDUNDANT — next click already waits
+actions.click(TAB_LOCATOR);
+actions.waitForAjaxComplete();  // ← REMOVE
+actions.click(BUTTON_LOCATOR);
+
+// ✅ CORRECT — no wait between clicks
+actions.click(TAB_LOCATOR);
+actions.click(BUTTON_LOCATOR);
+
+// ✅ CORRECT — wait needed before non-click read after click triggers AJAX
+actions.click(TAB_LOCATOR);
+actions.waitForAjaxComplete();
+String text = actions.getText(CONTENT_LOCATOR);
+
+// ✅ CORRECT — wait needed after type in search field
+actions.type(SEARCH_INPUT, searchValue);
+actions.waitForAjaxComplete();
+actions.click(SEARCH_RESULT_OPTION);
+```
+
+If the next action after a click still fails, add `Thread.sleep(1000)` — not another `waitForAjaxComplete()`.
 
 ### 20.5 `actions.getText(locator)` has a 3-second timeout (PREFERRED)
 `getText` calls `waitForAnElementToAppear` with a 3-second timeout internally.

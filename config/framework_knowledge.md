@@ -721,7 +721,6 @@ public final class ChangeActionsUtil extends Utilities {
     
     public static void openAssociationTab() throws Exception {
         actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB);
-        actions.waitForAjaxComplete();
     }
 }
 
@@ -1621,7 +1620,36 @@ git remote set-url origin https://github.com/USERNAME/REPO.git
 ---
 
 ## FRAMEWORK SOURCE ANALYSIS — Mar 2026
-*Sourced from `automater-selenium-framework-2.0.0.zip` and 6 randomly-selected scenario files*
+*Sourced from `automater-selenium-framework-1.1.0.zip` in the dependencies folder*
+
+> **Reading framework source**: When you need to verify framework method behaviour (e.g., which
+> methods call `waitForAjaxComplete()` internally), read directly from the framework ZIP:
+> ```bash
+> DEPS_DIR=$(python -c "from config.project_config import DEPS_DIR; print(DEPS_DIR)")
+> unzip -p "$DEPS_DIR/automater-selenium-framework-1.1.0.zip" "com/zoho/automater/selenium/base/Actions.java" | grep -n "pattern"
+> ```
+> Key files: `Actions.java`, `Navigate.java`, `FormBuilder.java`, `Validator.java`, `SDPCloudActions.java`, `RestAPI.java`
+
+### Methods that call `waitForAjaxComplete()` internally (VERIFIED from source)
+
+| Method | Internal `waitForAjaxComplete()` | Implication |
+|--------|--------------------------------|-------------|
+| `actions.click(locator)` | ✅ BEFORE click | No manual wait needed between consecutive clicks |
+| `actions.type(locator, value)` | ✅ inside | No manual wait needed before/after type |
+| `actions.sendKeys(locator, value)` | ✅ inside | No manual wait needed before/after sendKeys |
+| `actions.sendKeys(locator, key, value)` | ✅ inside | No manual wait needed |
+| `actions.getText(locator)` | ✅ inside + 3s `waitForAnElementToAppear` | May miss slow pages — add `Thread.sleep()` if needed |
+| `actions.navigate.to(locator)` | ✅ click + `waitForAjaxCompleteLoad()` | Double-waited |
+| `actions.navigate.toModule(name)` | ✅ `to()` + extra `waitForAjaxComplete()` | Fully waited |
+| `actions.navigate.toDetailsPageUsingRecordId(id)` | ✅ `waitForAnElementToAppear` + `to()` + `waitForAjaxComplete()` | Fully waited |
+| `actions.navigate.toGlobalActionInDetailsPage(name)` | ✅ `waitForAnElementToAppear` + `to()` | Waited |
+| `actions.navigate.toGlobalActionInListview(name)` | ✅ via `to()` | Waited |
+| `actions.formBuilder.fillInputForAnEntity(...)` | ✅ each field fill calls waited methods | Fully waited per field |
+
+**When you NEED manual `waitForAjaxComplete()`:**
+- After `actions.type()` in a search field where AJAX populates results, and the next action reads those results
+- After `executeScript()` that modifies DOM
+- Before non-click reads (`getText`, `isElementPresent`) if a preceding AJAX action's response hasn't settled
 
 ---
 

@@ -49,7 +49,15 @@ ai-automation-qa/
 ├── agents/runner_agent.py              # Python runner — patches 2 files, compiles, executes
 ├── run_test.py                         # Entry point — configure RUN_CONFIG here
 └── dependencies/                       # All JARs (including framework/ subdirectory)
+    └── automater-selenium-framework-1.1.0.zip  # Framework source ZIP — readable via unzip -p
 ```
+
+> **Framework source ZIP**: When you need to verify which framework methods call `waitForAjaxComplete()` internally,
+> check method signatures, or read any base class implementation, extract from the framework ZIP:
+> ```bash
+> unzip -p "$DEPS_DIR/automater-selenium-framework-1.1.0.zip" "com/zoho/automater/selenium/base/Actions.java" | grep -n "pattern"
+> ```
+> Key source files inside: `Actions.java` (click, type, sendKeys, getText), `Navigate.java`, `FormBuilder.java`, `Validator.java`, `SDPCloudActions.java`, `RestAPI.java`.
 
 ---
 
@@ -217,8 +225,13 @@ Screenshots at: `reports/LOCAL_<methodName>_<timestamp>/screenshots/Success_<ts>
 
 | Behaviour | Detail |
 |-----------|--------|
-| `actions.click(locator)` | Calls `waitForAjaxComplete()` **before** clicking — no need to add it after |
-| `actions.getText(locator)` | Has **3-second** `waitForAnElementToAppear` timeout — can miss slow-loading pages |
+| `actions.click(locator)` | Calls `waitForAjaxComplete()` **before** clicking — NEVER add `waitForAjaxComplete()` between consecutive clicks (redundant). Only add it after a click if the next action is a non-click read (`getText`, `isElementPresent`) that depends on AJAX completion |
+| `actions.type(locator, value)` | Calls `waitForAjaxComplete()` internally — no need to add before `type()` |
+| `actions.sendKeys(locator, value)` | Calls `waitForAjaxComplete()` internally |
+| `actions.getText(locator)` | Calls `waitForAjaxComplete()` internally + has **3-second** `waitForAnElementToAppear` timeout — can miss slow-loading pages |
+| `actions.navigate.to(locator)` | Calls `click()` + `waitForAjaxCompleteLoad()` — double-wait internally |
+| `actions.navigate.toModule(name)` | Calls `to()` + additional `waitForAjaxComplete()` — fully waited |
+| `actions.navigate.toDetailsPageUsingRecordId(id)` | Calls `waitForAnElementToAppear` + `to()` + `waitForAjaxComplete()` — fully waited |
 | `fillInputForAnEntity` | Skips fields where value is `null` (including all JSON booleans); also silently skips `checkbox`, `radio`, `selectonly`, `selectaction`, `mappedfield`, `systemSelect`, `selectRelationship`, `ipaddress` types |
 | `PORTAL_BASED` scenario + `UserBased` flow | Scenario is **SKIPPED** (not FAILED) — `scenarioDetails.setRestrictRerun(true)` called; incompatible run type, not an error |
 | `fillDateField(name, millis)` | Opens datepicker → navigates by year/month arrows → clicks day cell |
@@ -736,7 +749,6 @@ public final class ChangeActionsUtil extends Utilities {
     
     public static void openAssociationTab() throws Exception {
         actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB);
-        actions.waitForAjaxComplete();
     }
 }
 

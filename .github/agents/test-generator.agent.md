@@ -251,6 +251,7 @@ Use the output value (e.g., `BALAJI_M`, `RAJESHWARAN_A`) in all generated annota
 - **`runType`**: Annotation default is `PORTAL_BASED` — ALWAYS write `USER_BASED` explicitly
 - **Data keys**: Use `DataConstants` — NEVER pass raw strings to `getTestCaseData()`
 - **Data loading context**: `getTestCaseData(TestCaseData)` → test method body ONLY; `getTestCaseDataUsingCaseId(dataIds[N])` → preProcess() ONLY; `DataUtil.getTestCaseDataUsingFilePath(path, caseId)` → APIUtil files ONLY. NEVER mix these contexts.
+- **`waitForAjaxComplete()` overuse**: NEVER add between consecutive `actions.click()` calls — the next click already waits. Only add before non-click reads (`getText`, `isElementPresent`) after AJAX-triggering actions.
 - **Non-existent methods**: Never use `actions.listView.doAction()`, `actions.listView.selectRecord()`, `actions.navigate.clickModule()`
 - **Inline JSON**: NEVER build test data with `new JSONObject().put(...)` chains — ALL data goes in `*_data.json`
 - **Checkstyle NeedBraces**: ALL blocks require braces (`if`, `else`, `for`, `while`, `catch`, `finally`) — inline `} catch (Exception e) {}` is FORBIDDEN

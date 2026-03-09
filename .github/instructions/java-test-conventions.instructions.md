@@ -74,6 +74,24 @@ JSONObject inputData = getTestCaseData(SolutionDataConstants.SolutionData.MY_KEY
 // ❌ FORBIDDEN — getTestCaseDataUsingFilePath in preProcess (use getTestCaseDataUsingCaseId)
 ```
 
+## `waitForAjaxComplete()` — Use Only Where Required
+
+`actions.click()` already calls `waitForAjaxComplete()` BEFORE clicking. NEVER add it between consecutive clicks.
+
+```java
+// ❌ REDUNDANT — next click already waits
+actions.click(TAB); actions.waitForAjaxComplete(); actions.click(BUTTON);
+
+// ✅ CORRECT — no wait between clicks
+actions.click(TAB); actions.click(BUTTON);
+
+// ✅ CORRECT — wait needed before non-click read
+actions.click(TAB); actions.waitForAjaxComplete(); actions.getText(CONTENT);
+
+// ✅ CORRECT — wait needed after type triggers AJAX
+actions.type(SEARCH, value); actions.waitForAjaxComplete(); actions.click(RESULT);
+```
+
 ## ActionUtils / APIUtil Pattern (Mandatory)
 
 Test method body = utility calls + assertions ONLY. No inline `actions.click()` sequences.
