@@ -19,6 +19,7 @@ Usage in any agent or script:
 The client is fire-and-forget: if the server is unreachable, events are
 silently dropped (or queued to a local fallback file for later replay).
 """
+from __future__ import annotations
 
 import json
 import logging

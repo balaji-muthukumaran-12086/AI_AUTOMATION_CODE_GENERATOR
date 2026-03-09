@@ -3,6 +3,7 @@ orchestrator/models.py
 ----------------------
 Pydantic models for the orchestrator event logging system.
 """
+from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
