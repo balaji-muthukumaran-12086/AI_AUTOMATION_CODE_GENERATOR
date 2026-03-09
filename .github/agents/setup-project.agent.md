@@ -195,6 +195,17 @@ hg pull "https://{HG_USERNAME}:{HG_PASSWORD}@zrepository.zohocorpcloud.in/zohoco
 hg update "{BRANCH_NAME}" 2>&1
 ```
 
+### Create Testcase/ folder
+
+After the clone (or branch switch) succeeds, create a `Testcase/` folder inside the project for storing use-case documents:
+
+```bash
+mkdir -p {WORKSPACE_DIR}/{BRANCH_NAME}/Testcase
+echo "✅ Created {BRANCH_NAME}/Testcase/ — use-case documents will be stored here"
+```
+
+This folder is where `@test-generator` saves copies of uploaded use-case documents (`.csv`, `.xlsx`, `.md`, etc.) for traceability.
+
 ---
 
 ## Step 4 — Resolve owner from form selection
@@ -350,6 +361,7 @@ Then continue for both modes:
 ```
 **Repo cloned/updated:**
 - `{BRANCH_NAME}/` ← test-case hg branch (framework JAR is in dependencies/)
+- `{BRANCH_NAME}/Testcase/` ← use-case document storage (created automatically)
 
 **Owner:**
 `OwnerConstants.{RESOLVED_OWNER_CONSTANT}` — all generated test scenarios will use this owner.

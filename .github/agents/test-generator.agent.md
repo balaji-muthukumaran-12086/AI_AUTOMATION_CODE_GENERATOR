@@ -15,6 +15,40 @@ You are a **test generation specialist** for the AutomaterSelenium QA framework.
 
 ---
 
+## Step 0 — Resolve Target Project
+
+Before anything else, check if the user specified a **target project** in their message.
+
+The user may say things like:
+- `project=SDPLIVE_UI_AUTOMATION_BRANCH generate tests for ...`
+- `generate in SDPLIVE_FEATURE_X: create a change and verify...`
+- `@test-generator project=AALAM_FRAMEWORK_CHANGES` (with an attached document)
+
+**Detection rules:**
+1. Look for `project=<NAME>` anywhere in the message
+2. Look for `generate in <NAME>:` or `in project <NAME>` patterns
+3. If no project is specified → use the default from `project_config.py`
+
+**If a project is specified:**
+```bash
+# Verify the project folder exists
+ls -d "$(cd "$(dirname "$(find . -path '*/config/project_config.py' -maxdepth 3 | head -1)")" && cd .. && pwd)/<PROJECT_NAME>" 2>/dev/null && echo "EXISTS" || echo "MISSING"
+```
+- If `EXISTS` → temporarily override `PROJECT_NAME` in `project_config.py` to `<PROJECT_NAME>` for this session, then restore it at the end
+- If `MISSING` → tell the user: `"Project folder '<PROJECT_NAME>' not found. Run @setup-project to clone it first, or check the folder name."`
+
+**If no project is specified:**
+```bash
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+echo "Using default project: $PROJECT"
+```
+
+Store the resolved project name as `{TARGET_PROJECT}` for all subsequent steps.
+
+> **Multi-project workflow**: Users with multiple cloned branches (e.g., 5 different feature projects) can target any of them by name. The `@setup-project` agent creates each project folder — `@test-generator` just needs the folder name.
+
+---
+
 ## Input Mode Detection — Do This First
 
 Before anything else, determine how the user is providing input:
@@ -340,6 +374,40 @@ oc.scenario_passed(scenario_id='<SCENARIO_ID>', method_name='<methodName>', modu
 ```
 
 This is fire-and-forget — if the orchestrator server isn't running, the event is silently saved to `orchestrator/offline_events.jsonl` for later replay.
+
+---
+
+### Step P5 — Save use-case document to Testcase/ folder
+
+If the user attached a document (Mode A), copy it into the project's `Testcase/` folder for traceability:
+
+```bash
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+mkdir -p "$PROJECT/Testcase"
+cp "<uploaded_file_path>" "$PROJECT/Testcase/"
+echo "Saved use-case document to $PROJECT/Testcase/"
+```
+
+This keeps a record of which use-case documents were used to generate tests in each project.
+
+### Step P6 — Restore PROJECT_NAME (if overridden)
+
+If you temporarily changed `PROJECT_NAME` in Step 0 for a non-default project, restore it now:
+
+```bash
+# Only if PROJECT_NAME was changed from the original default
+.venv/bin/python -c "
+import re
+with open('config/project_config.py', 'r') as f:
+    content = f.read()
+content = re.sub(r'PROJECT_NAME = \".*?\"', 'PROJECT_NAME = \"{ORIGINAL_PROJECT_NAME}\"', content)
+with open('config/project_config.py', 'w') as f:
+    f.write(content)
+print('Restored PROJECT_NAME to {ORIGINAL_PROJECT_NAME}')
+"
+```
+
+Skip this step if the default project was used (no override happened).
 
 ---
 
