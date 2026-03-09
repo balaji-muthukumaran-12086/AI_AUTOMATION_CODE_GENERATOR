@@ -52,6 +52,13 @@ sys.path.insert(0, str(BASE_DIR))
 
 from config.project_config import BASE_DIR as PROJECT_BASE_DIR, HG_AGENT_ENABLED, RUNS_LOG_PATH, MAX_CONCURRENT_RUNS
 
+# ── Orchestrator client (optional — fire-and-forget) ─────────────────────────
+try:
+    from orchestrator.client import get_client as _get_oc
+    _oc = _get_oc()
+except Exception:
+    _oc = None
+
 # ── In-memory run store ───────────────────────────────────────────────────────
 # run_id → {status, messages, errors, files, metadata, started_at, finished_at}
 _runs: dict[str, dict] = {}
@@ -222,6 +229,9 @@ def _run_pipeline_thread(
                     break
 
         _log(f"[{datetime.now().strftime('%H:%M:%S')}] 🚀 Pipeline started")
+        if _oc:
+            _oc.agent_started("pipeline", feature_name=(feature_description or source_document or "")[:200],
+                              metadata={"run_id": run_id, "mode": generation_mode, "modules": target_modules})
         if source_document:
             _log(f"[{datetime.now().strftime('%H:%M:%S')}] 📄 Document: {Path(source_document).name}")
         if feature_description:
@@ -273,12 +283,22 @@ def _run_pipeline_thread(
                 run["status"] = "success"
                 _log(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Done — {file_count} file(s) generated")
                 _push(run_id, "files", output_paths)
+                if _oc:
+                    _oc.agent_completed("pipeline", feature_name=(feature_description or "")[:200],
+                                        metadata={"run_id": run_id, "files": file_count,
+                                                  "scenarios": len(final_state.get("generated_code", []))})
             elif had_errors:
                 run["status"] = "failed"
                 _log(f"[{datetime.now().strftime('%H:%M:%S')}] ❌ Pipeline finished with errors — check details")
+                if _oc:
+                    _oc.agent_error("pipeline", error_message="; ".join(final_state.get("errors", []))[:500],
+                                    feature_name=(feature_description or "")[:200])
             else:
                 run["status"] = "success"
                 _log(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Pipeline complete (no new files — may be duplicates)")
+                if _oc:
+                    _oc.agent_completed("pipeline", feature_name=(feature_description or "")[:200],
+                                        metadata={"run_id": run_id, "note": "no new files"})
             _persist_runs()
 
         except SystemExit:
@@ -293,6 +313,9 @@ def _run_pipeline_thread(
             err_msg = f"Pipeline error: {exc}"
             run["errors"].append(err_msg)
             _log(f"[{datetime.now().strftime('%H:%M:%S')}] ❌ {err_msg}")
+            if _oc:
+                _oc.agent_error("pipeline", error_message=str(exc)[:500],
+                                feature_name=(feature_description or "")[:200])
             _push(run_id, "error", err_msg)
             _persist_runs()
 

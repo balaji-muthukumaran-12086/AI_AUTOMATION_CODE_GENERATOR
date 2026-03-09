@@ -146,4 +146,24 @@ if __name__ == "__main__":
 
         success = result.success
 
+    # ── Orchestrator logging (fire-and-forget) ────────────────────────────
+    try:
+        from orchestrator.client import get_client
+        oc = get_client()
+        if success:
+            oc.scenario_passed(
+                scenario_id=RUN_CONFIG.get("entity_class"),
+                method_name=RUN_CONFIG["method_name"],
+                module=RUN_CONFIG.get("entity_class"),
+            )
+        else:
+            oc.scenario_failed(
+                scenario_id=RUN_CONFIG.get("entity_class"),
+                method_name=RUN_CONFIG["method_name"],
+                module=RUN_CONFIG.get("entity_class"),
+                error_message=str(result.error if hasattr(result, 'error') else "")[:500],
+            )
+    except Exception:
+        pass  # orchestrator unavailable — continue silently
+
     sys.exit(0 if success else 1)

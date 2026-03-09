@@ -22,6 +22,10 @@ logs/
 reports/
 generated/
 
+# ── Orchestrator runtime ──────────────────────────────────────────────────────
+orchestrator/orchestrator.db
+orchestrator/offline_events.jsonl
+
 # ── Knowledge base binaries & generated data ──────────────────────────────────
 knowledge_base/chroma_db/
 knowledge_base/raw/

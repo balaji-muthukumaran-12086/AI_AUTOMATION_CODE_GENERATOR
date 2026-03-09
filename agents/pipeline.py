@@ -23,6 +23,7 @@ a checkbox is ticked).
 """
 
 import os
+import time
 from pathlib import Path
 from typing import Literal
 
@@ -44,6 +45,29 @@ from agents.learning_agent import LearningAgent
 from knowledge_base.vector_store import VectorStore
 from knowledge_base.context_builder import ContextBuilder
 from config.project_config import PROJECT_NAME, BASE_DIR, DEPS_DIR, HG_AGENT_ENABLED
+
+# ── Orchestrator client (fire-and-forget, never blocks pipeline) ─────────────
+try:
+    from orchestrator.client import get_client as _get_oc
+except ImportError:
+    _get_oc = None  # orchestrator module not available — skip all logging
+
+
+def _oc_log(event_type: str, agent: str, state: AgentState, **extra):
+    """Fire an orchestrator event if available. Never raises."""
+    if _get_oc is None:
+        return
+    try:
+        oc = _get_oc()
+        oc._send_async(oc._build_event(
+            event_type=event_type,
+            agent=agent,
+            module=",".join(state.get("target_modules", []))[:200] or None,
+            feature_name=(state.get("feature_description") or "")[:200] or None,
+            **extra,
+        ))
+    except Exception:
+        pass
 
 
 def build_pipeline(base_dir: str = None) -> StateGraph:
@@ -272,7 +296,10 @@ def run_pipeline(
         Final AgentState with generated_code, final_output_paths, and run_result
     """
     from datetime import datetime as _dt
+    _t0 = time.time()
     print(f"[Pipeline] \U0001f680 Starting pipeline at {_dt.now().strftime('%H:%M:%S')} | mode={generation_mode} | modules={target_modules}", flush=True)
+    _oc_log("agent_started", "pipeline", {"feature_description": feature_description, "target_modules": target_modules or []},
+            metadata={"mode": generation_mode})
     pipeline = build_pipeline(base_dir)
     initial_state = _build_initial_state(
         feature_description=feature_description,
@@ -283,7 +310,37 @@ def run_pipeline(
         hg_config=hg_config,
     )
     final_state = pipeline.invoke(initial_state)
+    _elapsed = int((time.time() - _t0) * 1000)
     print(f"[Pipeline] \U0001f3c1 Pipeline complete at {_dt.now().strftime('%H:%M:%S')}", flush=True)
+
+    # ── Log pipeline completion + individual scenario outcomes ────────────
+    _oc_log("agent_completed", "pipeline", final_state, duration_ms=_elapsed,
+            scenarios_count=len(final_state.get("generated_code", [])),
+            metadata={"files": len(final_state.get("final_output_paths", []))})
+
+    # Log each generated scenario
+    for sc in final_state.get("generated_code", []):
+        _oc_log("scenario_generated", "coder", final_state,
+                entity=sc.get("entity_class"),
+                scenario_id=sc.get("scenario_id"),
+                method_name=sc.get("method_name"))
+
+    # Log runner result if present
+    rr = final_state.get("run_result", {})
+    if rr:
+        evt = "scenario_passed" if rr.get("success") else "scenario_failed"
+        _oc_log(evt, "runner", final_state,
+                scenario_id=rr.get("scenario_id"),
+                method_name=rr.get("method_name"),
+                error_message=rr.get("error", "")[:500] if not rr.get("success") else None)
+
+    # Log heal result if present
+    hr = final_state.get("heal_result", {})
+    if hr.get("healed"):
+        _oc_log("scenario_healed", "healer", final_state,
+                method_name=rr.get("method_name"),
+                metadata={"iterations": hr.get("iterations")})
+
     return final_state
 
 
