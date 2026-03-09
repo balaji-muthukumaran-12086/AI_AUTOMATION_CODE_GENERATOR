@@ -639,6 +639,37 @@ JSONObject inputData = getTestCaseData("IR_Valid_Input");
 JSONObject inputData = getTestCaseData(RequestDataConstants.RequestData.IR_VALID_INPUT);
 ```
 
+### 9.4 FORBIDDEN — inline JSONObject construction for test/API data (CRITICAL)
+
+All entity test data (UI form inputs AND preProcess API payloads) MUST be defined in
+`*_data.json` files and loaded via `getTestCaseData()` or `getTestCaseDataUsingCaseId()`.
+
+**NEVER construct JSONObject payloads inline in Java code.** This bloats the test methods,
+bypasses placeholder resolution (`$(unique_string)`, `$(custom_KEY)`, etc.), makes data
+non-reusable across scenarios, and breaks the framework's data-driven design.
+
+```java
+// ❌ FORBIDDEN — inline JSON construction (bloated, non-reusable, no placeholders)
+JSONObject inputData = new JSONObject();
+inputData.put("title", "Test Change " + System.currentTimeMillis());
+inputData.put("change_type", new JSONObject().put("name", "Standard"));
+inputData.put("priority", new JSONObject().put("name", "High"));
+inputData.put("impact", new JSONObject().put("name", "Low"));
+inputData.put("status", new JSONObject().put("name", "Open"));
+// ... 20 more .put() lines
+
+// ✅ CORRECT — define in *_data.json, load via DataConstants
+JSONObject inputData = getTestCaseData(ChangeDataConstants.ChangeData.CREATE_CHANGE);
+// All fields, placeholders, and lookup objects are in the JSON file
+```
+
+**The ONLY acceptable uses of `new JSONObject()` in test code are:**
+1. Small utility objects for search criteria / API query filters (not entity data)
+2. Wrapping an already-loaded data object: `getInputData(inputData)` → `{"change": inputData}`
+3. Overriding a single field on a loaded object: `inputData.put("status", new JSONObject().put("name", "Closed"))`
+
+**For dynamic values**, use `$(custom_KEY)` placeholders in JSON + `LocalStorage.store("KEY", value)` before `getTestCaseData()` — see Section 8b.5.
+
 ---
 
 ## SECTION 10 — IMPLEMENTATION METHOD SKELETON

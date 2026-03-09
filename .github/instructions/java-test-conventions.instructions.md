@@ -33,6 +33,22 @@ grep -rn 'id = "SDPOD_AUTO_SOL_DV' SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/ | sed 
 actions.click(Locators.CHECKBOX_LOCATOR);  // explicit click
 ```
 
+## FORBIDDEN — Inline JSONObject Construction for Test Data
+
+All test data (UI form inputs AND preProcess API payloads) MUST be defined in `*_data.json` files and loaded via `getTestCaseData()` or `getTestCaseDataUsingCaseId()`. Never construct JSONObject payloads inline.
+
+```java
+// ❌ FORBIDDEN — bloated, non-reusable, bypasses placeholders
+JSONObject inputData = new JSONObject();
+inputData.put("title", "Test " + System.currentTimeMillis());
+inputData.put("priority", new JSONObject().put("name", "High"));
+
+// ✅ CORRECT — data in JSON file, loaded via DataConstants
+JSONObject inputData = getTestCaseData(ChangeDataConstants.ChangeData.CREATE_CHANGE);
+```
+
+For dynamic values, use `$(custom_KEY)` placeholders in JSON + `LocalStorage.store("KEY", value)` before `getTestCaseData()`.
+
 ## ActionUtils / APIUtil Pattern (Mandatory)
 
 Test method body = utility calls + assertions ONLY. No inline `actions.click()` sequences.

@@ -25,6 +25,7 @@ Every data entry must follow this format:
 2. **Lookup/dropdown fields** = `{"name": "Value"}` object, NEVER a flat string
 3. **Boolean** = `true`/`false`, NOT the string `"true"`
 4. **Key naming**: snake_case matching the `TestCaseData` constant name (e.g., `SOL_UNAPPROVED_PUB` → `sol_unapproved_pub`)
+5. **ALL entity data MUST live in `*_data.json`** — NEVER construct JSONObject inline in Java code. Use `$(custom_KEY)` placeholders + `LocalStorage.store()` for dynamic values instead of building JSON in code.
 
 ## Data Reuse (Critical)
 

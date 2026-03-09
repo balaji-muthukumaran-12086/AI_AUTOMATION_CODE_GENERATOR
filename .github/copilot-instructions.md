@@ -584,6 +584,7 @@ These are **separate files**. `DataConstants` is auto-generated from `*_data.jso
 1. Always wrap with `{"data": {...}}` — no exceptions
 2. Lookup/dropdown fields = `{"name": "Value"}` object, NEVER a flat string
 3. Boolean = `true`/`false`, NOT the string `"true"`
+4. **FORBIDDEN: Inline JSONObject construction** — NEVER build test data with `new JSONObject().put(...)` chains in Java code. ALL entity data (UI inputs AND API payloads) MUST be in `*_data.json` and loaded via `getTestCaseData()` / `getTestCaseDataUsingCaseId()`. For dynamic values, use `$(custom_KEY)` placeholders + `LocalStorage.store("KEY", value)` before loading.
 
 ### Data Reuse (CRITICAL — prevents duplicate data entries)
 

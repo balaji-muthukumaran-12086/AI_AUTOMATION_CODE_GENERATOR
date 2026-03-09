@@ -47,12 +47,13 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from agents.llm_factory import get_llm
 from agents.state import AgentState
 from agents.sdp_api_helper import SDPAPIHelper
+from config.project_config import SDP_URL, SDP_PORTAL, SDP_ADMIN_EMAIL, SDP_ADMIN_PASS
 
 # ── Defaults ───────────────────────────────────────────────────────────────────
-DEFAULT_URL         = "https://sdpodqa-auto1.csez.zohocorpin.com:9090/"
-DEFAULT_PORTAL      = "portal1"
-DEFAULT_ADMIN_EMAIL = "jaya.kumar+org1admin1t0@zohotest.com"
-DEFAULT_ADMIN_PASS  = "Zoho@135"
+DEFAULT_URL         = SDP_URL or "https://sdpodqa-auto1.csez.zohocorpin.com:9090/"
+DEFAULT_PORTAL      = SDP_PORTAL or "portal1"
+DEFAULT_ADMIN_EMAIL = SDP_ADMIN_EMAIL or ""
+DEFAULT_ADMIN_PASS  = SDP_ADMIN_PASS or ""
 
 SCOUT_SCREENSHOTS_DIR = "knowledge_base/scout_snapshots"
 
