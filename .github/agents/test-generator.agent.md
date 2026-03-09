@@ -47,30 +47,91 @@ except Exception as e:
 If the file is already `.csv`, skip this step and read it directly.
 Once you have the CSV, read it row by row. Treat the **first row as column headers**. Each subsequent row is one use-case entry.
 
-**Typical spreadsheet columns to look for:**
-- `Use Case ID` / `#` / `ID` → maps to test scenario ID
-- `Module` / `Entity` → confirms module placement
-- `Description` / `Test Case` / `Scenario` → the behaviour to test
-- `Steps` / `Action` → UI operations sequence
-- `Expected Result` / `Expected Outcome` / `Acceptance Criteria` → what success looks like
-- `Priority` → maps to `Priority.HIGH` / `Priority.MEDIUM` / `Priority.LOW`
-- `Owner` → maps to `OwnerConstants.*`
+---
 
-**Parse the document and produce a scenario plan:**
-1. Read the entire document (CSV rows or text)
-2. Extract every distinct user-facing behaviour, UI flow, or acceptance criterion
-3. Group related behaviours into named test scenarios
-4. For each scenario, derive:
-   - **Entity noun** → module placement (change / request / solution / problem / etc.)
-   - **Operation** → what the test must do (create, verify, edit, delete, link, etc.)
-   - **Expected outcome** → what success looks like
-5. Present the plan as a numbered list before writing any code:
+### CSV Column Mapping — Canonical Use-Case Format
+
+The standard use-case CSV uses these column names. Match them **case-insensitively** (headers may have varying casing/spacing):
+
+| CSV Column | Maps To | Handling |
+|---|---|---|
+| **UseCase ID** | `@AutomaterScenario(id = ...)` — used as the **mapped ID** reference. The test scenario ID links back to this use-case ID via comments/description. If a use case needs multiple scenarios, append `_1`, `_2` etc. to the method name (not the use-case ID) |
+| **Severity** | `@AutomaterScenario(priority = ...)` — `Critical` → `Priority.HIGH`, `Major` → `Priority.MEDIUM`, `Minor` → `Priority.LOW` |
+| **Module** | Parent module placement — map to framework module path (see **Module Routing Table** below) |
+| **Sub-Module** | Entity subclass routing — determines which Java class file to place the scenario in (see **Sub-Module Resolution** below) |
+| **Impact Area** | Combined with Pre-Requisite + Description to form the full scenario context |
+| **Pre-Requisite** | Determines `preProcess` group requirements. If it mentions "logged in as SDAdmin" → `Role.SDADMIN`. If it mentions existing entities → preProcess must create them |
+| **Description** | Primary scenario description. This + Impact Area + Pre-Requisite = the complete test behaviour to automate |
+| **UI To-be-automated** | **FILTER GATE** — only process rows where this column = `Yes` (case-insensitive). Skip all rows where this is `No` or empty |
+
+> **CRITICAL FILTER**: Before planning ANY scenario, filter the CSV rows. ONLY rows with `UI To-be-automated = Yes` are candidates. Discard all others immediately.
+
+#### Module Routing Table (CSV Module → Framework Path)
+
+| CSV `Module` value | Framework module path | Notes |
+|---|---|---|
+| `Admin` | `modules/admin/` | Sub-module determines deeper path |
+| `CMDB` | `modules/cmdb/cmdb/` | CI-related tests |
+| `RBAC` | Route to the **Sub-Module** target module + RBAC role test | Not a standalone module — place in the entity being tested |
+| `Security` | Route to the **Sub-Module** target module + security test | Same as RBAC — place in relevant entity |
+| `API` | Route to the **Sub-Module** target module + API validation | Same routing logic |
+| `Cross-Module` | Route based on Sub-Module context | Map to the primary entity being tested |
+| `Performance` | Route based on Sub-Module context | Map to the primary entity |
+| `Integration` | Route based on Sub-Module context | Map to the primary entity |
+| `Requests` | `modules/requests/request/` | |
+| `Changes` | `modules/changes/change/` | |
+| `Problems` | `modules/problems/problem/` | |
+| `Solutions` | `modules/solutions/solution/` | |
+| `Releases` | `modules/releases/release/` | |
+| `Assets` | `modules/assets/asset/` | |
+| `Projects` | `modules/projects/project/` | |
+| `Contracts` | `modules/contracts/contract/` | |
+
+#### Sub-Module Resolution (CSV Sub-Module → Java Entity Class)
+
+1. **Check if a matching subclass already exists** in the module path:
+   ```bash
+   PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+   find "$PROJECT/src/com/zoho/automater/selenium/modules/<module>/" -name "*.java" -not -path "*/common/*" -not -path "*/utils/*" | sort
+   ```
+2. **Match by keyword**: Convert Sub-Module to PascalCase and look for a class containing that name.
+   Example: `Sub Form Configuration` → look for `SubForm*.java` or `SubFormConfig*.java`
+3. **If a matching class exists** → place the scenario there
+4. **If NO matching class exists** → find the **nearest relevant parent/sibling class** that covers the same area. If none is suitable, generate skeleton files using `GenerateSkeletonForAnEntity.java` (set `MODULE_NAME` + `ENTITY_NAME`, run `main()`)
+5. **Never create a new file by hand** — always use the skeleton generator or add to an existing file
+
+#### Scenario Grouping from CSV Rows
+
+Related CSV rows (same Module + Sub-Module + similar Impact Area) should be **grouped into a single test method** when they represent sequential steps of the same workflow. Rules:
+
+- **Same UI flow** (e.g., navigate → create → verify) = **one test method** with multiple assertions
+- **Independent validations** (e.g., empty name vs duplicate name) = **separate test methods**
+- If a single use case generates a test method that would exceed ~80 lines → split into multiple methods, append `_1`, `_2` to method names
+- Each method's `description` field should reference the original UseCase ID(s): `"[SDPOD_SFCMDB_ADMIN_001] Verify Sub-form page loads under Setup > Customization"`
+
+---
+
+**After filtering and grouping, present the scenario plan:**
+1. Show total rows found vs rows filtered (UI To-be-automated = Yes)
+2. Show the grouped scenario list:
 
 ```
-📋 Scenarios derived from your document:
+📋 CSV Analysis:
+- Total use cases: 120
+- UI automatable (filtered): 45
+- Skipped (API-only / No): 75
 
-1. [Module] Verify <feature> — <one-line description>
-2. [Module] Create <entity> with <condition> and verify <outcome>
+📋 Scenarios to generate (grouped by Module > Sub-Module):
+
+[Admin > Sub Form Configuration]
+1. SDPOD_SFCMDB_ADMIN_001 — Verify Sub-form page loads (navigate + breadcrumb + layout)
+2. SDPOD_SFCMDB_ADMIN_002 — Create new Sub Form Type via button
+3. SDPOD_SFCMDB_ADMIN_003..006 — Sub form creation validations (empty/long/invalid/duplicate) [grouped]
+4. SDPOD_SFCMDB_ADMIN_007 — List all sub forms
+5. SDPOD_SFCMDB_ADMIN_008..009 — Delete sub form + in-use guard [grouped]
+
+[Admin > CI Type Layout]
+6. SDPOD_SFCMDB_ADMIN_016 — Drag and Drop sub form into CI Type layout
 ...
 
 Shall I generate all of them, or only specific ones? (Reply with numbers or 'all')
@@ -94,6 +155,8 @@ Match the use-case noun to the correct module — NEVER default to whatever file
 - solution → `modules/solutions/solution/`
 - change → `modules/changes/change/`
 - problem → `modules/problems/problem/`
+
+If the input came from a **CSV document** (Mode A), use the `Module` and `Sub-Module` columns directly via the **Module Routing Table** and **Sub-Module Resolution** rules defined in Step A0 above. Do NOT re-derive the module from the description text — trust the CSV columns.
 
 ### Step 2 — Read Entity Util Files
 
@@ -129,10 +192,10 @@ Use the output value (e.g., `BALAJI_M`, `RAJESHWARAN_A`) in all generated annota
 @AutomaterScenario(
     id          = "SDPOD_AUTO_...",                // grep for next sequential ID
     group       = "...",                           // MUST exist in parent preProcess()
-    priority    = Priority.MEDIUM,
+    priority    = Priority.MEDIUM,                 // CSV Severity: Critical→HIGH, Major→MEDIUM, Minor→LOW
     dataIds     = {...},
     tags        = {},
-    description = "Plain English description",
+    description = "Plain English description",     // If from CSV: "[USECASE_ID] <description>"
     owner       = OwnerConstants.<RESOLVED_OWNER>, // from OWNER_CONSTANT in project_config
     runType     = ScenarioRunType.USER_BASED,      // ALWAYS explicit — never omit
     switchOn    = SwitchToUserSession.AFTER_PRE_PROCESS
@@ -275,3 +338,6 @@ This is fire-and-forget — if the orchestrator server isn't running, the event 
 - DO NOT invent preProcess group names not listed in parent class
 - DO NOT create new data JSON entries when existing ones can be reused
 - DO NOT place scenarios in wrong modules based on currently open file
+- DO NOT process CSV rows where `UI To-be-automated` ≠ `Yes` — these are API-only or not-in-scope
+- DO NOT use the UseCase ID directly as the `@AutomaterScenario(id)` — generate the framework's sequential ID format (e.g., `SDPOD_AUTO_CH_LV_###`) and reference the UseCase ID in the `description` field
+- When input is CSV: trust the `Module` and `Sub-Module` columns for placement — NEVER re-derive from description text
