@@ -153,6 +153,41 @@ Reports appear at: `SDPLIVE_LATEST_AUTOMATER_SELENIUM/reports/LOCAL_<method>_<ti
 
 ---
 
+## Generating Tests — `@test-generator`
+
+1. Open **Copilot Chat** → **Agent mode**
+2. Provide the use case in one of these ways:
+   - **Type a description**: `@test-generator Create an incident request, add a note, and verify it appears in the notes tab`
+   - **Attach a document**: Drag a `.md`, `.txt`, `.xls`, `.xlsx`, or `.csv` file into the chat and type `@test-generator`
+   - **Use-case docs folder**: Place documents in `docs/UseCase/` or `docs/Feature_Document/` for reference
+
+The agent will:
+- Read framework rules and knowledge files
+- Analyze the use case and identify the correct module/entity
+- Check existing data entries and reuse where possible
+- Generate Java test code (annotation wrapper + base implementation + data JSON + constants)
+- Output code blocks with `// ===== ADD TO: <filename> =====` markers
+
+> **Tip**: For best results, be specific about what module (requests, solutions, changes, etc.) and what actions (create, edit, verify, add notes, etc.) the test should cover.
+
+---
+
+## Debugging Tests — `@test-debugger`
+
+1. Open **Copilot Chat** → **Agent mode**
+2. Describe the failure: `@test-debugger SDPOD_AUTO_SOL_DV_243 fails with NoSuchElementException on the approval button`
+
+The agent can:
+- Analyze `ScenarioReport.html` failures and screenshots
+- Inspect SDP UI elements using the browser (Playwright MCP)
+- Create prerequisite test data via `sdpAPICall()` to reach the correct UI state
+- Fix broken XPath locators
+- Investigate `NullPointerException` and API response issues
+
+> **Tip**: Include the test ID, error type, and any relevant log output for faster diagnosis.
+
+---
+
 ## Troubleshooting
 
 | Problem | Fix |

@@ -1,6 +1,6 @@
 ---
 description: "Use when editing test data JSON files, creating new data entries for test scenarios, or working with placeholder values like $(unique_string) and $(custom_KEY) in the AutomaterSelenium framework."
-applyTo: ["SDPLIVE_LATEST_AUTOMATER_SELENIUM/resources/entity/data/**/*.json", "AutomaterSelenium/resources/entity/data/**/*.json"]
+applyTo: ["**/resources/entity/data/**/*.json"]
 ---
 
 # Test Data JSON Format — AutomaterSelenium
@@ -56,3 +56,7 @@ JSONObject inputData = getTestCaseData(DataConstants.CREATE_WITH_TEMPLATE);
 | `$(admin_email_id)` | Admin email |
 | `$(date, N, ahead)` | Date N days ahead (milliseconds) |
 | `$(datetime, N, ahead)` | Datetime N days ahead (milliseconds) |
+| `$(common_string)` | Timestamp + partName (unique per run) |
+| `$(rest_api, method, apiPath, inputDataKey, storageKey[, iterate])` | Calls REST API, stores result in LocalStorage under storageKey |
+| `$(local_storage, store, key, value)` | Stores value in LocalStorage at runtime |
+| `$(local_storage, get, key)` | Reads value from LocalStorage at runtime |

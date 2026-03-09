@@ -1,18 +1,4 @@
 # AutomaterSelenium — AI Code-Generation Rules
-# Source: Exhaustive reading of Request.java (4873 lines), SolutionBase.java (393 KB),
-#         Solution.java (3907 lines), IncidentRequest.java (3654 lines),
-#         AutomaterScenario.java, AutomaterCase.java, AutomaterSuite.java,
-#         SwitchToUserSession.java, ScenarioRunType.java, Priority.java,
-#         RequestsRole.java, OwnerConstants.java, SolutionAnnotationConstants.java,
-#         RequestDataConstants.java, SolutionDataConstants.java,
-#         request_data.json, solution_data.json
-#
-# PURPOSE: Rules that prevent the LLM from hallucinating invalid code.
-# RULE PRIORITY: FORBIDDEN rules must NEVER be violated.
-#                REQUIRED rules must ALWAYS be followed.
-#                PREFERRED rules are best-practice defaults.
----
-
 ## SECTION 0 — MODULE PLACEMENT (REQUIRED — check before any other rule)
 
 ### 0.1 Derive the target module from the use-case description, never from the active file
@@ -661,6 +647,44 @@ inputData.put("status", new JSONObject().put("name", "Open"));
 // ✅ CORRECT — define in *_data.json, load via DataConstants
 JSONObject inputData = getTestCaseData(ChangeDataConstants.ChangeData.CREATE_CHANGE);
 // All fields, placeholders, and lookup objects are in the JSON file
+```
+
+**Same rule applies inside `preProcess()` else-if blocks:**
+```java
+// ❌ FORBIDDEN — inline construction inside preProcess (bloated, unreadable, non-reusable)
+} else if ("createPoWithContract".equalsIgnoreCase(group)) {
+    JSONObject contractInput1 = new JSONObject();
+    contractInput1.put("name", "ContractAssoc1_" + ts);
+    contractInput1.put("vendor", new JSONObject().put("name", LocalStorage.getAsString("PO_Vendor")));
+    contractInput1.put("is_definite", true);
+    contractInput1.put("active_from", new JSONObject().put("value", String.valueOf(now)));
+    contractInput1.put("type", new JSONObject().put("name", "Lease"));
+    contractInput1.put("owner", new JSONObject().put("name", userName).put("email_id", userEmail));
+    // ... repeated for contractInput2, contractInput3 ...
+    JSONObject contractResp1 = restAPI.createAndGetResponse("contract", "contracts", new JSONObject().put("contract", contractInput1));
+}
+
+// ✅ CORRECT — data in *_data.json with placeholders, loaded in preProcess via dataIds
+// In contract_data.json:
+// "create_contract_for_po_assoc": {
+//   "data": {
+//     "name": "ContractAssoc_$(unique_string)",
+//     "vendor": {"name": "$(custom_PO_Vendor)"},
+//     "is_definite": true,
+//     "active_from": {"value": "$(date, 0, ahead)"},
+//     "type": {"name": "Lease"},
+//     "owner": {"name": "$(user_name)", "email_id": "$(user_email_id)"}
+//   }
+// }
+
+// In preProcess:
+} else if ("createPoWithContract".equalsIgnoreCase(group)) {
+    PurchaseAPIUtil.createPurchase("contract_association_test");
+    JSONObject contractData = getTestCaseDataUsingCaseId(dataIds[0]);
+    JSONObject resp1 = restAPI.createAndGetResponse("contract", "contracts", getInputData(contractData));
+    LocalStorage.store("contractId1", resp1.getString("id"));
+    LocalStorage.store("contractName1", resp1.getString("name"));
+}
 ```
 
 **The ONLY acceptable uses of `new JSONObject()` in test code are:**

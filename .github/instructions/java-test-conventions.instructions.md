@@ -1,6 +1,6 @@
 ---
 description: "Use when editing Java test files, writing @AutomaterScenario annotations, creating Locators interfaces, writing ActionsUtil/APIUtil methods, or modifying test base classes in the AutomaterSelenium framework."
-applyTo: ["SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/**/*.java", "AutomaterSelenium/src/**/*.java"]
+applyTo: ["**/src/**/*.java"]
 ---
 
 # Java Test Conventions — AutomaterSelenium
