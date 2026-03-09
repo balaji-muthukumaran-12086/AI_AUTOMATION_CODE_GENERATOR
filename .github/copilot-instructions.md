@@ -504,14 +504,30 @@ Role.SDADMIN  |  ModulesRoleSkeleton.SDADMIN
 - `custom_roles` block → framework ensures the custom role exists in SDP before assigning (creates it via UI if missing)
 - Requester entries omit `custom_roles` and `roles[]`; include `login_user`, `requester_allowed_to_view`, etc.
 
-### Owner Constants — use ONLY these 12
+### Owner Constants — auto-detected from hg username
 
+The `owner` field in `@AutomaterScenario` is automatically resolved from the user's hg
+username via `config/project_config.py → OWNER_CONSTANT`. The setup-project agent sets
+`HG_USERNAME` and `OWNER_CONSTANT` in `.env` at clone time.
+
+**To get the current owner at generation time:**
+```bash
+.venv/bin/python -c "from config.project_config import OWNER_CONSTANT; print(OWNER_CONSTANT)"
+```
+
+**Full constant list** (all defined in `OwnerConstants.java`):
 ```
 OwnerConstants.UMESH_SUDAN     OwnerConstants.ANTONYRAJAN_D    OwnerConstants.RAJESHWARAN_A
 OwnerConstants.MUTHUSIVABALAN_S  OwnerConstants.VINUTHNA_K     OwnerConstants.NANTHAKUMAR_G
 OwnerConstants.VIGNESH_E       OwnerConstants.RUJENDRAN        OwnerConstants.THILAK_RAJ
 OwnerConstants.PURVA_RAJESH    OwnerConstants.VEERAVEL         OwnerConstants.JAYA_KUMAR
+OwnerConstants.BALAJI_M        OwnerConstants.SUBHA            OwnerConstants.BINESH_N
+OwnerConstants.PAVITHRA_R      OwnerConstants.KARUPPASAMY      OwnerConstants.SANTHOSH_BD
+OwnerConstants.OMPIRAKASH      OwnerConstants.ABINAYA_AK       OwnerConstants.RANJITH_N
+OwnerConstants.ELANGO_S        OwnerConstants.SANTHIYA_PR      OwnerConstants.KARTHIKA_R
 ```
+
+> **Default**: If `HG_USERNAME` is not set or not found in the mapping, falls back to `RAJESHWARAN_A`.
 
 ### DataConstants Pattern (REQUIRED — never use raw string literals)
 

@@ -110,6 +110,16 @@ Open the **parent class** (e.g., `Change.java`, `Solution.java`) and read `prePr
 ## Code Generation Rules
 
 ### @AutomaterScenario — Always Include All 9 Fields
+
+Before writing the `owner` field, resolve the configured owner:
+
+```bash
+cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
+.venv/bin/python -c "from config.project_config import OWNER_CONSTANT; print(OWNER_CONSTANT)"
+```
+
+Use the output value (e.g., `BALAJI_M`, `RAJESHWARAN_A`) in all generated annotations:
+
 ```java
 @AutomaterScenario(
     id          = "SDPOD_AUTO_...",                // grep for next sequential ID
@@ -118,7 +128,7 @@ Open the **parent class** (e.g., `Change.java`, `Solution.java`) and read `prePr
     dataIds     = {...},
     tags        = {},
     description = "Plain English description",
-    owner       = OwnerConstants.RAJESHWARAN_A,
+    owner       = OwnerConstants.<RESOLVED_OWNER>, // from OWNER_CONSTANT in project_config
     runType     = ScenarioRunType.USER_BASED,      // ALWAYS explicit — never omit
     switchOn    = SwitchToUserSession.AFTER_PRE_PROCESS
 )

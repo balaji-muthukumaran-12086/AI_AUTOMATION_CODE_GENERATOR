@@ -25,6 +25,7 @@ from agents.llm_factory import get_llm, supports_tool_calling
 from agents.coder_tools import CODER_TOOLS
 from knowledge_base.context_builder import ContextBuilder
 from knowledge_base.vector_store import VectorStore
+from config.project_config import OWNER_CONSTANT as _CONFIGURED_OWNER
 
 
 def _load_framework_rules() -> str:
@@ -145,7 +146,7 @@ def _get_api_reference(module_path: str) -> str:
     return '\n'.join(combined).strip()
 
 
-SYSTEM_PROMPT = """
+SYSTEM_PROMPT_TEMPLATE = """
 You are an expert Java test automation engineer for Zoho ServiceDesk Plus (SDP).
 You write test cases using the AutomaterSelenium framework.
 
@@ -195,7 +196,7 @@ ANNOTATION WRAPPER — <Entity>.java (EXACT PATTERN)
       priority    = Priority.HIGH,
       dataIds     = {},                             // {} when group=""
       tags        = {},
-      owner       = OwnerConstants.OWNER_NAME,
+      owner       = OwnerConstants.{CONFIGURED_OWNER},
       runType     = ScenarioRunType.USER_BASED,
       description = "One-line description of what this test does"
   )
@@ -370,7 +371,7 @@ TWO-PIECE OUTPUT FORMAT
       priority = Priority.HIGH,
       dataIds = {SolutionAnnotationConstants.Data.SOL_NEW_TOPIC},
       tags = {},
-      owner = OwnerConstants.RAJESHWARAN_A,
+      owner = OwnerConstants.{CONFIGURED_OWNER},
       runType = ScenarioRunType.USER_BASED,
       description = "..."
   )
@@ -687,7 +688,7 @@ Set<String> actions.jsonArrayToSet(JSONArray arr)
 22. group="NoPreprocess" means ZERO API calls, ZERO cleanup. Pair with dataIds={} or dataIds={""}. NEVER add preProcess/postProcess logic for this group.
 23. @AutomaterCase is NOT a test. It annotates helper sub-methods in the BASE class only. ALL runnable tests use @AutomaterScenario.
 24. runType TRAP: the annotation default is PORTAL_BASED. ALWAYS write runType=ScenarioRunType.USER_BASED explicitly. Never omit it.
-25. Owner values: use ONLY — OwnerConstants.UMESH_SUDAN, ANTONYRAJAN_D, RAJESHWARAN_A, MUTHUSIVABALAN_S, VINUTHNA_K, NANTHAKUMAR_G, VIGNESH_E, RUJENDRAN, THILAK_RAJ, PURVA_RAJESH, VEERAVEL, JAYA_KUMAR.
+25. Owner values: use OwnerConstants.{CONFIGURED_OWNER} (auto-detected from hg username). All valid constants: UMESH_SUDAN, ANTONYRAJAN_D, RAJESHWARAN_A, MUTHUSIVABALAN_S, VINUTHNA_K, NANTHAKUMAR_G, VIGNESH_E, RUJENDRAN, THILAK_RAJ, PURVA_RAJESH, VEERAVEL, JAYA_KUMAR, BALAJI_M, SUBHA, BINESH_N, etc.
 26. Data JSON: every entry MUST have {"data":{...}} wrapper. Lookup fields must be {"name":"Value"} objects, NOT flat strings. Never omit the wrapper.
 27. DATA REUSE: NEVER create new *_data.json entries or DataConstants if existing ones provide the same entity data (e.g. creating a change). Check the "Existing Data JSON Keys" and "Existing Annotation Constants" sections in context. Reuse existing keys for preProcess group data — only create new entries for genuinely new UI test data that doesn't exist yet.
 28. AnnotationConstants.Data reuse: dataIds values MUST reference existing constants from AnnotationConstants.Data interface. Only add new constants if no existing one matches the required API setup data.
@@ -711,6 +712,10 @@ Set<String> actions.jsonArrayToSet(JSONArray arr)
     FORBIDDEN: new else-if block that duplicates an existing group's API call + LocalStorage stores.
     FORBIDDEN: reading only the subclass preProcess — always read the parent.
 """
+
+# Resolve the configured owner into the prompt template.
+# Uses .replace() instead of .format() to avoid conflicts with Java code braces in the template.
+SYSTEM_PROMPT = SYSTEM_PROMPT_TEMPLATE.replace("{CONFIGURED_OWNER}", _CONFIGURED_OWNER)
 
 
 class CoderAgent:

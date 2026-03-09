@@ -38,6 +38,12 @@ HG_AGENT_ENABLED = False
 # Branch prefix used when auto-generating branch names (only relevant when enabled)
 HG_BRANCH_PREFIX = "feature/AI_GEN_"
 
+# ── Mercurial Repository Configuration ──────────────────────────────────────
+# Default remote hg repo URL for cloning test-case branches.
+# Users supply branch name + credentials at setup time; the setup-project agent
+# clones the branch into a subfolder matching PROJECT_NAME.
+HG_REPO_URL = "https://zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium"
+
 # ── Derived paths (do not edit) ────────────────────────────────────────────
 import os as _os
 from dotenv import load_dotenv as _load_dotenv
@@ -69,6 +75,78 @@ SDP_PORTAL      = _os.environ.get("SDP_PORTAL", "")
 SDP_ADMIN_EMAIL = _os.environ.get("SDP_ADMIN_EMAIL", "")
 SDP_EMAIL_ID    = _os.environ.get("SDP_EMAIL_ID", SDP_ADMIN_EMAIL)
 SDP_ADMIN_PASS  = _os.environ.get("SDP_ADMIN_PASS", "")
+
+# ── Mercurial user → OwnerConstants mapping ─────────────────────────────────
+# The hg username provided during clone is matched (case-insensitive) against
+# this table.  The resolved constant is stored in .env as OWNER_CONSTANT and
+# used by CoderAgent / test-generator when emitting @AutomaterScenario.
+HG_USERNAME     = _os.environ.get("HG_USERNAME", "")
+
+# Map: lowercased hg username → OwnerConstants Java constant name
+_OWNER_MAP = {
+    "umesh-sudan":         "UMESH_SUDAN",
+    "antonyrajan-d":       "ANTONYRAJAN_D",
+    "rajeshwaran-a":       "RAJESHWARAN_A",
+    "muthusivabalan-s":    "MUTHUSIVABALAN_S",
+    "vinuthna-k":          "VINUTHNA_K",
+    "nanthakumar-g":       "NANTHAKUMAR_G",
+    "vignesh-e":           "VIGNESH_E",
+    "rujendran":           "RUJENDRAN",
+    "thilak-raj":          "THILAK_RAJ",
+    "purva-rajesh":        "PURVA_RAJESH",
+    "veeravel":            "VEERAVEL",
+    "jaya-kumar":          "JAYA_KUMAR",
+    "balaji-12086":        "BALAJI_M",
+    "balaji-muthukumaran": "BALAJI_M",
+    "subha":               "SUBHA",
+    "binesh-nb":           "BINESH_N",
+    "pavithra-r":          "PAVITHRA_R",
+    "karuppasamy":         "KARUPPASAMY",
+    "santhosh-bd":         "SANTHOSH_BD",
+    "ompirakash-s":        "OMPIRAKASH",
+    "abinaya-ak":          "ABINAYA_AK",
+    "ranjith-n":           "RANJITH_N",
+    "elango":              "ELANGO_S",
+    "santhiya-pr":         "SANTHIYA_PR",
+    "karthika-r":          "KARTHIKA_R",
+    "surya-ramesh":        "SURYA",
+    "vigneshraj-sk":       "VIGNESHRAJ",
+    "tejaswini-g":         "TEJASWINI_G",
+    "sivanesh-muthukumar": "SIVANESH_MUTHUKUMAR",
+    "gurdeep-singh":       "GURDEEP_SINGH",
+    "janaki-r":            "JANAKI_R",
+    "hemapriya-s":         "HEMAPRIYA_S",
+    "surendhar-gs":        "SURENDHAR_GS",
+    "kasim-k":             "KASIM",
+    "aishwarya-j":         "AISHWARYA_JAYASANKAR",
+    "gowtham-a":           "GOWTHAM_A",
+    "devirani-r":          "DEVIRANI_R",
+    "balaji-mr":           "BALAJI_MR",
+    "yuvan-r":             "YUVAN_R",
+    "ugesh":               "UGESH",
+    "kavin-kumar-r":       "KAVIN_KUMAR_R",
+    "anitha-a":            "ANITHA_A",
+    "nithin-k":            "NITHIN_K",
+}
+
+
+def resolve_owner_constant(hg_username: str | None = None) -> str:
+    """Return the OwnerConstants.* Java constant for the given hg username.
+
+    Falls back to OWNER_CONSTANT env var, then HG_USERNAME env var.
+    Returns 'RAJESHWARAN_A' as the default if no match is found.
+    """
+    username = (hg_username or _os.environ.get("OWNER_CONSTANT", "") or HG_USERNAME).strip()
+    if not username:
+        return "RAJESHWARAN_A"
+    # Direct match (already a constant like BALAJI_M)
+    if username.upper() in _OWNER_MAP.values():
+        return username.upper()
+    # Lookup by hg username
+    return _OWNER_MAP.get(username.lower(), "RAJESHWARAN_A")
+
+
+OWNER_CONSTANT = resolve_owner_constant()
 
 # ── Phase 5 — Pipeline Monitoring ─────────────────────────────────────────
 # Per-agent execution timeout in seconds. OrchestratorAgent (future) will kill
