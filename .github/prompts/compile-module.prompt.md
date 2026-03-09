@@ -12,9 +12,10 @@ Compile the specified module's Java source files using targeted compilation.
 ## Compilation Command
 
 ```bash
-DEPS=/home/balaji-12086/Desktop/Workspace/Zide/dependencies
-BIN=/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/SDPLIVE_LATEST_AUTOMATER_SELENIUM/bin
-SRC=/home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa/SDPLIVE_LATEST_AUTOMATER_SELENIUM/src
+# Derive paths from project_config.py (single source of truth — reads .env)
+DEPS=$(.venv/bin/python -c "from config.project_config import DEPS_DIR; print(DEPS_DIR)")
+BIN=$(.venv/bin/python -c "from config.project_config import PROJECT_ROOT, PROJECT_NAME; print(PROJECT_ROOT + '/' + PROJECT_NAME + '/bin')")
+SRC=$(.venv/bin/python -c "from config.project_config import PROJECT_ROOT, PROJECT_NAME; print(PROJECT_ROOT + '/' + PROJECT_NAME + '/src')")
 CP="$BIN:$(find "$DEPS" -name "*.jar" | tr '\n' ':')"
 
 javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
