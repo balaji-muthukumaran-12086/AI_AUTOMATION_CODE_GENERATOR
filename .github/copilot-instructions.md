@@ -194,6 +194,7 @@ selenium*.jar, json.jar, etc.
 | Geckodriver | `GECKODRIVER_PATH` | `$DRIVERS_DIR/geckodriver` |
 | Dependencies (JARs) | `DEPS_DIR` | machine-specific — must set in `.env` |
 | SDP URL | `SDP_URL` | see `project_config.py` |
+| Orchestrator dashboard | `ORCHESTRATOR_URL` | `http://localhost:9600` |
 | Python venv | — | `.venv/` (activate with `.venv/bin/activate`) |
 
 ```python

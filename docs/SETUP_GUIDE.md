@@ -158,6 +158,25 @@ Reports appear at: `SDPLIVE_LATEST_AUTOMATER_SELENIUM/reports/LOCAL_<method>_<ti
 
 ---
 
+## Orchestrator Dashboard
+
+The orchestrator tracks all Copilot-generated scenarios, test runs, and healing events.
+
+```bash
+# Start locally
+./orchestrator.sh start
+# → http://localhost:9600
+```
+
+**Hosted URL**: `https://balajimuthukumaran-jlbdxduj-9600.zcodecorp.in`
+
+To point agents at the hosted dashboard, set in `.env`:
+```env
+ORCHESTRATOR_URL=https://balajimuthukumaran-jlbdxduj-9600.zcodecorp.in
+```
+
+---
+
 ## Generating Tests — `@test-generator`
 
 1. Open **Copilot Chat** → **Agent mode**

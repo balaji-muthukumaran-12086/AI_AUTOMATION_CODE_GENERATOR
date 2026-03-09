@@ -568,6 +568,10 @@ When enabled (`HG_AGENT_ENABLED = True`):
 
 Open `http://localhost:9500` in any browser.
 
+**Orchestrator Dashboard** (tracks Copilot-generated scenarios, test runs, healing events):
+- Local: `http://localhost:9600`
+- Hosted: `https://balajimuthukumaran-jlbdxduj-9600.zcodecorp.in`
+
 ### Features
 
 | Feature | Description |
