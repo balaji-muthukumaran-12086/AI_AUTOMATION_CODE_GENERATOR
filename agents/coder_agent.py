@@ -27,6 +27,9 @@ from knowledge_base.context_builder import ContextBuilder
 from knowledge_base.vector_store import VectorStore
 from config.project_config import OWNER_CONSTANT as _CONFIGURED_OWNER
 
+# Fall back to RAJESHWARAN_A only in coder agent if owner was never resolved
+_EFFECTIVE_OWNER = _CONFIGURED_OWNER or "RAJESHWARAN_A"
+
 
 def _load_framework_rules() -> str:
     """Load the validated rules document — prevents LLM hallucination."""
@@ -715,7 +718,7 @@ Set<String> actions.jsonArrayToSet(JSONArray arr)
 
 # Resolve the configured owner into the prompt template.
 # Uses .replace() instead of .format() to avoid conflicts with Java code braces in the template.
-SYSTEM_PROMPT = SYSTEM_PROMPT_TEMPLATE.replace("{CONFIGURED_OWNER}", _CONFIGURED_OWNER)
+SYSTEM_PROMPT = SYSTEM_PROMPT_TEMPLATE.replace("{CONFIGURED_OWNER}", _EFFECTIVE_OWNER)
 
 
 class CoderAgent:

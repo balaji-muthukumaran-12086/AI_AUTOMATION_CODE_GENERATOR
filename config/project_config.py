@@ -130,20 +130,47 @@ _OWNER_MAP = {
 }
 
 
-def resolve_owner_constant(hg_username: str | None = None) -> str:
+def resolve_owner_constant(hg_username: str | None = None) -> str | None:
     """Return the OwnerConstants.* Java constant for the given hg username.
 
     Falls back to OWNER_CONSTANT env var, then HG_USERNAME env var.
-    Returns 'RAJESHWARAN_A' as the default if no match is found.
+    Returns None if no match is found (caller should prompt the user).
     """
     username = (hg_username or _os.environ.get("OWNER_CONSTANT", "") or HG_USERNAME).strip()
     if not username:
-        return "RAJESHWARAN_A"
+        return None
     # Direct match (already a constant like BALAJI_M)
     if username.upper() in _OWNER_MAP.values():
         return username.upper()
     # Lookup by hg username
-    return _OWNER_MAP.get(username.lower(), "RAJESHWARAN_A")
+    return _OWNER_MAP.get(username.lower())
+
+
+def fuzzy_match_owner(name: str) -> str | None:
+    """Find the closest OwnerConstants match for a human name.
+
+    Accepts inputs like 'Balaji M', 'balaji', 'Rajeshwaran', etc.
+    Returns the best-matching constant or None if no reasonable match.
+    """
+    import difflib
+    if not name or not name.strip():
+        return None
+    name_lower = name.strip().lower().replace(" ", "_").replace("-", "_")
+    constants = list(_OWNER_MAP.values())
+    # unique constants only
+    unique = list(dict.fromkeys(constants))
+    # Try exact substring match first
+    for c in unique:
+        if name_lower in c.lower() or c.lower() in name_lower:
+            return c
+    # Fuzzy match against constant names
+    matches = difflib.get_close_matches(
+        name_lower, [c.lower() for c in unique], n=1, cutoff=0.5
+    )
+    if matches:
+        idx = [c.lower() for c in unique].index(matches[0])
+        return unique[idx]
+    return None
 
 
 OWNER_CONSTANT = resolve_owner_constant()

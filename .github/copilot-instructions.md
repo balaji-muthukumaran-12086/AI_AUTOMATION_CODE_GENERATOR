@@ -527,7 +527,9 @@ OwnerConstants.OMPIRAKASH      OwnerConstants.ABINAYA_AK       OwnerConstants.RA
 OwnerConstants.ELANGO_S        OwnerConstants.SANTHIYA_PR      OwnerConstants.KARTHIKA_R
 ```
 
-> **Default**: If `HG_USERNAME` is not set or not found in the mapping, falls back to `RAJESHWARAN_A`.
+> **No silent fallback**: If `HG_USERNAME` is not set or not found in the mapping, the user
+> is asked for their name. `fuzzy_match_owner(name)` then finds the closest constant.
+> If no match, the user picks from the full list.
 
 ### DataConstants Pattern (REQUIRED — never use raw string literals)
 

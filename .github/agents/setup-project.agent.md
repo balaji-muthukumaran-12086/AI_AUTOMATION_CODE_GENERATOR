@@ -154,14 +154,44 @@ This maps the hg username to the correct `OwnerConstants.*` Java constant. For e
 - `rajeshwaran-a` → `RAJESHWARAN_A`
 - `jaya-kumar` → `JAYA_KUMAR`
 
-If the username is NOT found in the mapping, the default `RAJESHWARAN_A` is used. In that case, tell the user:
+**If the result is `None`** (username not in the mapping), do NOT fall back silently. Instead, ask the user:
 
 ```
 ⚠️  Your hg username '{HG_USERNAME}' was not found in the owner mapping.
-Defaulting to OwnerConstants.RAJESHWARAN_A for generated test scenarios.
 
-If you'd like a specific owner, tell me your name and I'll update the mapping.
+What is your name? (e.g., "Balaji M", "Rajeshwaran", "Jaya Kumar")
+I'll match it to the closest OwnerConstants entry.
 ```
+
+Once the user replies with their name, run the fuzzy matcher:
+
+```bash
+cd {WORKSPACE_DIR}
+.venv/bin/python -c "
+from config.project_config import fuzzy_match_owner
+match = fuzzy_match_owner('{USER_NAME}')
+print(f'FUZZY_MATCH={match}')
+"
+```
+
+- If the fuzzy match returns a result, confirm with the user:
+  ```
+  I found a match: OwnerConstants.{MATCHED_CONSTANT}
+  Is this correct? (yes/no)
+  ```
+  - If yes → use this constant
+  - If no → show the full list of available constants and ask the user to pick one
+
+- If the fuzzy match returns `None`, show the full list and ask the user to pick:
+  ```
+  I couldn't find a close match for '{USER_NAME}'.
+  Please pick your owner constant from the list below:
+
+  UMESH_SUDAN, ANTONYRAJAN_D, RAJESHWARAN_A, MUTHUSIVABALAN_S, VINUTHNA_K,
+  NANTHAKUMAR_G, VIGNESH_E, RUJENDRAN, THILAK_RAJ, PURVA_RAJESH, VEERAVEL,
+  JAYA_KUMAR, BALAJI_M, SUBHA, BINESH_N, PAVITHRA_R, KARUPPASAMY, SANTHOSH_BD,
+  OMPIRAKASH, ABINAYA_AK, RANJITH_N, ELANGO_S, SANTHIYA_PR, KARTHIKA_R
+  ```
 
 Store the resolved owner constant for use in Step 5.
 
