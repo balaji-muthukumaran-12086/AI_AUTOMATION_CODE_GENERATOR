@@ -1620,13 +1620,14 @@ git remote set-url origin https://github.com/USERNAME/REPO.git
 ---
 
 ## FRAMEWORK SOURCE ANALYSIS — Mar 2026
-*Sourced from `automater-selenium-framework-1.1.0.zip` in the dependencies folder*
+*Sourced from `automater-selenium-framework-*.zip` in the dependencies folder*
 
 > **Reading framework source**: When you need to verify framework method behaviour (e.g., which
 > methods call `waitForAjaxComplete()` internally), read directly from the framework ZIP:
 > ```bash
 > DEPS_DIR=$(python -c "from config.project_config import DEPS_DIR; print(DEPS_DIR)")
-> unzip -p "$DEPS_DIR/automater-selenium-framework-1.1.0.zip" "com/zoho/automater/selenium/base/Actions.java" | grep -n "pattern"
+> FW_ZIP=$(find "$DEPS_DIR" -name 'automater-selenium-framework-*.zip' | head -1)
+> unzip -p "$FW_ZIP" "com/zoho/automater/selenium/base/Actions.java" | grep -n "pattern"
 > ```
 > Key files: `Actions.java`, `Navigate.java`, `FormBuilder.java`, `Validator.java`, `SDPCloudActions.java`, `RestAPI.java`
 

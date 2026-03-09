@@ -49,13 +49,14 @@ ai-automation-qa/
 ├── agents/runner_agent.py              # Python runner — patches 2 files, compiles, executes
 ├── run_test.py                         # Entry point — configure RUN_CONFIG here
 └── dependencies/                       # All JARs (including framework/ subdirectory)
-    └── automater-selenium-framework-1.1.0.zip  # Framework source ZIP — readable via unzip -p
+    └── automater-selenium-framework-*.zip  # Framework source ZIP — readable via unzip -p
 ```
 
 > **Framework source ZIP**: When you need to verify which framework methods call `waitForAjaxComplete()` internally,
 > check method signatures, or read any base class implementation, extract from the framework ZIP:
 > ```bash
-> unzip -p "$DEPS_DIR/automater-selenium-framework-1.1.0.zip" "com/zoho/automater/selenium/base/Actions.java" | grep -n "pattern"
+> FW_ZIP=$(find "$DEPS_DIR" -name 'automater-selenium-framework-*.zip' | head -1)
+> unzip -p "$FW_ZIP" "com/zoho/automater/selenium/base/Actions.java" | grep -n "pattern"
 > ```
 > Key source files inside: `Actions.java` (click, type, sendKeys, getText), `Navigate.java`, `FormBuilder.java`, `Validator.java`, `SDPCloudActions.java`, `RestAPI.java`.
 
