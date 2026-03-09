@@ -233,6 +233,41 @@ If this fails (non-fatal — do NOT retry): report the error but do not block. C
 
 **Why this matters**: ChromaDB is queried by `CoverageAgent` before planning new tests. Without indexing, a scenario generated here will be treated as a coverage gap and regenerated the next time `python main.py` runs on the same feature.
 
+### Step P4 — Log to Orchestrator Dashboard
+
+After generating code, log each scenario to the centralized orchestrator so the dashboard tracks Copilot-generated work:
+
+```bash
+.venv/bin/python -c "
+from orchestrator.client import get_client
+oc = get_client()
+oc.scenario_generated(
+    module='<module>',
+    entity='<EntityClass>',
+    feature_name='<brief_feature_description>',
+    scenario_id='<SCENARIO_ID>',
+    method_name='<methodName>',
+    scenarios_count=<N>,
+    agent='test-generator',
+)
+"
+```
+
+Replace `<module>`, `<EntityClass>`, `<SCENARIO_ID>`, `<methodName>`, `<N>` with actual values.
+If the test was also executed, log the result:
+
+```bash
+.venv/bin/python -c "
+from orchestrator.client import get_client
+oc = get_client()
+oc.scenario_passed(scenario_id='<SCENARIO_ID>', method_name='<methodName>', module='<module>')
+"
+# OR for failures:
+# oc.scenario_failed(scenario_id='<SCENARIO_ID>', method_name='<methodName>', module='<module>', error_message='<brief error>')
+```
+
+This is fire-and-forget — if the orchestrator server isn't running, the event is silently saved to `orchestrator/offline_events.jsonl` for later replay.
+
 ---
 
 ## Constraints

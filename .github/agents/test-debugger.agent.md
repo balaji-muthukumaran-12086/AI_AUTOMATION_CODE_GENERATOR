@@ -97,6 +97,33 @@ Track all created entity IDs and DELETE before ending session:
 - Select2 dropdowns render `<li>` in `<div class="select2-drop">` at `<body>` level, NOT inside the parent dialog
 - SDP Associations tab container: `change_associations_parent_change`
 
+### Step 4 — Log Fix to Orchestrator Dashboard
+
+After a successful fix+rerun, log the healed scenario to the centralized orchestrator:
+
+```bash
+.venv/bin/python -c "
+from orchestrator.client import get_client
+oc = get_client()
+oc.scenario_healed(
+    scenario_id='<SCENARIO_ID>',
+    method_name='<methodName>',
+    module='<module>',
+    metadata={'fix_type': '<LOCATOR|API|LOGIC|COMPILE>', 'summary': '<one-line fix description>'},
+)
+"
+```
+
+If the rerun still fails, log the failure instead:
+```bash
+.venv/bin/python -c "
+from orchestrator.client import get_client
+get_client().scenario_failed(scenario_id='<SCENARIO_ID>', method_name='<methodName>', module='<module>', error_message='<brief error>')
+"
+```
+
+This is fire-and-forget — if the orchestrator server isn't running, events are silently queued offline.
+
 ## Constraints
 - DO NOT run full project compile — only targeted module compile
 - DO NOT modify `AutomaterSeleniumFramework/` source without explicit approval
