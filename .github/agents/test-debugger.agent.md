@@ -51,6 +51,10 @@ javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
 ```
 3. Run the test via `.venv/bin/python run_test.py 2>&1 | tail -50`
 
+## API Reference (MANDATORY — read before any API call)
+
+Before writing any REST API path or input wrapper, **read the relevant module section** in `docs/api-doc/SDP_API_Endpoints_Documentation.md`. This contains exact V3 API paths, HTTP methods, input wrappers, sub-resource paths, and worked automation examples for all 16 SDP modules. Do NOT guess API paths.
+
 ## Data Creation via sdpAPICall() (Mandatory Fallback Chain)
 
 When you need prerequisite test data during a Playwright session:

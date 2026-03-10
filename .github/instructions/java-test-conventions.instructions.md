@@ -161,6 +161,12 @@ public static void linkParentChange(String changeId, String targetChangeId) thro
 > Existing codebase has legacy inline JSON in APIUtil files — do NOT follow that pattern.
 > All **newly generated** APIUtil methods MUST use `*_data.json` entries.
 
+> **Post-load modification IS allowed**: After loading from `*_data.json`, you MAY use `.put()` / `.remove()` to tweak the JSONObject (e.g., conditionally adding a field). The rule: core data **creation** lives in JSON; post-load **transformation** in Java is acceptable.
+
+## API Reference (MANDATORY — consult before any API call)
+
+Before writing any REST API path or input wrapper (in preProcess, APIUtil, or sdpAPICall), **read the relevant module section** in `docs/api-doc/SDP_API_Endpoints_Documentation.md`. Contains exact V3 paths, HTTP methods, input wrappers, sub-resource paths, and worked examples for all 16 modules. Do NOT guess API paths.
+
 ## preProcess Groups
 
 - `preProcess()` lives in the **parent class** (e.g., `Change.java`, `Solution.java`)

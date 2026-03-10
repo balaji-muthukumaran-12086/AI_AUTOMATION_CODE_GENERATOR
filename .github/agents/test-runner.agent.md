@@ -173,6 +173,9 @@ browser_click → Login button
 browser_snapshot → verify dashboard loaded
 ```
 
+#### Consult API Reference
+Before writing any API path or input wrapper, **read the relevant module section** in `docs/api-doc/SDP_API_Endpoints_Documentation.md` — contains exact V3 paths, HTTP methods, input wrappers, and sub-resource paths for all 16 SDP modules. Do NOT guess.
+
 #### Create prerequisite data (if needed for navigation)
 Use `browser_evaluate` with `sdpAPICall()` — browser must be on a logged-in SDP page:
 ```javascript

@@ -316,6 +316,15 @@ For each operation in the scenario, check if a util method already exists. Only 
 ### Step 4 — Read Existing preProcess Groups
 Open the **parent class** (e.g., `Change.java`, `Solution.java`) and read `preProcess()` for all `equalsIgnoreCase` branches. Reuse existing groups — do NOT add new else-if blocks needlessly.
 
+### Step 5 — Consult API Reference for preProcess / APIUtil Methods
+Before writing any REST API call (in `preProcess`, APIUtil, or `sdpAPICall()` during debugging), **read the relevant module section** in `docs/api-doc/SDP_API_Endpoints_Documentation.md`. This document contains:
+- Exact V3 API paths (e.g., `api/v3/changes`, `api/v3/requests/{id}/notes`)
+- HTTP methods and input wrapper keys (e.g., `{"change": {...}}`)
+- Available sub-resource paths (notes, tasks, worklogs, approvals, etc.)
+- Worked automation examples
+
+> **MANDATORY**: Do NOT guess API paths or input wrappers. Always verify against this doc.
+
 ## Code Generation Rules
 
 ### @AutomaterScenario — Always Include All 9 Fields
@@ -362,7 +371,8 @@ When multiple use-case CSV rows can be covered by a single automation test metho
 - **Data loading context**: `getTestCaseData(TestCaseData)` → test method body ONLY; `getTestCaseDataUsingCaseId(dataIds[N])` → preProcess() ONLY; `DataUtil.getTestCaseDataUsingFilePath(path, caseId)` → APIUtil files ONLY. NEVER mix these contexts.
 - **`waitForAjaxComplete()` overuse**: NEVER add between consecutive `actions.click()` calls — the next click already waits. Only add before non-click reads (`getText`, `isElementPresent`) after AJAX-triggering actions.
 - **Non-existent methods**: Never use `actions.listView.doAction()`, `actions.listView.selectRecord()`, `actions.navigate.clickModule()`
-- **Inline JSON**: NEVER build test data with `new JSONObject().put(...)` chains — ALL data goes in `*_data.json`
+- **Inline JSON**: NEVER build test data from scratch with `new JSONObject().put(...)` chains — ALL data creation goes in `*_data.json`. Post-load modification (`.put()` / `.remove()` on loaded JSONObject) is allowed for dynamic transformations.
+- **API Reference**: Always consult `docs/api-doc/SDP_API_Endpoints_Documentation.md` before writing any REST API path or input wrapper — do NOT guess
 - **Checkstyle NeedBraces**: ALL blocks require braces (`if`, `else`, `for`, `while`, `catch`, `finally`) — inline `} catch (Exception e) {}` is FORBIDDEN
 
 ### Test Method Body Structure (REQUIRED)

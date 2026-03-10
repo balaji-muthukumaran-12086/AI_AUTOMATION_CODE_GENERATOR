@@ -676,7 +676,8 @@ These are **separate files**. `DataConstants` is auto-generated from `*_data.jso
 1. Always wrap with `{"data": {...}}` — no exceptions
 2. Lookup/dropdown fields = `{"name": "Value"}` object, NEVER a flat string
 3. Boolean = `true`/`false`, NOT the string `"true"`
-4. **FORBIDDEN: Inline JSONObject construction** — NEVER build test data with `new JSONObject().put(...)` chains in Java code. ALL entity data (UI inputs AND API payloads) MUST be in `*_data.json` and loaded via `getTestCaseData()` / `getTestCaseDataUsingCaseId()` / `DataUtil.getTestCaseDataUsingFilePath()`. This applies to **test methods, preProcess, AND APIUtil files**. For dynamic values, use `$(custom_KEY)` placeholders + `LocalStorage.store("KEY", value)` before loading. See the "APIUtil Data Flow" section for the required pattern.
+4. **FORBIDDEN: Inline JSONObject construction for data creation** — NEVER build test data from scratch with `new JSONObject().put(...)` chains in Java code. ALL entity data (UI inputs AND API payloads) MUST originate from `*_data.json` and be loaded via `getTestCaseData()` / `getTestCaseDataUsingCaseId()` / `DataUtil.getTestCaseDataUsingFilePath()`. This applies to **test methods, preProcess, AND APIUtil files**. For dynamic values, use `$(custom_KEY)` placeholders + `LocalStorage.store("KEY", value)` before loading. See the "APIUtil Data Flow" section for the required pattern.
+5. **Post-load modification IS allowed** — After loading data from `*_data.json`, you MAY use JSONObject methods (`.put()`, `.remove()`, `.getJSONObject()`) to modify or augment the loaded data before passing it to the API. The rule is: **core data creation must always be in `*_data.json`**; post-load transformation in Java is fine when the modification is dynamic and cannot be expressed via `$(custom_KEY)` placeholders.
 
 ### Data Reuse (CRITICAL — prevents duplicate data entries)
 
@@ -849,6 +850,8 @@ Does the method send data to an API (POST/PUT/PATCH)?
 > This is legacy code — do NOT follow that pattern. All **newly generated** APIUtil methods
 > MUST use `*_data.json` entries. When modifying existing methods, refactor to use data.json
 > if the scope of change allows.
+
+> **Post-load modification is OK**: After loading from `*_data.json`, you MAY use `.put()` / `.remove()` to tweak the loaded JSONObject (e.g., conditionally adding a field based on runtime state). The rule is: core data **creation** lives in JSON; post-load **transformation** in Java is acceptable.
 
 #### Method granularity rules
 
