@@ -676,7 +676,7 @@ These are **separate files**. `DataConstants` is auto-generated from `*_data.jso
 1. Always wrap with `{"data": {...}}` — no exceptions
 2. Lookup/dropdown fields = `{"name": "Value"}` object, NEVER a flat string
 3. Boolean = `true`/`false`, NOT the string `"true"`
-4. **FORBIDDEN: Inline JSONObject construction** — NEVER build test data with `new JSONObject().put(...)` chains in Java code. ALL entity data (UI inputs AND API payloads) MUST be in `*_data.json` and loaded via `getTestCaseData()` / `getTestCaseDataUsingCaseId()`. For dynamic values, use `$(custom_KEY)` placeholders + `LocalStorage.store("KEY", value)` before loading.
+4. **FORBIDDEN: Inline JSONObject construction** — NEVER build test data with `new JSONObject().put(...)` chains in Java code. ALL entity data (UI inputs AND API payloads) MUST be in `*_data.json` and loaded via `getTestCaseData()` / `getTestCaseDataUsingCaseId()` / `DataUtil.getTestCaseDataUsingFilePath()`. This applies to **test methods, preProcess, AND APIUtil files**. For dynamic values, use `$(custom_KEY)` placeholders + `LocalStorage.store("KEY", value)` before loading. See the "APIUtil Data Flow" section for the required pattern.
 
 ### Data Reuse (CRITICAL — prevents duplicate data entries)
 
@@ -780,6 +780,75 @@ public class ChangeActionsUtil {
     public void openAssociationTab() { ... }  // non-static fails — no access to actions
 }
 ```
+
+#### ⚠️ APIUtil Data Flow (MANDATORY — NEVER construct JSON inline)
+
+> **Root cause of past violations**: APIUtil methods used `new JSONObject().put(...)` chains to build
+> API payloads instead of loading from `*_data.json`. This is **FORBIDDEN** for ALL entity data —
+> including API payloads for create, update, link, and association calls.
+
+**The correct flow for EVERY new APIUtil method that sends data to an API:**
+
+```
+Step 1: Create a data entry in *_data.json (e.g. change_data.json)
+        ↓
+Step 2: Define PATH constant in the APIUtil class
+        ↓
+Step 3: APIUtil method loads data via DataUtil.getTestCaseDataUsingFilePath(PATH, caseId)
+        ↓
+Step 4: DataConstants are auto-generated on compile — reference them from callers
+```
+
+**Example — CORRECT pattern (link parent change via API):**
+
+```json
+// ===== In change_data.json =====
+"link_parent_change_api": {
+  "data": {
+    "parent_change": [
+      { "parent_change": { "id": "$(custom_target_change_id)" } }
+    ]
+  }
+}
+```
+
+```java
+// ===== In ChangeAPIUtil.java =====
+public final class ChangeAPIUtil extends Utilities {
+    private static final String PATH = "data" + File.separator + "changes"
+        + File.separator + "change" + File.separator + "change_data.json";
+
+    public static void linkParentChange(String changeId, String targetChangeId) throws Exception {
+        LocalStorage.store("target_change_id", targetChangeId);
+        JSONObject inputData = DataUtil.getTestCaseDataUsingFilePath(
+            AutomaterUtil.getResourceFolderPath() + PATH, "link_parent_change_api");
+        restAPI.update("changes/" + changeId + "/link_parent_change", inputData);
+    }
+}
+```
+
+```java
+// ❌ FORBIDDEN — inline JSON construction in APIUtil
+public static void linkParentChange(String changeId, String targetChangeId) throws Exception {
+    JSONObject parentChangeObj = new JSONObject().put("id", targetChangeId);
+    JSONObject wrapper = new JSONObject().put("parent_change", parentChangeObj);
+    // ... more inline construction — NEVER do this
+}
+```
+
+**Decision flow for EVERY APIUtil method:**
+```
+Does the method send data to an API (POST/PUT/PATCH)?
+  → YES: Data MUST be in *_data.json, loaded via DataUtil.getTestCaseDataUsingFilePath()
+         Use $(custom_KEY) placeholders for dynamic values (IDs, names)
+         Store dynamic values via LocalStorage.store("KEY", value) before loading
+  → NO (e.g., DELETE with only a path, or GET): No data entry needed, direct API call is fine
+```
+
+> **Existing codebase note**: Many pre-existing APIUtil files use inline JSON construction.
+> This is legacy code — do NOT follow that pattern. All **newly generated** APIUtil methods
+> MUST use `*_data.json` entries. When modifying existing methods, refactor to use data.json
+> if the scope of change allows.
 
 #### Method granularity rules
 

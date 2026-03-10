@@ -130,6 +130,37 @@ public void verifyDetailView() throws Exception {
 }
 ```
 
+## APIUtil Data Flow (MANDATORY — NEVER construct JSON inline)
+
+**Every new APIUtil method that sends data to an API** MUST load from `*_data.json`. NEVER build payloads with `new JSONObject().put(...)`.
+
+**Required flow:**
+1. Create a data entry in `*_data.json` with `$(custom_KEY)` placeholders for dynamic values
+2. Define `PATH` constant in the APIUtil class pointing to the data file
+3. Store dynamic values via `LocalStorage.store("KEY", value)` before loading
+4. Load via `DataUtil.getTestCaseDataUsingFilePath(AutomaterUtil.getResourceFolderPath() + PATH, caseId)`
+5. DataConstants are auto-generated on compile — callers reference `DataConstants.Data.KEY`
+
+```java
+// ✅ CORRECT — data in JSON, loaded via DataUtil
+public static void linkParentChange(String changeId, String targetChangeId) throws Exception {
+    LocalStorage.store("target_change_id", targetChangeId);
+    JSONObject inputData = DataUtil.getTestCaseDataUsingFilePath(
+        AutomaterUtil.getResourceFolderPath() + PATH, "link_parent_change_api");
+    restAPI.update("changes/" + changeId + "/link_parent_change", inputData);
+}
+
+// ❌ FORBIDDEN — inline JSON in APIUtil
+public static void linkParentChange(String changeId, String targetChangeId) throws Exception {
+    JSONObject parentChangeObj = new JSONObject().put("id", targetChangeId);
+    JSONObject wrapper = new JSONObject().put("parent_change", parentChangeObj);
+    // NEVER do this — all data belongs in *_data.json
+}
+```
+
+> Existing codebase has legacy inline JSON in APIUtil files — do NOT follow that pattern.
+> All **newly generated** APIUtil methods MUST use `*_data.json` entries.
+
 ## preProcess Groups
 
 - `preProcess()` lives in the **parent class** (e.g., `Change.java`, `Solution.java`)
