@@ -1,7 +1,10 @@
 # ── Java Selenium modules (managed separately via Mercurial) ──────────────────
+# Each user clones their own hg branch via @setup-project — these folders
+# must NEVER be committed to git. The wildcard covers any branch name.
 AutomaterSelenium/
 AutomaterSeleniumFramework/
-SDPLIVE_LATEST_AUTOMATER_SELENIUM/
+SDPLIVE_*/
+AALAM_*/
 
 # ── Python environment ────────────────────────────────────────────────────────
 .venv/

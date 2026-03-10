@@ -3,20 +3,21 @@ project_config.py
 -----------------
 Central configuration for the AI Automation QA framework.
 
-To switch the active test-case project folder, change PROJECT_NAME below.
+PROJECT_NAME is read from the .env file (set by @setup-project from the hg branch name).
 All agents, runners, and indexers will automatically pick up the new value.
 """
 
-# ── Project folder name ────────────────────────────────────────────────────
-# This must match the folder name under ai-automation-qa/ that contains the
-# cloned Hg branch you want to run tests against.
-# Example values:
-#   "SDPLIVE_LATEST_AUTOMATER_SELENIUM"
-#   "SDPLIVE_UI_AUTOMATION_BRANCH"
-#   "AALAM_FRAMEWORK_CHANGES"
-#   "AutomaterSelenium"
+import os as _os
+from dotenv import load_dotenv as _load_dotenv
 
-PROJECT_NAME = "SDPLIVE_LATEST_AUTOMATER_SELENIUM"
+_BASE_DIR = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+_load_dotenv(_os.path.join(_BASE_DIR, ".env"))
+
+# ── Project folder name ────────────────────────────────────────────────────
+# Read from .env PROJECT_NAME key, which is set by @setup-project to the
+# hg branch name provided during setup.
+# Fallback to "SDPLIVE_LATEST_AUTOMATER_SELENIUM" if not set.
+PROJECT_NAME = _os.environ.get("PROJECT_NAME", "SDPLIVE_LATEST_AUTOMATER_SELENIUM")
 
 # ── Mercurial integration (Phase 3) ───────────────────────────────────────
 # Controls whether the HgAgent is allowed to create branches and push to the
@@ -45,12 +46,6 @@ HG_BRANCH_PREFIX = "feature/AI_GEN_"
 HG_REPO_URL = "https://zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium"
 
 # ── Derived paths (do not edit) ────────────────────────────────────────────
-import os as _os
-from dotenv import load_dotenv as _load_dotenv
-
-_BASE_DIR = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
-_load_dotenv(_os.path.join(_BASE_DIR, ".env"))
-
 PROJECT_ROOT    = _os.path.join(_BASE_DIR, PROJECT_NAME)
 PROJECT_SRC     = _os.path.join(PROJECT_ROOT, "src")
 PROJECT_BIN     = _os.path.join(PROJECT_ROOT, "bin")

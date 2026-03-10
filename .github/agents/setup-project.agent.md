@@ -201,16 +201,16 @@ hg update "{BRANCH_NAME}" 2>&1
 
 > The `hg pull` may also prompt for credentials interactively — same process.
 
-### Create Testcase/ folder
+### Create Testcase/ folder (MANDATORY — always run this)
 
-After the clone (or branch switch) succeeds, create a `Testcase/` folder inside the project for storing use-case documents:
+**This step is NOT conditional.** Whether you cloned fresh or the folder already existed, ALWAYS run:
 
 ```bash
 mkdir -p {WORKSPACE_DIR}/{BRANCH_NAME}/Testcase
 echo "✅ Created {BRANCH_NAME}/Testcase/ — use-case documents will be stored here"
 ```
 
-This folder is where `@test-generator` saves copies of uploaded use-case documents (`.csv`, `.xlsx`, `.md`, etc.) for traceability.
+This folder is where `@test-generator` looks for use-case CSV files. Without it, test generation will prompt the user to create it manually.
 
 ---
 
@@ -288,6 +288,7 @@ if not os.path.isfile(env_path):
 
 # Always set these (both modes)
 updates = {
+    "PROJECT_NAME":     "{BRANCH_NAME}",
     "HG_USERNAME":      "{HG_USERNAME}",
     "OWNER_CONSTANT":   "{RESOLVED_OWNER_CONSTANT}",
     "DEPS_DIR":         "{DEPS_DIR}",
