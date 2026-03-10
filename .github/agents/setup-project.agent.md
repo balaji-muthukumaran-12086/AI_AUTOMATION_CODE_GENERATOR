@@ -254,23 +254,11 @@ Confirm:
    Added to OwnerConstants.java and project_config.py.
 ```
 
-Store the resolved/registered constant as `{RESOLVED_OWNER_CONSTANT}` for Step 6.
+Store the resolved/registered constant as `{RESOLVED_OWNER_CONSTANT}` for Step 5.
 
 ---
 
-## Step 5 — Update `project_config.py`
-
-Update the `PROJECT_NAME` line in `config/project_config.py`:
-
-```python
-PROJECT_NAME = "{BRANCH_NAME}"
-```
-
-Use the file edit tool to make this single-line change (search for the current value first).
-
----
-
-## Step 6 — Update `.env`
+## Step 5 — Update `.env`
 
 The `.env` file is at the workspace root. Update (or add) these keys. **Preserve all other lines unchanged.**
 
@@ -338,7 +326,7 @@ print("Updated keys:", list(updates.keys()))
 
 ---
 
-## Step 7 — Confirm success
+## Step 6 — Confirm success
 
 After all files are updated and the repo is cloned, show this summary:
 
@@ -376,8 +364,8 @@ Then continue for both modes:
 `OwnerConstants.{RESOLVED_OWNER_CONSTANT}` — all generated test scenarios will use this owner.
 
 **Files updated:**
-- `config/project_config.py` → PROJECT_NAME
-- `.env` → HG_USERNAME, OWNER_CONSTANT, SETUP_MODE{, SDP_URL, ..., GECKODRIVER_PATH (if generate_and_run)}
+- `config/project_config.py` → reads PROJECT_NAME from `.env` automatically (no edit needed)
+- `.env` → PROJECT_NAME, HG_USERNAME, OWNER_CONSTANT, SETUP_MODE{, SDP_URL, ..., GECKODRIVER_PATH (if generate_and_run)}
 ```
 
 **If `generate_only`**, show:
@@ -398,6 +386,19 @@ Then continue for both modes:
 4. `@test-runner` will run each generated test one by one — if a test fails,
    it auto-diagnoses the failure using Playwright MCP, fixes the code, and re-runs
 ```
+
+---
+
+## Step 7 — Open the project folder in VS Code
+
+After clone and `.env` update, reveal the project folder in the VS Code Explorer so the user can see their cloned branch:
+
+```
+Open the folder {WORKSPACE_DIR}/{BRANCH_NAME} in the VS Code Explorer sidebar.
+Use the VS Code command `revealInExplorer` on the Testcase/ folder, or simply expand the project folder in the sidebar.
+```
+
+This gives the user immediate visibility into their project structure (src/, bin/, Testcase/, etc.).
 
 ---
 
@@ -442,7 +443,7 @@ If it **fails**, show the last 20 lines and ask the user to fix:
 - **NEVER print the password in plain text** — always mask SDP passwords as `●●●●●●●●` in confirmations and summaries
 - **NEVER embed hg credentials in clone URLs** — let the terminal prompt the user interactively
 - **NEVER modify any line in `.env` other than the 5 SDP keys**
-- **NEVER modify `project_config.py` other than the `PROJECT_NAME` line**
+- **NEVER modify `project_config.py`** — it reads `PROJECT_NAME` from `.env` automatically; no manual edit is needed
 - If the user provides all values in their initial message (via key=value or inline), skip Step 1/1b and go directly to Step 3. Infer `SETUP_MODE` from which keys are present: if SDP URL / deps / drivers are provided → `generate_and_run`; if only hg username → `generate_only`. The `owner` field still must be resolved — if missing, show the owner list and ask
 - `FIREFOX_BINARY` and `GECKODRIVER_PATH` are always derived from `DRIVERS_DIR` as `{DRIVERS_DIR}/firefox/firefox` and `{DRIVERS_DIR}/geckodriver` — never ask for them separately
 - If the user initially chose `generate_only` and later wants to enable execution, they can re-run `@setup-project setup` and choose "Generate and Run" — the agent will only ask for the missing SDP/path values
