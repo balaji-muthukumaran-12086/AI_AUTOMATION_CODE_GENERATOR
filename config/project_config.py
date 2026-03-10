@@ -71,6 +71,13 @@ SDP_ADMIN_EMAIL = _os.environ.get("SDP_ADMIN_EMAIL", "")
 SDP_EMAIL_ID    = _os.environ.get("SDP_EMAIL_ID", SDP_ADMIN_EMAIL)
 SDP_ADMIN_PASS  = _os.environ.get("SDP_ADMIN_PASS", "")
 
+# Comma-separated test user emails for ScenarioUsers.TEST_USER_1..4
+# Used by RunnerAgent to patch AutomaterSeleniumMain.setupUsers() at runtime.
+# Format: "user1@test.com,user2@test.com,user3@test.com,user4@test.com"
+# If fewer than 4 are provided, remaining slots reuse the last email.
+# If empty, the hardcoded defaults in AutomaterSeleniumMain.java are kept.
+SDP_TEST_USER_EMAILS = _os.environ.get("SDP_TEST_USER_EMAILS", "")
+
 # ── Mercurial user → OwnerConstants mapping ─────────────────────────────────
 # The hg username provided during clone is matched (case-insensitive) against
 # this table.  The resolved constant is stored in .env as OWNER_CONSTANT and

@@ -116,6 +116,7 @@ sdp_url      =
 portal       = 
 admin_email  = 
 tech_email   = 
+test_user_emails =                                  ← comma-separated: user1@test.com,user2@test.com,user3@test.com,user4@test.com
 password     = 
 drivers_path = 
 ```
@@ -128,7 +129,8 @@ drivers_path =
 > **portal** — SDP portal identifier (e.g., `portal1`)
 > **admin_email** — Org admin account email (e.g., `admin@zohotest.com`)
 > **tech_email** — Technician / scenario user email (e.g., `tech@zohotest.com`)
-> **password** — Common password for both SDP accounts
+> **test_user_emails** — Comma-separated emails for TEST_USER_1 through TEST_USER_4 (used by `actions.switchUser(scenarioDetails.getUser(ScenarioUsers.TEST_USER_N))`). If fewer than 4, the last email is reused for remaining slots. These are additional test accounts in your SDP org for multi-user scenarios.
+> **password** — Common password for all SDP accounts (admin + tech + test users)
 > **drivers_path** — Absolute path to Firefox + geckodriver folder (e.g., `/home/you/Drivers`)
 > ⓘ *Hg password is NOT collected here — you'll enter it directly in the terminal when the clone command runs.*
 ````
@@ -144,7 +146,7 @@ Accept values in any of these formats:
 
 Extract and label each value.
 - If `SETUP_MODE` is `generate_only`: 4 values are required (owner, hg username, branch, deps_path)
-- If `SETUP_MODE` is `generate_and_run`: all 10 values are required
+- If `SETUP_MODE` is `generate_and_run`: all 11 values are required (test_user_emails can be empty)
 
 If any required value is missing, ask only for the missing ones.
 
@@ -159,6 +161,7 @@ If any required value is missing, ask only for the missing ones.
 - Portal: non-empty string
 - Admin email: must contain `@`
 - Tech email: must contain `@`
+- Test user emails: if provided, must be comma-separated email addresses (each containing `@`). Can be empty (keeps hardcoded defaults). Max 4 emails.
 - Password: non-empty string
 - Drivers path: absolute path (starts with `/`)
 
@@ -287,14 +290,15 @@ updates = {
 # Only set SDP/path keys in generate_and_run mode
 if "{SETUP_MODE}" == "generate_and_run":
     updates.update({
-        "SDP_URL":          "{SDP_URL}",
-        "SDP_PORTAL":       "{PORTAL}",
-        "SDP_ADMIN_EMAIL":  "{ADMIN_EMAIL}",
-        "SDP_EMAIL_ID":     "{TECH_EMAIL}",
-        "SDP_ADMIN_PASS":   "{PASSWORD}",
-        "DRIVERS_DIR":      "{DRIVERS_DIR}",
-        "FIREFOX_BINARY":   "{DRIVERS_DIR}/firefox/firefox",
-        "GECKODRIVER_PATH": "{DRIVERS_DIR}/geckodriver",
+        "SDP_URL":              "{SDP_URL}",
+        "SDP_PORTAL":           "{PORTAL}",
+        "SDP_ADMIN_EMAIL":      "{ADMIN_EMAIL}",
+        "SDP_EMAIL_ID":         "{TECH_EMAIL}",
+        "SDP_TEST_USER_EMAILS": "{TEST_USER_EMAILS}",
+        "SDP_ADMIN_PASS":       "{PASSWORD}",
+        "DRIVERS_DIR":          "{DRIVERS_DIR}",
+        "FIREFOX_BINARY":       "{DRIVERS_DIR}/firefox/firefox",
+        "GECKODRIVER_PATH":     "{DRIVERS_DIR}/geckodriver",
     })
 
 with open(env_path, "r") as f:
@@ -348,6 +352,7 @@ After all files are updated and the repo is cloned, show this summary:
 | Portal               | {PORTAL}                                   |
 | Admin email          | {ADMIN_EMAIL}                              |
 | Technician email     | {TECH_EMAIL}                               |
+| Test user emails     | {TEST_USER_EMAILS}                         |
 | Password             | ●●●●●●●●                                  |
 | Dependencies path    | {DEPS_DIR}                                 |
 | Drivers path         | {DRIVERS_DIR}                              |
@@ -365,7 +370,7 @@ Then continue for both modes:
 
 **Files updated:**
 - `config/project_config.py` → reads PROJECT_NAME from `.env` automatically (no edit needed)
-- `.env` → PROJECT_NAME, HG_USERNAME, OWNER_CONSTANT, SETUP_MODE{, SDP_URL, ..., GECKODRIVER_PATH (if generate_and_run)}
+- `.env` → PROJECT_NAME, HG_USERNAME, OWNER_CONSTANT, SETUP_MODE{, SDP_URL, ..., SDP_TEST_USER_EMAILS, ..., GECKODRIVER_PATH (if generate_and_run)}
 ```
 
 **If `generate_only`**, show:

@@ -141,3 +141,56 @@ actions.navigate.clickModule()     // ❌ use navigate.toModule(name)
 - Use `normalize-space(text())='Add'` for exact button text match (prevents matching "Add And Approve")
 - Locator interfaces use `String` constants with XPath expressions
 - Group locators by UI area (e.g., `SolutionCreateForm`, `SolutionDetailView`, `LinkingChange`)
+
+## Multi-User Scenarios — ScenarioUsers & switchUser
+
+The framework supports 5 user sessions per test run via `ScenarioUsers` enum:
+
+| ScenarioUsers | Mapped to | Typical role |
+|---|---|---|
+| `MAIN_USER` | `EMAIL_ID` (tech email from config) | Technician — primary test actor |
+| `TEST_USER_1` | 1st email from `SDP_TEST_USER_EMAILS` | Requester |
+| `TEST_USER_2` | 2nd email | Requester / secondary tech |
+| `TEST_USER_3` | 3rd email | Release manager / approver |
+| `TEST_USER_4` | 4th email | Problem template user |
+
+All 5 users share the same `DEFAULT_PASSWORD`. Emails are configured via `SDP_TEST_USER_EMAILS` in `.env` (comma-separated).
+
+### Switching users mid-test
+
+```java
+// Get a test user object
+User requester = scenarioDetails.getUser(ScenarioUsers.TEST_USER_2);
+
+// Switch browser session to that user (clears cookies → re-login)
+actions.switchUser(requester);
+
+// ... perform actions as the requester ...
+
+// Switch back to the main technician
+actions.switchUser(scenarioDetails.getScenarioUser());
+```
+
+### Creating a user with a specific role before switching
+
+```java
+// Create TEST_USER_1 as a requester in the "requests" module
+User user = scenarioDetails.getUser(ScenarioUsers.TEST_USER_1);
+actions.createUserByRole(
+    AutomaterConstants.REQUESTER,                   // role type
+    "requests",                                      // module
+    RequestConstants.CustomerIssues.CREATE_REQUESTER_WITH_VIEW_ALL_REQUESTS_PERMISSION,  // role config key
+    user                                             // User object to assign the role to
+);
+
+// Now switch to that user
+actions.switchUser(user);
+```
+
+### Session context rules
+
+- `preProcess()` always runs in the **admin session**
+- `switchToUserSession()` switches to `MAIN_USER` (tech email) before the test method runs
+- `actions.switchUser(user)` can be called inside the test method to switch to any `TEST_USER_N`
+- After switching, the browser is fully logged in as the new user — all subsequent actions run in that user's session
+- API calls (`restAPI.*`) inside the test method run in the **current browser session** — if you switched to a requester, API calls execute with requester permissions

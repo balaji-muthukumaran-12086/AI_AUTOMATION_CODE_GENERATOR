@@ -43,6 +43,7 @@ from config.project_config import (
     SDP_ADMIN_EMAIL as _DEFAULT_SDP_ADMIN_EMAIL,
     SDP_EMAIL_ID as _DEFAULT_SDP_EMAIL_ID,
     SDP_ADMIN_PASS as _DEFAULT_SDP_ADMIN_PASS,
+    SDP_TEST_USER_EMAILS as _DEFAULT_SDP_TEST_USER_EMAILS,
 )
 
 
@@ -313,13 +314,16 @@ class RunnerAgent:
         self._patch_app_properties()
 
         try:
-            # 1. Backup StandaloneDefault.java only (AutomaterSeleniumMain is no longer patched —
-            #    entity class and method name are passed as command-line args instead)
+            # 1. Backup StandaloneDefault.java and AutomaterSeleniumMain.java
             default_backup = self._backup(self._standalone_default)
+            main_backup = self._backup(self._main_class)
 
             try:
                 # 2. Patch StandaloneDefault.java with the provided URL / credentials
                 self._patch_standalone_default(url, email_id, portal_name, admin_mail_id, password)
+
+                # 2b. Patch test user emails in AutomaterSeleniumMain.java (if configured)
+                self._patch_test_user_emails(_DEFAULT_SDP_TEST_USER_EMAILS)
 
                 # 3. Full project compile (optional)
                 if not skip_compile:
@@ -403,8 +407,9 @@ class RunnerAgent:
                 )
 
             finally:
-                # Restore StandaloneDefault.java to its original state
+                # Restore StandaloneDefault.java and AutomaterSeleniumMain.java to original state
                 self._restore(self._standalone_default, default_backup)
+                self._restore(self._main_class, main_backup)
 
         except Exception as exc:
             return RunResult(
@@ -517,6 +522,52 @@ class RunnerAgent:
         self._standalone_default.write_text(content, encoding="utf-8")
         print(f"[RunnerAgent] Patched StandaloneDefault.java → URL={url}, admin={admin_mail_id}, "
               f"email={email_id}, portal={portal_name}, password=***")
+
+    def _patch_test_user_emails(self, test_user_emails: str) -> None:
+        """Patch the hardcoded test user emails in AutomaterSeleniumMain.setupUsers().
+
+        Args:
+            test_user_emails: Comma-separated emails for TEST_USER_1..4.
+                              If fewer than 4, the last email is reused for remaining slots.
+                              If empty/blank, no patching is done (keeps existing hardcoded values).
+        """
+        if not test_user_emails or not test_user_emails.strip():
+            return
+
+        emails = [e.strip() for e in test_user_emails.split(",") if e.strip()]
+        if not emails:
+            return
+
+        # Pad to 4 entries by reusing the last email
+        while len(emails) < 4:
+            emails.append(emails[-1])
+
+        content = self._main_class.read_text(encoding="utf-8")
+
+        # Pattern matches: getUser("any@email.com") on lines containing TEST_USER_N
+        user_patterns = [
+            (r'(ScenarioUsers\.TEST_USER_1.*?getUser\()"[^"]*"', emails[0]),
+            (r'(ScenarioUsers\.TEST_USER_2.*?getUser\()"[^"]*"', emails[1]),
+            (r'(ScenarioUsers\.TEST_USER_3.*?getUser\()"[^"]*"', emails[2]),
+            (r'(ScenarioUsers\.TEST_USER_4.*?getUser\()"[^"]*"', emails[3]),
+        ]
+
+        # Reverse approach: find the getUser("...") call on lines that put TEST_USER_N
+        for i, (_, email) in enumerate(user_patterns, start=1):
+            # Match: getUser("old@email") on a line that contains TEST_USER_{i}
+            pattern = rf'(puts?\(ScenarioUsers\.TEST_USER_{i}.*?)getUser\("[^"]*"\)'
+            replacement = rf'\1getUser("{email}")'
+            new_content = re.sub(pattern, replacement, content, flags=re.DOTALL)
+            if new_content == content:
+                # Fallback: match the two-line pattern (getUser on previous line)
+                pattern2 = rf'(User user{i}\s*=\s*getUser\()"[^"]*"'
+                replacement2 = rf'\1"{email}"'
+                new_content = re.sub(pattern2, replacement2, content)
+            content = new_content
+
+        self._main_class.write_text(content, encoding="utf-8")
+        print(f"[RunnerAgent] Patched AutomaterSeleniumMain.java test users → "
+              f"TU1={emails[0]}, TU2={emails[1]}, TU3={emails[2]}, TU4={emails[3]}")
 
     def _patch_main_class(self, entity_class: str, method_name: str) -> None:
         """
