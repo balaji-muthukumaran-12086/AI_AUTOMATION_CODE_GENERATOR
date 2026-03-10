@@ -107,26 +107,27 @@ Test generation starts with a **use-case document in CSV format**. This is the p
 
 Use the template at `docs/templates/usecase_template.csv`:
 
-| UseCase ID | Severity | Description |
-|---|---|---|
-| SDPOD_CH_001 | Critical | Create a standard change and verify the title in detail view |
-| SDPOD_CH_002 | Major | Add a note to a change and verify it appears in the Notes tab |
-| SDPOD_CH_003 | Minor | Verify the priority field is editable via spot edit |
+| UseCase ID | Severity | Module | Sub-Module | Impact Area | Pre-Requisite | Description | UI To-be-automated |
+|---|---|---|---|---|---|---|---|
+| SDPOD_CH_001 | Critical | Changes | Change Detail View | Navigate to change detail page | SDAdmin, change exists | Verify change title and status display correctly in detail view | Yes |
+| SDPOD_CH_002 | Major | Changes | Change Notes | Add note to change | SDAdmin, change exists | Add a note to a change and verify it appears in the Notes tab | Yes |
+| SDPOD_CH_003 | Minor | Changes | Change Detail View | Spot edit priority field | SDAdmin, change exists | Verify the priority field is editable via spot edit | Yes |
+| SDPOD_CH_API_004 | Major | API | Change Validation | Create change via API | Two changes exist | POST /api/v3/changes and verify response | No |
 
 **Columns explained:**
 
 | Column | Required? | What it controls |
 |--------|-----------|------------------|
-| **UseCase ID** | Yes | Links back to your use case — used in test scenario description |
+| **UseCase ID** | Yes | Links back to your use case — mapped as test scenario ID reference |
 | **Severity** | Yes | Maps to test priority: `Critical` → HIGH, `Major` → MEDIUM, `Minor` → LOW |
-| **Description** | Yes | What the test should do — plain English |
-| Module | Optional | Framework module placement (e.g., `Changes`, `Requests`, `Solutions`) |
-| Sub-Module | Optional | Entity subclass routing (e.g., `Detail View`, `List View`) |
-| Impact Area | Optional | Additional context for the scenario |
-| Pre-Requisite | Optional | What needs to exist before the test (drives `preProcess` group selection) |
-| UI To-be-automated | Optional | Filter gate — only rows with `Yes` are processed (if column exists) |
+| **Module** | Yes | Parent module (e.g., `Admin`, `CMDB`, `Changes`, `Requests`). For cross-cutting concerns (`RBAC`, `Security`, `API`), routes to the actual entity identified by Sub-Module |
+| **Sub-Module** | Yes | Entity subclass routing (e.g., `Sub Form Configuration`, `CI Details - Sub Form`). If no matching subclass exists, the agent creates one or uses nearest match |
+| **Impact Area** | Yes | What area/feature is being tested — cumulated with Pre-Requisite + Description |
+| **Pre-Requisite** | Yes | What must exist before the test (drives `preProcess` group and role selection) |
+| **Description** | Yes | Scenario steps and expected results — cumulated with Impact Area + Pre-Requisite for full context |
+| **UI To-be-automated** | Yes | Filter gate — only rows with `Yes` are processed; `No`/empty rows are skipped |
 
-> **Tip**: Start with just the 3 required columns. The agent infers Module and Sub-Module from the Description when they're not provided.
+> **Tip**: The use case can be in **any sheet** in the workbook — all sheets are processed. Only rows with `UI To-be-automated = Yes` are picked for automation. Extra columns beyond the 8 above are ignored.
 
 ### Where to place the CSV
 
@@ -290,3 +291,45 @@ The orchestrator tracks all generated scenarios, test runs, and healing events i
 | Multiple projects, wrong target | Use `@test-generator project=BRANCH_NAME` |
 | `Testcase/` folder missing | `mkdir -p SDPLIVE_LATEST_AUTOMATER_SELENIUM/Testcase` |
 | Generated test fails on first run | Normal — `@test-runner` auto-diagnoses and fixes. Run `@test-runner batch` |
+
+---
+
+## Why VS Code + GitHub Copilot (Claude) Is Required
+
+This framework's agent workflow (`@setup-project`, `@test-generator`, `@test-runner`) relies on **VS Code Agent mode** — a feature exclusive to VS Code's GitHub Copilot extension. No other IDE supports it today.
+
+### What Agent mode provides (and why alternatives won't work)
+
+| Capability | Used by our agents | Available in VS Code | Eclipse / IntelliJ Copilot |
+|---|---|---|---|
+| **`@agent-name` invocation** | `@setup-project`, `@test-generator`, `@test-runner` | Yes | No |
+| **`.agent.md` files** | Agent definitions with YAML frontmatter (tools, model, instructions) | Yes | No |
+| **Tool use** (file read/edit, terminal, search) | Agents read Java files, edit code, run `javac`, execute tests | Yes | No |
+| **MCP tools** (Playwright browser) | `@test-runner` opens SDP pages to inspect/fix XPath locators | Yes | No |
+| **`.github/instructions/` auto-loading** | Framework rules and conventions injected per file context | Yes | No |
+| **Model selection** (Claude Opus 4.6 / Sonnet 4) | Agents specify which LLM to use in YAML frontmatter | Yes | No |
+| **Code completions** | General autocomplete (not used by our agents) | Yes | Yes |
+
+### What about other IDEs?
+
+- **Eclipse + Copilot**: Only supports code completions. No chat agent mode, no tool use, no `.agent.md` support.
+- **IntelliJ + Copilot**: Supports Copilot Chat but **not** Agent mode with custom `.agent.md` files or MCP tools.
+- **Cursor / Windsurf**: Have their own agent systems but use different file formats — our `.agent.md` files are VS Code-specific.
+
+### Can I use Eclipse for other work?
+
+Yes. You can use **Eclipse for regular Java development** and **VS Code only for the agent-driven test generation workflow**. Both can point to the same project folder — they don't conflict. The typical dual-IDE workflow:
+
+1. Open the project in **VS Code** → run `@setup-project`, `@test-generator`, `@test-runner`
+2. Open the same project in **Eclipse** → review generated code, make manual edits, commit to hg
+
+### Minimum VS Code requirements
+
+| Requirement | Minimum version |
+|---|---|
+| VS Code | 1.99+ (Agent mode was introduced in 1.99) |
+| GitHub Copilot extension | Latest (includes Agent mode + MCP support) |
+| GitHub Copilot Chat extension | Latest |
+| Copilot plan | GitHub Copilot Individual, Business, or Enterprise (Agent mode requires an active subscription) |
+
+> **To verify**: Open VS Code → Copilot Chat → check for the **Agent mode** dropdown at the top of the chat panel. If you see it, you're set.

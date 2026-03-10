@@ -1,16 +1,7 @@
-UseCase ID,Severity,Description
-SDPOD_MODULE_001,Showstopper,"Short title of the use case
-
-Steps: Module -> Page -> Action -> Sub-action
-
-Expected Result: Describe what should happen after performing the steps."
-SDPOD_MODULE_002,Major,"Another use case title
-
-Steps: Module -> List View -> Click on record -> Detail View -> Verify field
-
-Expected Result: The field should display the expected value."
-SDPOD_MODULE_003,Minor,"Edge case or negative scenario title
-
-Steps: Module -> Form -> Submit without mandatory fields
-
-Expected Result: Validation error should be shown for each mandatory field."
+UseCase ID,Severity,Module,Sub-Module,Impact Area,Pre-Requisite,Description,UI To-be-automated
+SDPOD_MODULE_ADMIN_001,Critical,Admin,Sub Form Configuration,"Navigate to Setup > Customization > Sub-form page","Logged in as SDAdmin","Verify Sub-form page loads under Setup > Customization. Confirm breadcrumbs show 'Setup > Customization > Sub-form'. Verify page title and layout.",Yes
+SDPOD_MODULE_FUNC_002,Major,CMDB,CI Details - Sub Form,"Sub form section renders on CI Details page","CI exists with sub form configured in CI Type","Navigate to CI Details. Verify sub form section appears with correct section name. Verify column headers match UDF field names.",Yes
+SDPOD_MODULE_VAL_003,Major,Admin,Sub Form Configuration,"Create sub form with empty name","SDAdmin on Sub-form creation dialog","Attempt to create sub form with blank name. Verify client-side validation error.",Yes
+SDPOD_MODULE_EDGE_004,Minor,CMDB,CI Details - Sub Form,"Empty state for sub form with no entries","CI Details with sub form configured but no data","Verify sub form section shows appropriate empty state message.",Yes
+SDPOD_MODULE_RBAC_005,Critical,RBAC,Sub Form Admin,"SDAdmin can create/edit/delete sub forms","Logged in as SDAdmin","Verify SDAdmin has full CRUD access to sub forms.",Yes
+SDPOD_MODULE_API_006,Major,API,Direct CI Relationship,"Create CI relationship via direct API","Two CIs and relationship type exist","POST /api/v3/ci_relationships with source, destination, relationship_type. Verify 2000.",No

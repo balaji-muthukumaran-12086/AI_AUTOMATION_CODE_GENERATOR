@@ -111,7 +111,10 @@ To generate tests, please do ONE of the following:
    Then re-invoke `@test-generator`.
 
    CSV template: `docs/templates/usecase_template.csv`
-   Required columns: UseCase ID | Severity | Description
+   Required columns: **UseCase ID | Severity | Module | Sub-Module | Impact Area | Pre-Requisite | Description | UI To-be-automated**
+
+   The use case can be in **any sheet** in the workbook — all sheets are processed.
+   Only rows with `UI To-be-automated = Yes` are picked for automation.
 
 2. **Attach a file** — Drag a `.csv`, `.xlsx`, `.md`, or `.txt` file directly into this chat.
 
@@ -127,15 +130,20 @@ To generate tests, please do ONE of the following:
 ### Mode A — Use-Case Document (CSV / Spreadsheet / Feature Doc) — PRIMARY
 The user has uploaded or placed a `.csv`, `.xls`, `.xlsx`, `.md`, or `.txt` file in `{TARGET_PROJECT}/Testcase/`, attached it to the Copilot chat, or pasted a feature description block.
 
-**CSV is the preferred format.** If the user has not yet created a CSV, suggest they prepare one using the template at `docs/templates/usecase_template.csv` with these columns:
+**CSV is the preferred format.** If the user has not yet created a CSV, suggest they prepare one using the template at `docs/templates/usecase_template.csv` with the **canonical 8-column format**:
 
 | Column | Purpose |
-|--------|---------|
-| **UseCase ID** | Unique identifier per use case (e.g., `SDPOD_SFCMDB_ADMIN_001`) |
-| **Severity** | `Critical`, `Major`, or `Minor` — maps to test priority |
-| **Description** | Plain English description of what to test |
+|--------|--------|
+| **UseCase ID** | Unique identifier per use case (e.g., `SDPOD_SFCMDB_ADMIN_001`). This ID maps 1:1 to the generated test scenario — referenced in `@AutomaterScenario(description)` and report output |
+| **Severity** | `Critical` → `Priority.HIGH`, `Major` → `Priority.MEDIUM`, `Minor` → `Priority.LOW` |
+| **Module** | Parent module — determines framework module path (see Module Routing Table) |
+| **Sub-Module** | Entity subclass — determines which Java class file to place the scenario in. If no matching subclass exists, find nearest match or generate skeleton |
+| **Impact Area** | What area/feature is being tested — combined with Description for full scenario context |
+| **Pre-Requisite** | Setup requirements — drives `preProcess` group choice and role selection |
+| **Description** | Primary scenario steps and expected results — combined with Impact Area + Pre-Requisite to form the complete test behaviour |
+| **UI To-be-automated** | **FILTER GATE** — `Yes` = generate automation, `No`/empty = skip entirely |
 
-> Additional columns (`Module`, `Sub-Module`, `Impact Area`, `Pre-Requisite`, `UI To-be-automated`) provide richer routing and filtering when present. The agent handles both minimal (3-column) and full (8-column) formats.
+> **Use case documents can span multiple sheets** in a workbook — every sheet is converted and processed. Only rows with `UI To-be-automated = Yes` are candidates.
 
 #### Step A0 — Spreadsheet Conversion (for `.xls`, `.xlsx`, `.csv` files)
 If the file is a spreadsheet, convert it to CSV first before parsing:
@@ -180,16 +188,20 @@ The standard use-case CSV uses these column names. Match them **case-insensitive
 
 | CSV Column | Maps To | Handling |
 |---|---|---|
-| **UseCase ID** | `@AutomaterScenario(id = ...)` — used as the **mapped ID** reference. The test scenario ID links back to this use-case ID via comments/description. If a use case needs multiple scenarios, append `_1`, `_2` etc. to the method name (not the use-case ID) |
+| **UseCase ID** | `@AutomaterScenario(description = "[USECASE_ID] ...")` — the use-case ID is embedded in the scenario description for traceability. The actual `@AutomaterScenario(id)` follows the module's sequential pattern (e.g., `SDPOD_AUTO_SOL_DV_###`). If a single use case requires **multiple test methods** (coverage overflow), append `_1`, `_2` etc. to the **method name** — the use-case ID stays unchanged |
 | **Severity** | `@AutomaterScenario(priority = ...)` — `Critical` → `Priority.HIGH`, `Major` → `Priority.MEDIUM`, `Minor` → `Priority.LOW` |
-| **Module** | Parent module placement — map to framework module path (see **Module Routing Table** below) |
-| **Sub-Module** | Entity subclass routing — determines which Java class file to place the scenario in (see **Sub-Module Resolution** below) |
-| **Impact Area** | Combined with Pre-Requisite + Description to form the full scenario context |
-| **Pre-Requisite** | Determines `preProcess` group requirements. If it mentions "logged in as SDAdmin" → `Role.SDADMIN`. If it mentions existing entities → preProcess must create them |
-| **Description** | Primary scenario description. This + Impact Area + Pre-Requisite = the complete test behaviour to automate |
-| **UI To-be-automated** | **FILTER GATE** — only process rows where this column = `Yes` (case-insensitive). Skip all rows where this is `No` or empty |
+| **Module** | Parent module placement — map to framework module path (see **Module Routing Table** below). For virtual modules (`RBAC`, `Security`, `API`, `Cross-Module`, `Performance`, `Integration`), route to the actual entity module identified by Sub-Module |
+| **Sub-Module** | Entity subclass routing — determines which Java class file to place the scenario in (see **Sub-Module Resolution** below). If no matching subclass exists in the module, (1) find the nearest relevant sibling class, or (2) generate a new entity skeleton via `GenerateSkeletonForAnEntity.java` and extend the parent |
+| **Impact Area** | **CUMULATED** — merged with Pre-Requisite + Description to form the full scenario context. The Impact Area tells *what* is being tested |
+| **Pre-Requisite** | **CUMULATED** — merged with Impact Area + Description. Determines `preProcess` group requirements: "logged in as SDAdmin" → `Role.SDADMIN`; "sub form exists" → preProcess must create it via API; "CI Type with sub form" → preProcess creates both |
+| **Description** | **CUMULATED** — the primary scenario steps and expected results. All three cumulated columns (Impact Area + Pre-Requisite + Description) together define the complete test behaviour to automate. Cover all aspects — if the combined coverage grows too large for one method (~80+ lines), split into multiple methods with `_1`, `_2` suffixes |
+| **UI To-be-automated** | **FILTER GATE** — only process rows where this column = `Yes` (case-insensitive). Skip all rows where this is `No` or empty. This is the **first filter applied** before any planning |
 
+> **Extra columns are IGNORED**: Real use-case CSVs often have additional tracking columns (`Usecase Type`, `IS MSP/ SDP`, `Status`, `Validator`, `Owner`, `Usecase Reviewer`, `API To-be-automated`, `API Status`, `CH ID/ CH Title`, `Mapped API Test Case ID(s)`, etc.). **Ignore all columns not listed in the 8-column mapping above.** Only read the 8 canonical columns.
+>
 > **CRITICAL FILTER**: Before planning ANY scenario, filter the CSV rows. ONLY rows with `UI To-be-automated = Yes` are candidates. Discard all others immediately.
+>
+> **CUMULATION RULE**: For each filtered row, the scenario context = `Impact Area` + `Pre-Requisite` + `Description` combined. Read all three to understand the full picture before designing the test method. If the cumulated scope requires more assertions/steps than fit in ~80 lines, split into multiple methods (e.g., `verifySubFormPage()` and `verifySubFormPage_1()`) — each mapped back to the same UseCase ID via description.
 
 #### Module Routing Table (CSV Module → Framework Path)
 

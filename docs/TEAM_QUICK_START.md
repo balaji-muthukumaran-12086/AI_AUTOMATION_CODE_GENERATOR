@@ -33,13 +33,11 @@ Upload one of these formats: **PDF, DOCX, XLSX, CSV, PPTX, TXT, MD**
 
 For CSV files, use the template format (see `docs/templates/usecase_template.csv`):
 ```csv
-UseCase ID,Severity,Description
-SDPOD_MODULE_001,Showstopper,"Short title
-
-Steps: Module -> Page -> Action
-
-Expected Result: What should happen."
+UseCase ID,Severity,Module,Sub-Module,Impact Area,Pre-Requisite,Description,UI To-be-automated
+SDPOD_MODULE_001,Critical,Admin,Sub Form Configuration,"Navigate to Sub-form page","Logged in as SDAdmin","Verify Sub-form page loads under Setup > Customization.",Yes
 ```
+
+> Only rows with `UI To-be-automated = Yes` are picked. The use case can span **any sheet** in the workbook.
 
 ---
 
