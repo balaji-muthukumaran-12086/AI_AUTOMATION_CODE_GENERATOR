@@ -1,8 +1,8 @@
 ---
-description: "Use when generating new Selenium test cases, writing @AutomaterScenario methods, creating test data entries, or adding new preProcess groups for the SDP automation framework. Accepts plain-text descriptions OR uploaded feature/use-case documents."
+description: "Use when generating new Selenium test cases, writing @AutomaterScenario methods, creating test data entries, or adding new preProcess groups for the SDP automation framework. Primary input: upload a use-case CSV to {PROJECT}/Testcase/. Also accepts plain-text descriptions."
 tools: [read, edit, search, execute, todo]
 model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
-argument-hint: "Describe the scenario OR attach a feature/use-case document (e.g., drag a .md/.txt/.xls/.xlsx/.csv file into the chat, or paste the feature description)"
+argument-hint: "Upload a use-case CSV to your project's Testcase/ folder, then invoke this agent. Or describe the scenario in plain text (e.g., 'create a change and verify the detail view title')."
 instructions:
   - .github/copilot-instructions.md
   - config/framework_rules.md
@@ -27,7 +27,7 @@ The user may say things like:
 **Detection rules:**
 1. Look for `project=<NAME>` anywhere in the message
 2. Look for `generate in <NAME>:` or `in project <NAME>` patterns
-3. If no project is specified → use the default from `project_config.py`
+3. If no project is specified → **scan for all cloned project folders** before defaulting
 
 **If a project is specified:**
 ```bash
@@ -37,24 +37,105 @@ ls -d "$(cd "$(dirname "$(find . -path '*/config/project_config.py' -maxdepth 3 
 - If `EXISTS` → temporarily override `PROJECT_NAME` in `project_config.py` to `<PROJECT_NAME>` for this session, then restore it at the end
 - If `MISSING` → tell the user: `"Project folder '<PROJECT_NAME>' not found. Run @setup-project to clone it first, or check the folder name."`
 
-**If no project is specified:**
+**If no project is specified — detect multiple projects:**
+
 ```bash
-PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
-echo "Using default project: $PROJECT"
+# List all cloned project folders (they contain src/com/zoho/automater/)
+WORKSPACE=$(cd "$(dirname "$(find . -path '*/config/project_config.py' -maxdepth 3 | head -1)")" && cd .. && pwd)
+PROJECTS=()
+for dir in "$WORKSPACE"/*/; do
+  if [[ -d "$dir/src/com/zoho/automater" ]]; then
+    PROJECTS+=("$(basename "$dir")")
+  fi
+done
+DEFAULT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+echo "Default: $DEFAULT"
+echo "All projects: ${PROJECTS[@]}"
+echo "Count: ${#PROJECTS[@]}"
 ```
 
-Store the resolved project name as `{TARGET_PROJECT}` for all subsequent steps.
+- **If only 1 project folder exists** → use it as `{TARGET_PROJECT}` (no need to ask)
+- **If 2+ project folders exist** → **STOP and ask the user** which project to target:
 
-> **Multi-project workflow**: Users with multiple cloned branches (e.g., 5 different feature projects) can target any of them by name. The `@setup-project` agent creates each project folder — `@test-generator` just needs the folder name.
+```
+I found multiple project folders in this workspace:
+
+  1. SDPLIVE_LATEST_AUTOMATER_SELENIUM  ← current default
+  2. SDPLIVE_UI_AUTOMATION_BRANCH
+  3. SDPLIVE_FEATURE_X
+  4. AALAM_FRAMEWORK_CHANGES
+  5. SDPLIVE_REGRESSION_TESTS
+
+Which project should I generate tests for? (reply with the number or name)
+
+💡 Tip: Next time you can specify it directly:
+   `@test-generator project=SDPLIVE_FEATURE_X`
+```
+
+Wait for the user's response before proceeding. Once they pick a project, store it as `{TARGET_PROJECT}`.
+
+- **If 0 project folders exist** → tell the user: `"No project folders found. Run @setup-project setup to clone a test-case branch first."`
+
+Store the resolved project name as `{TARGET_PROJECT}` for all subsequent steps.
 
 ---
 
 ## Input Mode Detection — Do This First
 
-Before anything else, determine how the user is providing input:
+Before anything else, determine how the user is providing input.
 
-### Mode A — Feature / Use-Case Document attached or pasted
-The user has attached a `.md`, `.txt`, `.pdf`, `.xls`, `.xlsx`, `.csv`, or pasted a feature description block.
+> **Recommended workflow**: Upload a use-case document in **CSV format** to the project's `Testcase/` folder, then invoke `@test-generator`. This is the most structured and reliable way to generate tests. See `docs/templates/usecase_template.csv` for the canonical column format.
+
+### Pre-check — Verify input exists
+
+Before proceeding to Mode A or Mode B, run this check:
+
+1. **Check if the user attached or pasted a document** in the chat message (file attachment, pasted text block, or inline feature description with multiple lines).
+2. **Check if the user typed a plain-text scenario description** (e.g., "create a change and verify the detail view").
+3. **Scan the `Testcase/` folder** for any unprocessed documents:
+
+```bash
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+ls "$PROJECT/Testcase/"*.{csv,xls,xlsx,md,txt} 2>/dev/null | head -20
+```
+
+**If NONE of the above are found** (no attachment, no description, and `Testcase/` is empty or missing), **STOP and prompt the user**:
+
+```
+No use-case document or scenario description found.
+
+To generate tests, please do ONE of the following:
+
+1. **Upload a CSV** (recommended) — Place your use-case document in:
+   📁 `{TARGET_PROJECT}/Testcase/`
+   Then re-invoke `@test-generator`.
+
+   CSV template: `docs/templates/usecase_template.csv`
+   Required columns: UseCase ID | Severity | Description
+
+2. **Attach a file** — Drag a `.csv`, `.xlsx`, `.md`, or `.txt` file directly into this chat.
+
+3. **Type a description** — e.g., `@test-generator create a change and verify the detail view title`
+```
+
+**Do NOT proceed** to Mode A or Mode B until the user provides input. Wait for their response.
+
+**If input IS found**, continue to the appropriate mode below.
+
+---
+
+### Mode A — Use-Case Document (CSV / Spreadsheet / Feature Doc) — PRIMARY
+The user has uploaded or placed a `.csv`, `.xls`, `.xlsx`, `.md`, or `.txt` file in `{TARGET_PROJECT}/Testcase/`, attached it to the Copilot chat, or pasted a feature description block.
+
+**CSV is the preferred format.** If the user has not yet created a CSV, suggest they prepare one using the template at `docs/templates/usecase_template.csv` with these columns:
+
+| Column | Purpose |
+|--------|---------|
+| **UseCase ID** | Unique identifier per use case (e.g., `SDPOD_SFCMDB_ADMIN_001`) |
+| **Severity** | `Critical`, `Major`, or `Minor` — maps to test priority |
+| **Description** | Plain English description of what to test |
+
+> Additional columns (`Module`, `Sub-Module`, `Impact Area`, `Pre-Requisite`, `UI To-be-automated`) provide richer routing and filtering when present. The agent handles both minimal (3-column) and full (8-column) formats.
 
 #### Step A0 — Spreadsheet Conversion (for `.xls`, `.xlsx`, `.csv` files)
 If the file is a spreadsheet, convert it to CSV first before parsing:
@@ -183,8 +264,11 @@ Shall I generate all of them, or only specific ones? (Reply with numbers or 'all
 
 Wait for user confirmation before generating code.
 
-### Mode B — Plain-text description
-The user typed a description directly (e.g., "create a change and verify the detail view title").
+### Mode B — Plain-text description (QUICK / SECONDARY)
+The user typed a short description directly (e.g., "create a change and verify the detail view title") without attaching a document. This is fine for quick one-off scenarios.
+
+If the user describes **more than 3 scenarios** via plain text, suggest switching to CSV format instead for better structure and traceability.
+
 Skip the planning step and proceed directly to **Mandatory Pre-Generation Workflow** below.
 
 ---
@@ -301,34 +385,90 @@ Also include any other files you edited (DataConstants, ActionsUtil, APIUtil, et
 
 If compile **fails**: show the errors, fix them, and recompile before proceeding.
 
-### Step P2 — Patch `run_test.py` and run the test
+### Step P2 — Append generated tests to `tests_to_run.json` and hand off to `@test-runner`
 
-Update `run_test.py` so `RUN_CONFIG` points to the newly generated scenario:
+For **every** scenario generated in this session, append an entry to `tests_to_run.json` so the runner can pick them up.
 
-```python
-# In run_test.py, find and update:
-RUN_CONFIG = {
-    "entity_class":  "<EntityClass>",     # e.g. "SolutionBase", "ChangeDetailsView"
-    "method_name":   "<methodName>",      # exact method name from the generated @AutomaterScenario
-    ...
-    "skip_compile":  True,
+#### P2a — Read existing file and build new entries
+
+```bash
+cat tests_to_run.json
+```
+
+For each generated scenario, create a test entry:
+```json
+{
+  "_id": "<SCENARIO_ID>",
+  "entity_class": "<EntityClass>",
+  "method_name": "<methodName>",
+  "url": "$(SDP_URL)",
+  "admin_mail_id": "$(SDP_ADMIN_EMAIL)",
+  "email_id": "$(SDP_ADMIN_EMAIL)",
+  "portal_name": "$(SDP_PORTAL)",
+  "skip_compile": true
 }
 ```
 
-Then run the test:
+Replace `<SCENARIO_ID>`, `<EntityClass>`, `<methodName>` with the actual generated values.
+Placeholders `$(SDP_URL)`, `$(SDP_ADMIN_EMAIL)`, `$(SDP_PORTAL)` are resolved at runtime.
+
+#### P2b — Write the updated `tests_to_run.json`
+
+Replace the `"tests"` array in `tests_to_run.json` with **only the newly generated entries** (old entries from previous batches are replaced — each generation session produces a fresh batch):
+
 ```bash
-.venv/bin/python run_test.py 2>&1 | tail -50
+.venv/bin/python -c "
+import json
+
+# New test entries from this generation session
+new_tests = [
+    # one dict per generated scenario — fill these in
+    {\"_id\": \"<SCENARIO_ID>\", \"entity_class\": \"<EntityClass>\", \"method_name\": \"<methodName>\", \"url\": \"\$(SDP_URL)\", \"admin_mail_id\": \"\$(SDP_ADMIN_EMAIL)\", \"email_id\": \"\$(SDP_ADMIN_EMAIL)\", \"portal_name\": \"\$(SDP_PORTAL)\", \"skip_compile\": True},
+]
+
+data = {
+    \"_comment\": \"Auto-generated by @test-generator. Run with @test-runner batch.\",
+    \"parallelism\": 1,
+    \"learning_retries\": 1,
+    \"tests\": new_tests,
+}
+
+with open('tests_to_run.json', 'w') as f:
+    json.dump(data, f, indent=2)
+print(f'Wrote {len(new_tests)} test(s) to tests_to_run.json')
+"
 ```
 
-After the run, check for the report:
+#### P2c — Detect run mode and hand off
+
+Check whether the user configured "generate and run" mode:
+
 ```bash
-PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
-ls -t "$PROJECT/reports/" | head -5
+grep -oP '(?<=SETUP_MODE=).*' .env 2>/dev/null || echo "generate_only"
 ```
 
-Report to the user:
-- ✅ PASSED — show the report path
-- ❌ FAILED — show the last 30 lines of output and ask the user if they want to invoke `@test-debugger`
+**If `SETUP_MODE=generate_and_run`:**
+
+Tell the user:
+```
+✅ Generated {N} scenario(s) and wrote them to tests_to_run.json.
+
+Run mode is **generate_and_run** — invoking `@test-runner batch` now to run
+each test sequentially. Failed tests will be auto-diagnosed and fixed.
+
+👉 Use `@test-runner batch` to start the run.
+```
+
+**If `SETUP_MODE=generate_only` (or not set):**
+
+Tell the user:
+```
+✅ Generated {N} scenario(s) and wrote them to tests_to_run.json.
+
+Run mode is **generate only** — tests are ready for review.
+To run them later: `@test-runner batch`
+To run a single test: `@test-runner <EntityClass>.<methodName>`
+```
 
 ### Step P3 — Index into ChromaDB
 

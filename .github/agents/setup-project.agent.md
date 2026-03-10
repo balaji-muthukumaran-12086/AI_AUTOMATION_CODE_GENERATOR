@@ -291,6 +291,7 @@ updates = {
     "HG_USERNAME":      "{HG_USERNAME}",
     "OWNER_CONSTANT":   "{RESOLVED_OWNER_CONSTANT}",
     "DEPS_DIR":         "{DEPS_DIR}",
+    "SETUP_MODE":       "{SETUP_MODE}",
 }
 
 # Only set SDP/path keys in generate_and_run mode
@@ -374,7 +375,7 @@ Then continue for both modes:
 
 **Files updated:**
 - `config/project_config.py` → PROJECT_NAME
-- `.env` → HG_USERNAME, OWNER_CONSTANT{, SDP_URL, ..., GECKODRIVER_PATH (if generate_and_run)}
+- `.env` → HG_USERNAME, OWNER_CONSTANT, SETUP_MODE{, SDP_URL, ..., GECKODRIVER_PATH (if generate_and_run)}
 ```
 
 **If `generate_only`**, show:
@@ -390,7 +391,10 @@ Then continue for both modes:
 **Next steps:**
 1. Compiling the framework now... (see below)
 2. Once done — use `@test-generator` and attach your use-case document
-3. The agent will generate, compile, and run the test for you automatically
+3. The agent will generate the code, append scenarios to tests_to_run.json,
+   and tell you to invoke `@test-runner batch`
+4. `@test-runner` will run each generated test one by one — if a test fails,
+   it auto-diagnoses the failure using Playwright MCP, fixes the code, and re-runs
 ```
 
 ---
