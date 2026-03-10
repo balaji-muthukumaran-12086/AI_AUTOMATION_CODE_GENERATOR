@@ -303,6 +303,12 @@ When writing generated test cases into this file:
 
 ## Orchestrator Logging (fire-and-forget)
 
+Before logging, ensure the orchestrator server is running (idempotent — safe to call every time):
+```bash
+cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+./orchestrator.sh start
+```
+
 After each test result, log to the orchestrator:
 ```bash
 .venv/bin/python -c "

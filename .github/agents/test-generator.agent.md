@@ -494,9 +494,16 @@ If this fails (non-fatal — do NOT retry): report the error but do not block. C
 
 **Why this matters**: ChromaDB is queried by `CoverageAgent` before planning new tests. Without indexing, a scenario generated here will be treated as a coverage gap and regenerated the next time `python main.py` runs on the same feature.
 
-### Step P4 — Log to Orchestrator Dashboard
+### Step P4 — Start Orchestrator & Log to Dashboard
 
-After generating code, log each scenario to the centralized orchestrator so the dashboard tracks Copilot-generated work:
+Before logging, ensure the orchestrator server is running (idempotent — safe to call every time):
+
+```bash
+cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+./orchestrator.sh start
+```
+
+Then log each generated scenario so the dashboard tracks Copilot-generated work:
 
 ```bash
 .venv/bin/python -c "

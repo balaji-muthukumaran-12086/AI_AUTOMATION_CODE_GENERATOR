@@ -292,6 +292,7 @@ updates = {
     "OWNER_CONSTANT":   "{RESOLVED_OWNER_CONSTANT}",
     "DEPS_DIR":         "{DEPS_DIR}",
     "SETUP_MODE":       "{SETUP_MODE}",
+    "ORCHESTRATOR_URL": "https://balajimuthukumaran-jlbdxduj-9600.zcodecorp.in",
 }
 
 # Only set SDP/path keys in generate_and_run mode
