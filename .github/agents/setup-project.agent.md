@@ -173,16 +173,17 @@ If validation fails on any value, tell the user which one is invalid and ask the
 
 The hg clone command will prompt the user for their credentials directly in the terminal. **Do NOT embed credentials in the URL.**
 
-### Clone the test-case branch (if folder missing from Step 0)
+### Step 3a — Try cloning the user's branch first (auto-detect if it exists)
+
+Do NOT ask the user whether the branch exists. Instead, **try the clone and detect failure automatically**.
 
 Tell the user:
 ```
-📦 Cloning the test-case branch now...
+📦 Cloning branch `{BRANCH_NAME}` from the repository...
 The terminal will prompt you for your zrepository username and password.
 Please enter them when asked.
 ```
 
-Then run:
 ```bash
 cd {WORKSPACE_DIR}
 hg clone --branch "{BRANCH_NAME}" "https://zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium" "{BRANCH_NAME}" 2>&1
@@ -190,10 +191,63 @@ hg clone --branch "{BRANCH_NAME}" "https://zrepository.zohocorpcloud.in/zohocorp
 
 > ⚠️ The command runs interactively — Mercurial will prompt for `http authorization required / realm` username and password in the terminal. The user types them directly. Credentials are **never stored** in any file.
 
-If the clone fails:
-- Authentication error → tell user to verify hg username/password
-- Branch not found → tell user to verify the branch name exists in the repo
-- Network error → tell user to check VPN connectivity
+**If the clone succeeds** → the branch exists remotely. Proceed to Step 3d.
+
+**If the clone fails**, check the error:
+- **Authentication error** → tell user to verify hg username/password, retry
+- **Network error** → tell user to check VPN connectivity, retry
+- **Branch not found** (`abort: unknown branch` or `unknown revision`) → fall through to Step 3b
+
+### Step 3b — Branch not found — ask user to confirm creation
+
+When the clone fails because the branch doesn't exist, **ask the user for confirmation**:
+
+```
+⚠️ Branch `{BRANCH_NAME}` does not exist in the repository.
+
+Would you like me to create it as a new branch from `SDPLIVE_UI_AUTOMATION_BRANCH`?
+(This is the standard base branch containing the full compiled codebase)
+
+1️⃣  **Yes** — create `{BRANCH_NAME}` from `SDPLIVE_UI_AUTOMATION_BRANCH`
+2️⃣  **No** — cancel and let me fix the branch name
+```
+
+**If user says No** → ask them for the correct branch name and restart from Step 3a.
+
+**If user says Yes** → proceed to Step 3c.
+
+> **MANDATORY RULE**: The base branch is ALWAYS `SDPLIVE_UI_AUTOMATION_BRANCH` — NEVER `default`, `SDPLIVE_LATEST_AUTOMATER_SELENIUM`, or any other branch. This is the authoritative base branch containing all compiled modules, correct imports, and owner constants. Branching from `default` will result in missing classes and broken compilation.
+
+### Step 3c — Create new branch from SDPLIVE_UI_AUTOMATION_BRANCH
+
+First, clean up the failed clone folder if it exists:
+```bash
+rm -rf {WORKSPACE_DIR}/{BRANCH_NAME}
+```
+
+Then clone from the base branch and create the new named branch:
+```bash
+cd {WORKSPACE_DIR}
+hg clone --branch "SDPLIVE_UI_AUTOMATION_BRANCH" "https://zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium" "{BRANCH_NAME}" 2>&1
+```
+
+After the base clone succeeds:
+```bash
+cd {WORKSPACE_DIR}/{BRANCH_NAME}
+hg branch "{BRANCH_NAME}"
+hg commit -m "Created branch {BRANCH_NAME} from SDPLIVE_UI_AUTOMATION_BRANCH" 2>&1
+```
+
+Tell the user:
+```
+✅ Created new branch `{BRANCH_NAME}` from `SDPLIVE_UI_AUTOMATION_BRANCH`.
+The branch exists locally. To push it to the remote repository later:
+  cd {BRANCH_NAME} && hg push --new-branch
+```
+
+> ⚠️ Do NOT auto-push — pushing creates a permanent remote branch. Let the user push when ready.
+
+#### Step 3d — Folder already exists (from Step 0)
 
 If the folder already exists from Step 0, **switch to the requested branch** instead:
 ```bash
@@ -202,11 +256,13 @@ hg pull "https://zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSeleni
 hg update "{BRANCH_NAME}" 2>&1
 ```
 
+If `hg update` fails with "unknown revision" (branch doesn't exist remotely yet), the folder is already on the correct local branch — verify with `hg branch` and continue.
+
 > The `hg pull` may also prompt for credentials interactively — same process.
 
-### Create Testcase/ folder (MANDATORY — always run this)
+#### Step 3e — Create Testcase/ folder (MANDATORY — always after clone/update)
 
-**This step is NOT conditional.** Whether you cloned fresh or the folder already existed, ALWAYS run:
+**This step is NOT conditional.** Whether you cloned fresh, created a new branch, or the folder already existed, ALWAYS run:
 
 ```bash
 mkdir -p {WORKSPACE_DIR}/{BRANCH_NAME}/Testcase
@@ -452,3 +508,4 @@ If it **fails**, show the last 20 lines and ask the user to fix:
 - If the user provides all values in their initial message (via key=value or inline), skip Step 1/1b and go directly to Step 3. Infer `SETUP_MODE` from which keys are present: if SDP URL / deps / drivers are provided → `generate_and_run`; if only hg username → `generate_only`. The `owner` field still must be resolved — if missing, show the owner list and ask
 - `FIREFOX_BINARY` and `GECKODRIVER_PATH` are always derived from `DRIVERS_DIR` as `{DRIVERS_DIR}/firefox/firefox` and `{DRIVERS_DIR}/geckodriver` — never ask for them separately
 - If the user initially chose `generate_only` and later wants to enable execution, they can re-run `@setup-project setup` and choose "Generate and Run" — the agent will only ask for the missing SDP/path values
+- **BASE BRANCH RULE**: All new feature branches MUST be created from `SDPLIVE_UI_AUTOMATION_BRANCH`. NEVER use `default`, `SDPLIVE_LATEST_AUTOMATER_SELENIUM`, or any other branch as the base. The `SDPLIVE_UI_AUTOMATION_BRANCH` contains the complete compiled codebase with all correct imports, owner constants, and module dependencies. Branching from `default` will result in missing classes and broken compilation.

@@ -19,9 +19,16 @@ set -e
 
 WORKSPACE="$(cd "$(dirname "$0")" && pwd)"
 FW_SRC="$WORKSPACE/AutomaterSeleniumFramework/src"
-PROJECT_NAME=$(grep -E '^PROJECT_NAME\s*=' "$WORKSPACE/config/project_config.py" | sed 's/.*=\s*["'"'"']\(.*\)["'"'"']/\1/')
+# Resolve PROJECT_NAME via Python (reads .env → os.environ fallback)
+if [ -f "$WORKSPACE/.env" ]; then
+  _PN=$(grep -E '^PROJECT_NAME\s*=' "$WORKSPACE/.env" | sed 's/^PROJECT_NAME\s*=\s*//' | tr -d '"'"'"' ')
+fi
+if [ -z "$_PN" ]; then
+  _PN=$(cd "$WORKSPACE" && python3 -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)" 2>/dev/null)
+fi
+PROJECT_NAME="$_PN"
 if [ -z "$PROJECT_NAME" ]; then
-  echo "❌ Could not read PROJECT_NAME from config/project_config.py"
+  echo "❌ Could not read PROJECT_NAME from .env or config/project_config.py"
   exit 1
 fi
 
