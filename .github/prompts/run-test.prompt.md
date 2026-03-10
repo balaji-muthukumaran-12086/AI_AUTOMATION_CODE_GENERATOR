@@ -34,4 +34,4 @@ Run a specific Selenium test method using the framework's runner.
    - `"successfully"` in Additional Specific Info → PASSED
    - `BUILD SUCCESSFUL` → PASSED
    - Java exceptions → FAILED
-6. Report location: `SDPLIVE_LATEST_AUTOMATER_SELENIUM/reports/LOCAL_{method}_{timestamp}/ScenarioReport.html`
+6. Report location: `$PROJECT_NAME/reports/LOCAL_{method}_{timestamp}/ScenarioReport.html`

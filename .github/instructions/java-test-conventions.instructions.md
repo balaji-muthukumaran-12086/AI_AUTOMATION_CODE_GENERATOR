@@ -23,7 +23,7 @@ applyTo: ["**/src/**/*.java"]
 
 Always grep for the next sequential ID before assigning:
 ```bash
-grep -rn 'id = "SDPOD_AUTO_SOL_DV' SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/ | sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
+grep -rn 'id = "SDPOD_AUTO_SOL_DV' $PROJECT_NAME/src/ | sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
 ```
 
 ## Boolean / Checkbox Trap

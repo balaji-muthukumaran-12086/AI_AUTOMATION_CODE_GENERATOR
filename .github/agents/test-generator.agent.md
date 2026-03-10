@@ -60,7 +60,7 @@ echo "Count: ${#PROJECTS[@]}"
 ```
 I found multiple project folders in this workspace:
 
-  1. SDPLIVE_LATEST_AUTOMATER_SELENIUM  ← current default
+  1. SDPLIVE_LATEST_AUTOMATER_SELENIUM  ← current default (from .env)
   2. SDPLIVE_UI_AUTOMATION_BRANCH
   3. SDPLIVE_FEATURE_X
   4. AALAM_FRAMEWORK_CHANGES

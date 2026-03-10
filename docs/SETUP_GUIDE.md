@@ -76,7 +76,7 @@ The agent shows a numbered owner list and a form. Example for **Generate only** 
 ```
 owner        = 3            ← pick your number from the list, or "new"
 hg_username  = your-zrepo-username
-branch       = SDPLIVE_LATEST_AUTOMATER_SELENIUM
+branch       = SDPLIVE_LATEST_AUTOMATER_SELENIUM   ← default; change if your team uses a different branch
 deps_path    = /home/you/Automater/dependencies
 ```
 
@@ -134,14 +134,16 @@ Use the template at `docs/templates/usecase_template.csv`:
 Put your CSV file in the project's `Testcase/` folder:
 
 ```
-SDPLIVE_LATEST_AUTOMATER_SELENIUM/
+<PROJECT_NAME>/
 └── Testcase/
     └── my_use_cases.csv       ← place your file here
 ```
 
+> `<PROJECT_NAME>` is the branch folder created by `@setup-project` (e.g. `SDPLIVE_LATEST_AUTOMATER_SELENIUM`). Check your `.env` for the exact name.
+
 This folder was created by `@setup-project`. If it doesn't exist, create it:
 ```bash
-mkdir -p SDPLIVE_LATEST_AUTOMATER_SELENIUM/Testcase
+mkdir -p <PROJECT_NAME>/Testcase
 ```
 
 ### Alternative: plain-text description
@@ -223,7 +225,7 @@ This runs every test in `tests_to_run.json` sequentially. For each test:
 
 Test reports are generated at:
 ```
-SDPLIVE_LATEST_AUTOMATER_SELENIUM/reports/LOCAL_<methodName>_<timestamp>/ScenarioReport.html
+<PROJECT_NAME>/reports/LOCAL_<methodName>_<timestamp>/ScenarioReport.html
 ```
 
 Open `ScenarioReport.html` in a browser to see pass/fail details with screenshots.
@@ -289,7 +291,7 @@ The orchestrator tracks all generated scenarios, test runs, and healing events i
 | `OWNER_CONSTANT` empty | Re-run `@setup-project setup` |
 | Project folder not found | Run `@setup-project setup`, or check the folder name |
 | Multiple projects, wrong target | Use `@test-generator project=BRANCH_NAME` |
-| `Testcase/` folder missing | `mkdir -p SDPLIVE_LATEST_AUTOMATER_SELENIUM/Testcase` |
+| `Testcase/` folder missing | `mkdir -p <PROJECT_NAME>/Testcase` (replace with your branch name from `.env`) |
 | Generated test fails on first run | Normal — `@test-runner` auto-diagnoses and fixes. Run `@test-runner batch` |
 
 ---

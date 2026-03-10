@@ -366,7 +366,7 @@ AgentState (shared dict)
 | **RunnerAgent single-run** | `agents/pipeline.py` `route_after_output` | Already routes to `runner` when `run_config` present. No change needed. |
 | **Copy-Paste panel in UI** | `web/static/index.html` | After run completes, for each file in `final_output_paths`:<br>• Show filename as a tab/card<br>• Syntax-highlighted `<pre>` block with full file contents<br>• **"Copy file"** button (Clipboard API)<br>• Run result badge (✅ PASSED / ❌ FAILED) next to each file |
 | **`GET /api/runs/{run_id}/file-content`** | `web/server.py` | New endpoint — returns the raw text content of a generated file by path, so the UI can render it without a file download |
-| **Destination path hint** | UI copy-paste panel | Show the exact target path where the file should be placed in `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/...` so the developer knows where to paste |
+| **Destination path hint** | UI copy-paste panel | Show the exact target path where the file should be placed in `$PROJECT_NAME/src/...` so the developer knows where to paste |
 
 #### User journey (after this phase)
 ```

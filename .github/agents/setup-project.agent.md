@@ -24,7 +24,7 @@ WORKSPACE_DIR       = <detect from config/project_config.py location — parent 
 
 ```bash
 WORKSPACE=$(cd "$(dirname "$(find / -path '*/config/project_config.py' -maxdepth 5 2>/dev/null | head -1)")/.." && pwd)
-ls -d "$WORKSPACE/SDPLIVE_LATEST_AUTOMATER_SELENIUM" 2>/dev/null && echo "SDPLIVE_EXISTS" || echo "SDPLIVE_MISSING"
+ls -d "$WORKSPACE"/SDPLIVE_* "$WORKSPACE"/AALAM_* 2>/dev/null && echo "PROJECT_EXISTS" || echo "PROJECT_MISSING"
 ```
 
 Note the result — we may need to clone the test-case repo in Step 3a.
@@ -63,7 +63,7 @@ Before showing the form, read `OwnerConstants.java` to build a numbered list:
 grep 'public static final String' "{WORKSPACE_DIR}/{BRANCH_NAME_OR_DEFAULT}/src/com/zoho/automater/selenium/modules/OwnerConstants.java" | sed 's/.*String \([A-Z_]*\).*/\1/' | sort
 ```
 
-> Use the default branch name `SDPLIVE_LATEST_AUTOMATER_SELENIUM` for the initial read. If the folder doesn't exist yet (clone hasn't happened), fall back to listing the constants from the `copilot-instructions.md` known list.
+> Use the default branch name `SDPLIVE_LATEST_AUTOMATER_SELENIUM` for the initial read if a specific branch folder is not yet known. If the folder doesn't exist yet (clone hasn't happened), fall back to listing the constants from the `copilot-instructions.md` known list.
 
 Assign sequential numbers to each constant (e.g., 1 = ABHISHEK_RAV, 2 = ABINAYA_AK, ...) and add a final entry for **"New user"**.
 
@@ -92,13 +92,13 @@ Now copy the form below, fill in your values, and paste it back:
 ```
 owner        = <number from list above, or "new">
 hg_username  = 
-branch       = SDPLIVE_LATEST_AUTOMATER_SELENIUM
+branch       = SDPLIVE_LATEST_AUTOMATER_SELENIUM   ← default; change if your team uses a different branch
 deps_path    = 
 ```
 
 > **owner** — Your number from the list above (e.g., `5` for BALAJI_M), or `new` if you're not listed
 > **hg_username** — Your zrepository username (e.g., `balaji-12086`)
-> **branch** — The hg branch to clone (default pre-filled — change only if needed)
+> **branch** — The hg branch to clone (default pre-filled — change only if needed; this becomes `PROJECT_NAME` in `.env`)
 > **deps_path** — Absolute path to the Java JARs folder (e.g., `/home/you/dependencies`)
 > ⓘ *Hg password is NOT collected here — you'll enter it directly in the terminal when the clone command runs.*
 ````
@@ -109,7 +109,7 @@ deps_path    =
 ```
 owner        = <number from list above, or "new">
 hg_username  = 
-branch       = SDPLIVE_LATEST_AUTOMATER_SELENIUM
+branch       = SDPLIVE_LATEST_AUTOMATER_SELENIUM   ← default; change if your team uses a different branch
 deps_path    = 
 
 sdp_url      = 

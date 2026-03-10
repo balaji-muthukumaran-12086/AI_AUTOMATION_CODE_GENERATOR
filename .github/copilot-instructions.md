@@ -3,7 +3,7 @@
 This workspace is a **Selenium-based Java automation QA framework** for the ServiceDesk Plus (SDP) product.
 Always read this file before inferring anything about the project structure.
 
-> **Active project (as of Feb 27, 2026):** `SDPLIVE_LATEST_AUTOMATER_SELENIUM`
+> **Active project**: determined by `PROJECT_NAME` in `.env` (default: `SDPLIVE_LATEST_AUTOMATER_SELENIUM`)
 > Single source of truth: `config/project_config.py` → `PROJECT_NAME`
 > All agents, runner, healer, and ingestion now derive paths from this config.
 
@@ -13,7 +13,7 @@ Always read this file before inferring anything about the project structure.
 
 ```
 ai-automation-qa/
-├── SDPLIVE_LATEST_AUTOMATER_SELENIUM/  # ACTIVE — Module-specific tests (gitignored, managed via Mercurial)
+├── $PROJECT_NAME/                      # ACTIVE — Module-specific tests (gitignored, managed via Mercurial)
 │   ├── src/com/zoho/automater/selenium/modules/<module>/<entity>/
 │   └── bin/                            # Pre-compiled .class files
 │
@@ -154,7 +154,7 @@ NOT handled by fillInputForAnEntity (silent skip — manual click required):
 ./setup_framework_bin.sh
 ```
 This compiles all 90+ `AutomaterSeleniumFramework` source files (branch `AI_Automation_Code_Generator`)
-into `SDPLIVE_LATEST_AUTOMATER_SELENIUM/bin/`, overriding old classes from `AutomationFrameWork.jar`.
+into `$PROJECT_NAME/bin/`, overriding old classes from `AutomationFrameWork.jar`.
 **Required** because `EntityCase`, `ScenarioReport`, `LocalSetupManager` etc. need UmeshBranch versions
 for local runs to work correctly (report/screenshot generation depends on `isLocalSetup()` guards).
 
@@ -216,7 +216,7 @@ cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
 ```
 
 Reports generated at:
-`SDPLIVE_LATEST_AUTOMATER_SELENIUM/reports/LOCAL_<methodName>_<timestamp>/ScenarioReport.html`
+`$PROJECT_NAME/reports/LOCAL_<methodName>_<timestamp>/ScenarioReport.html`
 
 Screenshots at: `reports/LOCAL_<methodName>_<timestamp>/screenshots/Success_<ts>.png`
 
@@ -317,13 +317,13 @@ Priority order (first match wins):
 
 ## Key File Locations
 
-> Java modules follow the pattern: `SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/<module>/<entity>/`  
+> Java modules follow the pattern: `$PROJECT_NAME/src/com/zoho/automater/selenium/modules/<module>/<entity>/`  
 > Framework source: `AutomaterSeleniumFramework/src/com/zoho/automater/selenium/base/`  
 > **API reference**: `docs/api-doc/SDP_API_Endpoints_Documentation.md` — V3 API paths, input wrappers and automation cases for all 16 modules. Read before writing any `preProcess` API call.
 
 ```bash
 # Discover files for any entity:
-find SDPLIVE_LATEST_AUTOMATER_SELENIUM/src -path "*modules/<module>/<entity>*" -name "*.java"
+find $PROJECT_NAME/src -path "*modules/<module>/<entity>*" -name "*.java"
 ```
 
 ---
@@ -383,7 +383,7 @@ find SDPLIVE_LATEST_AUTOMATER_SELENIUM/src -path "*modules/<module>/<entity>*" -
 
 ```bash
 # Find next available ID before assigning (example for Solutions DV):
-grep -rn 'id = "SDPOD_AUTO_SOL_DV' SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/ | \
+grep -rn 'id = "SDPOD_AUTO_SOL_DV' $PROJECT_NAME/src/ | \
   sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
 ```
 
