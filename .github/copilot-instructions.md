@@ -388,6 +388,25 @@ grep -rn 'id = "SDPOD_AUTO_SOL_DV' $PROJECT_NAME/src/ | \
   sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
 ```
 
+### Multi-ID Grouping — Map Multiple Manual Cases to One Automation Scenario
+
+When **multiple manual test cases** from the use-case document can be covered by a **single automation test method**, comma-separate their IDs in the `id` field:
+
+```java
+@AutomaterScenario(
+    id = "SDPOD_AUTO_REQ_LST_UPDATED_BY_028,SDPOD_AUTO_REQ_LST_UPDATED_BY_029",
+    ...
+)
+public void verifyUpdatedByColumnInListView() throws Exception { ... }
+```
+
+**Rules:**
+- Each comma-separated ID maps to one manual test case from the use-case document
+- All grouped IDs must belong to the **same module prefix** (never mix e.g. `SDP_REQ_` with `SDPOD_AUTO_SOL_`)
+- Only group cases that are genuinely validated within the same method — do not pad IDs for coverage
+- The method's `description` should summarize the combined coverage
+- Use-case CSV rows that map to the same grouped method should each list the automation method name
+
 ### Valid preProcess Groups — Requests module
 
 ```

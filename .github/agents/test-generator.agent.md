@@ -342,6 +342,19 @@ Use the output value (e.g., `BALAJI_M`, `RAJESHWARAN_A`) in all generated annota
 )
 ```
 
+### Multi-ID Grouping — Multiple Manual Cases → One Automation Method
+
+When multiple use-case CSV rows can be covered by a single automation test method, comma-separate the IDs:
+```java
+@AutomaterScenario(
+    id = "SDPOD_AUTO_REQ_LST_UPDATED_BY_028,SDPOD_AUTO_REQ_LST_UPDATED_BY_029",
+    ...
+)
+```
+- Only group cases genuinely validated within the same method
+- All grouped IDs must share the same module prefix
+- Mark each CSV row covered by listing the automation method name
+
 ### Critical Traps
 - **Boolean fields**: `fillInputForAnEntity` silently skips booleans — use explicit `actions.click(locator)` for checkboxes
 - **`runType`**: Annotation default is `PORTAL_BASED` — ALWAYS write `USER_BASED` explicitly

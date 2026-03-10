@@ -26,6 +26,22 @@ Always grep for the next sequential ID before assigning:
 grep -rn 'id = "SDPOD_AUTO_SOL_DV' $PROJECT_NAME/src/ | sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
 ```
 
+## Multi-ID Grouping — Covering Multiple Manual Cases in One Method
+
+When multiple manual test cases from the use-case document can be covered by a single automation method, comma-separate the IDs:
+
+```java
+@AutomaterScenario(
+    id = "SDPOD_AUTO_REQ_LST_UPDATED_BY_028,SDPOD_AUTO_REQ_LST_UPDATED_BY_029",
+    ...
+)
+```
+
+**Rules:**
+- Only group cases genuinely validated within the same method — do not pad IDs
+- All grouped IDs must share the same module prefix
+- The `description` should summarize the combined coverage
+
 ## Boolean / Checkbox Trap
 
 `fillInputForAnEntity` calls `getValueAsStringFromInputUsingAPIPath()` which returns `null` for JSON booleans → boolean fields are **silently skipped**. Handle checkboxes manually:
