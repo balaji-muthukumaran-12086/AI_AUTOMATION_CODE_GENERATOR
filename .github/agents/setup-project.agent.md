@@ -482,6 +482,37 @@ echo "✅ Created {BRANCH_NAME}/Testcase/ — use-case documents will be stored 
 
 This folder is where `@test-generator` looks for use-case CSV files. Without it, test generation will prompt the user to create it manually.
 
+#### Step 3f — Check for use-case documents in Testcase/ (MANDATORY — always after Step 3e)
+
+After creating/verifying the Testcase/ folder, check if it contains any use-case documents:
+
+```bash
+USECASE_COUNT=$(find {WORKSPACE_DIR}/{BRANCH_NAME}/Testcase -maxdepth 1 -type f \( -name "*.csv" -o -name "*.xls" -o -name "*.xlsx" -o -name "*.md" -o -name "*.txt" \) 2>/dev/null | wc -l)
+echo "Use-case documents found: $USECASE_COUNT"
+```
+
+**If `USECASE_COUNT` is 0** (no documents found), show this prominent warning:
+
+```
+⚠️  No use-case documents found in {BRANCH_NAME}/Testcase/
+
+Before using @test-generator, you MUST upload your use-case document to:
+   📁 {BRANCH_NAME}/Testcase/
+
+Accepted formats: .csv (recommended), .xlsx, .xls, .md, .txt
+CSV template: docs/templates/usecase_template.csv
+
+Without a use-case document, @test-generator will NOT proceed with test generation.
+```
+
+**If `USECASE_COUNT` is > 0**, show:
+```
+✅ Found {USECASE_COUNT} use-case document(s) in {BRANCH_NAME}/Testcase/ — ready for @test-generator.
+```
+
+> This check prevents the common mistake where a user clones a project but forgets to upload
+> the use-case document, then invokes `@test-generator` which has no input to work from.
+
 ---
 
 ## Step 4 — Resolve owner from form selection
@@ -648,20 +679,28 @@ Then continue for all modes:
 **If `generate_only`**, show:
 ```
 **Next steps:**
-1. Use `@test-generator` and attach your use-case document
-2. The agent will generate the Java test code for you
+1. Upload your use-case document (.csv, .xlsx, .md, or .txt) to:
+   📁 {BRANCH_NAME}/Testcase/
+2. Then use `@test-generator` — the agent will generate the Java test code for you
 3. To enable test execution later, re-run `@setup-project setup` and choose mode 3 (Reconfigure)
+
+⚠️ IMPORTANT: @test-generator will NOT generate tests without a use-case document.
+   Do not invoke it until you have uploaded your document to Testcase/.
 ```
 
 **If `generate_and_run` or `reconfigure`**, show:
 ```
 **Next steps:**
 1. Compiling the framework now... (see below)
-2. Once done — use `@test-generator` and attach your use-case document
-3. The agent will generate the code, append scenarios to tests_to_run.json,
-   and tell you to invoke `@test-runner batch`
+2. Upload your use-case document (.csv, .xlsx, .md, or .txt) to:
+   📁 {BRANCH_NAME}/Testcase/
+3. Then use `@test-generator` — the agent will generate the code, append scenarios
+   to tests_to_run.json, and tell you to invoke `@test-runner batch`
 4. `@test-runner` will run each generated test one by one — if a test fails,
    it auto-diagnoses the failure using Playwright MCP, fixes the code, and re-runs
+
+⚠️ IMPORTANT: @test-generator will NOT generate tests without a use-case document.
+   Do not invoke it until you have uploaded your document to Testcase/.
 ```
 
 ---

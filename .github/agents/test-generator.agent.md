@@ -86,25 +86,58 @@ Before anything else, determine how the user is providing input.
 
 > **Recommended workflow**: Upload a use-case document in **CSV format** to the project's `Testcase/` folder, then invoke `@test-generator`. This is the most structured and reliable way to generate tests. See `docs/templates/usecase_template.csv` for the canonical column format.
 
-### Pre-check — Verify input exists
+### Pre-check — Verify input exists (MANDATORY HARD-STOP GATE)
 
-Before proceeding to Mode A or Mode B, run this check:
+> **Root cause of past bug**: A user cloned a second branch, forgot to upload the use-case document
+> to `Testcase/`, then invoked `@test-generator`. The agent had no input but proceeded anyway —
+> **inventing use cases on its own**. This is FORBIDDEN. The gate below prevents this.
 
-1. **Check if the user attached or pasted a document** in the chat message (file attachment, pasted text block, or inline feature description with multiple lines).
-2. **Check if the user typed a plain-text scenario description** (e.g., "create a change and verify the detail view").
-3. **Scan the `Testcase/` folder** for any unprocessed documents:
+**This check MUST run before ANY code generation. There are NO exceptions.**
+
+**Step 1 — Scan the `Testcase/` folder** for use-case documents:
 
 ```bash
 PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+USECASE_COUNT=$(find "$PROJECT/Testcase" -maxdepth 1 -type f \( -name "*.csv" -o -name "*.xls" -o -name "*.xlsx" -o -name "*.md" -o -name "*.txt" \) 2>/dev/null | wc -l)
+echo "Use-case documents in Testcase/: $USECASE_COUNT"
 ls "$PROJECT/Testcase/"*.{csv,xls,xlsx,md,txt} 2>/dev/null | head -20
 ```
 
-**If NONE of the above are found** (no attachment, no description, and `Testcase/` is empty or missing), **STOP and prompt the user**:
+**Step 2 — Check all three possible input sources:**
+
+1. **Testcase/ folder has documents** (`USECASE_COUNT > 0`) → proceed to Mode A
+2. **User attached or pasted a document** in the chat message (file attachment, pasted text block, or inline feature description with multiple lines) → proceed to Mode A
+3. **User typed an EXPLICIT scenario description** (e.g., "create a change and verify the detail view") — this must be a **concrete, actionable test scenario description** containing at least a verb + entity noun (e.g., "create a request", "verify solution title", "add notes to change"). Generic invocations like "generate tests", "start", "go", or just `@test-generator` do NOT count as scenario descriptions → proceed to Mode B
+
+**If NONE of the three sources provide valid input, HARD STOP — do NOT proceed.**
+
+### FORBIDDEN ANTI-PATTERNS (NEVER DO THESE)
 
 ```
-No use-case document or scenario description found.
+❌ FORBIDDEN: Inventing use cases when Testcase/ is empty and user provided no description
+   User says: "@test-generator"  (no document, empty Testcase/)
+   Agent invents: "I'll create tests for creating a change and verifying the detail view..."
+   → THIS IS THE BUG. NEVER invent scenarios.
 
-To generate tests, please do ONE of the following:
+❌ FORBIDDEN: Treating a generic invocation as a "plain-text description"
+   User says: "@test-generator generate tests"
+   Agent treats "generate tests" as a scenario description and starts coding
+   → "generate tests" is NOT a scenario. It's a command with no target.
+
+❌ FORBIDDEN: Using previously generated scenarios as input for new generation
+   Agent sees old code in src/ and generates more tests based on existing patterns
+   → New generation MUST come from user-provided input (document or explicit description)
+```
+
+### When the gate blocks — show this prompt and WAIT
+
+```
+⚠️ No use-case document or scenario description found.
+
+I checked `{TARGET_PROJECT}/Testcase/` — it is empty (no .csv, .xlsx, .md, or .txt files).
+You also did not attach a document or type a specific scenario description.
+
+I cannot generate tests without input. Please do ONE of the following:
 
 1. **Upload a CSV** (recommended) — Place your use-case document in:
    📁 `{TARGET_PROJECT}/Testcase/`
@@ -118,12 +151,14 @@ To generate tests, please do ONE of the following:
 
 2. **Attach a file** — Drag a `.csv`, `.xlsx`, `.md`, or `.txt` file directly into this chat.
 
-3. **Type a description** — e.g., `@test-generator create a change and verify the detail view title`
+3. **Type a specific scenario** — e.g., `@test-generator create a change and verify the detail view title`
+   (Must be a concrete test scenario with a verb + entity, not just "generate tests")
 ```
 
-**Do NOT proceed** to Mode A or Mode B until the user provides input. Wait for their response.
+**Do NOT proceed** to Mode A or Mode B until the user provides valid input. Wait for their response.
+**Do NOT invent scenarios, guess what the user might want, or use existing code as a template for new tests.**
 
-**If input IS found**, continue to the appropriate mode below.
+**If valid input IS found**, continue to the appropriate mode below.
 
 ---
 
@@ -277,7 +312,22 @@ Shall I generate all of them, or only specific ones? (Reply with numbers or 'all
 Wait for user confirmation before generating code.
 
 ### Mode B — Plain-text description (QUICK / SECONDARY)
-The user typed a short description directly (e.g., "create a change and verify the detail view title") without attaching a document. This is fine for quick one-off scenarios.
+The user typed an **explicit, concrete scenario description** directly (e.g., "create a change and verify the detail view title") without attaching a document. This is fine for quick one-off scenarios.
+
+**Mode B is ONLY valid when the user's message contains a specific test scenario.** The message must include at minimum:
+- A **verb** describing the action (create, verify, add, delete, navigate, edit, etc.)
+- An **entity noun** (change, request, solution, problem, note, task, etc.)
+
+Examples of VALID Mode B input:
+- "create a change and verify the detail view title"
+- "add notes to an incident request and check the notes tab"
+- "verify solution approval workflow with custom template"
+
+Examples of INVALID input (do NOT treat as Mode B — go back to the pre-check gate):
+- "generate tests" / "start" / "go" / "run"
+- "@test-generator" (bare invocation with no scenario)
+- "generate tests for the project"
+- "create all test cases"
 
 If the user describes **more than 3 scenarios** via plain text, suggest switching to CSV format instead for better structure and traceability.
 
