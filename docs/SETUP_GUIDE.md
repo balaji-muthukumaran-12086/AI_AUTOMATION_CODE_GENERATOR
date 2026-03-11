@@ -76,8 +76,11 @@ The agent asks you **two things**:
 
 | Mode | What it does | What you need |
 |------|-------------|--------------|
-| **Generate only** | Generates Java test code — does NOT run tests | hg username + dependencies path |
-| **Generate and Run** | Generates code AND runs tests against a live SDP instance | All of the above + SDP URL, credentials, Firefox/Geckodriver |
+| **1. Generate only** | Generates Java test code — does NOT run tests | hg username + dependencies path |
+| **2. Generate and Run** | Generates code AND runs tests against a live SDP instance | All of the above + SDP URL, credentials, Firefox/Geckodriver |
+| **3. Reconfigure existing project** | Skips cloning — just updates run environment config | Dependencies path + SDP URL, credentials, Firefox/Geckodriver |
+
+> **When to use Reconfigure**: You already have the project cloned (from a previous setup or manual clone) and just need to point it at a different SDP instance, update credentials, or switch to execution mode. No hg username or branch needed — the agent auto-detects your existing project folder.
 
 ### Fill in the form
 
@@ -105,6 +108,26 @@ drivers_path     = /home/you/Automater/Drivers
 ```
 
 A legend explaining each key is shown below the form. Just fill in the values, copy the block, and paste it back.
+
+For **Reconfigure** mode, the form is shorter — no hg credentials needed:
+
+```
+owner            = 3
+deps_path        = /home/you/Automater/dependencies
+sdp_url          = https://sdpodqa-auto1.csez.zohocorpin.com:9090/
+portal           = portal1
+admin_email      = admin@zohotest.com
+tech_email       = tech@zohotest.com
+test_user_emails = 
+password         = yourpassword
+drivers_path     = /home/you/Automater/Drivers
+```
+
+The agent auto-detects which project folder to use. If multiple project folders exist, it asks you to pick one.
+
+> **Existing folder handling**: If you choose mode 1 or 2 and a project folder already exists, the agent asks what to do: *Pull & Update*, *Delete & Re-clone*, or *Use as-is*. It never silently reuses an old folder.
+
+> **Fresh session**: Every time you run `@setup-project setup`, it starts completely fresh — it never picks up leftover values from a previous run.
 
 > **Security note**: Your hg password is **never typed in the chat**. When the agent clones the repository, Mercurial prompts you for your password directly in the VS Code terminal.
 
@@ -161,18 +184,6 @@ This folder was created by `@setup-project`. If it doesn't exist, create it:
 mkdir -p <PROJECT_NAME>/Testcase
 ```
 
-### Alternative: plain-text description
-
-For quick one-off scenarios, you can skip the CSV and just describe what you want:
-
-```
-@test-generator Create an incident request, add a note, and verify it appears in the Notes tab
-```
-
-This works well for 1-3 scenarios. For larger batches, CSV is strongly recommended.
-
----
-
 ## Step 4 — Generate Tests
 
 1. Open **Copilot Chat** → **Agent mode**
@@ -195,16 +206,6 @@ The agent:
    - Utility methods in `*ActionsUtil.java` (if new UI operations are needed)
 5. **Compiles** the generated code (targeted compile — only edited files)
 6. **Writes** test entries to `tests_to_run.json` for the runner
-
-### Multi-project targeting
-
-If you have multiple test-case branches cloned, specify which one:
-
-```
-@test-generator project=SDPLIVE_UI_AUTOMATION_BRANCH create a change and verify the detail view
-```
-
-If not specified, the agent uses the default from your `.env` configuration.
 
 ---
 
@@ -284,6 +285,7 @@ The orchestrator tracks all generated scenarios, test runs, and healing events i
 | Task | Command |
 |------|---------|
 | Initial setup | `@setup-project setup` |
+| Reconfigure existing project | `@setup-project setup` → choose mode 3 |
 | Generate tests from CSV | Place CSV in `Testcase/`, then `@test-generator` |
 | Generate from description | `@test-generator <your description>` |
 | Run all generated tests | `@test-runner batch` |
@@ -306,8 +308,35 @@ The orchestrator tracks all generated scenarios, test runs, and healing events i
 | `OWNER_CONSTANT` empty | Re-run `@setup-project setup` |
 | Project folder not found | Run `@setup-project setup`, or check the folder name |
 | Multiple projects, wrong target | Use `@test-generator project=BRANCH_NAME` |
+| Already cloned, just need to configure | Use `@setup-project setup` → choose mode 3 (Reconfigure) |
+| Switched SDP instance | Use `@setup-project setup` → mode 3 to update URL + credentials |
 | `Testcase/` folder missing | `mkdir -p <PROJECT_NAME>/Testcase` (replace with your branch name from `.env`) |
 | Generated test fails on first run | Normal — `@test-runner` auto-diagnoses and fixes. Run `@test-runner batch` |
+
+---
+### Alternative: plain-text description
+
+For quick one-off scenarios, you can skip the CSV and just describe what you want:
+
+```
+@test-generator Create an incident request, add a note, and verify it appears in the Notes tab
+```
+
+This works well for 1-3 scenarios. For larger batches, CSV is strongly recommended.
+
+---
+
+## Multi-Project Targeting
+
+If you have multiple test-case branches cloned, you can specify which project a command targets:
+
+```
+@test-generator project=SDPLIVE_UI_AUTOMATION_BRANCH create a change and verify the detail view
+```
+
+If not specified, the agent uses the default `PROJECT_NAME` from your `.env` configuration.
+
+> **Tip**: Use `@setup-project setup` → mode 3 (Reconfigure) to switch your default project without re-cloning.
 
 ---
 
@@ -349,4 +378,20 @@ Yes. You can use **Eclipse for regular Java development** and **VS Code only for
 | GitHub Copilot Chat extension | Latest |
 | Copilot plan | GitHub Copilot Individual, Business, or Enterprise (Agent mode requires an active subscription) |
 
-> **To verify**: Open VS Code → Copilot Chat → check for the **Agent mode** dropdown at the top of the chat panel. If you see it, you're set.
+### Minimum model requirements
+
+The agents in this framework specify their model requirements in `.agent.md` YAML frontmatter. The following models are supported and tested:
+
+| Model | Required for | Why |
+|---|---|---|
+| **Claude Opus 4.6** | `@test-generator`, `@test-debugger`, `@setup-project` | Complex multi-step code generation, debugging, and tool orchestration — needs the strongest reasoning |
+| **Claude Sonnet 4.6** | `@test-generator`, `@test-debugger`, `@setup-project` | Acceptable alternative — faster but slightly less accurate on complex entity scaffolding |
+| **Claude Sonnet 4** | `@test-runner` | Sufficient for compile → run → fix loops that don't require deep code generation |
+
+> **How models are selected**: Each `.agent.md` file has a `model:` field listing acceptable models in priority order. VS Code uses the first available model from the list. You can override the model per-conversation via the model picker dropdown in Copilot Chat.
+>
+> **Minimum recommended**: Claude Sonnet 4.6 or higher. Older models (GPT-4o, Claude 3.5 Sonnet) are **not tested** and may produce incorrect Java code, miss framework conventions, or fail to use tools correctly.
+>
+> **Model availability**: Depends on your GitHub Copilot plan and region. If a specific model is unavailable, the agent falls back to the next model in its list.
+
+> **To verify**: Open VS Code → Copilot Chat → click the model picker dropdown. You should see Claude Opus 4.6 and/or Claude Sonnet 4.6 in the list.
