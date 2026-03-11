@@ -24,8 +24,8 @@ applyTo: ["**/src/**/*.java"]
 ## Test ID Source — Use-Case Document vs Fallback
 
 **When a use-case CSV is provided** (in `$PROJECT_NAME/Testcase/`):
-- Use the CSV's use-case ID directly in `@AutomaterScenario(id = "...")`
-- The use-case ID must **ONLY** appear in the `id` field — NEVER in method names, DataConstants names, data JSON keys, or locator names
+- **Use the CSV's use-case ID directly** in `@AutomaterScenario(id = "...")` — this is the ONLY place the use-case ID appears
+- Do NOT embed the use-case ID in method names, DataConstants names, data JSON keys, or locator names
 - Method names must be descriptive of the action (e.g. `verifyDetailViewTitle`), not derived from the ID
 
 **When no use-case document is provided** (feature description / single-line case):
@@ -194,6 +194,18 @@ Before writing any REST API path or input wrapper (in preProcess, APIUtil, or sd
 - Read parent's existing groups before adding new ones
 - Reuse existing groups when they create the same entity type + store the same LocalStorage keys
 - FORBIDDEN: Inventing group names not defined in the parent class
+
+### ⭐ Minimal Group Selection (MANDATORY)
+
+Always select the **lightest preProcess group** that satisfies the test method's actual data needs:
+
+| Test method needs | group | dataIds |
+|---|---|---|
+| No entity at all (stubs, pure UI navigation) | `"NoPreprocess"` | `{}` |
+| Only `getEntityId()` (base entity) | `"create"` or simplest group | single template constant |
+| Extra entities (`linkChange_*_id`, etc.) | heavy multi-entity group | linking template constant |
+
+**FORBIDDEN**: Assigning heavy groups (e.g., `CREATE_MULTIPLE_CHANGE_FOR_LINKING`) to scenarios that only use `getEntityId()` or no entity at all. This wastes API calls and slows the test suite.
 
 ## Select2 Dropdowns
 

@@ -43,15 +43,15 @@ the copied problem is searchable in the Problems listview.
 """
 
 RUN_CONFIG = {
-    "entity_class":  "AdminAssetWorkflow",
-    "method_name":   "verifyAssetWorkflowStatementTupleLimitRejectionOnOverflow",  # AS_001
+    "entity_class":  "DetailsView",
+    "method_name":   "verifyAttachDropdownOptions",
     "url":           SDP_URL,
     "admin_mail_id": SDP_ADMIN_EMAIL,
     "email_id":      SDP_EMAIL_ID,
     "portal_name":   SDP_PORTAL,
     "password":      SDP_ADMIN_PASS,
     "skip_compile":  True,   # keep True — full compile is broken
-    "skip_cleanup":  True,   # keep created data alive for inspection in UI
+    "skip_cleanup":  False,
 }
 
 DEPS_DIR            = _DEPS_DIR           # from config/project_config.py → dependencies17

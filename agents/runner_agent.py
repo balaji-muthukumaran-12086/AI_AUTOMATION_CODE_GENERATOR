@@ -516,7 +516,7 @@ class RunnerAgent:
         )
 
         content = re.sub(
-            r'^(\s*protected static final String DEFAULT_PASSWORD\s*=\s*)"[^"]*"(;)',
+            r'^(\s*(?:private|protected) static final String DEFAULT_PASSWORD\s*=\s*)"[^"]*"(;)',
             rf'\1"{password}"\2',
             content,
             flags=re.MULTILINE,

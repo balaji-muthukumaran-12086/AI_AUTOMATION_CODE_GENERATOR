@@ -303,7 +303,33 @@ group = "newSolution"
 ```
 Only use the exact strings from Section 5.2 and 5.3.
 
-### 5.6 ⭐ GROUP REUSE — prefer reusing existing groups over adding new else-if blocks
+### 5.6 ⭐ MINIMAL GROUP SELECTION (MANDATORY) — use the lightest sufficient group
+
+> **Root cause of past bugs**: All scenarios in a batch were given the heaviest group
+> (e.g., `CREATE_MULTIPLE_CHANGE_FOR_LINKING`) even when the test method only called
+> `getEntityId()` or had no entity interaction at all.
+
+**Decision flow — apply to EVERY scenario before writing `@AutomaterScenario`:**
+
+```
+1. Does the test method use any entity created by preProcess?
+   → NO:  group = "NoPreprocess", dataIds = {}
+2. Does it ONLY use getEntityId() (the base entity)?
+   → YES: use simplest group ("create") + single data template
+3. Does it reference extra entities (linkChange_*_id, etc.)?
+   → YES: use the heavy multi-entity group
+```
+
+| Test method needs | group | dataIds |
+|---|---|---|
+| No entity at all (stubs, UI nav only) | `"NoPreprocess"` | `{}` |
+| Only `getEntityId()` | `"create"` (or simplest) | `{single template}` |
+| Extra entities beyond base | heavy multi-entity group | `{linking template}` |
+
+> **FORBIDDEN**: Defaulting all scenarios to the heaviest group "just in case".
+> This wastes API calls, slows the suite, and creates unnecessary cleanup.
+
+### 5.7 ⭐ GROUP REUSE — prefer reusing existing groups over adding new else-if blocks
 
 Before adding a new else-if branch to `preProcess()`, **READ the existing preProcess() body** first.
 If an existing group already:

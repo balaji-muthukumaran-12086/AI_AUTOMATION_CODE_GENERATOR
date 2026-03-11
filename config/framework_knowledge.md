@@ -239,6 +239,14 @@ protected boolean preProcess(String group, String[] dataIds) {
 **Critical rule:** group="" means no preProcess setup. dataIds={} when group="".
 **When group is non-empty:** dataIds must reference string constants from `SolutionAnnotationConstants.Data`.
 
+### ⭐ Minimal Group Selection (MANDATORY)
+Always select the **lightest** preProcess group that satisfies the test method's actual data needs:
+- Test method uses NO entity at all → `group = "NoPreprocess"`, `dataIds = {}`
+- Test method ONLY uses `getEntityId()` → use simplest group (e.g., `"create"`) + single template
+- Test method references extra entities (e.g., `linkChange_*_id`) → use the heavy multi-entity group
+
+**FORBIDDEN**: Assigning the heaviest group to ALL scenarios "just in case" — wastes API calls, slows suite, creates unnecessary cleanup.
+
 ### ⭐ Group Reuse — read preProcess() body before writing new code
 
 If an existing group already creates the entity you need and stores the IDs in LocalStorage:

@@ -134,7 +134,7 @@ The user has uploaded or placed a `.csv`, `.xls`, `.xlsx`, `.md`, or `.txt` file
 
 | Column | Purpose |
 |--------|--------|
-| **UseCase ID** | Unique identifier per use case (e.g., `SDPOD_SFCMDB_ADMIN_001`). This ID maps 1:1 to the generated test scenario — referenced in `@AutomaterScenario(description)` and report output |
+| **UseCase ID** | Unique identifier per use case (e.g., `SDPOD_SFCMDB_ADMIN_001`). This ID maps 1:1 to the generated test scenario — used directly as `@AutomaterScenario(id = "...")` |
 | **Severity** | `Critical` → `Priority.HIGH`, `Major` → `Priority.MEDIUM`, `Minor` → `Priority.LOW` |
 | **Module** | Parent module — determines framework module path (see Module Routing Table) |
 | **Sub-Module** | Entity subclass — determines which Java class file to place the scenario in. If no matching subclass exists, find nearest match or generate skeleton |
@@ -188,7 +188,7 @@ The standard use-case CSV uses these column names. Match them **case-insensitive
 
 | CSV Column | Maps To | Handling |
 |---|---|---|
-| **UseCase ID** | `@AutomaterScenario(description = "[USECASE_ID] ...")` — the use-case ID is embedded in the scenario description for traceability. The actual `@AutomaterScenario(id)` follows the module's sequential pattern (e.g., `SDPOD_AUTO_SOL_DV_###`). If a single use case requires **multiple test methods** (coverage overflow), append `_1`, `_2` etc. to the **method name** — the use-case ID stays unchanged |
+| **UseCase ID** | `@AutomaterScenario(id = "USECASE_ID")` — the use-case ID is used directly as the scenario annotation id. If a single use case requires **multiple test methods** (coverage overflow), append `_1`, `_2` etc. to the **method name** — the use-case ID stays unchanged in the first method, subsequent methods get the same ID with a suffix in the method name only |
 | **Severity** | `@AutomaterScenario(priority = ...)` — `Critical` → `Priority.HIGH`, `Major` → `Priority.MEDIUM`, `Minor` → `Priority.LOW` |
 | **Module** | Parent module placement — map to framework module path (see **Module Routing Table** below). For virtual modules (`RBAC`, `Security`, `API`, `Cross-Module`, `Performance`, `Integration`), route to the actual entity module identified by Sub-Module |
 | **Sub-Module** | Entity subclass routing — determines which Java class file to place the scenario in (see **Sub-Module Resolution** below). If no matching subclass exists in the module, (1) find the nearest relevant sibling class, or (2) generate a new entity skeleton via `GenerateSkeletonForAnEntity.java` and extend the parent |
@@ -201,7 +201,7 @@ The standard use-case CSV uses these column names. Match them **case-insensitive
 >
 > **CRITICAL FILTER**: Before planning ANY scenario, filter the CSV rows. ONLY rows with `UI To-be-automated = Yes` are candidates. Discard all others immediately.
 >
-> **CUMULATION RULE**: For each filtered row, the scenario context = `Impact Area` + `Pre-Requisite` + `Description` combined. Read all three to understand the full picture before designing the test method. If the cumulated scope requires more assertions/steps than fit in ~80 lines, split into multiple methods (e.g., `verifySubFormPage()` and `verifySubFormPage_1()`) — each mapped back to the same UseCase ID via description.
+> **CUMULATION RULE**: For each filtered row, the scenario context = `Impact Area` + `Pre-Requisite` + `Description` combined. Read all three to understand the full picture before designing the test method. If the cumulated scope requires more assertions/steps than fit in ~80 lines, split into multiple methods (e.g., `verifySubFormPage()` and `verifySubFormPage_1()`) — each mapped back to the same UseCase ID via `@AutomaterScenario(id)`.
 
 #### Module Routing Table (CSV Module → Framework Path)
 
@@ -244,7 +244,7 @@ Related CSV rows (same Module + Sub-Module + similar Impact Area) should be **gr
 - **Same UI flow** (e.g., navigate → create → verify) = **one test method** with multiple assertions
 - **Independent validations** (e.g., empty name vs duplicate name) = **separate test methods**
 - If a single use case generates a test method that would exceed ~80 lines → split into multiple methods, append `_1`, `_2` to method names
-- Each method's `description` field should reference the original UseCase ID(s): `"[SDPOD_SFCMDB_ADMIN_001] Verify Sub-form page loads under Setup > Customization"`
+- Each method's `@AutomaterScenario(id)` should use the original UseCase ID directly. If multiple CSV rows are grouped, comma-separate the IDs: `id = "SDPOD_SFCMDB_ADMIN_001,SDPOD_SFCMDB_ADMIN_002"`
 
 ---
 
@@ -340,6 +340,43 @@ For each operation in the scenario, check if a util method already exists. Only 
 
 ### Step 4 — Read Existing preProcess Groups
 Open the **parent class** (e.g., `Change.java`, `Solution.java`) and read `preProcess()` for all `equalsIgnoreCase` branches. Reuse existing groups — do NOT add new else-if blocks needlessly.
+
+### Step 4a — ⭐ MANDATORY: Select the MINIMAL Sufficient Group
+
+> **Root cause of past bugs**: All scenarios in a batch were given the heaviest group (e.g.
+> `CREATE_MULTIPLE_CHANGE_FOR_LINKING`) even when the test method only needed `getEntityId()`
+> or no entity at all. This wastes API calls, slows the suite, and creates unnecessary cleanup.
+
+**For EVERY scenario, answer these questions in order before writing `@AutomaterScenario`:**
+
+```
+1. Does the test method call getEntityId() or use any entity created by preProcess?
+   → NO:  group = "NoPreprocess", dataIds = {}
+   → YES: continue to question 2
+
+2. Does the test method ONLY use getEntityId() (the base entity)?
+   → YES: group = "create" (or simplest group that creates 1 entity), dataIds = {single template}
+   → NO:  continue to question 3
+
+3. Does the test method reference extra entities (e.g., linkChange_1_id, linkChange_2_id)?
+   → YES: use the heavy multi-entity group (e.g., CREATE_MULTIPLE_CHANGE_FOR_LINKING)
+```
+
+**Examples:**
+```java
+// Stub with only addSuccessReport() calls → NO entity needed
+@AutomaterScenario(group = ChangeAnnotationConstants.Group.NO_PREPROCESS, dataIds = {}, ...)
+
+// Uses getEntityId() but no linkChange_*_id → only base entity needed
+@AutomaterScenario(group = ChangeAnnotationConstants.Group.CREATE,
+    dataIds = {ChangeAnnotationConstants.Data.API_VALID_INPUT_GENERAL_TEMPLATE}, ...)
+
+// Uses linkChange_1_id, linkChange_2_id → needs multiple entities
+@AutomaterScenario(group = ChangeAnnotationConstants.Group.CREATE_MULTIPLE_CHANGE_FOR_LINKING,
+    dataIds = {ChangeAnnotationConstants.Data.API_VALID_INPUT_GENERAL_TEMPLATE_LINKING}, ...)
+```
+
+> **FORBIDDEN**: Defaulting all scenarios to the heaviest group "just in case".
 
 ### Step 5 — Consult API Reference for preProcess / APIUtil Methods
 Before writing any REST API call (in `preProcess`, APIUtil, or `sdpAPICall()` during debugging), **read the relevant module section** in `docs/api-doc/SDP_API_Endpoints_Documentation.md`. This document contains:
@@ -463,9 +500,9 @@ Also include any other files you edited (DataConstants, ActionsUtil, APIUtil, et
 
 If compile **fails**: show the errors, fix them, and recompile before proceeding.
 
-### Step P2 — Append generated tests to `tests_to_run.json` and hand off to `@test-runner`
+### Step P2 — Write `tests_to_run.json` + Generate Execution Plan + Hand off
 
-For **every** scenario generated in this session, append an entry to `tests_to_run.json` so the runner can pick them up.
+This step has 4 sub-steps: write the test entries, generate the categorized execution plan MD, detect run mode, and hand off to `@test-runner`.
 
 #### P2a — Read existing file and build new entries
 
@@ -517,7 +554,93 @@ print(f'Wrote {len(new_tests)} test(s) to tests_to_run.json')
 "
 ```
 
-#### P2c — Detect run mode and hand off
+#### P2c — Generate Categorized Execution Plan MD
+
+> This creates a clean, categorized Markdown file that tracks batch progress end-to-end —
+> the same format used for the linking-change execution plan. The `@test-runner` updates
+> this file during its Dry Run → Self-Heal → Validation phases.
+
+Generate the execution plan from `tests_to_run.json` + the CSV analysis from Step A0:
+
+```bash
+.venv/bin/python -c "
+import json, os
+from datetime import datetime
+from config.project_config import PROJECT_NAME
+
+with open('tests_to_run.json') as f:
+    data = json.load(f)
+tests = data.get('tests', [])
+
+# Group tests by entity_class
+groups = {}
+for t in tests:
+    entity = t.get('entity_class', 'Unknown')
+    groups.setdefault(entity, []).append(t)
+
+lines = [
+    f'# Batch Execution Plan — {PROJECT_NAME}',
+    f'',
+    f'**Generated**: {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}  ',
+    f'**Total tests**: {len(tests)}  ',
+    f'**Entity classes**: {len(groups)}  ',
+    f'',
+    f'---',
+    f'',
+    f'## Test Summary',
+    f'',
+    f'| # | Entity.Method | Scenario ID | Dry Run | Self-Heal | Validation | Final |',
+    f'|---|--------------|-------------|---------|-----------|------------|-------|',
+]
+
+idx = 0
+for entity in sorted(groups.keys()):
+    for t in groups[entity]:
+        idx += 1
+        method = t.get('method_name', '?')
+        sid = t.get('_id', '—')
+        lines.append(f'| {idx} | {entity}.{method} | {sid} | ⏳ | — | — | — |')
+
+lines.extend([
+    f'',
+    f'---',
+    f'',
+    f'## Phase Status',
+    f'',
+    f'| Phase | Status | Started | Finished | Pass | Fail |',
+    f'|-------|--------|---------|----------|------|------|',
+    f'| Phase 2: Dry Run | ⏳ NOT STARTED | — | — | — | — |',
+    f'| Phase 3: Self-Heal | ⏳ NOT STARTED | — | — | — | — |',
+    f'| Phase 4: Validation | ⏳ NOT STARTED | — | — | — | — |',
+    f'',
+    f'---',
+    f'',
+    f'## Grouped by Entity',
+    f'',
+])
+
+for entity in sorted(groups.keys()):
+    methods = groups[entity]
+    lines.append(f'### {entity} ({len(methods)} tests)')
+    for t in methods:
+        lines.append(f'- [ ] {t.get(\"method_name\", \"?\")} ({t.get(\"_id\", \"—\")})')
+    lines.append('')
+
+plan_path = f'{PROJECT_NAME}/execution_plan.md'
+os.makedirs(os.path.dirname(plan_path), exist_ok=True)
+with open(plan_path, 'w') as f:
+    f.write('\\n'.join(lines) + '\\n')
+print(f'✅ Execution plan written to {plan_path}')
+print(f'   {len(tests)} tests across {len(groups)} entity class(es)')
+"
+```
+
+Read and confirm the plan:
+```bash
+cat $PROJECT/execution_plan.md
+```
+
+#### P2d — Detect run mode and hand off
 
 Check whether the user configured "generate and run" mode:
 
@@ -529,10 +652,13 @@ grep -oP '(?<=SETUP_MODE=).*' .env 2>/dev/null || echo "generate_only"
 
 Tell the user:
 ```
-✅ Generated {N} scenario(s) and wrote them to tests_to_run.json.
+✅ Generated {N} scenario(s):
+- tests_to_run.json: {N} entries
+- Execution plan: {PROJECT}/execution_plan.md
 
-Run mode is **generate_and_run** — invoking `@test-runner batch` now to run
-each test sequentially. Failed tests will be auto-diagnosed and fixed.
+Run mode is **generate_and_run** — invoking `@test-runner batch` now.
+The runner will execute the full 5-phase pipeline:
+  Phase 2: Dry Run → Phase 3: Self-Heal → Phase 4: Validation → Phase 5: Summary
 
 👉 Use `@test-runner batch` to start the run.
 ```
@@ -541,10 +667,13 @@ each test sequentially. Failed tests will be auto-diagnosed and fixed.
 
 Tell the user:
 ```
-✅ Generated {N} scenario(s) and wrote them to tests_to_run.json.
+✅ Generated {N} scenario(s):
+- tests_to_run.json: {N} entries
+- Execution plan: {PROJECT}/execution_plan.md
 
 Run mode is **generate only** — tests are ready for review.
-To run them later: `@test-runner batch`
+To run the full batch pipeline: `@test-runner batch`
+  (Phases: Dry Run → Self-Heal → Validation → Summary)
 To run a single test: `@test-runner <EntityClass>.<methodName>`
 ```
 
@@ -641,8 +770,9 @@ Skip this step if the default project was used (no override happened).
 ## Constraints
 - DO NOT generate full file contents — only additions
 - DO NOT invent preProcess group names not listed in parent class
+- DO NOT assign heavy multi-entity preProcess groups when the test method only needs `getEntityId()` or no entity at all — always use the **minimal sufficient group** (see Step 4a)
 - DO NOT create new data JSON entries when existing ones can be reused
 - DO NOT place scenarios in wrong modules based on currently open file
 - DO NOT process CSV rows where `UI To-be-automated` ≠ `Yes` — these are API-only or not-in-scope
-- DO NOT use the UseCase ID directly as the `@AutomaterScenario(id)` — generate the framework's sequential ID format (e.g., `SDPOD_AUTO_CH_LV_###`) and reference the UseCase ID in the `description` field
+- ALWAYS use the CSV UseCase ID directly as the `@AutomaterScenario(id)` — do NOT generate sequential IDs when a CSV is provided. Sequential IDs (e.g., `SDPOD_AUTO_CH_LV_###`) are only for scenarios without a CSV use-case document
 - When input is CSV: trust the `Module` and `Sub-Module` columns for placement — NEVER re-derive from description text

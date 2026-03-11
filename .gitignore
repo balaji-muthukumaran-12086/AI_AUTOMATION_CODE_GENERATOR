@@ -40,7 +40,12 @@ knowledge_base/scout_snapshots/
 # ── VS Code ───────────────────────────────────────────────────────────────────
 .vscode/
 
+# ── Archives & logs ───────────────────────────────────────────────────────────
+*.zip
+*.log
+
 # ── OS ────────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 SDPLIVE_Linking_Change_Balaji/
+SDPLIVE_LINKING_CHANGE_AI_GENERATED/

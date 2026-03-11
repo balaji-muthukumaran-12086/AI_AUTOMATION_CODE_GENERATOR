@@ -17,15 +17,17 @@ You are a **test debugging specialist** for the AutomaterSelenium QA framework. 
 ### Step 0 — Resolve Dynamic Paths
 Before any file access, resolve the active project folder:
 ```bash
+cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
 eval $(.venv/bin/python -c "
-from config.project_config import DEPS_DIR, PROJECT_ROOT, PROJECT_NAME
-print(f'DEPS={DEPS_DIR}')
-print(f'BIN={PROJECT_ROOT}/bin')
-print(f'SRC={PROJECT_ROOT}/src')
-print(f'PROJECT={PROJECT_NAME}')
+from config.project_config import DEPS_DIR, PROJECT_ROOT, PROJECT_NAME, BASE_DIR
+print(f'export DEPS={DEPS_DIR}')
+print(f'export BIN={PROJECT_ROOT}/bin')
+print(f'export SRC={PROJECT_ROOT}/src')
+print(f'export PROJECT={PROJECT_NAME}')
+print(f'export BASE={BASE_DIR}')
 ")
 ```
-Use `$PROJECT`, `$BIN`, `$SRC`, `$DEPS` for all paths below.
+Use `$PROJECT`, `$BIN`, `$SRC`, `$DEPS`, `$BASE` for all paths below.
 
 ### Step 1 — Analyze the Failure
 1. Read the ScenarioReport.html from `$PROJECT/reports/LOCAL_<method>_<timestamp>/`

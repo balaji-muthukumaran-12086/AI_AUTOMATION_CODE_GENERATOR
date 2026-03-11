@@ -373,32 +373,34 @@ find $PROJECT_NAME/src -path "*modules/<module>/<entity>*" -name "*.java"
 ### Test ID Source — Use-Case Document vs Fallback
 
 > **Use-case documents** (CSV files) are located in `$PROJECT_NAME/Testcase/` after cloning.
-> These contain manual test case IDs that become the automation scenario IDs.
+> These contain manual test case IDs used directly as `@AutomaterScenario(id)`.
 
 #### When a Use-Case Document (CSV) Is Provided
 
-1. **Read the CSV** in `$PROJECT_NAME/Testcase/` — each row has a use-case ID (e.g. `SDPOD_AUTO_REQ_LST_UPDATED_BY_028`)
-2. **Use the use-case ID as-is** in `@AutomaterScenario(id = "...")` — this is the **ONLY** place the use-case ID appears
+1. **Read the CSV** in `$PROJECT_NAME/Testcase/` — each row has a use-case ID (e.g. `SDPOD_SFCMDB_ADMIN_001`)
+2. **Use the use-case ID as-is** in `@AutomaterScenario(id = "...")` — this is the ONLY place the use-case ID appears
 3. **Do NOT embed the use-case ID** in method names, DataConstants names, data JSON keys, locator names, or any other identifier
+4. Method names must be descriptive of the action (e.g. `verifyDetailViewTitle`), not derived from the ID
 
 ```java
-// ✅ CORRECT — use-case ID only in the annotation id field
+// ✅ CORRECT — use-case ID directly as annotation id, descriptive method name
 @AutomaterScenario(
-    id = "SDPOD_AUTO_REQ_LST_UPDATED_BY_028",  // from CSV
+    id = "SDPOD_SFCMDB_ADMIN_001",  // from CSV UseCase ID column
+    description = "Verify sub-form page loads under Setup > Customization",
     ...
 )
-public void verifyUpdatedByColumnInListView() throws Exception { ... }  // descriptive name
+public void verifySubFormPageLoads() throws Exception { ... }  // descriptive name
 
 // ❌ FORBIDDEN — use-case ID leaked into method name
-public void SDPOD_AUTO_REQ_LST_UPDATED_BY_028() throws Exception { ... }
+public void SDPOD_SFCMDB_ADMIN_001() throws Exception { ... }
 
 // ❌ FORBIDDEN — use-case ID in data key
-"SDPOD_AUTO_REQ_LST_UPDATED_BY_028_data": { ... }
+"SDPOD_SFCMDB_ADMIN_001_data": { ... }
 ```
 
 #### When No Use-Case Document Is Provided (Feature Description / Single-Line Case)
 
-Fall back to the **auto-generated sequential ID pattern** per module:
+Fall back to the **auto-generated sequential ID pattern** per module (same as above):
 
 | Module | Pattern | Example |
 |---|---|---|
@@ -420,26 +422,26 @@ grep -rn 'id = "SDPOD_AUTO_SOL_DV' $PROJECT_NAME/src/ | \
 
 ```
 Use-case CSV exists in $PROJECT_NAME/Testcase/ ?
-  → YES: Use the CSV's use-case ID directly in @AutomaterScenario(id = "...")
+  → YES: Use CSV use-case ID directly as @AutomaterScenario(id = "...")
          Keep method names descriptive (verifyXxx, createXxx) — NEVER from the ID
   → NO:  Generate next sequential ID using the module prefix pattern above
 ```
 
 ### Multi-ID Grouping — Map Multiple Manual Cases to One Automation Scenario
 
-When **multiple manual test cases** from the use-case document can be covered by a **single automation test method**, comma-separate their IDs in the `id` field:
+When **multiple manual test cases** from the use-case document can be covered by a **single automation test method**, comma-separate the CSV use-case IDs in the `id` field:
 
 ```java
 @AutomaterScenario(
-    id = "SDPOD_AUTO_REQ_LST_UPDATED_BY_028,SDPOD_AUTO_REQ_LST_UPDATED_BY_029",
+    id = "SDPOD_SFCMDB_ADMIN_001,SDPOD_SFCMDB_ADMIN_002",
+    description = "Verify Updated By column in list view",
     ...
 )
 public void verifyUpdatedByColumnInListView() throws Exception { ... }
 ```
 
 **Rules:**
-- Each comma-separated ID maps to one manual test case from the use-case document
-- All grouped IDs must belong to the **same module prefix** (never mix e.g. `SDP_REQ_` with `SDPOD_AUTO_SOL_`)
+- Each comma-separated ID in `id` is a CSV use-case ID (one per CSV row covered)
 - Only group cases that are genuinely validated within the same method — do not pad IDs for coverage
 - The method's `description` should summarize the combined coverage
 - Use-case CSV rows that map to the same grouped method should each list the automation method name
@@ -540,6 +542,24 @@ Does an existing group create the entity I need + store the LocalStorage keys I 
   → NO:  add new else-if block with a new group string
 ```
 
+### ⭐ Minimal Group Selection (MANDATORY — apply to every scenario)
+
+> **Root cause of past bugs**: Assigning the heaviest preProcess group to ALL scenarios
+> "just in case" — wastes API calls, slows test suite, creates unnecessary cleanup.
+
+Always select the **lightest** group that satisfies the test method's actual data needs:
+
+```
+1. Does the test method use any entity created by preProcess (getEntityId(), LocalStorage)?
+   → NO:  group = "NoPreprocess", dataIds = {}
+2. Does it ONLY use getEntityId() (the base entity)?
+   → YES: use simplest group (e.g., "create") + single data template
+3. Does it reference extra entities (linkChange_*_id, multiple IDs from LocalStorage)?
+   → YES: use the heavy multi-entity group
+```
+
+> **FORBIDDEN**: Defaulting all scenarios to the heaviest group.
+
 ### Role Constants (module-specific — import matters)
 
 ```java
@@ -590,14 +610,21 @@ username via `config/project_config.py → OWNER_CONSTANT`. The setup-project ag
 
 **Full constant list** (all defined in `OwnerConstants.java`):
 ```
-OwnerConstants.UMESH_SUDAN     OwnerConstants.ANTONYRAJAN_D    OwnerConstants.RAJESHWARAN_A
-OwnerConstants.MUTHUSIVABALAN_S  OwnerConstants.VINUTHNA_K     OwnerConstants.NANTHAKUMAR_G
-OwnerConstants.VIGNESH_E       OwnerConstants.RUJENDRAN        OwnerConstants.THILAK_RAJ
-OwnerConstants.PURVA_RAJESH    OwnerConstants.VEERAVEL         OwnerConstants.JAYA_KUMAR
-OwnerConstants.BALAJI_M        OwnerConstants.SUBHA            OwnerConstants.BINESH_N
-OwnerConstants.PAVITHRA_R      OwnerConstants.KARUPPASAMY      OwnerConstants.SANTHOSH_BD
-OwnerConstants.OMPIRAKASH      OwnerConstants.ABINAYA_AK       OwnerConstants.RANJITH_N
-OwnerConstants.ELANGO_S        OwnerConstants.SANTHIYA_PR      OwnerConstants.KARTHIKA_R
+OwnerConstants.ABHISHEK_RAV    OwnerConstants.ABINAYA_AK       OwnerConstants.AISHWARYA_JAYASANKAR
+OwnerConstants.ANITHA_A        OwnerConstants.ANTONYRAJAN_D    OwnerConstants.BALAJI_M
+OwnerConstants.BALAJI_MR       OwnerConstants.BINESH_N         OwnerConstants.DEVIRANI_R
+OwnerConstants.ELANGO_S        OwnerConstants.GOWTHAM_A        OwnerConstants.GURDEEP_SINGH
+OwnerConstants.HEMAPRIYA_S     OwnerConstants.JANAKI_R         OwnerConstants.JAYA_KUMAR
+OwnerConstants.KARTHIKA_R      OwnerConstants.KARUPPASAMY      OwnerConstants.KASIM
+OwnerConstants.KAVIN_KUMAR_R   OwnerConstants.MUTHUSIVABALAN_S OwnerConstants.NANTHAKUMAR_G
+OwnerConstants.NITHIN_K        OwnerConstants.OMPIRAKASH       OwnerConstants.PAVITHRA_R
+OwnerConstants.PURVA_RAJESH    OwnerConstants.RAJESHWARAN_A    OwnerConstants.RANJITH_N
+OwnerConstants.RUJENDRAN       OwnerConstants.SANTHIYA_PR      OwnerConstants.SANTHOSH_BD
+OwnerConstants.SIVANESH_MUTHUKUMAR OwnerConstants.SUBHA        OwnerConstants.SURENDHAR_GS
+OwnerConstants.SURYA           OwnerConstants.TEJASWINI_G      OwnerConstants.THILAK_RAJ
+OwnerConstants.UGESH           OwnerConstants.UMESH_SUDAN      OwnerConstants.VEERAVEL
+OwnerConstants.VIGNESH_E       OwnerConstants.VIGNESHRAJ       OwnerConstants.VINUTHNA_K
+OwnerConstants.YUVAN_R
 ```
 
 > **No silent fallback**: If `HG_USERNAME` is not set or not found in the mapping, the user
