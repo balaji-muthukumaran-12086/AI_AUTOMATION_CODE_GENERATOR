@@ -94,6 +94,11 @@ Track all created entity IDs and DELETE before ending session:
 | `TimeoutException` | LOCATOR | Element slow to load — add wait or fix selector |
 | `AssertionException` | LOGIC | Test expectation wrong — check data/logic |
 | `ClassNotFoundException` | COMPILE | Missing import or ENTITY_IMPORT_MAP entry |
+| Test code correct, SDP behaviour wrong | **PRODUCT_BUG** | **No code fix — generate bug report** |
+
+> **PRODUCT_BUG**: After verifying locators, API paths, and test logic are correct (via Playwright
+> inspection + API checks), if the test still fails because the SDP application itself behaves
+> differently from the expected specification, classify as PRODUCT_BUG.
 
 ## Key Framework Behaviors
 - `actions.click(locator)` calls `waitForAjaxComplete()` BEFORE clicking
@@ -127,6 +132,43 @@ get_client().scenario_failed(scenario_id='<SCENARIO_ID>', method_name='<methodNa
 ```
 
 This is fire-and-forget — if the orchestrator server isn't running, events are silently queued offline.
+
+### Bug Report (for PRODUCT_BUG or unresolvable failures)
+
+When a test cannot be fixed (PRODUCT_BUG or max attempts exhausted), provide a bug report:
+
+```
+---
+🐛 BUG REPORT: <Entity.Method> — <one-line summary>
+
+**Scenario ID**: <@AutomaterScenario id>
+**Failure Type**: PRODUCT_BUG | UNRESOLVABLE_FAILURE
+**Module**: <module name>
+**Severity**: <Critical / Major / Minor>
+
+**Summary**: <2-3 sentences: what failed and why it's a product issue vs test issue>
+
+**Steps to Reproduce**:
+1. Login as <role>
+2. Navigate to <module> → <page>
+3. <manual UI steps leading to failure>
+4. <expected vs actual>
+
+**Expected Result**: <what should happen>
+**Actual Result**: <what SDP actually did>
+
+**Report Path**: `<absolute path to ScenarioReport.html>`
+**Screenshot Path**: `<absolute path to screenshots/ folder>`
+
+**Evidence**:
+- ScenarioReport failure: <$$Failure message or error>
+- Playwright observation: <what was seen in the live UI>
+
+**Debug Notes**: <attempts made, fixes tried, why it's unfixable in test code>
+---
+```
+
+Steps to Reproduce must be **manual-testable** — write for a human QA engineer, not in automation terms.
 
 ## Constraints
 - DO NOT run full project compile — only targeted module compile

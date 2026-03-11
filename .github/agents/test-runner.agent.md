@@ -159,6 +159,12 @@ cat "$REPORT_DIR/ScenarioReport.html"
 | `NullPointerException` in restAPI / preProcess | API | preProcess data setup — wrong API path or session |
 | `AssertionException` / wrong validation | LOGIC | Test method logic in `*Base.java` |
 | javac errors | COMPILE | Syntax/import fix in source |
+| Test code is correct but SDP behaviour is wrong | **PRODUCT_BUG** | **No code fix — report to user** |
+
+> **PRODUCT_BUG detection**: After fixing LOCATOR/API/LOGIC issues and confirming the test code
+> is correct (element exists, API returns expected data, locator matches), if the test STILL fails
+> because the SDP application itself behaves differently from the expected specification — that's
+> a product bug. Do NOT keep retrying. Mark as `PRODUCT_BUG` and include it in the bug report.
 
 ### 3c. LOCATOR Failures — Use Playwright MCP
 
@@ -253,7 +259,54 @@ After all tests are processed, provide a summary table:
 | 1 | Solution.createSolution | PASSED | 1 | — |
 | 2 | Change.verifyAssociation | PASSED | 2 | Fixed XPath for association tab |
 | 3 | Request.addNotes | FAILED | 3 | Unresolvable — API returns null |
+| 4 | Change.verifyWorkflow | PRODUCT_BUG | 2 | SDP shows wrong status after transition |
 ```
+
+### Bug Reports (for PRODUCT_BUG and unresolvable FAILED tests)
+
+For every test that ends as **PRODUCT_BUG** or **FAILED after max attempts**, generate a bug report block.
+This gives the user everything needed to log the bug:
+
+```
+---
+🐛 BUG REPORT: <Entity.Method> — <one-line summary>
+
+**Scenario ID**: <@AutomaterScenario id>
+**Failure Type**: PRODUCT_BUG | UNRESOLVABLE_FAILURE
+**Module**: <module name (e.g., Changes, Requests, Solutions)>
+**Severity**: <Critical / Major / Minor — based on impact>
+
+**Summary**:
+<2-3 sentence description of what failed and why it appears to be a product issue
+vs a test code issue>
+
+**Steps to Reproduce**:
+1. Login as <role> (e.g., SDAdmin)
+2. Navigate to <module> → <specific page>
+3. <exact UI steps that lead to the failure>
+4. <what was expected vs what actually happened>
+
+**Expected Result**: <what the test expected to see>
+**Actual Result**: <what SDP actually showed/returned>
+
+**Report Path**: `<absolute path to ScenarioReport.html>`
+**Screenshot Path**: `<absolute path to screenshots/ folder>`
+
+**Evidence**:
+- ScenarioReport.html failure row: <copy the $$Failure line or error message>
+- Console error (if any): <Java exception or JS error>
+- Playwright snapshot (if captured): <key observation from accessibility tree>
+
+**Debug Notes**: <any additional context from the debug attempts>
+---
+```
+
+**Rules for bug reports:**
+1. **Always include the report path** — find it with: `ls -dt $PROJECT/reports/LOCAL_<methodName>_* | head -1`
+2. **Steps to Reproduce must be manual-testable** — write them as if a human QA engineer will follow them with a browser, not in terms of automation code
+3. **Include the $$Failure message** from ScenarioReport.html — this is the exact assertion that failed
+4. **Differentiate PRODUCT_BUG from test issues**: If the test code, locators, and data setup are all verified correct but SDP behaves unexpectedly → PRODUCT_BUG. If there's a test code issue we couldn't fix after 3 attempts → UNRESOLVABLE_FAILURE
+5. **One report per failed test** — even in batch mode, each test gets its own report block
 
 ---
 
