@@ -339,6 +339,9 @@ class RunnerAgent:
                         )
                     print("[RunnerAgent] Full compilation succeeded.")
 
+                # 3a. Regenerate DataConstants/Fields/Role from resource JSON
+                self._regenerate_constants()
+
                 # 3b. Always recompile StandaloneDefault.java to bake in new URL/credentials
                 patch_compile = self._compile_patched_files()
                 if patch_compile.returncode != 0:
@@ -647,6 +650,35 @@ class RunnerAgent:
         print(f"[RunnerAgent] app.properties → firefox_local={firefox}")
         print(f"[RunnerAgent] app.properties → geckodriver_local={geckodriver}")
         print(f"[RunnerAgent] app.properties → headless={headless_str}")
+
+    def _regenerate_constants(self):
+        """
+        Run AutoGenerateConstantFiles.main() to regenerate *DataConstants.java,
+        *Fields.java, and *Role.java from resource JSON files.
+
+        Equivalent to the Eclipse Ant builder that fires on save of data/conf/role JSON.
+        The Java class finds the most recently modified file under resources/entity/
+        and regenerates the corresponding Java constant file.
+        """
+        classpath_parts = [str(self.bin_dir)]
+        for jar in self.deps_dir.rglob("*.jar"):
+            classpath_parts.append(str(jar))
+        classpath = ":".join(classpath_parts)
+
+        cmd = [
+            "java",
+            "-cp", classpath,
+            "com.zoho.automater.selenium.standalone.AutoGenerateConstantFiles",
+        ]
+
+        print("[RunnerAgent] Regenerating constants from resource JSON...")
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, cwd=str(self.automater_root)
+        )
+        if result.returncode != 0:
+            print(f"[RunnerAgent] \u26a0\ufe0f  AutoGenerateConstantFiles failed (non-fatal):\n{result.stderr[:500]}")
+        else:
+            print("[RunnerAgent] Constants regenerated OK.")
 
     def _compile_patched_files(self) -> subprocess.CompletedProcess:
         """

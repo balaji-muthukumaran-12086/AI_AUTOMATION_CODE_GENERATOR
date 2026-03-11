@@ -370,7 +370,35 @@ find $PROJECT_NAME/src -path "*modules/<module>/<entity>*" -name "*.java"
 >
 > **When to use `PORTAL_BASED`**: For scenarios that have side effects on other tests in the suite — e.g. business rules, SLA triggers, automation rules. These run in an **isolated session**: effects are scoped and cleaned up within that session so they don't contaminate other test cases in the same suite run. `USER_BASED` is for all standard scenarios whose execution does not affect global state seen by other tests.
 
-### Test ID Format (per module — do NOT mix prefixes)
+### Test ID Source — Use-Case Document vs Fallback
+
+> **Use-case documents** (CSV files) are located in `$PROJECT_NAME/Testcase/` after cloning.
+> These contain manual test case IDs that become the automation scenario IDs.
+
+#### When a Use-Case Document (CSV) Is Provided
+
+1. **Read the CSV** in `$PROJECT_NAME/Testcase/` — each row has a use-case ID (e.g. `SDPOD_AUTO_REQ_LST_UPDATED_BY_028`)
+2. **Use the use-case ID as-is** in `@AutomaterScenario(id = "...")` — this is the **ONLY** place the use-case ID appears
+3. **Do NOT embed the use-case ID** in method names, DataConstants names, data JSON keys, locator names, or any other identifier
+
+```java
+// ✅ CORRECT — use-case ID only in the annotation id field
+@AutomaterScenario(
+    id = "SDPOD_AUTO_REQ_LST_UPDATED_BY_028",  // from CSV
+    ...
+)
+public void verifyUpdatedByColumnInListView() throws Exception { ... }  // descriptive name
+
+// ❌ FORBIDDEN — use-case ID leaked into method name
+public void SDPOD_AUTO_REQ_LST_UPDATED_BY_028() throws Exception { ... }
+
+// ❌ FORBIDDEN — use-case ID in data key
+"SDPOD_AUTO_REQ_LST_UPDATED_BY_028_data": { ... }
+```
+
+#### When No Use-Case Document Is Provided (Feature Description / Single-Line Case)
+
+Fall back to the **auto-generated sequential ID pattern** per module:
 
 | Module | Pattern | Example |
 |---|---|---|
@@ -386,6 +414,15 @@ find $PROJECT_NAME/src -path "*modules/<module>/<entity>*" -name "*.java"
 # Find next available ID before assigning (example for Solutions DV):
 grep -rn 'id = "SDPOD_AUTO_SOL_DV' $PROJECT_NAME/src/ | \
   sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
+```
+
+#### Decision Flow for Scenario ID
+
+```
+Use-case CSV exists in $PROJECT_NAME/Testcase/ ?
+  → YES: Use the CSV's use-case ID directly in @AutomaterScenario(id = "...")
+         Keep method names descriptive (verifyXxx, createXxx) — NEVER from the ID
+  → NO:  Generate next sequential ID using the module prefix pattern above
 ```
 
 ### Multi-ID Grouping — Map Multiple Manual Cases to One Automation Scenario
@@ -660,6 +697,25 @@ Always check the actual inner class name in the file before referencing it. Neve
 
 These are **separate files**. `DataConstants` is auto-generated from `*_data.json`. `AnnotationConstants` is hand-written and holds only the subset needed by `preProcess()`.
 
+### Auto-Generating Constants (DataConstants, Fields, Roles)
+
+In Eclipse, the Ant builder runs `AutoGenerateConstantFiles.main()` on save of any `*_data.json`, conf, or role JSON file. In VS Code / CLI, three equivalent mechanisms exist:
+
+**Option A — VS Code task** (manual trigger):
+Run the task **"Auto-Generate Constants"** from the Command Palette (`Tasks: Run Task`). Or run the script directly:
+```bash
+./generate_constants.sh                          # regenerate from most recently modified JSON
+./generate_constants.sh path/to/entity_data.json # touch + regenerate a specific file
+```
+
+**Option B — Automatic via runner_agent** (before every test execution):
+`runner_agent.py` calls `AutoGenerateConstantFiles.main()` automatically before compilation, so any new `*_data.json` entries are reflected in `*DataConstants.java` before the test runs.
+
+**Option C — Automatic via test-generator agent** (generate-only mode):
+The `@test-generator` agent runs `./generate_constants.sh` in **Step P0** after writing any `*_data.json` entry and before compiling (Step P1). This works because `AutoGenerateConstantFiles.class` is always pre-compiled in `$PROJECT_NAME/bin/` after cloning — no compilation required to invoke it. This ensures DataConstants are up-to-date even when tests are NOT executed (generate-only mode).
+
+> `AnnotationConstants.java` is NOT auto-generated — it must still be edited by hand.
+
 ### Data JSON Format Rules
 
 ```json
@@ -852,6 +908,31 @@ Does the method send data to an API (POST/PUT/PATCH)?
 > if the scope of change allows.
 
 > **Post-load modification is OK**: After loading from `*_data.json`, you MAY use `.put()` / `.remove()` to tweak the loaded JSONObject (e.g., conditionally adding a field based on runtime state). The rule is: core data **creation** lives in JSON; post-load **transformation** in Java is acceptable.
+
+#### Existing Method Protection (REQUIRED — shared across projects)
+
+> **ActionsUtil and APIUtil methods are shared across multiple projects.** Modifying an existing
+> method's signature, behaviour, or return type can break callers in other projects that were
+> not compiled in this workspace.
+
+**Default rule: Do NOT modify existing `public static` methods in `*ActionsUtil.java` or `*APIUtil.java`.**
+
+**Exception — minimal usage**: If a method is used in **only 1–2 callers within the current project**
+and **zero other projects**, it MAY be modified. In that case:
+1. Search all callers first: `grep -rn "methodName" $PROJECT_NAME/src/`
+2. Update ALL callers to match the new signature/behaviour
+3. Compile ALL affected files (callers + utility) — zero errors required
+4. If compilation fails, revert the change and create a new method instead
+
+**Preferred alternative**: When the existing method doesn't quite fit, **create a new method**
+with a different name (e.g., `linkParentChangeWithValidation(...)` alongside existing
+`linkParentChange(...)`) rather than altering the original.
+
+```bash
+# Before modifying ANY existing util method — verify caller count:
+grep -rn "methodName" $PROJECT_NAME/src/ | grep -v "utils/.*ActionsUtil\|utils/.*APIUtil" | wc -l
+# If count > 2 → FORBIDDEN to modify. Create a new method instead.
+```
 
 #### Method granularity rules
 

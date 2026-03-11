@@ -21,7 +21,17 @@ applyTo: ["**/src/**/*.java"]
 )
 ```
 
-Always grep for the next sequential ID before assigning:
+## Test ID Source — Use-Case Document vs Fallback
+
+**When a use-case CSV is provided** (in `$PROJECT_NAME/Testcase/`):
+- Use the CSV's use-case ID directly in `@AutomaterScenario(id = "...")`
+- The use-case ID must **ONLY** appear in the `id` field — NEVER in method names, DataConstants names, data JSON keys, or locator names
+- Method names must be descriptive of the action (e.g. `verifyDetailViewTitle`), not derived from the ID
+
+**When no use-case document is provided** (feature description / single-line case):
+- Fall back to auto-generated sequential IDs per module prefix (e.g. `SDPOD_AUTO_SOL_DV_###`)
+- Grep for the next available ID before assigning:
+
 ```bash
 grep -rn 'id = "SDPOD_AUTO_SOL_DV' $PROJECT_NAME/src/ | sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
 ```
@@ -130,6 +140,17 @@ public void verifyDetailView() throws Exception {
 }
 ```
 
+## Existing Method Protection (shared across projects)
+
+**Do NOT modify existing `public static` methods in `*ActionsUtil.java` or `*APIUtil.java`** — they are shared across projects. Altering signatures, behaviour, or return types can break callers in other projects.
+
+**Exception**: If a method has **minimal usage** (1–2 callers, current project only), it MAY be modified if:
+1. ALL callers are updated to match
+2. ALL affected files compile with zero errors
+3. If compilation fails → revert and create a new method instead
+
+**Preferred**: Create a new method with a different name rather than altering an existing one.
+
 ## APIUtil Data Flow (MANDATORY — NEVER construct JSON inline)
 
 **Every new APIUtil method that sends data to an API** MUST load from `*_data.json`. NEVER build payloads with `new JSONObject().put(...)`.
@@ -139,7 +160,7 @@ public void verifyDetailView() throws Exception {
 2. Define `PATH` constant in the APIUtil class pointing to the data file
 3. Store dynamic values via `LocalStorage.store("KEY", value)` before loading
 4. Load via `DataUtil.getTestCaseDataUsingFilePath(AutomaterUtil.getResourceFolderPath() + PATH, caseId)`
-5. DataConstants are auto-generated on compile — callers reference `DataConstants.Data.KEY`
+5. DataConstants are auto-generated — via `./generate_constants.sh` (manual), automatically by `runner_agent.py` before test execution, or by the `@test-generator` agent's Step P0 (generate-only mode). Callers reference `DataConstants.Data.KEY`
 
 ```java
 // ✅ CORRECT — data in JSON, loaded via DataUtil

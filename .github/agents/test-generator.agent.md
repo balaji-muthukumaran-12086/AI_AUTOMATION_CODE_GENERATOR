@@ -398,6 +398,24 @@ Use the two-piece format with `// ===== ADD TO: FileName.java =====` markers for
 
 ## Post-Generation Steps (run ALL of these in order after writing code)
 
+### Step P0 — Regenerate DataConstants (REQUIRED after any `*_data.json` change)
+
+> `AutoGenerateConstantFiles.class` is always pre-compiled in `bin/` after cloning — no compilation needed to run it.
+
+After writing or modifying any `*_data.json`, `*conf*.json`, or role JSON file, regenerate the corresponding Java constants **before** compiling:
+
+```bash
+# If you edited a specific data/conf/role JSON file, pass it so it becomes "most recently modified":
+./generate_constants.sh "$SRC/../resources/entity/data/<module>/<entity>/<entity>_data.json"
+
+# Or without args to auto-detect the most recently modified resource file:
+./generate_constants.sh
+```
+
+This runs `AutoGenerateConstantFiles.main()` which regenerates `*DataConstants.java`, `*Fields.java`, or `*Role.java` depending on which resource type was modified. The regenerated Java file is written directly into the source tree — the next compile step (P1) will pick it up.
+
+**If it fails** (non-fatal): The `.class` may be missing from `bin/` — run `./setup_framework_bin.sh` first, then retry. Do NOT skip: compilation in P1 will fail with missing `TestCaseData` constants if DataConstants is stale.
+
 ### Step P1 — Compile the module
 
 Resolve paths dynamically, then compile only the files you edited:
