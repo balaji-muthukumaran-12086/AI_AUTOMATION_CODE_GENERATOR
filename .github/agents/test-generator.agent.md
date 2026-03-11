@@ -287,7 +287,32 @@ Skip the planning step and proceed directly to **Mandatory Pre-Generation Workfl
 
 ## Mandatory Pre-Generation Workflow
 
-Before writing ANY test code, complete these 4 steps IN ORDER:
+Before writing ANY test code, complete these steps IN ORDER:
+
+### Step 0 — Read Core Framework Files (REQUIRED — do this FIRST)
+
+> The `instructions:` YAML header attaches files as context, but large files (1000+ lines)
+> are often **truncated**. You MUST explicitly read all 3 core framework files in full
+> before generating any test code. Skipping this step leads to rule violations.
+
+**Read ALL of these files using the read tool — every line, no skipping:**
+
+1. `.github/copilot-instructions.md` (~1300 lines) — project structure, lifecycle, data loading rules, API architecture, compilation, key framework behaviours, code generation rules, ActionsUtil/APIUtil patterns, placeholder reference
+2. `config/framework_rules.md` (~2600 lines) — detailed rules for locators, annotations, preProcess groups, field types, validation patterns, common pitfalls
+3. `config/framework_knowledge.md` (~2200 lines) — framework method signatures, entity patterns, module-specific conventions, known quirks
+
+**How to read**: Use the read tool in chunks (e.g., 200-300 lines at a time) until you reach the end of each file. Do NOT skip sections — every section contains rules that affect code generation.
+
+**After reading all 3 files**, confirm to yourself:
+- [ ] I know all valid `preProcess` group names for the target module
+- [ ] I know which field types are handled by `fillInputForAnEntity` vs manual handling
+- [ ] I know the correct data loading method for each context (test method / preProcess / APIUtil)
+- [ ] I know the `@AutomaterScenario` annotation rules (all 9 fields, runType trap, owner)
+- [ ] I know the Existing Method Protection rule for ActionsUtil/APIUtil
+
+> **The two smaller instruction files** (`java-test-conventions.instructions.md` at 270 lines and
+> `test-data-format.instructions.md` at 73 lines) are auto-attached via the YAML header and
+> small enough to be included in full — no need to re-read them.
 
 ### Step 1 — Determine Module Placement
 Match the use-case noun to the correct module — NEVER default to whatever file is open:
