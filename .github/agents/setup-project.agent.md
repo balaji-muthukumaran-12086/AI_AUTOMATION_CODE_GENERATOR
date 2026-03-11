@@ -89,51 +89,68 @@ Now copy the form below, fill in your values, and paste it back:
 ### If `generate_only`:
 
 ````
-```
-owner        = <number from list above, or "new">
-hg_username  = 
-branch       = SDPLIVE_LATEST_AUTOMATER_SELENIUM   ← default; change if your team uses a different branch
-deps_path    = 
-```
+Copy, fill in, and paste back:
 
-> **owner** — Your number from the list above (e.g., `5` for BALAJI_M), or `new` if you're not listed
-> **hg_username** — Your zrepository username (e.g., `balaji-12086`)
-> **branch** — The hg branch to clone (default pre-filled — change only if needed; this becomes `PROJECT_NAME` in `.env`)
-> **deps_path** — Absolute path to the Java JARs folder (e.g., `/home/you/dependencies`)
-> ⓘ *Hg password is NOT collected here — you'll enter it directly in the terminal when the clone command runs.*
+```
+owner       = 
+hg_username = 
+branch      = SDPLIVE_UI_AUTOMATION_BRANCH
+deps_path   = 
+```
 ````
+
+After presenting the form, show this legend **below** it (not inside the copy block):
+
+```
+| Key | What to enter |
+|-----|---------------|
+| owner | Number from the list above, or `new` |
+| hg_username | Your zrepository username |
+| branch | Hg branch to clone (default is pre-filled) |
+| deps_path | Absolute path to the JARs folder |
+
+ⓘ Hg password is NOT collected here — you'll enter it directly in the terminal.
+```
 
 ### If `generate_and_run`:
 
 ````
-```
-owner        = <number from list above, or "new">
-hg_username  = 
-branch       = SDPLIVE_LATEST_AUTOMATER_SELENIUM   ← default; change if your team uses a different branch
-deps_path    = 
+Copy, fill in, and paste back:
 
-sdp_url      = 
-portal       = 
-admin_email  = 
-tech_email   = 
-test_user_emails =                                  ← comma-separated: user1@test.com,user2@test.com,user3@test.com,user4@test.com
-password     = 
-drivers_path = 
 ```
-
-> **owner** — Your number from the list above (e.g., `5` for BALAJI_M), or `new` if you're not listed
-> **hg_username** — Your zrepository username (e.g., `balaji-12086`)
-> **branch** — The hg branch to clone (default pre-filled — change only if needed)
-> **deps_path** — Absolute path to the Java JARs folder (e.g., `/home/you/dependencies`)
-> **sdp_url** — Full URL of your SDP instance (e.g., `https://sdpodqa-auto1.csez.zohocorpin.com:9090/`)
-> **portal** — SDP portal identifier (e.g., `portal1`)
-> **admin_email** — Org admin account email (e.g., `admin@zohotest.com`)
-> **tech_email** — Technician / scenario user email (e.g., `tech@zohotest.com`)
-> **test_user_emails** — Comma-separated emails for TEST_USER_1 through TEST_USER_4 (used by `actions.switchUser(scenarioDetails.getUser(ScenarioUsers.TEST_USER_N))`). If fewer than 4, the last email is reused for remaining slots. These are additional test accounts in your SDP org for multi-user scenarios.
-> **password** — Common password for all SDP accounts (admin + tech + test users)
-> **drivers_path** — Absolute path to Firefox + geckodriver folder (e.g., `/home/you/Drivers`)
-> ⓘ *Hg password is NOT collected here — you'll enter it directly in the terminal when the clone command runs.*
+owner            = 
+hg_username      = 
+branch           = SDPLIVE_UI_AUTOMATION_BRANCH
+deps_path        = 
+sdp_url          = 
+portal           = 
+admin_email      = 
+tech_email       = 
+test_user_emails = 
+password         = 
+drivers_path     = 
+```
 ````
+
+After presenting the form, show this legend **below** it (not inside the copy block):
+
+```
+| Key | What to enter |
+|-----|---------------|
+| owner | Number from the list above, or `new` |
+| hg_username | Your zrepository username |
+| branch | Hg branch to clone (default is pre-filled) |
+| deps_path | Absolute path to the JARs folder |
+| sdp_url | Full URL of your SDP instance |
+| portal | SDP portal identifier |
+| admin_email | Org admin account email |
+| tech_email | Technician / scenario user email |
+| test_user_emails | Comma-separated emails for TEST_USER_1..4 (can be empty) |
+| password | Common password for all SDP accounts |
+| drivers_path | Absolute path to Firefox + geckodriver folder |
+
+ⓘ Hg password is NOT collected here — you'll enter it directly in the terminal.
+```
 
 ---
 

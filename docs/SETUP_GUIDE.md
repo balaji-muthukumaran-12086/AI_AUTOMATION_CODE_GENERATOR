@@ -42,15 +42,25 @@
 
 ## Step 1 — Clone This Project
 
+Run each command below in your terminal, one at a time:
+
 ```bash
 git clone https://github.com/balaji-muthukumaran-12086/AI_AUTOMATION_CODE_GENERATOR.git
+```
+```bash
 cd AI_AUTOMATION_CODE_GENERATOR
+```
+```bash
 python3 -m venv .venv
+```
+```bash
 source .venv/bin/activate
+```
+```bash
 pip install -r requirements.txt
 ```
 
-Open the project folder in VS Code.
+Then open the `AI_AUTOMATION_CODE_GENERATOR` folder in VS Code (`File → Open Folder`).
 
 ---
 
@@ -71,27 +81,30 @@ The agent asks you **two things**:
 
 ### Fill in the form
 
-The agent shows a numbered owner list and a form. Example for **Generate only** mode:
+The agent shows a numbered owner list and a clean form you can copy-paste. Example for **Generate only** mode:
 
 ```
-owner        = 3            ← pick your number from the list, or "new"
-hg_username  = your-zrepo-username
-branch       = SDPLIVE_LATEST_AUTOMATER_SELENIUM   ← default; change if your team uses a different branch
-deps_path    = /home/you/Automater/dependencies
+owner       = 3
+hg_username = your-zrepo-username
+branch      = SDPLIVE_UI_AUTOMATION_BRANCH
+deps_path   = /home/you/Automater/dependencies
 ```
 
-> **Security note**: Your hg password is **never typed in the chat**. When the agent clones the repository, Mercurial prompts you for your password directly in the VS Code terminal. This keeps your credentials out of chat history and log files.
-
-For **Generate and Run** mode, you also provide:
+For **Generate and Run** mode, the form also includes:
 
 ```
-sdp_url      = https://sdpodqa-auto1.csez.zohocorpin.com:9090/
-portal       = portal1
-admin_email  = admin@zohotest.com
-tech_email   = tech@zohotest.com
-password     = yourpassword
-drivers_path = /home/you/Automater/Drivers
+sdp_url          = https://sdpodqa-auto1.csez.zohocorpin.com:9090/
+portal           = portal1
+admin_email      = admin@zohotest.com
+tech_email       = tech@zohotest.com
+test_user_emails = 
+password         = yourpassword
+drivers_path     = /home/you/Automater/Drivers
 ```
+
+A legend explaining each key is shown below the form. Just fill in the values, copy the block, and paste it back.
+
+> **Security note**: Your hg password is **never typed in the chat**. When the agent clones the repository, Mercurial prompts you for your password directly in the VS Code terminal.
 
 The agent handles everything else: cloning the Mercurial branch (prompts for hg password in the terminal), compiling framework classes, writing `.env`, creating the `Testcase/` folder.
 
