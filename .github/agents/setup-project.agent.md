@@ -482,9 +482,42 @@ echo "✅ Created {BRANCH_NAME}/Testcase/ — use-case documents will be stored 
 
 This folder is where `@test-generator` looks for use-case CSV files. Without it, test generation will prompt the user to create it manually.
 
-#### Step 3f — Check for use-case documents in Testcase/ (MANDATORY — always after Step 3e)
+#### Step 3f — Convert spreadsheets + check for use-case documents (MANDATORY — always after Step 3e)
 
-After creating/verifying the Testcase/ folder, check if it contains any use-case documents:
+After creating/verifying the Testcase/ folder, first **auto-convert any `.xlsx`/`.xls` files to `.csv`**, then check if documents exist.
+
+**Sub-step 3f-i — Auto-convert `.xlsx`/`.xls` to `.csv`:**
+
+```bash
+# Find any .xlsx/.xls files in Testcase/ and convert them to CSV
+XLSX_FILES=$(find {WORKSPACE_DIR}/{BRANCH_NAME}/Testcase -maxdepth 1 -type f \( -name "*.xlsx" -o -name "*.xls" \) 2>/dev/null)
+if [ -n "$XLSX_FILES" ]; then
+  echo "Found spreadsheet files — converting to CSV..."
+  .venv/bin/pip install openpyxl -q 2>/dev/null
+  for XLFILE in $XLSX_FILES; do
+    .venv/bin/python -c "
+import sys, csv, os
+try:
+    import openpyxl
+    wb = openpyxl.load_workbook(sys.argv[1], data_only=True)
+    base = os.path.splitext(sys.argv[1])[0]
+    for sheet in wb.sheetnames:
+        ws = wb[sheet]
+        out = base + '_' + sheet.replace(' ', '_') + '.csv'
+        with open(out, 'w', newline='', encoding='utf-8') as f:
+            csv.writer(f).writerows(ws.values)
+        print('  Converted:', os.path.basename(out))
+    print('  Sheets processed:', len(wb.sheetnames))
+except Exception as e:
+    print('  Error converting', os.path.basename(sys.argv[1]) + ':', e)
+" "$XLFILE"
+  done
+else
+  echo "No .xlsx/.xls files to convert."
+fi
+```
+
+**Sub-step 3f-ii — Count use-case documents (including freshly converted CSVs):**
 
 ```bash
 USECASE_COUNT=$(find {WORKSPACE_DIR}/{BRANCH_NAME}/Testcase -maxdepth 1 -type f \( -name "*.csv" -o -name "*.xls" -o -name "*.xlsx" -o -name "*.md" -o -name "*.txt" \) 2>/dev/null | wc -l)
@@ -500,6 +533,7 @@ Before using @test-generator, you MUST upload your use-case document to:
    📁 {BRANCH_NAME}/Testcase/
 
 Accepted formats: .csv (recommended), .xlsx, .xls, .md, .txt
+Spreadsheets (.xlsx/.xls) are auto-converted to CSV on detection.
 CSV template: docs/templates/usecase_template.csv
 
 Without a use-case document, @test-generator will NOT proceed with test generation.
@@ -510,8 +544,14 @@ Without a use-case document, @test-generator will NOT proceed with test generati
 ✅ Found {USECASE_COUNT} use-case document(s) in {BRANCH_NAME}/Testcase/ — ready for @test-generator.
 ```
 
+If spreadsheets were converted, also show:
+```
+📄 Converted spreadsheet(s) to CSV — @test-generator will use the CSV versions.
+```
+
 > This check prevents the common mistake where a user clones a project but forgets to upload
 > the use-case document, then invokes `@test-generator` which has no input to work from.
+> Spreadsheets are auto-converted so the user doesn't need to manually convert to CSV.
 
 ---
 

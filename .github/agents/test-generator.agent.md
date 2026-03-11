@@ -94,10 +94,40 @@ Before anything else, determine how the user is providing input.
 
 **This check MUST run before ANY code generation. There are NO exceptions.**
 
-**Step 1 — Scan the `Testcase/` folder** for use-case documents:
+**Step 1 — Scan the `Testcase/` folder** and auto-convert any spreadsheets to CSV:
 
 ```bash
 PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+
+# Auto-convert any .xlsx/.xls files to CSV (so they can be parsed directly)
+XLSX_FILES=$(find "$PROJECT/Testcase" -maxdepth 1 -type f \( -name "*.xlsx" -o -name "*.xls" \) 2>/dev/null)
+if [ -n "$XLSX_FILES" ]; then
+  echo "Found spreadsheet files — converting to CSV..."
+  .venv/bin/pip install openpyxl -q 2>/dev/null
+  for XLFILE in $XLSX_FILES; do
+    .venv/bin/python -c "
+import sys, csv, os
+try:
+    import openpyxl
+    wb = openpyxl.load_workbook(sys.argv[1], data_only=True)
+    base = os.path.splitext(sys.argv[1])[0]
+    for sheet in wb.sheetnames:
+        ws = wb[sheet]
+        out = base + '_' + sheet.replace(' ', '_') + '.csv'
+        if not os.path.exists(out):
+            with open(out, 'w', newline='', encoding='utf-8') as f:
+                csv.writer(f).writerows(ws.values)
+            print('  Converted:', os.path.basename(out))
+        else:
+            print('  Already exists:', os.path.basename(out))
+    print('  Sheets processed:', len(wb.sheetnames))
+except Exception as e:
+    print('  Error converting', os.path.basename(sys.argv[1]) + ':', e)
+" "$XLFILE"
+  done
+fi
+
+# Now count all use-case documents (including freshly converted CSVs)
 USECASE_COUNT=$(find "$PROJECT/Testcase" -maxdepth 1 -type f \( -name "*.csv" -o -name "*.xls" -o -name "*.xlsx" -o -name "*.md" -o -name "*.txt" \) 2>/dev/null | wc -l)
 echo "Use-case documents in Testcase/: $USECASE_COUNT"
 ls "$PROJECT/Testcase/"*.{csv,xls,xlsx,md,txt} 2>/dev/null | head -20
