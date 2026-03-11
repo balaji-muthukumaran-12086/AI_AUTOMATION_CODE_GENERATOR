@@ -94,7 +94,7 @@ Copy, fill in, and paste back:
 ```
 owner       = 
 hg_username = 
-branch      = SDPLIVE_UI_AUTOMATION_BRANCH
+branch      = 
 deps_path   = 
 ```
 ````
@@ -106,7 +106,7 @@ After presenting the form, show this legend **below** it (not inside the copy bl
 |-----|---------------|
 | owner | Number from the list above, or `new` |
 | hg_username | Your zrepository username |
-| branch | Hg branch to clone (default is pre-filled) |
+| branch | Hg branch to clone (e.g. SDPLIVE_UI_AUTOMATION_BRANCH) |
 | deps_path | Absolute path to the JARs folder |
 
 ⓘ Hg password is NOT collected here — you'll enter it directly in the terminal.
@@ -120,7 +120,7 @@ Copy, fill in, and paste back:
 ```
 owner            = 
 hg_username      = 
-branch           = SDPLIVE_UI_AUTOMATION_BRANCH
+branch           = 
 deps_path        = 
 sdp_url          = 
 portal           = 
@@ -139,7 +139,7 @@ After presenting the form, show this legend **below** it (not inside the copy bl
 |-----|---------------|
 | owner | Number from the list above, or `new` |
 | hg_username | Your zrepository username |
-| branch | Hg branch to clone (default is pre-filled) |
+| branch | Hg branch to clone (e.g. SDPLIVE_UI_AUTOMATION_BRANCH) |
 | deps_path | Absolute path to the JARs folder |
 | sdp_url | Full URL of your SDP instance |
 | portal | SDP portal identifier |

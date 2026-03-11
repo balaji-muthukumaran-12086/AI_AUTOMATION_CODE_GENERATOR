@@ -90,6 +90,8 @@ branch      = SDPLIVE_UI_AUTOMATION_BRANCH
 deps_path   = /home/you/Automater/dependencies
 ```
 
+> `branch` has no default — enter your team's branch name (e.g. `SDPLIVE_UI_AUTOMATION_BRANCH`).
+
 For **Generate and Run** mode, the form also includes:
 
 ```
