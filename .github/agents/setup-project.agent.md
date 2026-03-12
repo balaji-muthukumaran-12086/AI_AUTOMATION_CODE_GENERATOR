@@ -14,7 +14,7 @@ argument-hint: "Just say 'setup' to start."
 **ZERO tool calls before showing this greeting. Not one. Not `cat .env`. Not `ls`. Not `find`. Nothing.**
 
 ```
-👋 Welcome to the AutomaterSelenium framework setup!
+👋 Welcome to the AI Automation Code Generator Project Setup!
 
 Before we begin, how do you plan to use this tool?
 
