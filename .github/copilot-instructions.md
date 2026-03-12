@@ -7,6 +7,19 @@ Always read this file before inferring anything about the project structure.
 > Single source of truth: `config/project_config.py` → `PROJECT_NAME`
 > All agents, runner, healer, and ingestion now derive paths from this config.
 
+### Companion Reference Files
+
+This file provides the primary overview. For deeper coverage, **read these files before generating or modifying test code**:
+
+| File | When to read | What it contains |
+|------|-------------|-----------------|
+| `config/framework_rules.md` | Writing `@AutomaterScenario`, preProcess groups, annotations, reporting patterns | Strict rules with numbered sections — annotation fields, valid values, forbidden patterns, checklists |
+| `config/framework_knowledge.md` | Debugging failures, understanding framework internals, lifecycle questions | Deep-dive knowledge — Entity/EntityCase lifecycle, REST API internals, compilation, worked examples |
+| `.github/instructions/java-test-conventions.instructions.md` | Editing any `*.java` file under `src/` (auto-loaded by `applyTo` pattern) | Concise Java-specific conventions — ActionsUtil/APIUtil patterns, data loading, locator rules |
+| `.github/instructions/test-data-format.instructions.md` | Editing `*_data.json` files (auto-loaded by `applyTo` pattern) | JSON data format rules — `{"data": {...}}` wrapper, placeholders, lookup field format |
+
+> The `.github/instructions/` files are auto-loaded when editing matching files. The `config/` files are NOT auto-loaded — read them explicitly when the task involves annotations, preProcess groups, or framework internals.
+
 ---
 
 ## Project Structure
@@ -390,10 +403,36 @@ find $PROJECT_NAME/src -path "*modules/<module>/<entity>*" -name "*.java"
 
 ### Test ID Source — Use-Case Document vs Fallback
 
-> **Use-case documents** (CSV files) are located in `$PROJECT_NAME/Testcase/` after cloning.
+> **Use-case documents** (CSV, XLSX, or XLS) are located in `$PROJECT_NAME/Testcase/` after cloning.
+> XLSX/XLS files are auto-converted to CSV by the test-generator agent before processing.
 > These contain manual test case IDs used directly as `@AutomaterScenario(id)`.
+> Template: `docs/templates/usecase_template.csv`
 
-#### When a Use-Case Document (CSV) Is Provided
+#### Use-Case Document Column Definitions
+
+| Column | Maps to | Rules |
+|--------|---------|-------|
+| **UseCase ID** | `@AutomaterScenario(id = "...")` | Use as-is in annotation. NEVER embed in method names, data keys, or locator names. |
+| **Severity** | `@AutomaterScenario(priority = ...)` | `Critical` → `Priority.HIGH`, `Major` → `Priority.MEDIUM`, `Minor` → `Priority.LOW` |
+| **Module** | Parent entity/module path | Maps to `modules/<module>/` — determines which parent class to extend. See module placement table below. |
+| **Sub-Module** | Leaf entity class | Maps to an existing subclass under the module. If no matching subclass exists, find the nearest match. If no relevant subclass at all, generate entity skeleton (`GenerateSkeletonForAnEntity`) and create a new subclass extending the parent. |
+| **Impact Area + Pre-Requisite + Description** | Combined scenario logic | Cumulate all three columns to understand the full test scope. Generate a scenario covering all validation points. If coverage is too large for one method, split into multiple scenarios with the same UseCase ID appended with `_1`, `_2`, etc. (e.g., `SDPOD_MODULE_001`, `SDPOD_MODULE_001_1`). |
+| **UI To-be-automated** | Filter gate | **Only generate automation for rows where this column = `Yes`**. Skip all rows with `No` or blank — these are API-only or manual-only cases. |
+
+#### Sub-Module → Entity Class Resolution
+
+```
+Sub-Module value in CSV
+  ↓
+  Does an existing leaf class match the Sub-Module name?
+  → YES: Place scenario in that class (e.g., "CI Details - Sub Form" → CIDetails.java or nearest)
+  → NO:  Is there a close match in the module?
+         → YES: Use that class (prefer existing over creating new)
+         → NO:  Generate entity skeleton: run GenerateSkeletonForAnEntity.java
+                with MODULE_NAME + ENTITY_NAME in PascalCase, then extend the parent class
+```
+
+#### When a Use-Case Document (CSV/XLSX/XLS) Is Provided
 
 1. **Read the CSV** in `$PROJECT_NAME/Testcase/` — each row has a use-case ID (e.g. `SDPOD_SFCMDB_ADMIN_001`)
 2. **Use the use-case ID as-is** in `@AutomaterScenario(id = "...")` — this is the ONLY place the use-case ID appears
