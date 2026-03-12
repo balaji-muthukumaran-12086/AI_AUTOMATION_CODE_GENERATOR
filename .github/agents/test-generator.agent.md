@@ -133,13 +133,25 @@ echo "Use-case documents in Testcase/: $USECASE_COUNT"
 ls "$PROJECT/Testcase/"*.{csv,xls,xlsx,md,txt} 2>/dev/null | head -20
 ```
 
-**Step 2 — Check all three possible input sources:**
+**Step 2 — Check input sources IN PRIORITY ORDER (first match wins):**
 
-1. **Testcase/ folder has documents** (`USECASE_COUNT > 0`) → proceed to Mode A
-2. **User attached or pasted a document** in the chat message (file attachment, pasted text block, or inline feature description with multiple lines) → proceed to Mode A
-3. **User typed an EXPLICIT scenario description** (e.g., "create a change and verify the detail view") — this must be a **concrete, actionable test scenario description** containing at least a verb + entity noun (e.g., "create a request", "verify solution title", "add notes to change"). Generic invocations like "generate tests", "start", "go", or just `@test-generator` do NOT count as scenario descriptions → proceed to Mode B
+> **CRITICAL RULE**: If a use-case document exists in Testcase/ OR was attached, it is **ALWAYS Mode A** —
+> regardless of whether the user also typed a description. Documents take absolute priority.
+
+1. **Testcase/ folder has documents** (`USECASE_COUNT > 0`) → **Mode A** (ALWAYS — no exceptions)
+2. **User attached or pasted a document** in the chat message (file attachment, pasted text block, or inline feature description with multiple lines) → **Mode A**
+3. **ONLY if Testcase/ is empty AND no document attached**: Check if the user typed an **EXPLICIT scenario description** (e.g., "create a change and verify the detail view") — this must be a **concrete, actionable test scenario description** containing at least a verb + entity noun (e.g., "create a request", "verify solution title", "add notes to change"). Generic invocations like "generate tests", "start", "go", or just `@test-generator` do NOT count as scenario descriptions → **Mode B**
 
 **If NONE of the three sources provide valid input, HARD STOP — do NOT proceed.**
+
+> **Decision flow (follow exactly):**
+> ```
+> Testcase/ has documents OR user attached a file?
+>   → YES: Mode A (ALWAYS — even if user also typed a scenario description)
+>   → NO:  Did the user type a concrete scenario (verb + entity noun)?
+>          → YES: Mode B
+>          → NO:  HARD STOP — show the gate prompt and wait
+> ```
 
 ### FORBIDDEN ANTI-PATTERNS (NEVER DO THESE)
 
@@ -383,11 +395,18 @@ Proceed with Batch 1? (yes / pick a different batch)
 - **FORBIDDEN**: Generating more than 30 scenarios in a single agent session regardless of user request
 
 ### Mode B — Plain-text description (QUICK / SECONDARY)
-The user typed an **explicit, concrete scenario description** directly (e.g., "create a change and verify the detail view title") without attaching a document. This is fine for quick one-off scenarios.
+The user typed an **explicit, concrete scenario description** directly (e.g., "create a change and verify the detail view title") **AND** the `Testcase/` folder is empty (no documents). This is for quick one-off scenarios only.
 
-**Mode B is ONLY valid when the user's message contains a specific test scenario.** The message must include at minimum:
-- A **verb** describing the action (create, verify, add, delete, navigate, edit, etc.)
-- An **entity noun** (change, request, solution, problem, note, task, etc.)
+> **PREREQUISITE CHECK**: Before entering Mode B, confirm that `Testcase/` is truly empty.
+> If any document exists there → go back and use **Mode A** instead. Mode B is the **last resort**
+> when no document is available.
+
+**Mode B is ONLY valid when ALL of the following are true:**
+1. `{TARGET_PROJECT}/Testcase/` has **zero** use-case documents (no `.csv`, `.xlsx`, `.md`, `.txt`)
+2. The user did NOT attach or paste a document in the chat
+3. The user's message contains a **concrete scenario description** with at minimum:
+   - A **verb** describing the action (create, verify, add, delete, navigate, edit, etc.)
+   - An **entity noun** (change, request, solution, problem, note, task, etc.)
 
 Examples of VALID Mode B input:
 - "create a change and verify the detail view title"
@@ -402,7 +421,36 @@ Examples of INVALID input (do NOT treat as Mode B — go back to the pre-check g
 
 If the user describes **more than 3 scenarios** via plain text, suggest switching to CSV format instead for better structure and traceability.
 
-Skip the planning step and proceed directly to **Mandatory Pre-Generation Workflow** below.
+#### Mode B Planning Phase (REQUIRED — same rigour as Mode A)
+
+> **Mode B follows the SAME planning steps as Mode A** — the only difference is that
+> the scenario list comes from the user's text instead of CSV rows.
+
+**Step B1 — Parse scenarios from the user's description:**
+
+Break the plain-text description into discrete test scenarios. For each scenario, infer:
+- **Module**: From the entity noun (change → Changes, request → Requests, etc.)
+- **Sub-Module**: From the action context (detail view → DetailsView, list view → ListView, etc.)
+- **Severity**: Default to `Priority.MEDIUM` unless the user specified urgency
+- **Scenario ID**: Auto-generate using the sequential pattern for the module (e.g., `SDPOD_AUTO_CH_LV_###`)
+
+**Step B2 — Show the scenario plan (same format as Mode A):**
+
+```
+📋 Scenario Plan (from description):
+- Scenarios identified: {N}
+
+📋 Scenarios to generate:
+
+[Changes > DetailsView]
+1. SDPOD_AUTO_CH_DV_XXX — Create a change and verify the detail view title
+
+Shall I generate all of them, or adjust? (Reply with 'yes' or suggest changes)
+```
+
+**Wait for user confirmation** before proceeding to code generation — just like Mode A.
+
+**Step B3 — Proceed to Mandatory Pre-Generation Workflow below** (shared with Mode A).
 
 ---
 
