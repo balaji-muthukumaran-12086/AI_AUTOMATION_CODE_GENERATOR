@@ -428,31 +428,52 @@ SwitchToUserSession.NEVER               // ordinal 2: no session switch — ever
 
 ---
 
-## SECTION 7 — TEST ID FORMAT
+## SECTION 7 — TEST ID (SCENARIO ID)
 
-### 7.1 ID format per module
-| Module | Pattern | Example |
-|--------|---------|---------|
-| Requests (ListView) | `SDP_REQ_LS_AAA###` | `SDP_REQ_LS_AAA001` |
-| Requests (DetailView) | `SDP_REQ_DV_AAA###` | `SDP_REQ_DV_AAA114` |
-| Solutions (generic) | `SDPOD_AUTO_SOL_###` | `SDPOD_AUTO_SOL_136` |
-| Solutions (ListView) | `SDPOD_AUTO_SOL_LV_###` | `SDPOD_AUTO_SOL_LV_180` |
-| Solutions (DetailView) | `SDPOD_AUTO_SOL_DV_###` | `SDPOD_AUTO_SOL_DV_243` |
-| Changes | `SDPOD_AUTO_CH_LV_###` | `SDPOD_AUTO_CH_LV_492` |
-| Problems | `SDPOD_AUTO_PB_###` | `SDPOD_AUTO_PB_###` |
-| Releases | `SDPOD_AUTO_RL_###` | `SDPOD_AUTO_RL_###` |
-| Purchase Orders | `SDPOD_AUTO_PURCHASE_###` | |
-| CMDB/Assets | `SDPOD_AUTO_CMDB_###` | |
+### 7.1 PRIMARY RULE — Use-case ID from CSV (REQUIRED)
 
-### 7.2 How to find the next available ID
+> **The `@AutomaterScenario(id)` is the use-case ID from the use-case document.** It is NOT auto-generated.
+
+Use-case documents (CSV files) are located in `$PROJECT_NAME/Testcase/` after cloning.
+Each row in the CSV has a use-case ID (e.g. `SDPOD_SFCMDB_ADMIN_001`, `SDPOD_REQ_DV_001`).
+This ID is used **directly and as-is** in `@AutomaterScenario(id = "...")`.
+
+```java
+// ✅ CORRECT — ID comes from the use-case CSV
+@AutomaterScenario(id = "SDPOD_SFCMDB_ADMIN_001", ...)
+
+// ❌ FORBIDDEN — inventing/auto-generating an ID when a CSV exists
+@AutomaterScenario(id = "SDPOD_AUTO_SOL_LV_181", ...)  // grep-derived, not from CSV
+```
+
+**Rules:**
+- The use-case ID appears ONLY in `@AutomaterScenario(id = "...")` — **never** in method names, DataConstants names, data JSON keys, or locator names
+- Method names must be descriptive of the action (e.g. `verifyDetailViewTitle`), **not** derived from the ID
+- When multiple manual test cases from the CSV can be covered by a single automation method, comma-separate the IDs: `id = "SDPOD_SFCMDB_ADMIN_001,SDPOD_SFCMDB_ADMIN_002"`
+
+```
+Decision flow:
+  Use-case CSV exists in $PROJECT_NAME/Testcase/ ?
+    → YES: Use CSV use-case ID directly as @AutomaterScenario(id = "...")
+    → NO:  See §7.2 fallback below
+```
+
+### 7.2 FALLBACK — Sequential ID (ONLY when no use-case CSV exists)
+
+> This fallback applies ONLY when the test is generated from a plain-text feature description
+> or single-line case with no CSV document. **If a CSV exists, this section does NOT apply.**
+
+When no CSV is available, generate a sequential ID using the module prefix pattern.
+Always run grep to find the next available number before assigning:
+
 ```bash
-# Example for Solutions ListView:
-grep -rn 'id = "SDPOD_AUTO_SOL_LV' SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/ | \
+# Discover the current highest ID for the target module prefix:
+grep -rn 'id = "SDPOD_AUTO_SOL_LV' $PROJECT_NAME/src/ | \
   sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
 # → SDPOD_AUTO_SOL_LV_179  →  next = SDPOD_AUTO_SOL_LV_180
 ```
 
-⚠️ **Always run the grep command above before assigning an ID to avoid duplicates.**
+⚠️ **Always run the grep before assigning a fallback ID to avoid duplicates.**
 
 ---
 
@@ -602,6 +623,11 @@ LocalStorage.store("template_name", LocalStorage.getAsString("targetTemplateName
 JSONObject inputData = getTestCaseData(ChangeDataConstants.ChangeData.CREATE_CHANGE_WITH_TEMPLATE);
 // $(custom_template_name) resolves to whatever is in LocalStorage["template_name"]
 ```
+
+> **Caching warning**: `DataUtil` caches loaded JSON entries by `filePath_id` key. If you call
+> `LocalStorage.store(key, newValue)` AFTER the first `getTestCaseData()` with the same `TestCaseData`
+> key, the second call returns the CACHED result with the OLD placeholder value. Always pre-seed
+> LocalStorage BEFORE the first load.
 
 **In preProcess (for API setup data with placeholders):**
 ```java
@@ -1082,6 +1108,28 @@ void actions.validate.validateFormFieldValues(Map<String, FieldDetails> fields, 
 ```
 
 ### 16.1 Most common patterns
+
+#### Complete `actions.detailsView` API
+
+```java
+actions.detailsView.clickSubTab(String subTabName)
+actions.detailsView.clickFromActions(String actionName)
+actions.detailsView.verifyFieldInDetailsPage(String field, String value)   // returns boolean
+actions.detailsView.getFieldValueFromDetailsPage(String field)
+actions.detailsView.getValueFromRhsDetails(String fieldName)
+actions.detailsView.clickRhsDetails(String fieldName)
+actions.detailsView.verifyRecentHistoryDescription(String desc)
+actions.detailsView.verifyTitleInDetailsPage(String expected)              // returns boolean
+actions.detailsView.getTitle()
+// Spot edit:
+actions.detailsView.spotEditFieldUsingSearch(String field, String value)
+actions.detailsView.spotEditTypeField(String field, String value)
+actions.detailsView.spotEditPickList(String field, String value)
+actions.detailsView.spotEditFieldWithoutSearch(String field, String value)
+actions.detailsView.spotEditMultiSelectField(String field, String value)
+```
+
+#### Common detailsView patterns
 ```java
 // After creating — check title in details page
 // ⚠️ WARNING: MODULE_TITLE h1 text includes the display ID prefix (e.g. "SOL-8 MyTitle").

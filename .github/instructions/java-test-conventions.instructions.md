@@ -222,6 +222,23 @@ actions.listView.selectRecord()    // ❌ use navigate.toDetailsPageUsingRecordI
 actions.navigate.clickModule()     // ❌ use navigate.toModule(name)
 ```
 
+## Reporting — addReport Smart Variant
+
+```java
+addSuccessReport("message");                     // explicit success
+addFailureReport("what failed", "why");          // explicit failure
+addReport("message");                            // SMART — checks failureMessage.length():
+                                                 //   == 0 → addSuccessReport(message)
+                                                 //   >  0 → addFailureReport(message, failureMessage)
+clearFailureMessage();                           // resets failureMessage between independent checks
+```
+
+Use `addReport()` after validation blocks where `failureMessage` accumulates errors. Use `clearFailureMessage()` to reset between independent validation blocks within the same method.
+
+## DataUtil Caching — Important Warning
+
+`DataUtil.getTestCaseDataUsingFilePath()` caches loaded JSON entries. If you call `LocalStorage.store(key, newValue)` **AFTER** the first `getTestCaseData()` call with the same `TestCaseData` key, the second call returns the **cached** result with the OLD `$(custom_KEY)` value. Always pre-seed LocalStorage BEFORE the first `getTestCaseData()` call.
+
 ## Locator Best Practices
 
 - Use `normalize-space(text())='Add'` for exact button text match (prevents matching "Add And Approve")

@@ -243,6 +243,7 @@ Screenshots at: `reports/LOCAL_<methodName>_<timestamp>/screenshots/Success_<ts>
 | `MODULE_TITLE` locator | `//div[@id='details-middle-container']/descendant::h1` — may include display ID prefix (e.g. `SOL-8Title...`) |
 | Local run report flow | `EntityCase.addSuccessReport()` → `LocalFailureTemplates` + `ScenarioReport` rows + `screenshots/Success_<ts>.png` → `Entity.run()` finally → `ScenarioReport.createReport()` → `ScenarioReport.html` |
 | `AutomationReport` (Aalam/CI) | NOT used in local runs — guarded by `!LocalSetupManager.isLocalSetup()` in `EntityCase`. Old JAR version has no guard → `IOException` when `REPORT_FILE_PATH` is null. Always compile framework via `setup_framework_bin.sh` to get the guarded version. |
+| `addReport(message)` | Smart variant — inspects `failureMessage.length()`: `== 0` → `addSuccessReport(message)`; `> 0` → `addFailureReport(message, failureMessage)`. Use after validation blocks where `failureMessage` accumulates errors. Also: `clearFailureMessage()` resets `failureMessage` between independent checks in the same method. |
 
 ---
 
@@ -789,6 +790,11 @@ LocalStorage.store("template_name", LocalStorage.getAsString("createdTemplateNam
 JSONObject inputData = getTestCaseData(ChangeDataConstants.ChangeData.CREATE_CHANGE_WITH_TEMPLATE);
 // $(custom_template_name) resolves from LocalStorage automatically
 ```
+
+> **Caching warning**: `DataUtil` caches loaded JSON entries by `filePath_id` key. If you call
+> `LocalStorage.store(key, newValue)` AFTER the first `getTestCaseData()` with the same `TestCaseData`
+> key, the second call returns the CACHED result with the OLD placeholder value. Always pre-seed
+> LocalStorage BEFORE the first load.
 
 **Decision flow before every `getTestCaseData()` call:**
 ```

@@ -56,18 +56,28 @@ JSONObject inputData = getTestCaseData(DataConstants.CREATE_WITH_TEMPLATE);
 // $(custom_template_name) resolves automatically
 ```
 
+> **Caching warning**: `DataUtil.getTestCaseDataUsingFilePath()` caches loaded entries. If you call
+> `LocalStorage.store(key, newValue)` AFTER the first `getTestCaseData()` with the same key,
+> the second call returns the CACHED result with the OLD placeholder value. Always pre-seed
+> LocalStorage BEFORE the first load.
+
 ## Placeholder Reference
 
 | Placeholder | Resolves To |
 |---|---|
 | `$(unique_string)` | Millisecond timestamp |
+| `$(common_string)` | Timestamp + partName (unique per run) |
 | `$(custom_KEY)` | `LocalStorage.fetch("KEY")` |
 | `$(user_name)` | Scenario user's display name |
 | `$(user_email_id)` | Scenario user's email |
+| `$(user_id)` | Scenario user's entity ID |
 | `$(admin_email_id)` | Admin email |
+| `$(admin_name)` | Admin display name |
 | `$(date, N, ahead)` | Date N days ahead (milliseconds) |
 | `$(datetime, N, ahead)` | Datetime N days ahead (milliseconds) |
-| `$(common_string)` | Timestamp + partName (unique per run) |
+| `$(mspcustomer_id)` | MSP customer ID (MSP tests only) |
+| `$(mspcustomer_name)` | MSP customer name (MSP tests only) |
+| `$(mspcustomer_email)` | MSP customer email (MSP tests only) |
 | `$(rest_api, method, apiPath, inputDataKey, storageKey[, iterate])` | Calls REST API, stores result in LocalStorage under storageKey |
 | `$(local_storage, store, key, value)` | Stores value in LocalStorage at runtime |
 | `$(local_storage, get, key)` | Reads value from LocalStorage at runtime |

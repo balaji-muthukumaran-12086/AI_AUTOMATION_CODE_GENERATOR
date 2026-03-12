@@ -24,6 +24,25 @@ Runner invokes @AutomaterScenario method on <Entity>.java
 
 ---
 
+## 1b. MODULE PLACEMENT — DERIVE FROM USE CASE, NOT FROM OPEN FILE
+
+> Before writing or moving ANY scenario, answer: **What entity does the use case name?**
+> Match the noun in the description to the correct module:
+
+| Use-case noun | Module path | Correct entity class(es) |
+|---|---|---|
+| incident request / IR | `modules/requests/request/` | `IncidentRequest`, `IncidentRequestNotes` |
+| service request / SR | `modules/requests/request/` | `ServiceRequest`, `ServiceRequestNotes` |
+| solution | `modules/solutions/solution/` | `Solution`, `SolutionBase` |
+| problem | `modules/problems/problem/` | `Problem`, `ProblemBase` |
+| change | `modules/changes/change/` | `Change`, `ChangeBase` |
+| task | `modules/tasks/task/` | `Task`, `TaskBase` |
+
+**FORBIDDEN**: Using the currently open / most recently edited file as the default target.
+Always validate module semantics from the use-case description first.
+
+---
+
 ## 2. TWO-LAYER CLASS ARCHITECTURE
 
 ```
@@ -370,6 +389,26 @@ JSONObject inputData = getTestCaseData(SolutionDataConstants.SolutionData.SOL_WI
 - Entry has fixed values and all match your test → reuse as-is
 - Genuinely different field combination with no matching entry → create new entry
 
+### ⚠️ FORBIDDEN: Inline JSONObject Construction for Data Creation
+
+NEVER build test data from scratch with `new JSONObject().put(...)` chains in Java code.
+ALL entity data (UI inputs AND API payloads) MUST originate from `*_data.json` and be loaded
+via `getTestCaseData()` / `getTestCaseDataUsingCaseId()` / `DataUtil.getTestCaseDataUsingFilePath()`.
+This applies to **test methods, preProcess, AND APIUtil files**.
+
+```java
+// ❌ FORBIDDEN — inline JSON construction
+JSONObject inputData = new JSONObject();
+inputData.put("title", "My Change " + System.currentTimeMillis());
+inputData.put("change_type", new JSONObject().put("name", "Standard"));
+
+// ✅ CORRECT — load from *_data.json
+JSONObject inputData = getTestCaseDataUsingCaseId(dataIds[0]);
+```
+
+**Post-load modification IS allowed** — After loading from `*_data.json`, you MAY use `.put()` / `.remove()`
+to modify the loaded data when the modification is dynamic and cannot be expressed via `$(custom_KEY)`.
+
 ---
 
 ## 8. FormBuilder — Complete Internal Analysis
@@ -453,20 +492,50 @@ actions.formBuilder.submit("Save");         // clicks specific named button
 
 ## 9. TEST ID FORMAT
 
+### Primary Rule — Use-Case CSV IDs
+
+When a use-case document (CSV) exists in `$PROJECT_NAME/Testcase/`, use the CSV use-case ID
+**directly** as `@AutomaterScenario(id = "...")`. Do NOT embed the use-case ID in method names,
+DataConstants, data JSON keys, or locator names. Method names must be descriptive of the action.
+
+```java
+// ✅ CORRECT — CSV use-case ID as annotation id, descriptive method name
+@AutomaterScenario(id = "SDPOD_SFCMDB_ADMIN_001", ...)
+public void verifySubFormPageLoads() throws Exception { ... }
+
+// ❌ FORBIDDEN — use-case ID leaked into method name
+public void SDPOD_SFCMDB_ADMIN_001() throws Exception { ... }
+```
+
+**Multi-ID grouping**: When multiple CSV test cases are covered by one automation method,
+comma-separate the IDs: `id = "SDPOD_SFCMDB_ADMIN_001,SDPOD_SFCMDB_ADMIN_002"`.
+
+### Fallback — Sequential IDs (only when no CSV exists)
+
+When no use-case CSV is provided (feature description or single-line case), use the
+auto-generated sequential ID pattern per module:
+
 ```
 SDPOD_AUTO_<MODULE>_<AREA>_NNN
 
-MODULE codes: SOL=Solution, PB=Problem, IR=IncidentRequest, CHG=Change, REQ=Request
-AREA codes:   CREATE=Create, LV=ListView, DV=DetailView, EDIT=Edit
-NNN:          Zero-padded 3-digit sequential number
-
-Examples: SDPOD_AUTO_SOL_CREATE_059
-          SDPOD_AUTO_PB_LV_023
-          SDPOD_AUTO_CHG_DV_012
+Examples: SDPOD_AUTO_SOL_DV_243
+          SDPOD_AUTO_CH_LV_492
+          SDP_REQ_LS_AAA101
+          SDP_REQ_DV_AAA115
 ```
 
-**NEVER use `SDP_` prefix.**
-Always check last existing ID in the file to get next NNN.
+Always check the last existing ID in the file to get next NNN:
+```bash
+grep -rn 'id = "SDPOD_AUTO_SOL_DV' $PROJECT_NAME/src/ | sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
+```
+
+### Decision Flow
+```
+Use-case CSV exists in $PROJECT_NAME/Testcase/ ?
+  → YES: Use CSV use-case ID directly as @AutomaterScenario(id = "...")
+         Keep method names descriptive — NEVER derive from the ID
+  → NO:  Generate next sequential ID using the module prefix pattern above
+```
 
 ---
 
@@ -542,6 +611,22 @@ protected final JSONObject getTestCaseData(TestCaseData td)           // UI test
 protected final JSONObject getTestCaseDataUsingCaseId(String caseId)  // by raw case ID string
 protected final JSONObject getTestCaseDataForRestAPI(TestCaseData td) // strips custom fields
 protected final JSONObject getInputData(JSONObject data)              // wraps in {entityName: data}
+```
+
+#### ⚠️ Data Loading Methods — Correct Context (REQUIRED)
+
+| Method | Where to use | Parameter | Auto-path? |
+|--------|-------------|-----------|------------|
+| `getTestCaseData(TestCaseData)` | **Test method body** | `DataConstants` constant | ✅ from TestCaseData object |
+| `getTestCaseDataUsingCaseId(dataIds[N])` | **preProcess() only** | Raw string from `dataIds` array | ✅ auto from `getModuleName()`+`getName()` |
+| `DataUtil.getTestCaseDataUsingFilePath(path, caseId)` | **APIUtil files** (static methods) | Explicit file path + case ID string | ❌ manual path |
+
+**Forbidden combinations:**
+- `getTestCaseDataUsingCaseId()` inside APIUtil → no Entity context in static methods
+- `DataUtil.getTestCaseDataUsingFilePath()` inside preProcess → use `getTestCaseDataUsingCaseId()` instead
+- `getTestCaseData("raw_string")` → never pass raw string, always use `DataConstants` constant
+
+```java
 
 // Entity state
 protected final String getEntityId()   // = LocalStorage.getAsString(getName()) — set by preProcess

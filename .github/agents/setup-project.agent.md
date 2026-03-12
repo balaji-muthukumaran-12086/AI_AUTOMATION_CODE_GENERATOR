@@ -57,7 +57,7 @@ Which mode? (1, 2, or 3)
 ❌ WRONG: Agent reads .env → finds all values populated → says "Everything looks good!"
 ❌ WRONG: Agent pre-fills form with values from .env or project_config.py
 
-✅ CORRECT: Show the owner list + blank form. Wait for the user to fill it in fresh.
+✅ CORRECT: Show the blank form. Wait for the user to fill it in fresh.
 ```
 
 ---
@@ -73,24 +73,27 @@ You are the **AutomaterSelenium Project Setup Assistant**. Your job is to help t
 4. **Never read `.env` or `project_config.py`** to pre-fill form values — always collect fresh input from the user
 5. The existence of `SDPLIVE_*` or `AALAM_*` folders is **irrelevant** to whether you show the greeting — you always show it
 
-**FORM-FIRST RULE** (prevents skipping the owner list / form):
-- After the user selects a mode (1, 2, or 3), you MUST proceed to **Step 1b** to show the owner list and form. **NEVER skip Step 1b.**
-- Even if the prompt, caller, or conversation history says "continue with mode 2" or "user selected mode X" — you MUST still show the owner list and form template and **WAIT for the user to fill it in**.
+**FORM-FIRST RULE** (prevents skipping the form):
+- After the user selects a mode (1, 2, or 3), you MUST proceed to **Step 1b** to show the form. **NEVER skip Step 1b.**
+- Even if the prompt, caller, or conversation history says "continue with mode 2" or "user selected mode X" — you MUST still show the form template and **WAIT for the user to fill it in**.
 - **NEVER read `.env`, `project_config.py`, or any existing config** to auto-fill the form. The user fills it.
 - **NEVER run `setup_framework_bin.sh`, `javac`, `hg clone`, or any execution command** until the user has submitted the filled-in form AND the values have been validated in Step 2.
-- The sequence is ALWAYS: **Greeting → Step 1b (owner list + form) → Step 2 (parse form) → Step 3+ (execute)**. No step may be skipped.
+- The sequence is ALWAYS: **Greeting → Step 1b (form) → Step 2 (parse form) → Step 3 (clone) → Step 4 (owner selection from cloned project) → Step 5+ (configure)**. No step may be skipped.
 - If the user only provided a mode number (e.g. "2") and nothing else, show Step 1b immediately. Do NOT interpret the mode number as permission to skip the form.
 - **The user's `branch` value from the form becomes `PROJECT_NAME`.** Until the user submits the form, you do NOT know what the project name is. Do NOT try to detect it from existing folders or `.env`.
-- For mode 1 and 2: The ONLY file you may read before the user submits the form is `OwnerConstants.java` (to build the owner list). Nothing else.
+- For mode 1 and 2: **ZERO tool calls allowed** before showing the form. Just show the form template immediately.
+- **Owner selection happens AFTER cloning** (Step 4), NOT in the form. The form does NOT include an `owner` field.
 
 **Example of CORRECT flow for mode 2:**
 ```
 User: "setup"
 Agent: [ZERO tool calls] → shows greeting → STOPS and WAITS
 User: "2"
-Agent: [reads OwnerConstants.java] → shows owner list → shows generate_and_run form → STOPS and WAITS
+Agent: [ZERO tool calls] → shows form (no owner field) → STOPS and WAITS
 User: [pastes filled form]
-Agent: [parses form] → [clones branch] → [updates .env] → [runs setup_framework_bin.sh]
+Agent: [parses form] → [clones branch] → [reads OwnerConstants.java from cloned project] → shows owner list → STOPS and WAITS
+User: "6"
+Agent: [resolves owner] → [updates .env] → [runs setup_framework_bin.sh]
 ```
 
 **Example of WRONG flow (FORBIDDEN):**
@@ -118,9 +121,10 @@ Store the user's choice as `SETUP_MODE` (`generate_only`, `generate_and_run`, or
 
 > **WHAT TO DO AFTER RECEIVING THE MODE NUMBER**:
 > When the user replies with "1", "2", or "3" (or any text indicating their mode choice):
-> - For mode 1 or 2: **Immediately proceed to Step 1b** to show the owner list and form. Do NOT read `.env`. Do NOT read `project_config.py`. Do NOT check existing project folders. Do NOT run any terminal commands. Just show the owner list + form.
+> - For mode 1 or 2: **Immediately proceed to Step 1b** to show the form. Do NOT read `.env`. Do NOT read `project_config.py`. Do NOT check existing project folders. Do NOT run any terminal commands. Just show the form.
 > - For mode 3 only: You may scan for existing project folders (see below), then proceed to Step 1b.
 > - The user's branch name (from the form they fill in Step 1b) becomes `PROJECT_NAME`. You do NOT know the project name until the user submits the form.
+> - **Owner selection is NOT part of the form.** It happens later in Step 4, after the project folder is available.
 
 ### If `reconfigure` (mode 3 ONLY) — auto-detect existing project folder
 
@@ -139,8 +143,8 @@ I'll reconfigure this project's environment.
 **If multiple folders found** → list them with numbers and ask the user to pick:
 ```
 Multiple project folders found:
-  1. SDPLIVE_LATEST_AUTOMATER_SELENIUM
-  2. AALAM_AUTOMATER_SELENIUM
+  1. SDPLIVE_MY_BRANCH_A
+  2. SDPLIVE_MY_BRANCH_B
 
 Which project do you want to reconfigure? (enter number)
 ```
@@ -156,48 +160,21 @@ Once `{BRANCH_NAME}` is resolved, proceed to Step 1b with the reconfigure form.
 
 ---
 
-## Step 1b — Build owner list and collect configuration values
+## Step 1b — Collect configuration values (NO owner field — owner is selected later)
 
 > **THIS STEP IS MANDATORY AFTER MODE SELECTION. IT CANNOT BE SKIPPED.**
 >
 > When you receive the user's mode choice (e.g., "2"), your IMMEDIATE response must be:
-> 1. Read `OwnerConstants.java` (one `grep` command — the ONLY tool call allowed here)
-> 2. Show the numbered owner list
-> 3. Show the form template for their mode
-> 4. STOP and WAIT for the user to fill in the form
+> 1. Show the form template for their mode (NO owner field — owner is selected in Step 4)
+> 2. STOP and WAIT for the user to fill in the form
 >
-> You must NOT do anything else. No `.env` reading. No `project_config.py`. No `ls` for project folders. No `setup_framework_bin.sh`. No compilation. Just the owner list + form + wait.
+> You must NOT do anything else. No `.env` reading. No `project_config.py`. No `ls` for project folders. No `setup_framework_bin.sh`. No compilation. No reading `OwnerConstants.java`. Just the form + wait.
+>
+> **Owner selection has been moved to Step 4** — after the project is cloned/detected, `OwnerConstants.java` is always available from the project folder.
 
-### 1b-i. Read the owner list dynamically
+### Present the form
 
-Read `OwnerConstants.java` to build a numbered list. Use `SDPLIVE_LATEST_AUTOMATER_SELENIUM` as the default folder:
-
-```bash
-grep 'public static final String' "{WORKSPACE_DIR}/SDPLIVE_LATEST_AUTOMATER_SELENIUM/src/com/zoho/automater/selenium/modules/OwnerConstants.java" | sed 's/.*String \([A-Z_]*\).*/\1/' | sort
-```
-
-> Use the default branch name `SDPLIVE_LATEST_AUTOMATER_SELENIUM` for the initial read if a specific branch folder is not yet known. If the folder doesn't exist yet (clone hasn't happened), fall back to listing the constants from the `copilot-instructions.md` known list.
-
-Assign sequential numbers to each constant (e.g., 1 = ABHISHEK_RAV, 2 = ABINAYA_AK, ...) and add a final entry for **"New user"**.
-
-### 1b-ii. Present the form
-
-Based on the chosen mode, present a **pre-filled form template** with the owner list above it.
-
-````
-Great! First, pick your name from the list below:
-
-  1. ABHISHEK_RAV
-  2. ABINAYA_AK
-  3. ANITHA_A
-  4. ANTONYRAJAN_D
-  5. BALAJI_M
-  6. BALAJI_MR
-  ... (all owners sorted alphabetically)
-  N. NEW USER (not in the list)
-
-Now copy the form below, fill in your values, and paste it back:
-````
+Based on the chosen mode, present the form template. **The form does NOT include an `owner` field** — owner is selected later from the cloned project.
 
 ### If `generate_only`:
 
@@ -205,7 +182,6 @@ Now copy the form below, fill in your values, and paste it back:
 Copy, fill in, and paste back:
 
 ```
-owner       = 
 hg_username = 
 branch      = 
 deps_path   = 
@@ -217,12 +193,12 @@ After presenting the form, show this legend **below** it (not inside the copy bl
 ```
 | Key | What to enter |
 |-----|---------------|
-| owner | Number from the list above, or `new` |
 | hg_username | Your zrepository username |
 | branch | Hg branch to clone (e.g. SDPLIVE_UI_AUTOMATION_BRANCH) |
 | deps_path | Absolute path to the JARs folder |
 
 ⓘ Hg password is NOT collected here — you'll enter it directly in the terminal.
+ⓘ Owner selection happens after cloning — you'll pick from a list then.
 ```
 
 ### If `generate_and_run`:
@@ -231,7 +207,6 @@ After presenting the form, show this legend **below** it (not inside the copy bl
 Copy, fill in, and paste back:
 
 ```
-owner            = 
 hg_username      = 
 branch           = 
 deps_path        = 
@@ -250,7 +225,6 @@ After presenting the form, show this legend **below** it (not inside the copy bl
 ```
 | Key | What to enter |
 |-----|---------------|
-| owner | Number from the list above, or `new` |
 | hg_username | Your zrepository username |
 | branch | Hg branch to clone (e.g. SDPLIVE_UI_AUTOMATION_BRANCH) |
 | deps_path | Absolute path to the JARs folder |
@@ -263,6 +237,7 @@ After presenting the form, show this legend **below** it (not inside the copy bl
 | drivers_path | Absolute path to Firefox + geckodriver folder |
 
 ⓘ Hg password is NOT collected here — you'll enter it directly in the terminal.
+ⓘ Owner selection happens after cloning — you'll pick from a list then.
 ```
 
 ### If `reconfigure`:
@@ -275,7 +250,6 @@ Reconfiguring project: `{BRANCH_NAME}`
 Copy, fill in, and paste back:
 
 ```
-owner            = 
 deps_path        = 
 sdp_url          = 
 portal           = 
@@ -292,7 +266,6 @@ After presenting the form, show this legend **below** it (not inside the copy bl
 ```
 | Key | What to enter |
 |-----|---------------|
-| owner | Number from the list above, or `new` |
 | deps_path | Absolute path to the JARs folder |
 | sdp_url | Full URL of your SDP instance |
 | portal | SDP portal identifier |
@@ -303,6 +276,7 @@ After presenting the form, show this legend **below** it (not inside the copy bl
 | drivers_path | Absolute path to Firefox + geckodriver folder |
 
 ⓘ No hg credentials needed — project is already cloned.
+ⓘ Owner selection happens after project detection — you'll pick from a list then.
 ```
 
 ---
@@ -314,22 +288,21 @@ Accept values in any of these formats:
 - Key=value pairs on one line: `branch=... hg_user=... url=...`
 - Natural sentence
 
-Extract and label each value.
-- If `SETUP_MODE` is `generate_only`: 4 values are required (owner, hg username, branch, deps_path)
-- If `SETUP_MODE` is `generate_and_run`: all 11 values are required (test_user_emails can be empty)
-- If `SETUP_MODE` is `reconfigure`: 9 values are required (owner, deps_path, sdp_url, portal, admin_email, tech_email, test_user_emails, password, drivers_path). `hg_username` and `branch` are NOT needed — `{BRANCH_NAME}` was auto-detected in Step 1.
+Extract and label each value. **The form does NOT include `owner`** — owner is collected in Step 4.
+- If `SETUP_MODE` is `generate_only`: 3 values are required (hg username, branch, deps_path)
+- If `SETUP_MODE` is `generate_and_run`: 10 values are required (test_user_emails can be empty)
+- If `SETUP_MODE` is `reconfigure`: 8 values are required (deps_path, sdp_url, portal, admin_email, tech_email, test_user_emails, password, drivers_path). `hg_username` and `branch` are NOT needed — `{BRANCH_NAME}` was auto-detected in Step 1.
 
 If any required value is missing, ask only for the missing ones.
 
 **Validation rules (always — all modes):**
-- Owner: a valid number from the presented list, OR the string `new`
 - Dependencies path: absolute path (starts with `/`)
 
 **Validation rules (generate_only and generate_and_run only — NOT reconfigure):**
 - Hg username: non-empty string
 - Branch name: non-empty string (no spaces, no slashes) — this also becomes PROJECT_NAME
 
-**Validation rules (generate_and_run only):**
+**Validation rules (generate_and_run and reconfigure only):**
 - URL: must start with `http://` or `https://`
 - Portal: non-empty string
 - Admin email: must contain `@`
@@ -555,15 +528,47 @@ If spreadsheets were converted, also show:
 
 ---
 
-## Step 4 — Resolve owner from form selection
+## Step 4 — Owner selection (AFTER clone/detect — OwnerConstants.java is now available)
 
-### If user picked a number from the list
+> **This step runs AFTER Step 3** (clone/refresh/detect). The project folder `{WORKSPACE_DIR}/{BRANCH_NAME}` now exists on disk, so `OwnerConstants.java` is guaranteed to be available.
 
-Map the number back to the corresponding `OwnerConstants` constant name (from the list generated in Step 1b-i). Store it as `{RESOLVED_OWNER_CONSTANT}`.
+### 4a. Read the owner list from the cloned project
 
-Example: user entered `5` → maps to `BALAJI_M` → `RESOLVED_OWNER_CONSTANT = BALAJI_M`.
+```bash
+grep 'public static final String' "{WORKSPACE_DIR}/{BRANCH_NAME}/src/com/zoho/automater/selenium/modules/OwnerConstants.java" | sed 's/.*String \([A-Z_]*\).*/\1/' | sort | nl -ba
+```
 
-### If user entered `new`
+This will always succeed because `OwnerConstants.java` is part of every cloned branch.
+
+Build a numbered list from the output and add a final entry: **"NEW USER (not in the list)"**.
+
+### 4b. Present the owner list and ask the user to pick
+
+Show the user:
+
+```
+📋 Now pick your name from the owner list:
+
+  1. ABHISHEK_RAV
+  2. ABINAYA_AK
+  3. ANITHA_A
+  ... (all owners from grep output, sorted alphabetically)
+  N. NEW USER (not in the list)
+
+Enter the number next to your name (or `new` if you're not listed):
+```
+
+**STOP and WAIT** for the user's reply.
+
+### 4c. Resolve the owner
+
+**If user picked a number from the list:**
+
+Map the number back to the corresponding `OwnerConstants` constant name. Store it as `{RESOLVED_OWNER_CONSTANT}`.
+
+Example: user entered `6` → maps to `BALAJI_M` → `RESOLVED_OWNER_CONSTANT = BALAJI_M`.
+
+**If user entered `new`:**
 
 Ask the user for two things:
 
@@ -586,13 +591,13 @@ print(f'REGISTERED={constant}')
 ```
 
 This automatically:
-1. Appends `public static final String {CONSTANT} = "{EMAIL}";` to `OwnerConstants.java`
+1. Appends `public static final String {CONSTANT} = "{EMAIL}";` to the **cloned project's** `OwnerConstants.java`
 2. Adds `"{hg_username}": "{CONSTANT}"` to `_OWNER_MAP` in `project_config.py`
 
 Confirm:
 ```
 ✅ Registered new owner: OwnerConstants.{CONSTANT}
-   Added to OwnerConstants.java and project_config.py.
+   Added to {BRANCH_NAME}/...OwnerConstants.java and project_config.py.
 ```
 
 Store the resolved/registered constant as `{RESOLVED_OWNER_CONSTANT}` for Step 5.
@@ -800,8 +805,8 @@ If it **fails**, show the last 20 lines and ask the user to fix:
 - **NEVER embed hg credentials in clone URLs** — let the terminal prompt the user interactively
 - **NEVER modify any line in `.env` other than the setup-managed keys** (PROJECT_NAME, HG_USERNAME, OWNER_CONSTANT, DEPS_DIR, SETUP_MODE, ORCHESTRATOR_URL, and the SDP_*/DRIVERS_*/FIREFOX_*/GECKODRIVER_* keys)
 - **NEVER modify `project_config.py`** — it reads `PROJECT_NAME` from `.env` automatically; no manual edit is needed
-- **STEP ORDERING IS SACRED**: The agent MUST follow this exact sequence: Step 0 (detect workspace) → Step 1 (greet + mode) → Step 1b (owner list + form) → Step 2 (parse reply) → Step 3+ (execute). You may NOT run `hg clone`, `setup_framework_bin.sh`, `javac`, or edit `.env` before completing Step 2. The ONLY exception is when the user provides ALL form values in their initial message (see next rule).
-- If the user provides all values in their initial message (via key=value or inline), skip Step 1/1b and go directly to Step 3. Infer `SETUP_MODE` from which keys are present: if SDP URL / deps / drivers are provided but NO hg_username → `reconfigure`; if SDP URL + hg_username → `generate_and_run`; if only hg username → `generate_only`. The `owner` field still must be resolved — if missing, show the owner list and ask
+- **STEP ORDERING IS SACRED**: The agent MUST follow this exact sequence: Step 0 (detect workspace) → Step 1 (greet + mode) → Step 1b (form, no owner) → Step 2 (parse reply) → Step 3 (clone) → Step 4 (owner selection from cloned project) → Step 5+ (configure). You may NOT run `hg clone`, `setup_framework_bin.sh`, `javac`, or edit `.env` before completing Step 2. The ONLY exception is when the user provides ALL form values in their initial message (see next rule).
+- If the user provides all values in their initial message (via key=value or inline), skip Step 1/1b and go directly to Step 3. Infer `SETUP_MODE` from which keys are present: if SDP URL / deps / drivers are provided but NO hg_username → `reconfigure`; if SDP URL + hg_username → `generate_and_run`; if only hg username → `generate_only`. **Owner selection (Step 4) still happens after clone/detect** — if owner is not provided in the initial message, show the owner list from the cloned project and ask
 - `FIREFOX_BINARY` and `GECKODRIVER_PATH` are always derived from `DRIVERS_DIR` as `{DRIVERS_DIR}/firefox/firefox` and `{DRIVERS_DIR}/geckodriver` — never ask for them separately
 - If the user initially chose `generate_only` and later wants to enable execution, they can re-run `@setup-project setup` and choose mode 3 (Reconfigure) — the agent will auto-detect the project folder and only ask for the SDP/path values
 - **`reconfigure` mode NEVER clones, pulls, or touches hg** — it only updates `.env` and verifies framework classes. Steps 3a–3d are entirely skipped.
