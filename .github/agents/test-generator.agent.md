@@ -341,6 +341,47 @@ Shall I generate all of them, or only specific ones? (Reply with numbers or 'all
 
 Wait for user confirmation before generating code.
 
+### Batch Size Guard (MANDATORY — applies to Mode A only)
+
+> **Root cause of past failures**: Large CSVs with 100+ automatable rows caused the agent to
+> attempt generating all scenarios in one session — context exhaustion, incomplete code, missed
+> convention checks. Quality degrades sharply beyond ~30 scenarios per session.
+
+**After showing the scenario plan and receiving user confirmation:**
+
+1. Count the total scenarios to generate (after filtering + grouping)
+2. If total ≤ 30 → proceed normally
+3. If total > 30 → **split into batches of ≤ 30** and present the batching plan:
+
+```
+⚠️ Large batch detected: {N} scenarios exceeds the 30-per-session quality limit.
+
+I'll split this into {ceil(N/30)} batches:
+  Batch 1: Scenarios 1–30 (Module A > Sub-Module X, Module A > Sub-Module Y)
+  Batch 2: Scenarios 31–60 (Module B > Sub-Module Z)
+  Batch 3: Scenarios 61–{N} (remaining)
+
+Batches are grouped by Module > Sub-Module to keep related scenarios together.
+I'll generate Batch 1 now. After review, invoke `@test-generator` again for the next batch.
+
+Proceed with Batch 1? (yes / pick a different batch)
+```
+
+**Batching rules:**
+- Group by Module > Sub-Module when splitting (keep related scenarios in the same batch)
+- Each batch writes its own `tests_to_run.json` + execution plan
+- Track batch progress in a `{TARGET_PROJECT}/Testcase/batch_progress.md` file:
+  ```
+  # Batch Progress — {CSV filename}
+  | Batch | Scenarios | Status | Generated |
+  |-------|-----------|--------|-----------|
+  | 1     | 1–30      | ✅ Done | 2026-03-15 |
+  | 2     | 31–60     | ⏳ Next | — |
+  | 3     | 61–75     | — | — |
+  ```
+- On subsequent invocations, detect the batch_progress.md and **auto-resume the next pending batch** — do NOT re-process already completed batches
+- **FORBIDDEN**: Generating more than 30 scenarios in a single agent session regardless of user request
+
 ### Mode B — Plain-text description (QUICK / SECONDARY)
 The user typed an **explicit, concrete scenario description** directly (e.g., "create a change and verify the detail view title") without attaching a document. This is fine for quick one-off scenarios.
 
@@ -394,6 +435,181 @@ Before writing ANY test code, complete these steps IN ORDER:
 > `test-data-format.instructions.md` at 73 lines) are auto-attached via the YAML header and
 > small enough to be included in full — no need to re-read them.
 
+### Step 0.5 — Check for Duplicate Scenarios (MANDATORY)
+
+> **Root cause of wasted work**: Without duplicate detection, the same scenario can be
+> generated multiple times across sessions — causing compile conflicts, ID collisions,
+> and redundant test suite execution time.
+
+Before writing ANY code, check whether the planned scenarios already exist in:
+1. **Source code** (grep for method names and scenario IDs)
+2. **ChromaDB vector store** (semantic similarity check)
+
+**Step 0.5a — Source code grep (fast, exact match)**
+
+For EACH planned scenario, search for its ID and a likely method name:
+
+```bash
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+# Check by scenario ID (from CSV UseCase ID)
+grep -rn '"SCENARIO_ID_HERE"' "$PROJECT/src/" --include="*.java" | head -5
+# Check by likely method name keyword
+grep -rn 'methodNameKeyword' "$PROJECT/src/" --include="*.java" | head -5
+```
+
+**Step 0.5b — ChromaDB semantic search (OPTIONAL — catches near-duplicates)**
+
+> **Availability**: ChromaDB is populated by `python -m knowledge_base.rag_indexer`.
+> On a fresh clone, `chroma_db/` is empty and this step is automatically skipped.
+> **Step 0.5a (source code grep) is the reliable primary check** — it always works.
+> Step 0.5b is a bonus layer for projects where the RAG indexer has been run.
+
+Query the vector store for semantically similar existing scenarios:
+
+```bash
+.venv/bin/python -c "
+import sys
+try:
+    from knowledge_base.vector_store import VectorStore
+except ImportError:
+    print('ChromaDB not installed — skipping semantic duplicate check. Step 0.5a (grep) is sufficient.')
+    sys.exit(0)
+
+try:
+    store = VectorStore(persist_dir='knowledge_base/chroma_db')
+    count = store.scenario_count
+except Exception as e:
+    print(f'ChromaDB unavailable ({e}) — skipping. Step 0.5a (grep) is sufficient.')
+    sys.exit(0)
+
+if count == 0:
+    print('ChromaDB empty (0 scenarios indexed) — skipping semantic check.')
+    print('To populate: .venv/bin/python -m knowledge_base.rag_indexer')
+    sys.exit(0)
+
+print(f'ChromaDB has {count} indexed scenarios — running semantic duplicate check...')
+
+# Check each planned scenario
+queries = [
+    # (description, module_path) — one per planned scenario
+    ('Verify sub-form page loads under customization', 'modules/admin/subform/'),
+    ('Create new sub form type', 'modules/admin/subform/'),
+    # ... add all planned scenarios here
+]
+DUPLICATE_THRESHOLD = 0.88
+for desc, mod_path in queries:
+    entity = mod_path.rstrip('/').split('/')[-1]
+    enriched = f'Module: {mod_path} | Entity: {entity} | Description: {desc}'
+    results = store.search_scenarios(enriched, top_k=3, module_filter=mod_path)
+    if not results:
+        results = store.search_scenarios(enriched, top_k=3)
+    if results:
+        best = results[0]
+        sim = 1 - best['distance']
+        status = 'DUPLICATE' if sim >= DUPLICATE_THRESHOLD else 'similar' if sim >= 0.70 else 'new'
+        meta = best.get('metadata', {})
+        print(f'{status} (sim={sim:.2f}): {desc}')
+        if status == 'DUPLICATE':
+            print(f'  ⚠️  Matches: {meta.get(\"method_name\", \"?\")}')
+            print(f'     in {meta.get(\"module_path\", \"?\")}')
+    else:
+        print(f'new (no matches): {desc}')
+"
+```
+
+**Decision after duplicate check:**
+
+| Result | Action |
+|--------|--------|
+| `DUPLICATE` (sim ≥ 0.88) | **SKIP** — do NOT regenerate. Tell the user: `"Scenario '{desc}' already exists as {method_name}. Skipping."` |
+| `similar` (0.70 ≤ sim < 0.88) | **WARN** — show the similar scenario and ask the user: `"This looks similar to existing {method_name} (similarity: {sim}). Generate anyway? (y/n)"` |
+| `new` (sim < 0.70) | **PROCEED** — no duplicate concern |
+
+If ALL planned scenarios are duplicates → stop and tell the user. No code generation needed.
+
+Update the scenario plan to mark duplicates:
+```
+📋 Duplicate Check Results:
+  ✅ NEW: SDPOD_001 — Verify sub-form page loads
+  ⚠️ SIMILAR (0.82): SDPOD_002 — similar to existing createSubForm()
+  ❌ DUPLICATE (0.94): SDPOD_003 — already exists as deleteSubForm()
+
+Proceeding with 1 new + 1 similar (user-approved). Skipping 1 duplicate.
+```
+
+### Step 0.7 — Load Recent Learnings (Feedback Loop)
+
+> **Purpose**: Before generating ANY code, load the latest learnings from past test
+> executions. The `@test-runner` agent (Phase 6) persists failure rules and success
+> patterns to `logs/learnings.jsonl` after every batch run. Reading these BEFORE
+> generation prevents repeating mistakes that were already diagnosed and fixed.
+
+```bash
+.venv/bin/python << 'LOAD_LEARNINGS'
+import json
+from pathlib import Path
+
+LEARNINGS_LOG = Path("logs/learnings.jsonl")
+TOP_N = 15
+
+if not LEARNINGS_LOG.exists():
+    print("No learnings found — first run or logs/learnings.jsonl does not exist.")
+    exit(0)
+
+lines = LEARNINGS_LOG.read_text(encoding="utf-8").strip().splitlines()
+entries = []
+for line in reversed(lines):
+    line = line.strip()
+    if line:
+        try:
+            entries.append(json.loads(line))
+        except Exception:
+            pass
+    if len(entries) >= TOP_N:
+        break
+
+if not entries:
+    print("No learnings found — logs/learnings.jsonl is empty.")
+    exit(0)
+
+print(f"=== Recent Learnings ({len(entries)} entries) ===")
+for i, e in enumerate(entries, 1):
+    ltype = e.get("learning_type", "INFO")
+    title = e.get("title", "")
+    body  = e.get("body", e.get("description", ""))
+    print(f"{i}. [{ltype}] {title}")
+    if body:
+        print(f"   {body[:150]}")
+LOAD_LEARNINGS
+```
+
+**How to use the output:**
+
+| Learning type | How it affects generation |
+|---------------|--------------------------|
+| `[RULE]` DO / DON'T | Hard constraint — MUST follow in generated code. E.g., "DON'T use `//div[@id='old-panel']` — replaced with `//section[@data-tab='associations']`" → use the corrected locator |
+| `[PATTERN]` Working pattern | Soft guidance — prefer this approach. E.g., "PATTERN: `columnSearch` requires `waitForAjaxComplete()` after `selectFilter`" → apply in similar scenarios |
+| `[INFO]` General note | Context only — be aware but no hard constraint |
+
+**Decision rules:**
+- If a RULE directly contradicts something you would generate → follow the RULE (it was learned from real execution)
+- If a PATTERN suggests a different approach than the framework docs → prefer the PATTERN (it was verified working)
+- If NO learnings exist → proceed normally (first-time generation)
+
+Keep the loaded learnings in working memory for Steps 2–6. Reference them when:
+- Writing locators (check if any RULE corrects a locator you'd otherwise use)
+- Writing preProcess groups (check if any RULE warns about API path issues)
+- Writing validation logic (check if learned PATTERNs suggest a better assertion)
+
+> **This step is the READ side of the learning loop.** The WRITE side happens in
+> `@test-runner` Phase 6 (after batch execution), which persists new learnings back
+> to `logs/learnings.jsonl` + `config/framework_rules.md` + `config/framework_knowledge.md`.
+> Together they form a closed feedback loop within the Copilot agent ecosystem:
+> `@test-generator` reads learnings → generates code → `@test-runner` executes →
+> extracts learnings → `@test-generator` reads improved context on next run.
+
+---
+
 ### Step 1 — Determine Module Placement
 Match the use-case noun to the correct module — NEVER default to whatever file is open:
 - incident request / IR → `modules/requests/request/`
@@ -414,6 +630,68 @@ Then list the util files:
 find "$PROJECT/src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/" -name "*.java" | sort
 ```
 List every `public static` method in `*ActionsUtil.java` and `*APIUtil.java`.
+
+### Step 2.5 — (Optional) Scout Live UI via Playwright MCP
+
+> **Purpose**: When the use case involves unfamiliar UI (new admin pages, custom dialogs,
+> non-standard layouts), take a Playwright snapshot of the actual SDP page to discover
+> real element structure, class names, and DOM hierarchy BEFORE writing locators.
+
+**When to use this step:**
+- Use case targets a page/dialog you haven't generated locators for before
+- CSV description mentions UI elements whose structure is unclear (e.g., "drag and drop", "sub-form layout", "canvas workflow")
+- You need to discover the exact element selector for a button, tab, or container
+
+**When to SKIP:**
+- Standard CRUD operations on well-known entities (requests, changes, solutions) where locators already exist in `*Locators.java`
+- The entity's `*ActionsUtil.java` already has methods covering the UI flow
+
+**How to scout (uses Playwright MCP browser tools):**
+
+1. **Navigate to the target page:**
+   Use `browser_navigate` to go to the SDP URL + target page path.
+   ```
+   browser_navigate → {SDP_URL}/app/admin/sub-form-config
+   ```
+
+2. **Take a snapshot of the DOM:**
+   Use `browser_snapshot` to capture the current page accessibility tree.
+   This reveals element roles, names, and hierarchy without needing screenshots.
+   ```
+   browser_snapshot → returns accessibility tree with ref IDs
+   ```
+
+3. **Inspect specific elements (if needed):**
+   Use `browser_evaluate` to run JS queries for element attributes:
+   ```javascript
+   () => {
+     const els = document.querySelectorAll('[data-action], [name*="button"], .sub-form-row');
+     return Array.from(els).map(e => ({
+       tag: e.tagName,
+       id: e.id,
+       name: e.getAttribute('name'),
+       classes: e.className,
+       text: e.textContent.trim().substring(0, 80)
+     }));
+   }
+   ```
+
+4. **Record findings for locator generation:**
+   Note the discovered selectors and pass them to Step 3 when mapping operations:
+   ```
+   🔍 UI Scout findings for Admin > Sub Form Configuration:
+   - Page container: div#sub-form-config-container
+   - Add button: button[name="add-sub-form-type"]
+   - Sub form rows: tr.sub-form-row inside table#sub-form-list
+   - Delete button: span.delete-icon inside each row
+   - Drag handle: td.drag-handle (first column)
+   ```
+
+> **Safety**: This step is READ-ONLY — never click buttons or modify state during scouting.
+> Use `browser_snapshot` and `browser_evaluate` only. Save modifications for the actual test run.
+>
+> **Fallback**: If Playwright MCP tools are not available (user hasn't enabled them),
+> skip this step and proceed to Step 3 using existing Locators files and framework knowledge.
 
 ### Step 3 — Map Operations to Existing Methods
 For each operation in the scenario, check if a util method already exists. Only create new ones if genuinely needed.
@@ -458,6 +736,47 @@ Open the **parent class** (e.g., `Change.java`, `Solution.java`) and read `prePr
 
 > **FORBIDDEN**: Defaulting all scenarios to the heaviest group "just in case".
 
+### Step 4b — Generate Decision Table (MANDATORY — show reasoning to QA user)
+
+> **Purpose**: The QA team member reviewing generated code needs to understand WHY each
+> design choice was made. This table is the agent's reasoning audit trail — it prevents
+> "black box" generation and builds trust with non-AI-expert team members.
+
+**For EVERY scenario being generated**, produce a decision table BEFORE writing code.
+Present it to the user and wait for acknowledgment:
+
+```
+📋 Design Decision Table:
+
+| # | Scenario ID | Method Name | preProcess Group | Why This Group | Data Key | Reused? | Util Methods | New Methods Needed |
+|---|------------|-------------|-----------------|----------------|----------|---------|-------------|-------------------|
+| 1 | SDPOD_001 | verifySubFormPageLoads | NoPreprocess | No entity needed — pure navigation test | — | — | — | navigateToSubFormPage() |
+| 2 | SDPOD_002 | createNewSubFormType | create | Needs base entity via getEntityId() | CREATE_SUB_FORM | Existing | SubFormActionsUtil.openCreateDialog() | fillSubFormFields(), submitAndVerify() |
+| 3 | SDPOD_003,004,005,006 | validateSubFormCreation | create | Same base entity | CREATE_SUB_FORM_VALIDATION | New entry | SubFormActionsUtil.openCreateDialog() | — |
+
+📋 New Files/Methods to Create:
+  - SubFormActionsUtil.java → navigateToSubFormPage(), fillSubFormFields(), submitAndVerify()
+  - sub_form_data.json → new entry "create_sub_form_validation"
+  - SubFormLocators.java → 3 new locator constants (from UI Scout findings)
+
+📋 Reused (no changes needed):
+  - SubFormActionsUtil.openCreateDialog() — already exists
+  - CREATE_SUB_FORM data entry — already in sub_form_data.json
+
+Does this plan look correct? (yes / suggest changes)
+```
+
+**Decision table columns explained:**
+- **preProcess Group**: Which group from the parent class preProcess() — must be an existing group name
+- **Why This Group**: 1-sentence justification ("No entity needed", "Only needs getEntityId()", "Needs linked entities")
+- **Data Key**: Which `*DataConstants` key or `*AnnotationConstants.Data` constant
+- **Reused?**: Whether the data entry already exists (`Existing`) or needs creation (`New entry`)
+- **Util Methods**: Which existing ActionsUtil/APIUtil methods will be called
+- **New Methods Needed**: What new util methods must be created (Step 3 findings)
+
+> After user approval, proceed with code generation using EXACTLY the decisions in the table.
+> Any deviation from the approved table must be flagged to the user.
+
 ### Step 5 — Consult API Reference for preProcess / APIUtil Methods
 Before writing any REST API call (in `preProcess`, APIUtil, or `sdpAPICall()` during debugging), **read the relevant module section** in `docs/api-doc/SDP_API_Endpoints_Documentation.md`. This document contains:
 - Exact V3 API paths (e.g., `api/v3/changes`, `api/v3/requests/{id}/notes`)
@@ -466,6 +785,64 @@ Before writing any REST API call (in `preProcess`, APIUtil, or `sdpAPICall()` du
 - Worked automation examples
 
 > **MANDATORY**: Do NOT guess API paths or input wrappers. Always verify against this doc.
+
+### Step 6 — Backup Module Files Before Writing (Rollback Safety Net)
+
+> **Purpose**: If code generation produces broken output (compile errors, wrong module placement,
+> corrupted files), the QA user can restore the original state without manual detective work.
+
+**Before writing ANY Java code or JSON data to the module directory**, create a timestamped backup:
+
+```bash
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+MODULE_DIR="$PROJECT/src/com/zoho/automater/selenium/modules/<module>/<entity>/"
+RESOURCE_DIR="$PROJECT/resources/entity/"
+BACKUP_TS=$(date +%Y%m%d_%H%M%S)
+BACKUP_DIR="$PROJECT/.backups/pre_generation_$BACKUP_TS"
+
+mkdir -p "$BACKUP_DIR/src" "$BACKUP_DIR/resources"
+
+# Backup only the files we're about to modify (not the entire module tree)
+for FILE in \
+  "$MODULE_DIR/common/<Entity>Locators.java" \
+  "$MODULE_DIR/<Entity>.java" \
+  "$MODULE_DIR/<EntityBase>.java" \
+  "$MODULE_DIR/common/<Entity>DataConstants.java" \
+  "$MODULE_DIR/common/<Entity>AnnotationConstants.java" \
+  "$MODULE_DIR/utils/<Entity>ActionsUtil.java" \
+  "$MODULE_DIR/utils/<Entity>APIUtil.java"; do
+  if [ -f "$FILE" ]; then
+    cp "$FILE" "$BACKUP_DIR/src/"
+  fi
+done
+
+# Backup resource files
+for RES in \
+  "$RESOURCE_DIR/data/<module>/<entity>/<entity>_data.json" \
+  "$RESOURCE_DIR/conf/<module>/<entity>.json"; do
+  if [ -f "$RES" ]; then
+    cp "$RES" "$BACKUP_DIR/resources/"
+  fi
+done
+
+echo "✅ Backup created at: $BACKUP_DIR"
+echo "   To restore: cp $BACKUP_DIR/src/* $MODULE_DIR/ && cp $BACKUP_DIR/resources/* $RESOURCE_DIR/"
+ls -la "$BACKUP_DIR/src/" "$BACKUP_DIR/resources/" 2>/dev/null
+```
+
+**Rollback instructions** (shown to user after generation if compile fails or user requests rollback):
+```
+⚠️ To rollback ALL generated changes:
+  cp {BACKUP_DIR}/src/* {MODULE_DIR}/
+  cp {BACKUP_DIR}/resources/* {RESOURCE_DIR}/
+  echo "Restored to pre-generation state."
+```
+
+**Backup cleanup**: Backups older than 7 days are safe to delete. The `.backups/` directory is gitignored.
+
+> **IMPORTANT**: If the backup step fails (e.g., directory doesn't exist for a brand new entity),
+> that's fine — there's nothing to restore. Only warn the user that rollback won't be available
+> for newly created files (they can be deleted manually).
 
 ## Code Generation Rules
 
@@ -579,6 +956,89 @@ Replace `<module>`, `<entity>`, `<Entity>` with the actual values for the genera
 Also include any other files you edited (DataConstants, ActionsUtil, APIUtil, etc.).
 
 If compile **fails**: show the errors, fix them, and recompile before proceeding.
+
+### Step P1.5 — Validate Generated Code Quality (Static Review)
+
+> **Purpose**: Catch convention violations BEFORE running the test — fixes are cheaper at
+> compile time than at runtime.
+
+**Run these regex checks against EVERY generated `*Base.java` file:**
+
+```bash
+BASE_FILE="$SRC/com/zoho/automater/selenium/modules/<module>/<entity>/<EntityBase>.java"
+echo "=== Static Review: $(basename $BASE_FILE) ==="
+ERRORS=0
+
+# 1. @AutomaterScenario present
+grep -q '@AutomaterScenario' "$BASE_FILE" || { echo "❌ FAIL: Missing @AutomaterScenario"; ERRORS=$((ERRORS+1)); }
+
+# 2. Has try block
+grep -qP 'try\s*\{' "$BASE_FILE" || { echo "❌ FAIL: Missing try block"; ERRORS=$((ERRORS+1)); }
+
+# 3. Has catch(Exception)
+grep -qP 'catch\s*\(\s*Exception' "$BASE_FILE" || { echo "❌ FAIL: Missing catch(Exception) block"; ERRORS=$((ERRORS+1)); }
+
+# 4. Has finally block
+grep -qP 'finally\s*\{' "$BASE_FILE" || { echo "❌ FAIL: Missing finally block"; ERRORS=$((ERRORS+1)); }
+
+# 5. Has report.startMethodFlowInStepsToReproduce
+grep -q 'report\.startMethodFlowInStepsToReproduce' "$BASE_FILE" || { echo "❌ FAIL: Missing report.startMethodFlowInStepsToReproduce()"; ERRORS=$((ERRORS+1)); }
+
+# 6. Has report.endMethodFlowInStepsToReproduce (in finally)
+grep -q 'report\.endMethodFlowInStepsToReproduce' "$BASE_FILE" || { echo "❌ FAIL: Missing report.endMethodFlowInStepsToReproduce() in finally"; ERRORS=$((ERRORS+1)); }
+
+# 7. Has addSuccessReport or addFailureReport
+grep -qE 'addSuccessReport|addFailureReport' "$BASE_FILE" || { echo "❌ FAIL: Missing addSuccessReport/addFailureReport"; ERRORS=$((ERRORS+1)); }
+
+# 8. No hardcoded Selenium locators (By.xpath, By.cssSelector, By.id)
+if grep -qP 'By\.(xpath|cssSelector|id)\s*\(' "$BASE_FILE"; then
+  echo "❌ FAIL: Hardcoded Selenium locators found — use Locators.java constants"
+  grep -nP 'By\.(xpath|cssSelector|id)\s*\(' "$BASE_FILE" | head -5
+  ERRORS=$((ERRORS+1))
+fi
+
+# 9. No System.out.println
+if grep -q 'System\.out\.print' "$BASE_FILE"; then
+  echo "❌ FAIL: System.out.println found — use report methods"
+  ERRORS=$((ERRORS+1))
+fi
+
+# 10. runType explicitly set (not relying on default PORTAL_BASED)
+if grep -q '@AutomaterScenario' "$BASE_FILE" && ! grep -q 'runType\s*=' "$BASE_FILE"; then
+  echo "❌ FAIL: runType not explicitly set — default is PORTAL_BASED, must set USER_BASED"
+  ERRORS=$((ERRORS+1))
+fi
+
+# 11. No inline JSONObject construction for data creation
+if grep -qP 'new\s+JSONObject\(\)\.put\(' "$BASE_FILE"; then
+  echo "⚠️  WARN: Inline JSONObject construction detected — verify it is post-load modification, not data creation"
+fi
+
+# 12. NeedBraces check — no inline catch/finally
+if grep -qP '}\s*catch\s*\([^)]+\)\s*\{\s*}' "$BASE_FILE"; then
+  echo "❌ FAIL: Inline catch block — Checkstyle NeedBraces violation"
+  ERRORS=$((ERRORS+1))
+fi
+
+if [ $ERRORS -eq 0 ]; then
+  echo "✅ All static checks passed"
+else
+  echo ""
+  echo "❌ $ERRORS check(s) failed — fix before proceeding to test execution"
+fi
+```
+
+**Also validate the wrapper class** (`<Entity>.java`) — every method must be `@Override` + `super.methodName()` only:
+
+```bash
+WRAPPER_FILE="$SRC/com/zoho/automater/selenium/modules/<module>/<entity>/<Entity>.java"
+echo "=== Wrapper Review: $(basename $WRAPPER_FILE) ==="
+# Check that each public void method (non-preProcess) contains super.methodName()
+grep -A2 'public void' "$WRAPPER_FILE" | grep -v 'preProcess\|postProcess' | \
+  grep -v 'super\.' && echo "❌ FAIL: Wrapper method missing super.methodName() call" || echo "✅ Wrapper OK"
+```
+
+**If ANY check fails**: Fix the issue in the generated code, recompile (re-run Step P1), and re-validate. Do NOT proceed to Step P2 with failing checks.
 
 ### Step P2 — Write `tests_to_run.json` + Generate Execution Plan + Hand off
 
@@ -813,18 +1273,38 @@ This is fire-and-forget — if the orchestrator server isn't running, the event 
 
 ---
 
-### Step P5 — Save use-case document to Testcase/ folder
+### Step P5 — Save Artifacts to Testcase/ Folder
 
-If the user attached a document (Mode A), copy it into the project's `Testcase/` folder for traceability:
+Copy ALL generation artifacts into the project's `Testcase/` folder for traceability:
 
 ```bash
 PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
 mkdir -p "$PROJECT/Testcase"
-cp "<uploaded_file_path>" "$PROJECT/Testcase/"
-echo "Saved use-case document to $PROJECT/Testcase/"
+
+# 1. Copy the original use-case document (Mode A only)
+if [ -f "<uploaded_file_path>" ]; then
+  cp "<uploaded_file_path>" "$PROJECT/Testcase/"
+  echo "Saved use-case document to $PROJECT/Testcase/"
+fi
+
+# 2. Copy the CSV analysis / execution plan MD (generated in Step P2c)
+if [ -f "$PROJECT/execution_plan.md" ]; then
+  cp "$PROJECT/execution_plan.md" "$PROJECT/Testcase/execution_plan_$(date +%Y%m%d_%H%M%S).md"
+  echo "Saved execution plan to $PROJECT/Testcase/"
+fi
+
+# 3. Copy batch progress tracker (if batching was used)
+if [ -f "$PROJECT/Testcase/batch_progress.md" ]; then
+  echo "Batch progress tracker already in Testcase/ — up to date"
+fi
+
+# 4. List all artifacts in Testcase/ for confirmation
+echo ""
+echo "📁 Artifacts in $PROJECT/Testcase/:"
+ls -la "$PROJECT/Testcase/" 2>/dev/null
 ```
 
-This keeps a record of which use-case documents were used to generate tests in each project.
+This keeps a record of which use-case documents AND their analysis results were used to generate tests. The execution plan MD serves as the audit trail connecting CSV rows to generated test methods.
 
 ### Step P6 — Restore PROJECT_NAME (if overridden)
 

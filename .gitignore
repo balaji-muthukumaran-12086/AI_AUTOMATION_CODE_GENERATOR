@@ -37,6 +37,9 @@ knowledge_base/scout_snapshots/
 # ── Playwright ────────────────────────────────────────────────────────────────
 .playwright-mcp/
 
+# ── Code generation backups (rollback safety net) ─────────────────────────────
+**/.backups/
+
 # ── VS Code ───────────────────────────────────────────────────────────────────
 .vscode/
 
