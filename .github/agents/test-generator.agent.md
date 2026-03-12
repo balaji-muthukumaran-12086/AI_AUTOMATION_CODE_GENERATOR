@@ -489,11 +489,9 @@ Before writing ANY test code, complete these steps IN ORDER:
 > generated multiple times across sessions — causing compile conflicts, ID collisions,
 > and redundant test suite execution time.
 
-Before writing ANY code, check whether the planned scenarios already exist in:
-1. **Source code** (grep for method names and scenario IDs)
-2. **ChromaDB vector store** (semantic similarity check)
+Before writing ANY code, check whether the planned scenarios already exist in source code (grep for method names and scenario IDs).
 
-**Step 0.5a — Source code grep (fast, exact match)**
+**Step 0.5 — Source code grep (fast, exact match)**
 
 For EACH planned scenario, search for its ID and a likely method name:
 
@@ -505,85 +503,14 @@ grep -rn '"SCENARIO_ID_HERE"' "$PROJECT/src/" --include="*.java" | head -5
 grep -rn 'methodNameKeyword' "$PROJECT/src/" --include="*.java" | head -5
 ```
 
-**Step 0.5b — ChromaDB semantic search (OPTIONAL — catches near-duplicates)**
-
-> **Availability**: ChromaDB is populated by `python -m knowledge_base.rag_indexer`.
-> On a fresh clone, `chroma_db/` is empty and this step is automatically skipped.
-> **Step 0.5a (source code grep) is the reliable primary check** — it always works.
-> Step 0.5b is a bonus layer for projects where the RAG indexer has been run.
-
-Query the vector store for semantically similar existing scenarios:
-
-```bash
-.venv/bin/python -c "
-import sys
-try:
-    from knowledge_base.vector_store import VectorStore
-except ImportError:
-    print('ChromaDB not installed — skipping semantic duplicate check. Step 0.5a (grep) is sufficient.')
-    sys.exit(0)
-
-try:
-    store = VectorStore(persist_dir='knowledge_base/chroma_db')
-    count = store.scenario_count
-except Exception as e:
-    print(f'ChromaDB unavailable ({e}) — skipping. Step 0.5a (grep) is sufficient.')
-    sys.exit(0)
-
-if count == 0:
-    print('ChromaDB empty (0 scenarios indexed) — skipping semantic check.')
-    print('To populate: .venv/bin/python -m knowledge_base.rag_indexer')
-    sys.exit(0)
-
-print(f'ChromaDB has {count} indexed scenarios — running semantic duplicate check...')
-
-# Check each planned scenario
-queries = [
-    # (description, module_path) — one per planned scenario
-    ('Verify sub-form page loads under customization', 'modules/admin/subform/'),
-    ('Create new sub form type', 'modules/admin/subform/'),
-    # ... add all planned scenarios here
-]
-DUPLICATE_THRESHOLD = 0.88
-for desc, mod_path in queries:
-    entity = mod_path.rstrip('/').split('/')[-1]
-    enriched = f'Module: {mod_path} | Entity: {entity} | Description: {desc}'
-    results = store.search_scenarios(enriched, top_k=3, module_filter=mod_path)
-    if not results:
-        results = store.search_scenarios(enriched, top_k=3)
-    if results:
-        best = results[0]
-        sim = 1 - best['distance']
-        status = 'DUPLICATE' if sim >= DUPLICATE_THRESHOLD else 'similar' if sim >= 0.70 else 'new'
-        meta = best.get('metadata', {})
-        print(f'{status} (sim={sim:.2f}): {desc}')
-        if status == 'DUPLICATE':
-            print(f'  ⚠️  Matches: {meta.get(\"method_name\", \"?\")}')
-            print(f'     in {meta.get(\"module_path\", \"?\")}')
-    else:
-        print(f'new (no matches): {desc}')
-"
-```
-
 **Decision after duplicate check:**
 
-| Result | Action |
-|--------|--------|
-| `DUPLICATE` (sim ≥ 0.88) | **SKIP** — do NOT regenerate. Tell the user: `"Scenario '{desc}' already exists as {method_name}. Skipping."` |
-| `similar` (0.70 ≤ sim < 0.88) | **WARN** — show the similar scenario and ask the user: `"This looks similar to existing {method_name} (similarity: {sim}). Generate anyway? (y/n)"` |
-| `new` (sim < 0.70) | **PROCEED** — no duplicate concern |
+| Grep Result | Action |
+|-------------|--------|
+| Exact ID or method name found | **SKIP** — do NOT regenerate. Tell the user: `"Scenario already exists as {method_name}. Skipping."` |
+| No match found | **PROCEED** — no duplicate concern |
 
-If ALL planned scenarios are duplicates → stop and tell the user. No code generation needed.
-
-Update the scenario plan to mark duplicates:
-```
-📋 Duplicate Check Results:
-  ✅ NEW: SDPOD_001 — Verify sub-form page loads
-  ⚠️ SIMILAR (0.82): SDPOD_002 — similar to existing createSubForm()
-  ❌ DUPLICATE (0.94): SDPOD_003 — already exists as deleteSubForm()
-
-Proceeding with 1 new + 1 similar (user-approved). Skipping 1 duplicate.
-```
+If ALL planned scenarios already exist → stop and tell the user. No code generation needed.
 
 ### Step 0.7 — Load Recent Learnings (Feedback Loop)
 
@@ -1419,19 +1346,7 @@ LEARNING_EXTRACT
 
 Also update `config/framework_rules.md` and `config/framework_knowledge.md` with any new failure rules or success patterns discovered during self-healing (append under `## LEARNED RULES` or `## LEARNED PATTERNS` sections).
 
-### Step P3 — Index into ChromaDB
-
-Run the RAG indexer so the Coverage Agent treats this scenario as already covered:
-
-```bash
-.venv/bin/python -m knowledge_base.rag_indexer
-```
-
-If this fails (non-fatal — do NOT retry): report the error but do not block. ChromaDB will be updated next time `python main.py` runs.
-
-**Why this matters**: ChromaDB is queried by `CoverageAgent` before planning new tests. Without indexing, a scenario generated here will be treated as a coverage gap and regenerated the next time `python main.py` runs on the same feature.
-
-### Step P4 — Start Orchestrator & Log to Dashboard
+### Step P3 — Start Orchestrator & Log to Dashboard
 
 Before logging, ensure the orchestrator server is running (idempotent — safe to call every time):
 
@@ -1475,7 +1390,7 @@ This is fire-and-forget — if the orchestrator server isn't running, the event 
 
 ---
 
-### Step P5 — Save Artifacts to Testcase/ Folder
+### Step P4 — Save Artifacts to Testcase/ Folder
 
 Copy ALL generation artifacts into the project's `Testcase/` folder for traceability:
 
@@ -1508,7 +1423,7 @@ ls -la "$PROJECT/Testcase/" 2>/dev/null
 
 This keeps a record of which use-case documents AND their analysis results were used to generate tests. The execution plan MD serves as the audit trail connecting CSV rows to generated test methods.
 
-### Step P6 — Restore PROJECT_NAME (if overridden)
+### Step P5 — Restore PROJECT_NAME (if overridden)
 
 If you temporarily changed `PROJECT_NAME` in Step 0 for a non-default project, restore it now:
 
