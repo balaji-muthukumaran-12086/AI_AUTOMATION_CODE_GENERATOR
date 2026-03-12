@@ -24,7 +24,8 @@ ai-automation-qa/
 │   │   └── common/
 │   │       ├── <Entity>Locators.java   # XPath/By locators as interface constants
 │   │       ├── <Entity>Constants.java  # String constants (module name, alert messages, etc.)
-│   │       ├── <Entity>DataConstants.java # Enum-style data key constants
+│   │       ├── <Entity>DataConstants.java # Enum-style data key constants (auto-generated from *_data.json)
+│   │       ├── <Entity>AnnotationConstants.java # Group/Data string constants for @AutomaterScenario (hand-written)
 │   │       └── <Entity>Fields.java     # Field name/dataPath definitions
 │   ├── resources/
 │   │   ├── entity/conf/<module>/<entity>.json   # Field config (field_type, data_path per field)
@@ -243,7 +244,7 @@ Screenshots at: `reports/LOCAL_<methodName>_<timestamp>/screenshots/Success_<ts>
 | `MODULE_TITLE` locator | `//div[@id='details-middle-container']/descendant::h1` — may include display ID prefix (e.g. `SOL-8Title...`) |
 | Local run report flow | `EntityCase.addSuccessReport()` → `LocalFailureTemplates` + `ScenarioReport` rows + `screenshots/Success_<ts>.png` → `Entity.run()` finally → `ScenarioReport.createReport()` → `ScenarioReport.html` |
 | `AutomationReport` (Aalam/CI) | NOT used in local runs — guarded by `!LocalSetupManager.isLocalSetup()` in `EntityCase`. Old JAR version has no guard → `IOException` when `REPORT_FILE_PATH` is null. Always compile framework via `setup_framework_bin.sh` to get the guarded version. |
-| `addReport(message)` | Smart variant — inspects `failureMessage.length()`: `== 0` → `addSuccessReport(message)`; `> 0` → `addFailureReport(message, failureMessage)`. Use after validation blocks where `failureMessage` accumulates errors. Also: `clearFailureMessage()` resets `failureMessage` between independent checks in the same method. |
+| `addReport(message)` | Smart variant — inspects `failureMessage.length()`: `== 0` → `addSuccessReport(message)`; `> 0` → `addFailureReport(message, failureMessage)`. Use after validation blocks where `failureMessage` accumulates errors. **`clearFailureMessage()` is called automatically** inside every `addReport()` / `addSuccessReport()` / `addFailureReport()` call (verified in EntityCase.java source). Only call `clearFailureMessage()` manually if you need to **discard** accumulated failures mid-step before reporting. |
 
 ---
 
@@ -294,9 +295,23 @@ Every `POST` (create) call auto-registers in `DataUtil.cleanUpIds` for automatic
 > ⚠️ **Critical**: If API calls (e.g., `createSolutionTemplateAndGetName`) are placed inside the **test method body** instead of `preProcess`, they run in the **user session** — users cannot create solution templates → `sdpAPICall` returns null → NPE.
 > Always put prerequisite API calls in `preProcess` group, not in the method body.
 
-### `preProcess` Silent Catch
-`Solution.java::preProcess()` has `catch(Exception) { return false; }` — silently swallows all exceptions.
-If `preProcess` returns `false`, the test is skipped without any visible error. Debug by temporarily adding logging or moving the call into the method body.
+### `preProcess` Exception Handling
+`preProcess` exception handling varies by module — some modules (e.g. `Solution.java`) use `catch(Exception) { return false; }` which **silently swallows** exceptions — test is skipped with zero visibility. Other modules (e.g. `ProblemsCommonBase.java`) call `addFailureReport(...)` before `return false` — visible in report.
+
+**Rule for NEW code**: Always use `addFailureReport()` in preProcess catch blocks — never silent swallow. Failure visibility is critical for the self-healing process.
+```java
+// ✅ CORRECT — failure visible in ScenarioReport:
+} catch(Exception exception) {
+    report.addCaseFlow("Exception occurred while pre processing: " + exception);
+    addFailureReport("Pre-process failed", exception.getMessage());
+    return false;
+}
+
+// ❌ FORBIDDEN in new code — silent skip, impossible to debug:
+} catch(Exception exception) {
+    return false;
+}
+```
 
 ---
 
@@ -341,7 +356,7 @@ find $PROJECT_NAME/src -path "*modules/<module>/<entity>*" -name "*.java"
 - **SDP Associations tab container ID**: `change_associations_parent_change` (not `change_associations_linked_changes`). Attach button has `name="associating-change-button"`.
 - **Local run reports/screenshots**: Always compile with `setup_framework_bin.sh` first — old JAR lacks `isLocalSetup()` guards → `IOException` on null `REPORT_FILE_PATH`.
 - **Checkstyle NeedBraces**: ALL block statements require braces — `if`, `else`, `for`, `while`, `catch`, `finally`. Inline `} catch (Exception ignore) {}` is FORBIDDEN; always expand to multi-line.
-- **`preProcess` silent catch**: `Solution.java` has `catch(Exception) { return false; }` — returns `false` silently, test is skipped with zero visible error. Debug by temporarily adding logging.
+- **`preProcess` exception handling varies by module**: Some modules (e.g. `Solution.java`) silently swallow exceptions in catch blocks — test is skipped with zero visible error. Always use `addFailureReport()` in preProcess catch blocks in new code.
 - **Module misplacement**: Always derive module from the use-case noun, NOT from the currently open file. `"create incident request"` → `modules/requests/request/`, never solutions.
 - **`FieldDetails` constructor takes 6 parameters**: `new FieldDetails(name, apiPath, apiKey, FieldType, isCustom, isUDF)`. Writing 4 args compiles broken. The `apiKey` (3rd) and `apiPath` (2nd) are separate fields from the conf JSON.
 - **DataConstants constant name = raw `.toUpperCase()`**: JSON key `"create_change_api"` → constant `CREATE_CHANGE_API`. Always use `snake_case` keys in `*_data.json` — `camelCase` keys like `"createChange"` become the unreadable `CREATECHANGE`.
@@ -362,8 +377,10 @@ find $PROJECT_NAME/src -path "*modules/<module>/<entity>*" -name "*.java"
     tags        = {},
     description = "Plain English description",
     owner       = OwnerConstants.RAJESHWARAN_A,
-    runType     = ScenarioRunType.USER_BASED,      // ⚠️ ALWAYS explicit — default is PORTAL_BASED
-    switchOn    = SwitchToUserSession.AFTER_PRE_PROCESS  // or BEFORE_PRE_PROCESS / NEVER
+    runType     = ScenarioRunType.USER_BASED       // ⚠️ ALWAYS explicit — default is PORTAL_BASED
+    // switchOn omitted → defaults to SwitchToUserSession.AFTER_PRE_PROCESS
+    // Use switchOn = SwitchToUserSession.BEFORE_PRE_PROCESS when preProcess must run in user session
+    // Use switchOn = SwitchToUserSession.NEVER when entire test must run in admin session
 )
 ```
 
@@ -447,47 +464,35 @@ public void verifyUpdatedByColumnInListView() throws Exception { ... }
 - The method's `description` should summarize the combined coverage
 - Use-case CSV rows that map to the same grouped method should each list the automation method name
 
-### Valid preProcess Groups — Requests module
+### Valid preProcess Groups — Generic Rules
 
-```
-"create"                  → creates a single request
-"detailView"              → creates request for detail-view tests
-"addTask"                 → creates request + task template
-"addTaskTemplate"         → creates task template only
-"BulkCreate"              → creates requests for bulk operations
-"multipleCreate"          → creates multiple requests
-"rowColor"                → creates request for row-color test
-"customView"              → creates list-view filter via API
-"PinFavorite"             → creates pinned favorite filter
-"assetRequest"            → creates request with asset linkage
-"mixedCreate"             → creates mixed IR+SR requests
-"differentRequest"        → creates requests of different types
-"SubEntity_Resolution"    → creates resolution sub-entity
-"SubEntity_Reminder"      → creates reminder sub-entity
-"SubEntity_createTask"    → creates task sub-entity
-"Associations"            → creates linked associations
-"copyResolution"          → creates request to copy resolution from
-"create_sla"              → creates request with SLA
-"requester_create"        → creates request as requester
-"NoPreprocess"            → ⚡ ZERO API calls, ZERO cleanup — pair with dataIds={}
-```
+> `preProcess()` is an **abstract method** defined in `Entity.java` (the base class):
+> ```java
+> protected abstract boolean preProcess(String group, String[] dataIds);
+> ```
+> Every entity MUST implement it. The `group` parameter selects which if/else or switch-case block
+> to execute. The `dataIds` array is optional — some groups need them, some don't.
 
-### Valid preProcess Groups — Solutions module
+**Group + dataIds combinations:**
 
-```
-"create"                     → creates a solution
-"create_cust_sol_temp"       → creates solution with custom template
-"create_cust_temp_topic"     → creates solution with custom template + topic
-"createMultipleSolution"     → creates multiple solutions
-"create_topic"               → creates a topic
-"NoPreprocess"               → ⚡ ZERO API calls — pair with dataIds={}
-```
+| Scenario | group | dataIds | Meaning |
+|---|---|---|---|
+| No data creation needed | `""` or `"NoPreprocess"` | `{}` | preProcess skips or returns `true` immediately — no API calls, no cleanup |
+| Group handles creation internally | e.g. `"create"` | `{}` | preProcess runs the matching block; data creation is hardcoded inside (no dataIds needed) |
+| Group uses passed dataIds | e.g. `"create"` | `{AnnotationConstants.Data.KEY1, ...}` | preProcess uses `getTestCaseDataUsingCaseId(dataIds[0])`, `dataIds[1]`, etc. by index |
 
-> ⚠️ **FORBIDDEN**: Inventing group name strings not listed above.
+**The purpose of `group`** is solely to match which preProcess block should execute.
+preProcess can use `if/else-if` chains or `switch` statements — both are valid.
+
+> ⚠️ **FORBIDDEN**: Inventing new group strings when an existing group already creates the same entity type and stores the same LocalStorage keys you need. Always **read the entity's existing preProcess()** before adding a new group. Only create a new group when genuinely different setup is required.
 
 ### Where `preProcess()` lives — check subclass first, then parent
 
-`preProcess()` is often defined in the module parent class, but **subclasses can and do
+`preProcess()` is an **abstract method** in `Entity.java`:
+```java
+protected abstract boolean preProcess(String group, String[] dataIds);
+```
+It is often implemented in the **module parent class**, but **subclasses can and do
 override it**. Always check the **subclass first** for a `preProcess()` override before
 looking in the parent.
 

@@ -48,7 +48,7 @@ annotations:
         known_values: [RELEASE_CHECKLIST, SMOKE, REGRESSION, E2E]
       - name: switchOn
         type: enum
-        values: [BEFORE_PRE_PROCESS, AFTER_PRE_PROCESS]
+        values: [BEFORE_PRE_PROCESS, AFTER_PRE_PROCESS, NEVER]
         default: AFTER_PRE_PROCESS
       - name: owner
         type: String

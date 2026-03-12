@@ -190,10 +190,18 @@ Before writing any REST API path or input wrapper (in preProcess, APIUtil, or sd
 
 ## preProcess Groups
 
-- `preProcess()` lives in the **parent class** (e.g., `Change.java`, `Solution.java`)
+- `preProcess()` is an **abstract method** defined in `Entity.java`: `protected abstract boolean preProcess(String group, String[] dataIds);`
+- It is often implemented in the **module parent class** (e.g., `Change.java`, `Solution.java`), but **subclasses can and do override it**
+- **Discovery order (mandatory):**
+  1. Check the leaf/subclass file for a `preProcess()` override — if present, that is authoritative
+  2. If it ends with `return super.preProcess(group, dataIds)`, also read the parent
+  3. If no override in subclass, fall back to the parent class
 - Read parent's existing groups before adding new ones
 - Reuse existing groups when they create the same entity type + store the same LocalStorage keys
-- FORBIDDEN: Inventing group names not defined in the parent class
+- FORBIDDEN: Inventing group names not found in the entity's `preProcess()` if/else-if or switch/case branches
+- Both `group = ""` and `group = "NoPreprocess"` are valid for no-setup scenarios (pair with `dataIds = {}`)
+- `group` can have a value with empty `dataIds = {}` when the group handles data creation internally
+- `preProcess()` can use either `if/else-if` chains or `switch` statements — both are valid
 
 ### ⭐ Minimal Group Selection (MANDATORY)
 
@@ -206,6 +214,24 @@ Always select the **lightest preProcess group** that satisfies the test method's
 | Extra entities (`linkChange_*_id`, etc.) | heavy multi-entity group | linking template constant |
 
 **FORBIDDEN**: Assigning heavy groups (e.g., `CREATE_MULTIPLE_CHANGE_FOR_LINKING`) to scenarios that only use `getEntityId()` or no entity at all. This wastes API calls and slows the test suite.
+
+### preProcess Exception Handling (MANDATORY for new code)
+
+`preProcess` exception handling varies by module — some modules silently swallow exceptions (`catch(Exception) { return false; }`), causing tests to be skipped with zero visibility. **New code MUST always use `addFailureReport()` in preProcess catch blocks** — failure visibility is critical for the self-healing process.
+
+```java
+// ✅ CORRECT — failure visible in ScenarioReport:
+} catch(Exception exception) {
+    report.addCaseFlow("Exception occurred while pre processing: " + exception);
+    addFailureReport("Pre-process failed", exception.getMessage());
+    return false;
+}
+
+// ❌ FORBIDDEN in new code — silent skip, impossible to debug:
+} catch(Exception exception) {
+    return false;
+}
+```
 
 ## Select2 Dropdowns
 
@@ -226,14 +252,15 @@ actions.navigate.clickModule()     // ❌ use navigate.toModule(name)
 
 ```java
 addSuccessReport("message");                     // explicit success
-addFailureReport("what failed", "why");          // explicit failure
+addFailureReport("what failed", "why");          // explicit failure — sets scenarioDetails.setSuccess(false)
 addReport("message");                            // SMART — checks failureMessage.length():
                                                  //   == 0 → addSuccessReport(message)
                                                  //   >  0 → addFailureReport(message, failureMessage)
-clearFailureMessage();                           // resets failureMessage between independent checks
 ```
 
-Use `addReport()` after validation blocks where `failureMessage` accumulates errors. Use `clearFailureMessage()` to reset between independent validation blocks within the same method.
+**`clearFailureMessage()` is called automatically** inside every `addReport()` / `addSuccessReport()` / `addFailureReport()` call (verified in EntityCase.java source). Only call `clearFailureMessage()` manually if you need to **discard** accumulated failures mid-step before reporting.
+
+Use `addReport()` after validation blocks where `failureMessage` accumulates errors.
 
 ## DataUtil Caching — Important Warning
 

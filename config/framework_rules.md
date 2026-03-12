@@ -234,67 +234,73 @@ Module hierarchy examples:
 - New group applicable to the whole module → add to the parent class.
 - FORBIDDEN: duplicating a group branch in a subclass when the parent already handles it.
 
-### 5.2 VALID groups — Requests module
-```
-"create"                     → creates a single request via API
-"rowColor"                   → creates request for row-color test
-"customView"                 → creates list-view filter via API
-"PinFavorite"                → creates pinned favorite filter
-"multipleCreate"             → creates multiple requests
-"detailView"                 → creates request for detail-view tests
-"addTask"                    → creates request + task template
-"addTaskTemplate"            → creates task template only
-"BulkCreate"                 → creates requests for bulk operations
-"assetRequest"               → creates request with asset linkage
-"mixedCreate"                → creates mixed IR+SR requests
-"differentRequest"           → creates requests of different types
-"SubEntity_Resolution"       → creates resolution sub-entity
-"SubEntity_Reminder"         → creates reminder sub-entity
-"SubEntity_createTask"       → creates task sub-entity
-"SubEntity_createTask2"      → creates second task variant
-"Associations"               → creates linked associations
-"copyResolution"             → creates request to copy resolution from
-"delete_all_sites_create_request" → site-cleanup + request
-"create_sla"                 → creates request with SLA
-"requester_create"           → creates request as requester
-"signature"                  → creates request for signature test
-"columnchoosersitelookupfield" → creates request for column-chooser test
-"NoPreprocess"               → ⚡ NO setup at all (see 5.3)
+### 5.2 Discovering valid groups for ANY module
+
+Groups are NOT hardcoded per module in this reference — they are discovered from the source code.
+
+**Discovery procedure (MANDATORY before writing any @AutomaterScenario):**
+
+```bash
+# 1. Find the entity's preProcess method:
+grep -n "preProcess" $PROJECT_NAME/src/com/zoho/automater/selenium/modules/<module>/<entity>/<Entity>.java
+
+# 2. Read the method body — each if/else-if or switch/case branch is a valid group:
+#    if ("create".equalsIgnoreCase(group)) { ... }
+#    else if ("detailView".equalsIgnoreCase(group)) { ... }
+#    → valid groups: "create", "detailView"
+
+# 3. If subclass ends with super.preProcess(group, dataIds), also check parent
 ```
 
-### 5.3 VALID groups — Solutions module
-```
-"create"                         → creates a solution via API
-"create_cust_sol_temp"           → creates solution with custom template
-"create_cust_temp_topic"         → creates solution with custom template + topic
-"createMultipleSolution"         → creates multiple solutions
-"create_topic"                   → creates a topic
-"NoPreprocess"                   → ⚡ NO setup at all (see 5.3)
-```
+**Common group patterns across modules** (names vary — always verify from source):
 
-### 5.4 NoPreprocess — complete behavior (CONFIRMED from source)
-- `Request.preProcess()` has NO if-branch for `"NoPreprocess"` → falls through all branches → returns `true`
-- `Request.postProcess()` also has NO handler for `"NoPreprocess"` → does nothing
-- **Result: zero API calls, zero cleanup — safe to use for pure UI tests**
+| Pattern | Typical purpose |
+|---|---|
+| `"create"` | Creates a single entity via API |
+| `"detailView"` or `"detailview"` | Creates entity for detail-view tests |
+| `"multipleCreate"` or `"BulkCreate"` | Creates multiple entities |
+| `"NoPreprocess"` or `""` | No setup at all — zero API calls |
+| `"Associations"` | Creates linked/associated entities |
+| Sub-entity groups (e.g., `"SubEntity_createTask"`) | Creates sub-entities attached to a parent |
+
+> **FORBIDDEN**: Using a group string not found in the entity's `preProcess()` method.
+> Unknown groups silently fall through all if/else-if branches → `return true` with zero setup
+> → test runs with missing data → confusing failures.
+
+### 5.3 NoPreprocess / empty group — complete behavior
+
+Both `group = "NoPreprocess"` and `group = ""` are valid ways to indicate no setup is needed.
+In most modules, neither string matches any if-branch → falls through all branches → returns `true`.
+Similarly, `postProcess()` has no matching handler → does nothing.
+
+**Result: zero API calls, zero cleanup — safe to use for pure UI tests.**
+
 - Always pair with empty `dataIds`:
 ```java
 group   = "NoPreprocess",
 dataIds = {}         // preferred
 // OR
-dataIds = {""}       // also acceptable (legacy style)
+group   = "",
+dataIds = {}         // also valid — same effect
 ```
 
-### 5.5 FORBIDDEN — inventing group names
+**`group` + `dataIds` combinations explained:**
+
+| Scenario | group | dataIds | Meaning |
+|---|---|---|---|
+| No data creation needed | `""` or `"NoPreprocess"` | `{}` | preProcess skips or returns `true` immediately — no API calls, no cleanup |
+| Group handles creation internally | e.g. `"create"` | `{}` | preProcess runs the matching block; data creation is hardcoded inside (no dataIds needed) |
+| Group uses passed dataIds | e.g. `"create"` | `{AnnotationConstants.Data.KEY1, ...}` | preProcess uses `getTestCaseDataUsingCaseId(dataIds[0])`, `dataIds[1]`, etc. by index |
+
+### 5.4 FORBIDDEN — inventing group names
 ```java
-// WRONG — "createRequest" is not a valid group in Request.preProcess()
-group = "createRequest"
-
-// WRONG — "newSolution" is not in SolutionBase.preProcess()
-group = "newSolution"
+// WRONG — inventing a group without verifying it exists in preProcess()
+group = "createRequest"   // not in any preProcess unless you verified
+group = "newSolution"     // not in any preProcess unless you verified
 ```
-Only use the exact strings from Section 5.2 and 5.3.
+Only use group strings that match an actual `if/else-if` or `switch/case` branch in the entity's `preProcess()` method. Always verify by reading the source.
 
-### 5.6 ⭐ MINIMAL GROUP SELECTION (MANDATORY) — use the lightest sufficient group
+### 5.5 ⭐ MINIMAL GROUP SELECTION (MANDATORY) — use the lightest sufficient group
 
 > **Root cause of past bugs**: All scenarios in a batch were given the heaviest group
 > (e.g., `CREATE_MULTIPLE_CHANGE_FOR_LINKING`) even when the test method only called
@@ -320,7 +326,7 @@ Only use the exact strings from Section 5.2 and 5.3.
 > **FORBIDDEN**: Defaulting all scenarios to the heaviest group "just in case".
 > This wastes API calls, slows the suite, and creates unnecessary cleanup.
 
-### 5.7 ⭐ GROUP REUSE — prefer reusing existing groups over adding new else-if blocks
+### 5.6 ⭐ GROUP REUSE — prefer reusing existing groups over adding new else-if blocks
 
 Before adding a new else-if branch to `preProcess()`, **READ the existing preProcess() body** first.
 If an existing group already:
@@ -837,7 +843,7 @@ public void myTest() {
 ## SECTION 11 — postProcess PATTERN
 
 ### 11.1 When postProcess is needed
-The base class `Request.postProcess()` handles cleanup for groups: `rowColor`, `customView`, `create`, `detailview`, `addTask`, `mixedCreate`, `differentRequest`.
+The base class `postProcess()` method handles cleanup for groups that were set up in `preProcess()`. Read the parent class's `postProcess()` to see which groups have cleanup handlers.
 
 For groups that have a postProcess handler, the LEAF class overrides like this:
 ```java
@@ -905,7 +911,7 @@ String text = AutomaterUtil.getValueAsStringFromInputUsingAPIPath(inputData, Req
 ```
 
 ### 13.3 NEVER invent group names
-Only use the exact group strings listed in Section 5.2 and 5.3.
+Only use group strings that match actual `if/else-if` or `switch/case` branches in the entity's `preProcess()` method. Always verify by reading the source (see Section 5.2).
 
 ### 13.4 NEVER invent API endpoint strings
 ```java
@@ -990,7 +996,7 @@ actions.validate.successMessageInAlertAndClose("Saved successfully");
 ### 15.1 New test scenario checklist
 Before generating a new `@AutomaterScenario`, verify:
 - [ ] `id` is unique — run the grep from Section 7.2
-- [ ] `group` is a valid string from Section 5.2 or 5.3
+- [ ] `group` is a valid string from the entity's `preProcess()` method (see Section 5.2)
 - [ ] `runType` is explicitly set (not relying on default)
 - [ ] `owner` is from the list in Section 6.2
 - [ ] `dataIds` match the constants you're declaring in DataConstants
@@ -1881,9 +1887,11 @@ Do NOT call `clearFailureMessage()` manually unless you want to discard accumula
 
 > **Worked examples & full patterns**: See `framework_knowledge.md` § "preProcess Pattern".
 
-### 28.1 Use `switch(group)` for preProcess with 4+ groups
+### 28.1 `if/else-if` or `switch(group)` — both valid
 
-`if/else‑if` chains become hard to read beyond 3 branches. Use Java `switch` with `break`.
+`preProcess()` can use **either** `if/else-if` chains or Java `switch` statements to
+match group strings. Both patterns exist in the codebase. Use whichever is clearer for
+the number of groups — there is no fixed threshold.
 
 ### 28.2 Prefer `addFailureReport` inside preProcess catch (not silent `return false`)
 

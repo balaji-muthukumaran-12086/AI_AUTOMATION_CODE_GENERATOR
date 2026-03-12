@@ -90,9 +90,9 @@ public class Solution extends SolutionBase {
     @Override
     @AutomaterScenario(
         id          = "SDPOD_AUTO_SOL_CREATE_001",   // ← REQUIRED — next sequential number
-        group       = "",                             // ← "" when no preProcess setup needed
+        group       = "NoPreprocess",                 // ← "" or "NoPreprocess" when no preProcess setup needed
         priority    = Priority.HIGH,
-        dataIds     = {},                             // ← {} when group=""
+        dataIds     = {},                             // ← {} when no data creation required
         tags        = {},
         owner       = OwnerConstants.RAJESHWARAN_A,
         runType     = ScenarioRunType.USER_BASED,   // USER_BASED = no cross-test side effects
@@ -100,6 +100,9 @@ public class Solution extends SolutionBase {
         // in the suite (e.g. business rules, SLA, automation rules). PORTAL_BASED runs in
         // isolation — effects are scoped and cleaned up within that session.
         description = "Creating Unapproved Private solution using general template"
+        // switchOn omitted → defaults to SwitchToUserSession.AFTER_PRE_PROCESS
+        // Use BEFORE_PRE_PROCESS when preProcess must run in user session
+        // Use NEVER when entire test must run in admin session
     )
     public void createUnapprovedPrivateSolutionGT() {
         super.createUnapprovedPrivateSolutionGT();  // ← ONLY THIS. No logic here.
@@ -172,24 +175,39 @@ public void createUnapprovedPrivateSolutionGT() {
 
 ### Architecture — where preProcess() lives
 
-`preProcess()` is always defined in the **module parent class**, not in subclasses.
-Subclasses inherit it; if a subclass needs its own unique groups it overrides and calls
-`return super.preProcess(group, dataIds)` at the end to delegate to the parent.
-
-```
-Change.java (parent)     → owns preProcess() → all scenario subclasses inherit it
-DetailsView extends Change → NO preProcess override — uses Change.java's groups
-
-Solution.java (parent)   → owns preProcess() → ends with super.preProcess(group, dataIds)
-SolutionBase.java        → base helper class (Entity setup, not preProcess groups)
+`preProcess()` is an **abstract method** defined in `Entity.java`:
+```java
+/**
+ * Used to populate data for the current entity as well as for the parent entity.
+ * Group and data ids details provided in the automater annotation
+ * w.r.t the function will be passed as an argument.
+ */
+protected abstract boolean preProcess(String group, String[] dataIds);
 ```
 
-**To discover available groups for a scenario: read the parent class (not the subclass).**
+`preProcess()` is often defined in the **module parent class**, but **subclasses can and do
+override it**. Always check the **subclass first** for a `preProcess()` override before
+looking in the parent.
+
+```
+Change.java (parent)            → owns preProcess with all group branches by default
+DetailsView extends Change      → if no override, inherits parent's preProcess
+ChangeWorkflow extends Workflow  → may have its own preProcess override for workflow-specific groups
+
+Solution.java (parent)          → owns preProcess, ends with super.preProcess(group, dataIds)
+SolutionBase.java               → base helper class, not where groups are defined
+```
+
+**Discovery order (mandatory):**
+1. Open the leaf/subclass file → look for its own `preProcess()` method
+2. If found: that is authoritative. Check if it ends with `return super.preProcess(group, dataIds)` — if yes, also read the parent
+3. If not found: open the parent class (from `extends` clause) and read its `preProcess()`
+
 ```bash
 # Find parents: check extends clause in the scenario file
 grep -n "class .* extends" <TargetClass>.java
 # Then read preProcess() in that parent class
-grep -n "equalsIgnoreCase" <ParentClass>.java
+grep -n "equalsIgnoreCase\|case " <ParentClass>.java
 ```
 
 ```java
@@ -237,8 +255,17 @@ protected boolean preProcess(String group, String[] dataIds) {
 }
 ```
 
-**Critical rule:** group="" means no preProcess setup. dataIds={} when group="".
-**When group is non-empty:** dataIds must reference string constants from `SolutionAnnotationConstants.Data`.
+**Critical rules for group + dataIds:**
+
+| Scenario | group | dataIds | Meaning |
+|---|---|---|---|
+| No data creation needed at all | `""` or `"NoPreprocess"` | `{}` | preProcess either skips or returns true immediately — no API calls, no cleanup |
+| Group handles data creation internally | `"create"` | `{}` | preProcess executes the matching if/else or switch block, but data creation is handled without dataIds (e.g., hardcoded API calls or data loaded from known constants inside the block) |
+| Group uses passed dataIds for data creation | `"create"` | `{AnnotationConstants.Data.KEY1, ...}` | preProcess uses `getTestCaseDataUsingCaseId(dataIds[0])`, `dataIds[1]`, etc. by index |
+
+**The purpose of `group`** is solely to match which preProcess block (if/else or switch-case) should execute.
+**`dataIds`** is an optional array — some groups need them, some don't. It depends on the implementation.
+**When dataIds are provided**, they must reference string constants from `<Entity>AnnotationConstants.Data`.
 
 ### ⭐ Minimal Group Selection (MANDATORY)
 Always select the **lightest** preProcess group that satisfies the test method's actual data needs:
