@@ -1,6 +1,6 @@
 ---
 description: "Use when generating new Selenium test cases, writing @AutomaterScenario methods, creating test data entries, or adding new preProcess groups for the SDP automation framework. Primary input: upload a use-case CSV to {PROJECT}/Testcase/. Also accepts plain-text descriptions."
-tools: [read, edit, search, execute, todo]
+tools: [read, edit, search, execute, todo, mcp_microsoft_pla/*]
 model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
 argument-hint: "Upload a use-case CSV to your project's Testcase/ folder, then invoke this agent. Or describe the scenario in plain text (e.g., 'create a change and verify the detail view title')."
 instructions:
@@ -1228,42 +1228,196 @@ Read and confirm the plan:
 cat $PROJECT/execution_plan.md
 ```
 
-#### P2d — Detect run mode and hand off
+#### P2d — Run & Self-Heal (inline — no manual handoff)
 
-Check whether the user configured "generate and run" mode:
+> **Why this phase exists**: In vanilla Copilot chat, generate → run → Playwright debug → fix → re-run
+> all happen in one unbroken context. This phase replicates that seamless flow inside `@test-generator`
+> so you never need to manually invoke `@test-runner` after generation.
+>
+> `@test-runner` remains available as a **standalone re-run/debug tool** for:
+> - Re-running a single test later: `@test-runner Change.verifyDetailView`
+> - Re-running the full batch after manual edits: `@test-runner batch`
+> - Debugging a test in isolation without regenerating
 
+This phase runs ALL generated tests, then self-heals failures using Playwright MCP — all within this agent session.
+
+##### R1 — Dry Run (run ALL tests, no debugging)
+
+Run the full batch:
 ```bash
-grep -oP '(?<=SETUP_MODE=).*' .env 2>/dev/null || echo "generate_only"
+cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
+.venv/bin/python batch_run_helper.py --batch 2>&1
 ```
 
-**If `SETUP_MODE=generate_and_run`:**
-
-Tell the user:
+Parse results:
+```bash
+cat batch_run_results.json | .venv/bin/python -c "
+import json, sys
+d = json.load(sys.stdin)
+print(f'Total: {d[\"total\"]} | Pass: {d[\"passed\"]} | Fail: {d[\"failed\"]}')
+for r in d['results']:
+    icon = '✅' if r['status'] == 'PASS' else '❌'
+    print(f'{icon} {r[\"test_key\"]} → {r[\"status\"]}')
+    if r.get('failure_info'):
+        print(f'   ⚠️  {r[\"failure_info\"][:120]}')
+"
 ```
-✅ Generated {N} scenario(s):
-- tests_to_run.json: {N} entries
-- Execution plan: {PROJECT}/execution_plan.md
 
-Run mode is **generate_and_run** — invoking `@test-runner batch` now.
-The runner will execute the full 5-phase pipeline:
-  Phase 2: Dry Run → Phase 3: Self-Heal → Phase 4: Validation → Phase 5: Summary
+Update the execution plan MD — replace ⏳ in each test's Dry Run column with ✅ PASS or ❌ FAIL.
 
-👉 Use `@test-runner batch` to start the run.
+**If ALL tests passed**: Skip R2–R4, proceed to Step P3.
+
+##### R2 — Self-Heal (diagnose & fix each failed test)
+
+For each FAILED test from R1:
+
+**a) Analyze failure** — Read ScenarioReport.html:
+```bash
+REPORT_DIR=$(ls -dt $PROJECT/reports/LOCAL_<methodName>_* 2>/dev/null | head -1)
+cat "$REPORT_DIR/ScenarioReport.html"
 ```
 
-**If `SETUP_MODE=generate_only` (or not set):**
+**b) Classify failure:**
 
-Tell the user:
-```
-✅ Generated {N} scenario(s):
-- tests_to_run.json: {N} entries
-- Execution plan: {PROJECT}/execution_plan.md
+| Symptom | Type | Fix Target |
+|---------|------|------------|
+| `NoSuchElementException` / `TimeoutException` | LOCATOR | `*Locators.java` — inspect with Playwright MCP |
+| `NullPointerException` in restAPI / preProcess | API | preProcess data / API paths |
+| `AssertionException` / wrong validation | LOGIC | Test method in `*Base.java` |
+| javac errors | COMPILE | Syntax/import fix |
+| SDP behaviour differs from spec | **PRODUCT_BUG** | No code fix — report |
 
-Run mode is **generate only** — tests are ready for review.
-To run the full batch pipeline: `@test-runner batch`
-  (Phases: Dry Run → Self-Heal → Validation → Summary)
-To run a single test: `@test-runner <EntityClass>.<methodName>`
+**c) For LOCATOR failures — Use Playwright MCP:**
+
+1. Login to SDP:
 ```
+browser_navigate → SDP_URL
+browser_snapshot → verify login page
+browser_fill_form → username/password
+browser_click → Login button
+browser_snapshot → verify dashboard
+```
+
+2. Consult API reference:
+   Before writing any API path, **read** `docs/api-doc/SDP_API_Endpoints_Documentation.md`.
+
+3. Create prerequisite data (if needed) via `browser_evaluate`:
+```javascript
+() => sdpAPICall('changes', 'post',
+  'input_data=' + JSON.stringify({
+    change: { title: "Debug Change " + Date.now(), change_type: { name: "Standard" } }
+  })
+).responseJSON
+```
+**CRITICAL**: Use raw `JSON.stringify()` — do NOT use `encodeURIComponent`.
+
+4. Navigate to failing state → `browser_snapshot` → read accessibility tree
+5. Compare snapshot with broken XPath in `*Locators.java` → construct correct XPath
+6. Cleanup: DELETE all created entities via `sdpAPICall('<module>/<id>', 'del').responseJSON`
+
+**d) Apply fix** — Edit `*Locators.java`, `*Base.java`, `*ActionsUtil.java`, etc.
+
+**e) Targeted recompile** after ALL self-heal fixes:
+```bash
+CP="$BIN:$(find "$DEPS" -name "*.jar" | tr '\n' ':')"
+javac -encoding UTF-8 -cp "$CP" -d "$BIN" <list of ALL changed .java files>
+```
+
+> **Batch recompile optimization**: Fix ALL failed tests first, then recompile once.
+> If multiple tests share the same broken locator, fix it once.
+
+##### R3 — Validation Run (re-run ONLY previously failed tests)
+
+Re-run each fixed test individually:
+```bash
+.venv/bin/python batch_run_helper.py <EntityClass> <methodName> 2>&1
+```
+
+- Parse RESULT:PASS|FAIL output
+- **Max 3 total attempts per test** across R2 + R3
+- If still failing after 3 attempts → mark PRODUCT_BUG or UNRESOLVABLE
+- Repeat R2→R3 if new failures appear (max 2 validation cycles)
+
+Update execution plan MD — Validation column: ✅ PASS / ❌ STILL_FAILING / ⏭️ SKIPPED
+
+##### R4 — Summary
+
+Present final results:
+```
+📊 Batch Results:
+- Total: {N}
+- ✅ Passed (first run): {N}
+- 🔧 Passed (after self-heal): {N}
+- 🐛 Product Bugs: {N}
+- ⛔ Unresolvable: {N}
+- Success Rate: {dry_run}% → {final}%
+```
+
+For every PRODUCT_BUG or unresolvable FAILED test, generate a bug report:
+```
+---
+🐛 BUG REPORT: <Entity.Method> — <one-line summary>
+
+**Scenario ID**: <@AutomaterScenario id>
+**Failure Type**: PRODUCT_BUG | UNRESOLVABLE_FAILURE
+**Module**: <module name>
+**Severity**: <Critical / Major / Minor>
+
+**Summary**: <2-3 sentences: what failed, why it's a product issue vs test issue>
+
+**Steps to Reproduce**:
+1. Login as <role>
+2. Navigate to <module> → <page>
+3. <exact manual steps>
+4. <expected vs actual>
+
+**Report Path**: `<path to ScenarioReport.html>`
+**Screenshot Path**: `<path to screenshots/>`
+---
+```
+
+##### R5 — Learning Extraction
+
+Persist learnings for the feedback loop:
+```bash
+.venv/bin/python << 'LEARNING_EXTRACT'
+import json, os
+from datetime import datetime
+from pathlib import Path
+
+LEARNINGS_LOG = Path("logs/learnings.jsonl")
+LEARNINGS_LOG.parent.mkdir(parents=True, exist_ok=True)
+
+results_file = "batch_run_results.json"
+if not os.path.exists(results_file):
+    exit(0)
+
+with open(results_file) as f:
+    data = json.load(f)
+
+results = data if isinstance(data, list) else data.get("results", [])
+
+with open(LEARNINGS_LOG, "a") as log:
+    for r in results:
+        status = r.get("status", "UNKNOWN")
+        method = r.get("method_name", "?")
+        entity = r.get("entity_class", "?")
+        error  = r.get("error", r.get("failure_info", ""))
+        entry = {
+            "timestamp": datetime.now().isoformat(),
+            "learning_type": "PATTERN" if status in ("PASS", "PASSED") else "RULE",
+            "title": f"{entity}.{method} {'passed' if status in ('PASS','PASSED') else 'failed: ' + str(error)[:80]}",
+            "source": f"test-generator batch @ {datetime.now().strftime('%Y-%m-%d')}",
+            "entity_class": entity,
+            "method_name": method,
+        }
+        log.write(json.dumps(entry) + "\n")
+
+print(f"Wrote {len(results)} learning entries to {LEARNINGS_LOG}")
+LEARNING_EXTRACT
+```
+
+Also update `config/framework_rules.md` and `config/framework_knowledge.md` with any new failure rules or success patterns discovered during self-healing (append under `## LEARNED RULES` or `## LEARNED PATTERNS` sections).
 
 ### Step P3 — Index into ChromaDB
 

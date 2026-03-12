@@ -43,8 +43,8 @@ the copied problem is searchable in the Problems listview.
 """
 
 RUN_CONFIG = {
-    "entity_class":  "DetailsView",
-    "method_name":   "verifyAttachDropdownOptions",
+    "entity_class":  "LinkingChange",
+    "method_name":   "verifyParentChangePopupOpens",
     "url":           SDP_URL,
     "admin_mail_id": SDP_ADMIN_EMAIL,
     "email_id":      SDP_EMAIL_ID,

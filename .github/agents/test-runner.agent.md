@@ -84,10 +84,16 @@ User provides `EntityClass.methodName` (e.g., `Solution.createSolution`).
 User says "batch", "run all", "run the generated tests", or is handed off from `@test-generator`.
 - **Skip directly to Phase 1** (the 5-phase batch pipeline below)
 
-### Mode C: Generated tests (from @test-generator handoff)
-User says "run the generated tests" or @test-generator invokes this agent.
+### Mode C: Re-run generated tests
+User says "run the generated tests" or wants to re-run after manual edits.
 - Verify `tests_to_run.json` exists and has entries
 - **Skip directly to Phase 1** (same 5-phase batch pipeline)
+
+> **Note**: `@test-generator` now includes an inline Run & Self-Heal phase (Step P2d)
+> that executes tests + Playwright MCP debugging immediately after generation — matching
+> the seamless vanilla Copilot chat experience. This agent (`@test-runner`) is still
+> useful for: re-running tests after manual code changes, running a single test in
+> isolation, or re-running the full batch without regenerating.
 
 ---
 
