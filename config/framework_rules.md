@@ -3,17 +3,8 @@
 
 ### 0.1 Derive the target module from the use-case description, never from the active file
 
-Before writing a single line of code, map the **entity noun in the scenario description** to
-the correct module directory:
-
-| Use-case noun | Module path | Typical leaf class(es) |
-|---|---|---|
-| incident request / IR / notes on IR | `modules/requests/request/` | `IncidentRequest`, `IncidentRequestNotes`, `RequestNotes` |
-| service request / SR / notes on SR | `modules/requests/request/` | `ServiceRequest`, `ServiceRequestNotes` |
-| solution | `modules/solutions/solution/` | `Solution`, `SolutionBase` |
-| problem | `modules/problems/problem/` | `Problem`, `ProblemBase` |
-| change | `modules/changes/change/` | `Change`, `ChangeBase` |
-| task | `modules/tasks/task/` | `Task`, `TaskBase` |
+> **Module placement table**: See `copilot-instructions.md` § "MODULE PLACEMENT" for the full
+> use-case noun → module path → leaf class mapping table.
 
 ### 0.2 Check for an existing leaf class before creating a new one (REQUIRED)
 
@@ -390,20 +381,9 @@ ModulesRoleSkeleton.SDADMIN
 ```
 
 ### 6.2 Owner constants (use EXACTLY these — import `OwnerConstants`)
-```java
-OwnerConstants.UMESH_SUDAN
-OwnerConstants.ANTONYRAJAN_D
-OwnerConstants.RAJESHWARAN_A
-OwnerConstants.MUTHUSIVABALAN_S
-OwnerConstants.VINUTHNA_K
-OwnerConstants.NANTHAKUMAR_G
-OwnerConstants.VIGNESH_E
-OwnerConstants.RUJENDRAN
-OwnerConstants.THILAK_RAJ
-OwnerConstants.PURVA_RAJESH
-OwnerConstants.VEERAVEL
-OwnerConstants.JAYA_KUMAR
-```
+
+> **Full owner list**: See `copilot-instructions.md` § "Owner Constants" for all 40+ constants.
+> Auto-detected from hg username via `config/project_config.py → OWNER_CONSTANT`.
 
 ### 6.3 ScenarioRunType constants
 ```java
@@ -501,41 +481,10 @@ Every data entry in `<entity>_data.json` must follow this exact structure:
 4. Boolean fields = direct `true` / `false`, NOT `"true"` string
 5. Text fields = plain string
 
-### 8.2 Available runtime placeholders (complete PlaceholderUtil list)
-```
-# Date / time
-$(date, delay, isAhead)              → date in milliseconds (delay=days offset, isAhead=true/false)
-$(datetime, delay, isAhead)          → datetime in milliseconds
+### 8.2 Available runtime placeholders
 
-# Unique strings
-$(unique_string)                     → current timestamp as string (unique per run)
-$(common_string)                     → timestamp with part name (shared across parts of same run)
-
-# User identity (resolved at runtime for the active scenario user)
-$(user_name)                         → current scenario user's display ID
-$(user_email_id)                     → current scenario user's email address
-$(user_id)                           → current scenario user's entity ID
-
-# Admin identity
-$(admin_email_id)                    → admin's email address
-$(admin_name)                        → admin's display ID
-
-# MSP (multi-tenant) — only for MSP-mode tests
-$(mspcustomer_id)                    → MSP customer ID
-$(mspcustomer_name)                  → MSP customer name
-$(mspcustomer_email)                 → MSP customer email
-
-# Dynamic REST API call — advanced
-$(rest_api, method, entity, url, dataId, [iterate])
-    → executes a REST API call at data-load time and injects the result
-
-# LocalStorage bridge — read a value stored by preProcess
-$(local_storage, method, key, value) → stores/retrieves from LocalStorage
-$(custom_KEY)                        → shorthand: returns value stored in LocalStorage as KEY
-                                       e.g. $(custom_general_topic) → LocalStorage.get("general_topic")
-                                       e.g. $(custom_solution_template) → LocalStorage.get("solution_template")
-                                       e.g. $(custom_topic) → LocalStorage.get("topic")
-```
+> **Complete placeholder table**: See `copilot-instructions.md` § "Complete Runtime Placeholder Reference"
+> and `framework_knowledge.md` § "Complete Placeholder Reference" for the full `$(...)` list.
 
 **Key rule**: `$(custom_KEY)` maps directly to whatever string was `LocalStorage.store(KEY, value)` in preProcess.
 
@@ -1065,119 +1014,31 @@ When generating the code output, verify:
 
 ---
 
-## SECTION 16 — VALIDATOR API (complete — `actions.validate`)
+## SECTION 16 — VALIDATOR, DETAILSVIEW & LISTVIEW API REFERENCE
+
+> **Full method signatures**: See `copilot-instructions.md` §§ "Complete `actions.validate` API",
+> "Complete `actions.detailsView` API", and "Complete `actions.listView` API".
+
+### 16.1 Key usage rules (keep these in mind when using the APIs above)
 
 ```java
-// Text / content checks
-Boolean actions.validate.textContent(Locator locator, String content)
-    // compares trimmed element text to content — returns true/false, logs result
-
-// Notification / alert checks
-void actions.validate.successMessageInAlert(String message)
-    // asserts a success-class notification banner contains message
-void actions.validate.successMessageInAlertAndClose(String message)
-    // asserts success notification then closes it
-void actions.validate.errorMessageInAlert(String message)
-    // asserts an error-class notification contains message
-void actions.validate.errorMessageInAlertAndClose(String message)
-    // asserts error notification then closes it
-void actions.validate.verifyMessageInAlert(Boolean isSuccess, String message)
-    // isSuccess=true → success class, false → error class
-void actions.validate.verifyMessageInAlertAndClose(Boolean isSuccess, String message)
-    // same + closes
-boolean actions.validate.isSuccessNotification(String notificationClass)
-    // low-level check: is the element with notificationClass a success element?
-
-// Assertion helpers
-void actions.validate.customAssert(String expected, String got)
-    // throws AssertionError with diff message if not equal
-void actions.validate.customAssert(Boolean expected, Boolean got)
-    // boolean equality assertion
-void actions.validate.confirmationBoxTitleAndConfirmationText(String title, String confirmText)
-    // verifies confirmation dialog title and body text
-
-// Date/datetime validation
-Boolean actions.validate.validateDate(Locator locator, Long value)
-    // verifies date displayed at locator matches the millisecond value
-Boolean actions.validate.validateDateTime(Locator locator, Long value, boolean isTimeField)
-    // same but also validates time portion when isTimeField=true
-
-// Form validation
-void actions.validate.validateFormFieldValues(Map<String, FieldDetails> fields, JSONObject inputData)
-    // iterates fields and asserts each displayed value matches inputData
-```
-
-### 16.1 Most common patterns
-
-#### Complete `actions.detailsView` API
-
-```java
-actions.detailsView.clickSubTab(String subTabName)
-actions.detailsView.clickFromActions(String actionName)
-actions.detailsView.verifyFieldInDetailsPage(String field, String value)   // returns boolean
-actions.detailsView.getFieldValueFromDetailsPage(String field)
-actions.detailsView.getValueFromRhsDetails(String fieldName)
-actions.detailsView.clickRhsDetails(String fieldName)
-actions.detailsView.verifyRecentHistoryDescription(String desc)
-actions.detailsView.verifyTitleInDetailsPage(String expected)              // returns boolean
-actions.detailsView.getTitle()
-// Spot edit:
-actions.detailsView.spotEditFieldUsingSearch(String field, String value)
-actions.detailsView.spotEditTypeField(String field, String value)
-actions.detailsView.spotEditPickList(String field, String value)
-actions.detailsView.spotEditFieldWithoutSearch(String field, String value)
-actions.detailsView.spotEditMultiSelectField(String field, String value)
-```
-
-#### Common detailsView patterns
-```java
-// After creating — check title in details page
-// ⚠️ WARNING: MODULE_TITLE h1 text includes the display ID prefix (e.g. "SOL-8 MyTitle").
+// ⚠️ MODULE_TITLE h1 text includes the display ID prefix (e.g. "SOL-8 MyTitle").
 // actions.validate.textContent(MODULE_TITLE, "MyTitle") will FAIL due to the prefix.
 // ALWAYS use verifyTitleInDetailsPage() which handles the prefix correctly:
 Boolean ok = actions.detailsView.verifyTitleInDetailsPage(expectedTitle);
-
-// If you must use textContent directly, include the display ID in the expected string,
-// or use: actions.validate.textContent(MODULE_TITLE, displayId + " " + expectedTitle)
 
 // After save — check success banner
 actions.validate.successMessageInAlertAndClose("Record saved successfully");
 
 // After delete — check notification
 actions.validate.successMessageInAlert(SolutionConstants.AlertMessages.SOLUTIONS_DELETED_MSG);
-
-// Assert a specific field value
-boolean fieldOk = actions.detailsView.verifyFieldInDetailsPage("subject", expectedValue);
 ```
 
 ---
 
 ## SECTION 17 — WINDOWMANAGER API (`actions.windowManager`)
 
-```java
-// Open new tab/window and switch to it
-String handle = actions.windowManager.switchToNewTab(int timeoutSeconds)
-    // waits up to timeoutSeconds for a new tab/window, switches to it, returns handle
-String handle = actions.windowManager.switchToNewWindow(int timeoutSeconds)  // alias
-
-// Return to original tab
-void actions.windowManager.returnToOriginalTab()
-void actions.windowManager.returnToOriginalWindow()  // alias
-
-// Switch to tab by position / title / URL
-void actions.windowManager.switchToTabByIndex(int index)      // 0-based
-void actions.windowManager.switchToTabByTitle(String title)   // partial match
-void actions.windowManager.switchToTabByUrl(String url)       // partial match
-void actions.windowManager.switchToWindowByIndex(int index)   // alias
-void actions.windowManager.switchToWindowByTitle(String title)
-void actions.windowManager.switchToWindowByUrl(String url)
-
-// Close tabs
-void actions.windowManager.closeTabByIndex(int index)
-void actions.windowManager.closeAllTabsExceptOriginal()
-void actions.windowManager.closeWindowByIndex(int index)       // alias
-void actions.windowManager.closeAllWindowsExceptOriginal()     // alias
-```
+> **Full method signatures**: See `copilot-instructions.md` § "`actions.windowManager` API".
 
 ### 17.1 Standard multi-tab pattern
 ```java
@@ -1218,35 +1079,11 @@ String s = RandomUtil.randomChoice(String[] options)
 
 ---
 
-## SECTION 19 — FORMBUILDER COMPLETE API (`actions.formBuilder`)
+## SECTION 19 — FORMBUILDER API (`actions.formBuilder`)
 
-```java
-// Bulk fill (main entry point — uses entity configuration fields[])
-void fillInputForAnEntity(boolean isClientFramework, Map<String,FieldDetails> fields, JSONObject inputData)
-
-// Individual field fill methods
-void fillTextField(String name, String value)
-void fillTextAreaField(String name, String value)
-void fillSelectField(String name, String value)
-void typeAndSelectOption(String value)          // types into currently-focused dropdown then clicks match
-void selectValueInMultiField(String name, String value)  // selects one value in multi-select
-void fillMultiSelectField(FieldDetails fd, JSONObject inputData, String path)  // fills from JSON array
-void fillMultiSelectField(FieldDetails fd, List<Object> values)               // fills from list
-void fillHTMLField(String name, String value)
-void fillCriteria(JSONArray criteria)
-void fillInputForCustomField(FieldDetails fd, JSONObject inputData)  // no-op default — do NOT call
-
-// Date / datetime
-void fillDateField(String name, Long value)                                    // date-only
-void fillDateTimeField(String name, Long value)                                // date + time
-void fillDateTimeFieldInForm(String name, Long value, boolean isTimeField)     // in create form
-void fillDateTimeFieldInSpotEdit(String name, Long value, boolean isTimeField) // in spot-edit
-void fillDateTimeFieldByLocator(Locator fieldLocator, Long value, boolean isTimeField)  // by locator
-
-// Submit
-void submit()            // tries FORM_SAVE then FORM_SUBMIT
-void submit(String name) // clicks button by name
-```
+> **Full method signatures**: See `copilot-instructions.md` § "Complete `actions.formBuilder` API".
+> Key: `fillInputForAnEntity` skips `checkbox`, `radio`, `selectonly`, `selectaction`,
+> `mappedfield`, `systemSelect`, `selectRelationship`, `ipaddress` — handle manually.
 
 ### 19.1 Date helper — PlaceholderUtil
 ```java
@@ -1558,22 +1395,8 @@ find src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/ -name "*.j
 
 **Module registry (sample — not exhaustive):**
 
-| Module | Entity | ActionsUtil | APIUtil |
-|--------|--------|-------------|--------|
-| changes | change | `changes/change/utils/ChangeActionsUtil.java` | `changes/change/utils/ChangeAPIUtil.java` |
-| changes | downtime | `changes/downtime/utils/DowntimeActionsUtil.java` | `changes/downtime/utils/DowntimeAPIUtil.java` |
-| solutions | solution | `solutions/solution/utils/SolutionActionsUtil.java` | `solutions/solution/utils/SolutionAPIUtil.java` |
-| requests | request | — | `requests/request/utils/RequestAPIUtil.java` |
-| problems | problem | `problems/problem/utils/ProblemActionsUtil.java` | `problems/problem/utils/ProblemAPIUtil.java` |
-| releases | release | `releases/release/utils/ReleaseActionsUtil.java` | `releases/release/utils/ReleaseAPIUtil.java` |
-| projects | project | `projects/project/utils/ProjectActionsUtil.java` | `projects/project/utils/ProjectAPIUtil.java` |
-| assets | asset | `assets/asset/utils/AssetActionsUtil.java` | `assets/asset/utils/AssetAPIUtil.java` |
-| general | dashboard | `general/dashboard/utils/DashboardActionsUtil.java` | `general/dashboard/utils/DashboardAPIUtil.java` |
-| maintenance | — | `maintenance/utils/MaintenanceActionsUtil.java` | `maintenance/utils/MaintenanceAPIUtil.java` |
-| contracts | contract | `contracts/contract/utils/ContractActionsUtil.java` | `contracts/contract/utils/ContractAPIUtil.java` |
-| admin | — | `admin/utils/AdminActionsUtil.java` | `admin/utils/AdminAPIUtil.java` |
-| admin | workflows | `admin/automation/workflows/utils/WorkflowsActionsUtil.java` | `...WorkflowsAPIUtil.java` |
-| admin | businessrules | `admin/automation/businessrules/utils/BusinessRulesActionsUtil.java` | `...BusinessRulesAPIUtil.java` |
+> See `copilot-instructions.md` § "Known entity utility files" for a representative table.
+> **Always run discovery for the entity you’re working on — never assume a util file doesn’t exist.**
 
 > Never assume a util file doesn't exist. Run discovery first.
 
@@ -1645,18 +1468,10 @@ new JSONObject().put("request", inputData)  // Returns {"request": {...}}
 // ALWAYS use getInputData() helper — don't manually construct wrapper
 ```
 
-### 21.5 Core RestAPI methods reference (use the right one)
+### 21.5 Core RestAPI methods reference
 
-| Method | Returns | Use when |
-|--------|---------|----------|
-| `create(name, path, data)` | String ID | You only need the entity ID |
-| `createAndGetResponse(name, path, data)` | JSONObject entity | You need ID + title + other fields (MOST COMMON) |
-| `createAndGetFullResponse(path, data)` | JSONObject raw response | You need the full response envelope |
-| `get(path, data)` | JSONObject | Reading entity data |
-| `update(path, data)` | JSONObject | Updating an entity |
-| `delete(path)` | boolean | Deleting an entity |
-| `getEntityIdUsingSearchCriteria(plural, path, data)` | String ID | Finding entity by criteria |
-| `getEntityIDUsingFieldValue(path, field, value)` | String ID | Finding by specific field value |
+> **Full method table**: See `copilot-instructions.md` § "Core RestAPI Methods".
+> Key: `createAndGetResponse()` is the most common — returns entity JSONObject (ID + title + fields).
 
 ---
 
@@ -2030,111 +1845,45 @@ JSONObject badConn = new JSONObject()
 
 ---
 
-## SECTION 27 — EntityCase LIFECYCLE & REPORTING (from framework source analysis, Mar 2026)
+## SECTION 27 — EntityCase LIFECYCLE & REPORTING
+
+> **Deep analysis**: See `framework_knowledge.md` § "Entity.java Lifecycle" and § "EntityCase Lifecycle"
+> for full source analysis, constructor branches, and cleanup sequence.
 
 ### 27.1 `addReport(String message)` — smart single-argument variant
 
-`EntityCase` has **three** reporting methods, not two:
-
-```java
-addSuccessReport(String message)                  // always success
-addFailureReport(String message, String reason)   // always failure
-addReport(String message)                         // SMART: success if no failureMessage, else failure
-```
-
 `addReport(message)` inspects `failureMessage.length()`:
-- `== 0` → calls `addSuccessReport(message)` + takes success screenshot
-- `> 0`  → calls `addFailureReport(message, failureMessage.toString())` + takes failure screenshot
-
-Use `addReport(message)` after `appendFailureMessage(...)` calls to let the accumulated
-failure buffer decide the outcome automatically.
+- `== 0` → calls `addSuccessReport(message)` + success screenshot
+- `> 0`  → calls `addFailureReport(message, failureMessage.toString())` + failure screenshot
 
 ### 27.2 `clearFailureMessage()` is called automatically after every `addReport()` call
 
-`addReport()` → `clearFailureMessage()` at end. This resets the buffer so the NEXT step
-starts clean. Do NOT call `clearFailureMessage()` manually unless you want to discard
-accumulated failures mid-step.
+Do NOT call `clearFailureMessage()` manually unless you want to discard accumulated failures mid-step.
 
 ### 27.3 `cleanUp()` destroys ALL singletons at end of every test
 
-`EntityCase.cleanUp()` is called in the `finally` block of `execute()` (the Aalam runner entry point):
+> LocalStorage is completely fresh for each test run. No state leakage between tests.
+> If two scenarios depend on the same data, each must recreate it in its own `preProcess()`.
 
-```
-LocalStorage.destroy()          // All LocalStorage.store() data is gone
-AutomaterReport.destroy()       // Report instance cleared
-RestAPI.destroy()               // RestAPI instance cleared
-ClientFrameworkActions.destroy()
-EntityMetaDetails.destroy()     // Entity config cache cleared
-DataUtil.destroy()              // JSON data cache cleared  ← important for tests that reload data
-ScenarioReport.destroy()
-DriverUtil.reset()
-```
+### 27.4 `addSuccessReport()` auto-captures screenshot
 
-> **Impact**: LocalStorage is completely fresh for each test run. There is NO state leakage
-> between separate test method runs. If two scenarios depend on the same data, each must
-> recreate it in its own `preProcess()`.
+- Success: `actions.captureScreenshot(message)` with success label
+- Failure: `actions.captureScreenshot(ScreenshotStatus.FAILURE, failureMessage)` + `scenarioDetails.setSuccess(false)`
 
-### 27.4 `addSuccessReport()` auto-captures screenshot; skipping screenshot is framework-controlled
-
-`addReport(..., isSuccess=true)`:
-1. Calls `report.addCaseFlow(message)` — adds row to log
-2. Calls `actions.captureScreenshot(message)` — takes screenshot with label = the success message
-
-`addReport(..., isSuccess=false)`:
-1. Calls `report.addCaseFlowForError(...)` — marks row red in log
-2. Calls `actions.captureScreenshot(ScreenshotStatus.FAILURE, failureMessage)` — screenshot named with FAILURE prefix
-3. Sets `scenarioDetails.setSuccess(false)` — marks overall test as failed
-
-### 27.5 Local vs production constructor branch (EntityCase constructor)
-
-```java
-// Local run (LocalSetupManager.isLocalSetup() == true):
-failure = LocalFailureTemplates.getInstance();          // NO CommonObject
-report  = AutomaterReport.getInstance(null);
-actions = ClientFrameworkActions.getInstance(driver, failure);
-
-// Production run:
-CommonObject commonObject = new CommonObject(driver, failureMessage);
-failure = commonObject.getFailure();
-report  = AutomaterReport.getInstance(commonObject.getReport());
-actions = ClientFrameworkActions.getInstance(commonObject.getDriver(), failure);
-```
+### 27.5 Local vs production constructor branch
 
 > **RULE**: Never call `new CommonObject(...)` or access `CommonVariables` in code that
 > must also run locally. Always check `LocalSetupManager.isLocalSetup()` first.
 
 ---
 
-## SECTION 28 — preProcess PATTERNS (from scenario analysis, Mar 2026)
+## SECTION 28 — preProcess PATTERNS
+
+> **Worked examples & full patterns**: See `framework_knowledge.md` § "preProcess Pattern".
 
 ### 28.1 Use `switch(group)` for preProcess with 4+ groups
 
-`if/else‑if` chains become hard to read beyond 3 branches. `RequestApprovalsBase.java` shows
-the preferred `switch` pattern:
-
-```java
-@Override
-protected boolean preProcess(String group, String[] dataIds) {
-    try {
-        switch(group) {
-            case "IncidentRequest":
-                RequestAPIUtil.createIncidentRequest(dataIds[0]);
-                break;
-            case "IncidentRequestWithApproval":
-                RequestAPIUtil.createIncidentRequest();
-                RequestApprovalsAPIUtils.submitForApprovalAPI(LocalStorage.getAsString("request"), dataIds[0]);
-                break;
-            // ...
-        }
-        return true;
-    } catch(Exception exception) {
-        return false;
-    }
-}
-```
-
-> ⚠️ The `catch` block must call `addFailureReport(...)` for visibility — returning `false`
-> silently is acceptable but then the test is skipped with NO failure row in the report.
+`if/else‑if` chains become hard to read beyond 3 branches. Use Java `switch` with `break`.
 
 ### 28.2 Prefer `addFailureReport` inside preProcess catch (not silent `return false`)
 
@@ -2154,65 +1903,21 @@ protected boolean preProcess(String group, String[] dataIds) {
 
 ### 28.3 postProcess can use method name pattern to conditionally clean up
 
-```java
-@Override
-protected void postProcess(String method) {
-    try {
-        if(method.contains("Notification")) {
-            NotificationRulesAPIUtil.uncheckNotificationRuleAPI();
-        }
-    } catch(Exception exception) {
-        // cleanup failure — intentionally suppressed
-    }
-}
-```
-
-The `method` parameter is the **Java method name** of the test that just ran.
-Use `contains()` or `startsWith()` for partial matching.
+The `method` parameter is the Java method name. Use `contains()` or `startsWith()` for partial matching.
 
 ### 28.4 NoPreprocess equivalent — just `return true` unconditionally
 
-```java
-@Override
-protected boolean preProcess(String arg0, String[] arg1) {
-    return true;   // equivalent to group="NoPreprocess" — no API setup needed
-}
-```
-
-This is valid. `NotificationsRulesBase` uses this pattern — the `group` parameter is
-ignored entirely and the method always returns `true`.
+Valid shorthand: ignore `group`, return `true`. Used by `NotificationsRulesBase`.
 
 ---
 
-## SECTION 29 — ANNOTATION TYPES: @AutomaterScenario vs @AutomaterCase (Mar 2026)
+## SECTION 29 — @AutomaterScenario vs @AutomaterCase
 
-### 29.1 `@AutomaterScenario` — independent, self-contained test
+> **Full comparison with examples**: See `framework_knowledge.md` § "@AutomaterCase vs @AutomaterScenario".
 
-- Placed on methods in `<Entity>.java` (the thin wrapper class)
-- Each method maps to ONE test case in the Aalam runner
-- Takes NO method parameters — data comes from `dataIds[]` + LocalStorage
-- Has all 9 annotation fields: `id`, `group`, `priority`, `dataIds`, `tags`, `description`, `owner`, `runType`, `switchOn`
-- **Called directly by framework via reflection** (no parameter injection)
-
-### 29.2 `@AutomaterCase` — reusable parameterized sub-action
-
-- Placed on helper methods in `*Base.java`
-- Takes explicit Java parameters (e.g. `TestCaseData testCaseData, String submit`)
-- Called from `@AutomaterScenario` methods or from other base methods
-- Has only `description` field — no `id`, `group`, `priority`, `owner`
-- The `MaintenanceBase.fillModuleTemplate(TestCaseData, String)` pattern is a good example
-
-```java
-// @AutomaterCase — parameterized helper called from test body or other scenarios
-@AutomaterCase(description = "Fill the module creation form")
-public void fillModuleTemplate(TestCaseData testCaseData, String submit) {
-    JSONObject inputData = getTestCaseData(testCaseData);
-    actions.formBuilder.fillInputForAnEntity(...);
-    if(submit != null) {
-        actions.click(MaintenanceLocators.Form.MODULE_FORM_SUBMIT_BUTTON.apply(submit));
-    }
-}
-```
+**Quick rule**: `@AutomaterScenario` = independent test (9 fields, on leaf class, no params).
+`@AutomaterCase` = reusable helper (only `description` field, on Base class, takes params).
+**NEVER** use `@AutomaterCase` on a new test scenario.
 
 ---
 
@@ -2406,20 +2111,18 @@ Used in `@AutomaterSuite(role = ChangesRole.FULL_CONTROL)`.
 
 ---
 
-## SECTION 32 — AUTO-GENERATED CONSTANT FILES (AutoGenerateConstantFiles.java, Mar 2026)
-# Source: AutoGenerateConstantFiles.java (full read)
-# Trigger: run `main()` after modifying any file under resources/entity/
+## SECTION 32 — AUTO-GENERATED CONSTANT FILES
+
+> **Full generation process & source analysis**: See `framework_knowledge.md` § "AutoGenerateConstantFiles".
+> Trigger: run `main()` after modifying any file under `resources/entity/`.
 
 ### 32.1 What triggers what
 
-| Modified resource file location | Generated/updated Java file |
+| Modified resource | Generated Java file |
 |---|---|
-| `resources/entity/conf/<module>/<entity>.json` | `<Entity>Fields.java` — fully regenerated |
-| `resources/entity/data/<module>/<entity>/<entity>_data.json` | `<Entity>DataConstants.java` — inner class appended or replaced |
-| `resources/entity/roles/<module>.json` | `<Module>Role.java` — fully regenerated |
-
-The tool finds the **most recently modified** file under `resources/entity/` and dispatches.
-Only one file is processed per run. Edit one file at a time, then run.
+| `conf/<module>/<entity>.json` | `<Entity>Fields.java` |
+| `data/<module>/<entity>/<entity>_data.json` | `<Entity>DataConstants.java` |
+| `roles/<module>.json` | `<Module>Role.java` |
 
 ### 32.2 DataConstants inner class naming rule (CRITICAL)
 
@@ -2455,9 +2158,7 @@ public final static class ChangeWorkflowData {
 
 ### 32.4 DataConstants is idempotent — safe to re-run
 
-- If the inner class block already exists: it is **replaced** (split on `innerClassName + " {"`)
-- If it is new: it is **appended** before the last `}` of the outer class
-- Running multiple times on the same file does not create duplicate inner classes
+Running multiple times on the same file does not create duplicate inner classes.
 
 ### 32.5 FieldDetails constructor — 6-parameter form (REQUIRED)
 
@@ -2542,93 +2243,23 @@ JSON key → constant name: `roleDetail.toUpperCase()` (no other transformation)
 
 ---
 
-## SECTION 33 — ROLE SYSTEM: createUserByRole, Role JSON, SDADMIN semantics (Mar 2026)
+## SECTION 33 — ROLE SYSTEM
 
-### 33.1 createUserByRole — full internal flow
+> **Full internal flow & JSON structure**: See `framework_knowledge.md` § "createUserByRole" and
+> `copilot-instructions.md` § "Role JSON structure".
 
-Called from `Entity.assignPermission()` in the **admin session**, before any `switchToUserSession()`:
+### 33.1 Key rules
 
-```
-assignPermission(roleId)
-  └── createUserByRole("TECHNICIAN", moduleName, roleId, scenarioUser)
-        ├── getRoleDetails(moduleName, roleId)         // reads general.json first, module.json as fallback
-        ├── getUserId(scenarioUser)                    // searches users API by email → sets entityId on User
-        ├── if entityId != null → handleExistingUserRole()
-        │     ├── is_technician=true  → updateTechnician() if role mismatch, else store entityId in LocalStorage
-        │     └── is_technician=false → createRequester()
-        └── if entityId == null → handleNewUserRole()
-              ├── is_technician=true  → createTechnician()
-              └── is_technician=false → createRequester()
-```
-
-`createTechnician()` also calls `checkCustomRole()` and `checkProjectRole()` — both create the custom/project role via UI if it doesn't exist in SDP yet.
-
-### 33.2 getRoleDetails() lookup order
-
-1. Reads `resources/entity/roles/general.json` (always first)
-   - Contains: `sdadmin`, `sdsite_admin`, `sdguest`, `helpdeskconfig`
-2. If the roleId is NOT found in general.json, reads `resources/entity/roles/<moduleName>.json`
-   - If same key in both, **general.json wins** (first match returns)
-
-Implication: if you define a custom role with the same key name as a general role, the general one silently overrides it. Use unique keys per module.
-
-### 33.3 Role JSON structure — complete reference
-
-```json
-// Technician with custom SDP role (most common):
-"Solution_FullControl": {
-  "user": {
-    "roles": [{"name": "Solution_FullControl"}],
-    "default_project_role": {"name": "Project Admin"},
-    "purchase_order_approver": "true",
-    "approval_limit": "-1"
-  },
-  "custom_roles": {
-    "Solution_FullControl": {
-      "permissions": [
-        {"name": "ViewSolutions"},
-        {"name": "CreateSolutions"},
-        {"name": "ModifySolutions"},
-        {"name": "DeleteSolutions"},
-        {"name": "SolutionsApprove"}
-      ],
-      "description": "Technician with full permissions"
-    }
-  },
-  "is_technician": true
-}
-
-// Requester (no custom_roles, no roles[]):
-"Solution_Requester": {
-  "user": {
-    "description": "Requester with same department",
-    "login_user": true,
-    "requester_allowed_to_view": "own_requests",
-    "purchase_order_approver": true,
-    "approval_limit": -1,
-    "service_request_approver": true
-  },
-  "is_technician": false
-}
-```
-
-**Fields**:
-- `is_technician: true` → `createTechnician()` path; `false` → `createRequester()` path
-- `custom_roles.<name>.permissions` → framework auto-creates this custom role in SDP if absent
-- `roles[].name` → the built-in SDP role to assign (SDAdmin, HelpdeskConfig, etc.)
-- Requester entries: `login_user: true` required for portal login
+- `getRoleDetails()` reads `general.json` first, then `<module>.json`. General wins if same key.
+- Role JSON keys must use only alphanumeric + underscore (spaces create invalid Java identifiers).
+- `is_technician: true` → `createTechnician()` path; `false` → `createRequester()` path.
 
 ### 33.4 SDADMIN = no session split (CRITICAL)
 
 When `@AutomaterSuite(role = Role.SDADMIN)` and scenario user email = admin email:
-- `initializeAdminSession()` → browser logged in as admin
-- `preProcess()` runs in admin session ✅
-- `switchToUserSession()` → calls `LoginUtil.login(this, scenarioUser)` which logs in as the same admin account again
-- Test method runs in **admin session** too ✅
-
-**Consequence**: API calls inside the test method body are **safe** when `role = Role.SDADMIN` — unlike non-admin roles where test method body runs in restricted user session.
-
-**Consequence**: `NoPreprocess` + `Role.SDADMIN` = the simplest possible scenario: no API setup, no session switch, test method runs as admin. Use this combination for admin-only UI tests that need no prerequisite data.
+- Both `preProcess()` AND the test method run in the **admin session**
+- API calls inside the test method body are **safe** with `Role.SDADMIN`
+- `NoPreprocess` + `Role.SDADMIN` = simplest scenario: no API setup, no session switch, admin UI test
 
 ### 33.5 SDADMIN vs module-specific roles — when to use each
 

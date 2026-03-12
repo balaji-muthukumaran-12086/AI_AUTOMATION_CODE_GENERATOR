@@ -24,39 +24,21 @@ Runner invokes @AutomaterScenario method on <Entity>.java
 
 ---
 
-## 1b. MODULE PLACEMENT — DERIVE FROM USE CASE, NOT FROM OPEN FILE
+## 1b. MODULE PLACEMENT
 
-> Before writing or moving ANY scenario, answer: **What entity does the use case name?**
-> Match the noun in the description to the correct module:
-
-| Use-case noun | Module path | Correct entity class(es) |
-|---|---|---|
-| incident request / IR | `modules/requests/request/` | `IncidentRequest`, `IncidentRequestNotes` |
-| service request / SR | `modules/requests/request/` | `ServiceRequest`, `ServiceRequestNotes` |
-| solution | `modules/solutions/solution/` | `Solution`, `SolutionBase` |
-| problem | `modules/problems/problem/` | `Problem`, `ProblemBase` |
-| change | `modules/changes/change/` | `Change`, `ChangeBase` |
-| task | `modules/tasks/task/` | `Task`, `TaskBase` |
-
-**FORBIDDEN**: Using the currently open / most recently edited file as the default target.
-Always validate module semantics from the use-case description first.
+> **Module placement table & rules**: See `copilot-instructions.md` § "MODULE PLACEMENT".
+> Key rule: derive module from the use-case noun, NEVER from the currently open file.
 
 ---
 
 ## 2. TWO-LAYER CLASS ARCHITECTURE
 
-```
-Entity  (framework base class)
-  └── <Entity>Base extends Entity          ← ALL IMPLEMENTATION here
-        └── <Entity> extends <Entity>Base  ← ONLY @AutomaterScenario annotations here
-```
+> **Rules & pattern**: See `framework_rules.md` § "SECTION 1".
 
 **Examples from codebase:**
 - `SolutionBase extends Entity` → `Solution extends SolutionBase`
 - `ProblemCommonBase extends Entity` → `Problem extends ProblemCommonBase`
 - `RequestCommonBase extends Entity` → `Request extends RequestCommonBase`
-
-Both classes carry `@AutomaterSuite(role, tags, owner)` at class level.
 
 ---
 
@@ -492,50 +474,7 @@ actions.formBuilder.submit("Save");         // clicks specific named button
 
 ## 9. TEST ID FORMAT
 
-### Primary Rule — Use-Case CSV IDs
-
-When a use-case document (CSV) exists in `$PROJECT_NAME/Testcase/`, use the CSV use-case ID
-**directly** as `@AutomaterScenario(id = "...")`. Do NOT embed the use-case ID in method names,
-DataConstants, data JSON keys, or locator names. Method names must be descriptive of the action.
-
-```java
-// ✅ CORRECT — CSV use-case ID as annotation id, descriptive method name
-@AutomaterScenario(id = "SDPOD_SFCMDB_ADMIN_001", ...)
-public void verifySubFormPageLoads() throws Exception { ... }
-
-// ❌ FORBIDDEN — use-case ID leaked into method name
-public void SDPOD_SFCMDB_ADMIN_001() throws Exception { ... }
-```
-
-**Multi-ID grouping**: When multiple CSV test cases are covered by one automation method,
-comma-separate the IDs: `id = "SDPOD_SFCMDB_ADMIN_001,SDPOD_SFCMDB_ADMIN_002"`.
-
-### Fallback — Sequential IDs (only when no CSV exists)
-
-When no use-case CSV is provided (feature description or single-line case), use the
-auto-generated sequential ID pattern per module:
-
-```
-SDPOD_AUTO_<MODULE>_<AREA>_NNN
-
-Examples: SDPOD_AUTO_SOL_DV_243
-          SDPOD_AUTO_CH_LV_492
-          SDP_REQ_LS_AAA101
-          SDP_REQ_DV_AAA115
-```
-
-Always check the last existing ID in the file to get next NNN:
-```bash
-grep -rn 'id = "SDPOD_AUTO_SOL_DV' $PROJECT_NAME/src/ | sed 's/.*id = "\([^"]*\)".*/\1/' | sort | tail -1
-```
-
-### Decision Flow
-```
-Use-case CSV exists in $PROJECT_NAME/Testcase/ ?
-  → YES: Use CSV use-case ID directly as @AutomaterScenario(id = "...")
-         Keep method names descriptive — NEVER derive from the ID
-  → NO:  Generate next sequential ID using the module prefix pattern above
-```
+> **Full ID rules, CSV vs fallback flow, and multi-ID grouping**: See `framework_rules.md` § "SECTION 7" and `copilot-instructions.md` § "Test ID Source".
 
 ---
 
@@ -787,118 +726,8 @@ STEP 4: Generate the scenario using only util calls + assertions
   - If typing actions.click() directly in a test method body → STOP → move to util first
 ```
 
-### Rule 1 — Check before writing (REQUIRED, applies to ALL entities)
-
-```
-BEFORE writing any navigation/click/form/popup code in a test method:
-  1. grep -rn "public static" modules/<module>/<entity>/utils/*ActionsUtil.java
-  2. If a matching method exists → CALL IT, do NOT re-inline the logic
-  3. If it does NOT exist → ADD the static method to *ActionsUtil.java first, then call it
-```
-
-### Rule 2 — Where code lives (REQUIRED)
-
-| Logic type | Where it lives | Example |
-|---|---|---|
-| Multi-step UI flow (tab click, popup open, search, select, confirm) | `*ActionsUtil.java` as `public static` method | `ChangeActionsUtil.linkParentChangeViaUI(name, id)` |
-| REST API helper (create/update/delete/link via API) used in preProcess | `*APIUtil.java` as `public static` method | `ChangeAPIUtil.linkChildChanges(parentId, childId1)` |
-| Test assertion / report call | STAYS in test method body | `addSuccessReport("SDPOD_...")` |
-
-### Rule 3 — Class declaration (REQUIRED pattern — no exceptions)
-
-```java
-// ✅ CORRECT — every ActionsUtil class in the codebase follows this exact shape
-public final class ChangeActionsUtil extends Utilities {
-    // ALL methods: public static
-    // extends Utilities → gives access to static fields: actions, report, restAPI
-    
-    public static void openAssociationTab() throws Exception {
-        actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB);
-    }
-}
-
-// ❌ WRONG — non-static, not extending Utilities, not final
-public class ChangeActionsUtil {
-    public void openAssociationTab() { ... }  // cannot access actions/report/restAPI
-}
-```
-
-### Rule 4 — Method design: parameterized and generic (REQUIRED)
-
-The goal is **one well-parameterized method that handles the heavy lifting** — not a family of thin
-methods that differ only by one argument. Use parameters to segregate flow branches.
-
-| Thin/duplicated ❌ | Parameterized/generic ✅ |
-|---|---|
-| `openAttachParentChangePopup()` + `openAttachChildChangePopup()` | `openAttachChangePopup(String type)` — type = `"parent"` or `"child"` |
-| `linkChange1()` + `linkChange2()` | `linkChangeViaUI(String name, String id)` — one method, called twice |
-| `verifyParentLinkInTab()` + `verifyChildLinkInTab()` | `verifyLinkInAssociationTab(String type, String expectedName)` |
-| Single `actions.click()` for a one-off step | Fine to leave inline — no need to extract one-liners |
-
-**Decision rule:**
-- Will this sequence appear in more than one test? → extract to util, parameterize to cover all variants
-- Is it a one-off `actions.click()` or `actions.getText()` specific to this single scenario? → leave it inline
-- Two util methods differ by only 1 argument? → collapse into one method with that argument as parameter
-
-### Rule 5 — Test method body rules (REQUIRED)
-
-Test method body should read like a manual test script. The bulk of UI interaction lives in util.
-Minimal `actions.click()` / `actions.getText()` inline is acceptable for **truly one-off, scenario-specific
-steps** that would not be reused anywhere else. What is FORBIDDEN is duplicating the same
-multi-step sequence across multiple test methods without extracting it.
-
-```java
-// ✅ CORRECT — util does heavy lifting, test method reads like a script
-public void verifyParentAndChildLinking() throws Exception {
-    ChangeActionsUtil.openAssociationTab();
-    ChangeActionsUtil.openAttachChangePopup("parent");           // parameterized
-    ChangeActionsUtil.searchAndSelectChangeInPopup(
-        LocalStorage.getAsString("targetChangeName1"));
-    ChangeActionsUtil.confirmAssociation();
-    // one-off inline check is acceptable:
-    String count = actions.getText(ChangeLocators.LinkingChange.RECORDS_COUNT);
-    if ("1".equals(count)) {
-        addSuccessReport("SDPOD_LINKING_CH_012: parent linked, count=1");
-    } else {
-        addFailureReport("Count mismatch", "Expected 1, got " + count);
-    }
-}
-
-// ❌ WRONG — same multi-step sequence copy-pasted across 3 test methods
-public void verifyParentLinking() throws Exception {
-    actions.click(ChangeLocators.LinkingChange.LHS_ASSOCIATION_TAB); // duplicated in 3 methods
-    actions.waitForAjaxComplete();
-    actions.click(ChangeLocators.LinkingChange.ATTACH_BUTTON_DROPDOWN);
-    actions.click(ChangeLocators.LinkingChange.ATTACH_PARENT_CHANGE_OPTION);
-    // ...
-}
-```
-
-### Known entity utility files (run discovery — do NOT rely on this table alone)
-
-> **Every module has a `utils/` folder.** The table below is a reference sample.
-> Always run the discovery command for the entity you are working on:
-
-```bash
-find src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/ -name "*.java" | sort
-```
-
-| Module | Entity | ActionsUtil file | APIUtil file |
-|--------|--------|-----------------|-------------|
-| changes | change | `changes/change/utils/ChangeActionsUtil.java` | `changes/change/utils/ChangeAPIUtil.java` |
-| changes | downtime | `changes/downtime/utils/DowntimeActionsUtil.java` | `changes/downtime/utils/DowntimeAPIUtil.java` |
-| solutions | solution | `solutions/solution/utils/SolutionActionsUtil.java` | `solutions/solution/utils/SolutionAPIUtil.java` |
-| requests | request | `requests/request/utils/RequestAPIUtil.java` | — |
-| problems | problem | `problems/problem/utils/ProblemActionsUtil.java` | `problems/problem/utils/ProblemAPIUtil.java` |
-| releases | release | `releases/release/utils/ReleaseActionsUtil.java` | `releases/release/utils/ReleaseAPIUtil.java` |
-| projects | project | `projects/project/utils/ProjectActionsUtil.java` | `projects/project/utils/ProjectAPIUtil.java` |
-| assets | asset | `assets/asset/utils/AssetActionsUtil.java` | `assets/asset/utils/AssetAPIUtil.java` |
-| general | dashboard | `general/dashboard/utils/DashboardActionsUtil.java` | `general/dashboard/utils/DashboardAPIUtil.java` |
-| maintenance | — | `maintenance/utils/MaintenanceActionsUtil.java` | `maintenance/utils/MaintenanceAPIUtil.java` |
-| contracts | contract | `contracts/contract/utils/ContractActionsUtil.java` | `contracts/contract/utils/ContractAPIUtil.java` |
-| admin | — | `admin/utils/AdminActionsUtil.java` | `admin/utils/AdminAPIUtil.java` |
-
-> If the entity is not listed, run the discovery command — it will have util files.
+> **ActionUtils/APIUtil rules (Rules 1-5), class declaration pattern, method design, test method body rules, and known utility files table**: See `framework_rules.md` § "SECTION 20" and `copilot-instructions.md` § "ActionUtils / APIUtil Pattern".
+> Discovery command: `find src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/ -name "*.java" | sort`
 
 
 ---
@@ -1749,29 +1578,12 @@ git remote set-url origin https://github.com/USERNAME/REPO.git
 
 ## Complete Placeholder Reference (PlaceholderUtil.java)
 
+> **Full placeholder table**: See `copilot-instructions.md` § "Complete Runtime Placeholder Reference".
+
 Pattern matched: `$(placeholder)` with optional nested `$(...)` inside.  
 `DataUtil.getTestCaseDataUsingFilePath()` runs up to **3 refill passes** for nested placeholders.
 
-| Placeholder | Resolves to |
-|-------------|-------------|
-| `$(unique_string)` | `System.currentTimeMillis()` as string |
-| `$(common_string)` | `currentTimeMillis() + "_" + CommonVariables.partName` |
-| `$(user_name)` | Scenario user's display name (`getDisplayId()`) |
-| `$(user_email_id)` | Scenario user's email (`getMailId()`) |
-| `$(user_id)` | Scenario user's entity ID (`getEntityId()`) |
-| `$(admin_email_id)` | Admin email from `SessionDetails` |
-| `$(admin_name)` | Admin display name from `SessionDetails` |
-| `$(mspcustomer_id)` | First MSP customer ID from API search |
-| `$(mspcustomer_name)` | First MSP customer name from API search |
-| `$(mspcustomer_email)` | First MSP customer email from API search |
-| `$(date, N, ahead)` or `$(date, N, behind)` | Date N days ahead/behind in millis |
-| `$(datetime, N, ahead)` | Datetime N days ahead in millis |
-| `$(custom_KEY)` | `LocalStorage.fetch("KEY")` — strips `custom_` prefix |
-| `$(rest_api, method, entity, path, dataId)` | Calls RestAPI (see table below) |
-| `$(local_storage, store, key, value)` | Stores value in LocalStorage, returns value |
-| `$(local_storage, get, key)` | Reads from LocalStorage by key |
-
-### `$(rest_api, ...)` methods
+### `$(rest_api, ...)` methods (unique — not in copilot-instructions)
 
 | Method arg | API call | Returns |
 |------------|----------|---------|
@@ -1806,80 +1618,25 @@ disk is read only once — subsequent calls return the cached (pre-placeholder-r
 
 ## `cleanUp()` — Singletons Destroyed After Every Test
 
-`EntityCase.cleanUp()` is called in `execute()` finally block after every test (pass or fail):
+> **Full cleanup list and rules**: See `framework_rules.md` § "SECTION 27.3".
 
-```
-LocalStorage.destroy()           // all store() data gone
-AutomaterReport.destroy()
-RestAPI.destroy()
-ClientFrameworkActions.destroy()
-EntityMetaDetails.destroy()      // entity config JSON cache gone
-DataUtil.destroy()               // JSON data cache gone
-ScenarioReport.destroy()
-DriverUtil.reset()               // browser driver state reset
-```
-
-There is zero state leakage between test runs. Each scenario starts completely fresh.
+Key fact: zero state leakage between runs — `LocalStorage`, `DataUtil`, `RestAPI`, `EntityMetaDetails`, `ScenarioReport`, `DriverUtil` all destroyed in `EntityCase.cleanUp()` finally block.
 
 ---
 
-## Report Flow — What `addSuccessReport` / `addFailureReport` do internally
+## Report Flow — `addSuccessReport` / `addFailureReport` / `addReport`
 
-```
-addSuccessReport(msg):
-  report.addCaseFlow(msg)                   → adds green row to log
-  actions.captureScreenshot(msg)            → saves screenshot, label = msg
-  report.addRowToReport(desc, msg, config)  → adds HTML row with annotations info
+> **Full report flow internals**: See `framework_rules.md` § "SECTION 27.1" and "SECTION 27.4".
 
-addFailureReport(msg, reason):
-  if(failureMessage empty) → failureMessage.append(msg); failure.basicFailureWithReason(...)
-  report.addCaseFlowForError(msg + reason)  → red row in log
-  actions.captureScreenshot(FAILURE, ...)   → failure screenshot
-  scenarioDetails.setSuccess(false)         → marks overall test FAILED
-  report.addRowToReport(desc, msg, config)  → HTML row
-
-addReport(msg)  [smart variant]:
-  if failureMessage.length() == 0 → addSuccessReport(msg)
-  else                            → addFailureReport(msg, failureMessage.toString())
-  clearFailureMessage() called automatically after every addReport
-```
-
-`configuration` string embedded in each report row contains:
-- Scenario `id`, `owner`, class/method name, role name, user display ID + email, duration
+Key: `addReport(msg)` is the smart variant — inspects `failureMessage.length()` to auto-route to success or failure.
 
 ---
 
 ## preProcess switch/case vs if/else-if — Preference Guide
 
-| Situation | Recommended style |
-|-----------|-------------------|
-| 1–2 groups | Simple `if` / `if-else` |
-| 3 groups | Either — `if/else-if` still readable |
-| 4+ groups | `switch(group)` — easier to read and extend |
-| Single "always true" base class | `return true` unconditionally (e.g. NotificationsRulesBase) |
+> **preProcess rules, group selection, and reuse patterns**: See `framework_rules.md` § "SECTION 28".
 
-`switch` example (RequestApprovalsBase pattern):
-```java
-@Override
-protected boolean preProcess(String group, String[] dataIds) {
-    try {
-        switch(group) {
-            case "IncidentRequest":
-                RequestAPIUtil.createIncidentRequest(dataIds[0]);
-                break;
-            case "IncidentRequestWithApproval":
-                RequestAPIUtil.createIncidentRequest();
-                RequestApprovalsAPIUtils.submitForApprovalAPI(LocalStorage.getAsString("request"), dataIds[0]);
-                break;
-        }
-        return true;
-    } catch(Exception exception) {
-        report.addCaseFlow("preProcess exception: " + exception);
-        addFailureReport("Pre-process failed", exception.getMessage());
-        return false;
-    }
-}
-```
+Quick guide: 1–2 groups → `if/else-if`; 4+ groups → `switch(group)`. Always end with `return super.preProcess(group, dataIds)` to chain up.
 
 ---
 
@@ -1902,50 +1659,19 @@ The leaf class calling `super.preProcess(group, dataIds)` chains up the hierarch
 
 ---
 
-## @AutomaterCase vs @AutomaterScenario — When To Use Each
+## @AutomaterCase vs @AutomaterScenario
 
-| Annotation | Class | Parameters | Runner calls directly? | Use for |
-|-----------|-------|-----------|----------------------|---------|
-| `@AutomaterScenario` | `<Entity>.java` (leaf) | None — no Java params | Yes — via reflection | Standalone test case entries |
-| `@AutomaterCase` | `*Base.java` | Any Java params | No — called by other methods | Reusable parameterized steps |
+> **Full comparison and when to use each**: See `framework_rules.md` § "SECTION 29".
 
-`@AutomaterCase` example — parameterized helper:
-```java
-@AutomaterCase(description = "Fill module form and optionally submit")
-public void fillModuleTemplate(TestCaseData testCaseData, String submit) {
-    JSONObject inputData = getTestCaseData(testCaseData);
-    actions.formBuilder.fillInputForAnEntity(fieldsConfig.isClientFramework(), fieldsConfig.getFields(), inputData);
-    if(submit != null) {
-        actions.click(MaintenanceLocators.Form.MODULE_FORM_SUBMIT_BUTTON.apply(submit));
-    }
-}
-```
+Key: `@AutomaterScenario` = leaf class, standalone test entry; `@AutomaterCase` = Base class, reusable parameterized helper called by other methods.
 
 ---
 
 ## postProcess Conditional Cleanup Pattern
 
-`postProcess(String method)` receives the **Java method name** of the test that just finished.
-Use `contains()`, `startsWith()`, or `equalsIgnoreCase()` for selective cleanup:
+> **postProcess rules and cleanup strategy**: See `framework_rules.md` § "SECTION 28.3".
 
-```java
-@Override
-protected void postProcess(String method) {
-    try {
-        if(method.contains("Notification")) {
-            NotificationRulesAPIUtil.uncheckNotificationRuleAPI();
-        }
-        if(method.startsWith("createWith")) {
-            SomeAPIUtil.deleteCreatedEntity(LocalStorage.getAsString(getName()));
-        }
-    } catch(Exception exception) {
-        // cleanup failures are intentionally suppressed — test already finished
-    }
-}
-```
-
-> Cleanup failures in `postProcess` should be silently swallowed — the test result is already
-> recorded and the cleanup failure should not retroactively fail a passed test.
+Key: `postProcess(String method)` receives the Java method name. Use `contains()`/`startsWith()` for selective cleanup. Always swallow exceptions — test result is already recorded.
 
 ---
 
@@ -2020,231 +1746,33 @@ private void createSolution(String dataId) throws Exception {
 
 ---
 
-## Skeleton Scaffolding — Complete File/Folder Map (from GenerateSkeletonForAnEntity.java, Mar 2026)
+## Skeleton Scaffolding
 
-`GenerateSkeletonForAnEntity` reads templates from `base/skeleton/` and stamps out a full module scaffold.
-Run it by setting `MODULE_NAME` and `ENTITY_NAME` (both PascalCase) and executing `main()`.
+> **Full naming rules, artifact map, generated vs manual files, and entity_skeleton.json**: See `framework_rules.md` § "SECTION 31".
 
-### Naming rules
-| Source | Operation | Result example |
-|--------|-----------|----------------|
-| `ENTITY_NAME = "ChangeWorkflow"` | `UPPER_CAMEL → LOWER_UNDERSCORE` | `change_workflow` (conf/data filenames) |
-| `change_workflow` | `.replaceAll("_", "")` | `changeworkflow` (Java package folder) |
-| `ENTITY_NAME.toUpperCase()` | Java `.toUpperCase()` | `CHANGEWORKFLOW` (constant name in Entities file — **no underscore splitting**) |
-
-### Complete artifact map
-```
-modules/<module_lower>/
-  <MODULE>Entities.java           ← entity name string constants (auto-appended per entity)
-  <MODULE>Role.java               ← module role constants (extends Role)
-  <entity_nounderscore>/          ← e.g. changeworkflow/
-    <ENTITY_NAME>.java            ← parent class (extends Entity, @AutomaterSuite)
-    common/
-      <ENTITY_NAME>Constants.java
-      <ENTITY_NAME>DataConstants.java
-      <ENTITY_NAME>Fields.java
-      <ENTITY_NAME>Locators.java
-
-resources/entity/conf/<module>/   <entity_snake>.json
-resources/entity/data/<module>/<entity_snake>/<entity_snake>_data.json
-resources/entity/roles/<module>.json
-```
-
-### What is NOT generated (must be manual)
-- `<Entity>Base.java` (implementation split class — only for complex multi-scenario entities)
-- `<Entity>AnnotationConstants.java` (test-data ID constants for `@AutomaterScenario dataIds`)
-- `utils/<Entity>ActionsUtil.java` and `utils/<Entity>APIUtil.java`
-- Module-level skips: if `<MODULE>Entities.java` already exists, it is not overwritten — only the new entity constant is appended
-
-### entity_skeleton.json initial shape
-```json
-{
-  "name":                "<entity_snake>",
-  "plural_name":         "",
-  "module":              "<module_lower>",
-  "api_path":            "",
-  "is_client_framework": true,
-  "field_details": [
-    { "name": "id", "field_type": "input", "data_path": "id", "is_custom": true }
-  ]
-}
-```
-`plural_name` and `api_path` are always empty — must be filled (e.g. `"changes"`) before tests run.
-
-### Constants inner-class structure (generated)
-```java
-public final class <Entity>Constants {
-    public final class ListviewGlobalActions    { }   // global button labels
-    public final class ListviewLocalActions     { }   // row action labels
-    public final class DetailsPageGlobalActions { }   // detail view buttons
-    public final class DetailsPageTabs          { }   // LHS/sub-tab names
-}
-```
-All 4 are `public final class` (NOT `static`).
-
-### Locators minimal structure (generated)
-```java
-public final class <Entity>Locators {
-    public final class Listview { }   // populated manually
-}
-```
-Additional named inner classes (e.g. `DetailView`, `Form`, `AssociationsTab`) added manually.
-
-### `getEntityConfigurationName()` returns the snake_case entity name
-This string is used as the lookup key to load `resources/entity/conf/<module>/<name>.json`.
-Example: `"change_workflow"` → loads `conf/changes/change_workflow.json`.
-
-### Real-world pattern: simple entity = no Base class
-Simple entities (e.g., `ESMdirectory`) put `@AutomaterScenario` methods directly in the parent class.
-No `Base` split needed when there are only 1-3 scenario methods and no shared preProcess complexity.
-Some simple modules also place `<Entity>ApiUtil.java` in `common/` instead of a `utils/` subdirectory.
-
-### preProcess stub from skeleton
-```java
-@Override
-protected boolean preProcess(String group, String[] dataIds) {
-    return false;   // skeleton stub — ALWAYS returns false → tests will be skipped
-}
-```
-**Must** be replaced with actual implementation (even if just `return true;` for NoPreprocess).
+Key facts unique to deep knowledge:
+- `getEntityConfigurationName()` returns the snake_case entity name → lookup key for `conf/<module>/<name>.json`
+- Simple entities (1-3 scenarios, no shared preProcess) skip the Base split — put `@AutomaterScenario` directly in parent
+- Skeleton `preProcess` stub returns `false` (tests SKIPPED) — must replace with real implementation
 
 ---
 
-## AutoGenerateConstantFiles — How Constants Are Auto-Generated (Mar 2026)
-# Source: AutoGenerateConstantFiles.java (full read)
+## AutoGenerateConstantFiles — How Constants Are Auto-Generated
 
-`AutoGenerateConstantFiles.main()` watches the `resources/entity/` tree and regenerates
-Java constant files from the resource JSON files. It detects the **most recently modified**
-file and dispatches to one of three generators.
+> **Dispatch map, naming derivation, FieldDetails constructor, and workflow**: See `framework_rules.md` § "SECTION 32".
 
-### Dispatch map: resource file → Java file
-
-| Edited resource | Generated file | Behaviour |
-|---|---|---|
-| `resources/entity/conf/<m>/<entity>.json` | `modules/<m>/<entity>/common/<Entity>Fields.java` | Full regeneration (wipes existing fields) |
-| `resources/entity/data/<m>/<entity>/<entity>_data.json` | `modules/<m>/<entity>/common/<Entity>DataConstants.java` | Inner class appended or replaced (idempotent) |
-| `resources/entity/roles/<module>.json` | `modules/<module>/<Module>Role.java` | Full regeneration |
-
-### DataConstants inner class: name derivation
-
-File `change_workflow_data.json` → `getPascalValue("change_workflow_data") = "ChangeWorkflowData"` → inner class `ChangeWorkflowData`.  
-File `solution_data.json` → inner class `SolutionData`.
-
-Generated structure:
-```java
-public final class ChangeDataConstants {
-    public final static class ChangeWorkflowData {
-        public final static String PATH = "data" + File.separator + "changes"
-            + File.separator + "change_workflow" + File.separator + "change_workflow_data.json";
-
-        public final static TestCaseData CREATE_CHANGE_API = new TestCaseData("create_change_api", PATH);
-        // one line per top-level JSON key
-    }
-    // additional inner classes for other data files in same entity
-}
-```
-
-### Constant name = `dataId.toUpperCase()`
-
-No camelCase splitting — just raw `.toUpperCase()`. Consequence:
-- `"create_change_api"` → `CREATE_CHANGE_API` ✅
-- `"createChangeApi"` → `CREATECHANGEAPI` ❌ (unreadable — always use snake_case keys)
-
-### FieldDetails constructor — 6 parameters
-
-```java
-new FieldDetails(
-    String name,        // field display name
-    String apiPath,     // data_path from conf JSON
-    String apiKey,      // data_key from conf JSON  ← separate field, not same as apiPath
-    FieldType type,     // null if field_type empty in conf
-    boolean isCustom,
-    boolean isUDF
-)
-```
-
-Constant name formula: `fieldName.replace("-","_").replace(" ","_").toUpperCase()`
-
-### Two separate DataConstants classes per entity
-
-| Class | Purpose | Used by |
-|-------|---------|---------|
-| `<Entity>DataConstants.<InnerClass>.KEY` | Test-method UI input data | `getTestCaseData(DataConstants.Data.KEY)` |
-| `<Entity>AnnotationConstants.Data.KEY` | preProcess data IDs | `@AutomaterScenario(dataIds = {...})` |
-
-These are **NOT interchangeable**. DataConstants holds all test data entries.
-AnnotationConstants.Data holds only the subset passed as `dataIds[]` to `preProcess()`.
-
-### Complete data-to-constant workflow
-
-```
-1. Add entry to <entity>_data.json (snake_case key!)
-   ↓
-2. Run AutoGenerateConstantFiles.main()
-   ↓
-3. <Entity>DataConstants.<EntityData>.MY_KEY constant appears
-   ↓
-4. Use in test:  getTestCaseData(<Entity>DataConstants.<EntityData>.MY_KEY)
-5. Use in preProcess dataId:  add to <Entity>AnnotationConstants.Data (manual still)
-```
-
-> Step 5 is still manual — `AnnotationConstants.java` is NOT auto-generated.
-
-### Fields.java regeneration from conf
-
-When `conf/<entity>.json` is saved:
-- Each `field_details` array entry → one `public final static FieldDetails` line
-- `field_type` string → `FieldType.<UPPERCASE>` enum value
-- Empty `field_type` → `null` (valid — means no form-fill type)
-- `data_key` (from conf) → `apiKey` param (third arg) — distinct from `data_path` (second arg)
-
-### Role constants
-
-`resources/entity/roles/<module>.json` format:
-```json
-{ "full_control": { ... }, "view_only": { ... } }
-```
-Each top-level key → `public final static String FULL_CONTROL = "full_control";`
-Keys with spaces are invalid Java identifiers — always use snake_case.
+Key deep facts:
+- `DataUtil` caching: same `filePath_id` is read from disk only once per test run. Pre-seed LocalStorage BEFORE first `getTestCaseData()` call.
+- `AnnotationConstants.java` is NOT auto-generated — always hand-edited.
+- Constant name = `dataId.toUpperCase()` (no camelCase splitting) — always use `snake_case` keys in `*_data.json`.
 
 ---
 
 ## createUserByRole — Role System Architecture
 
-### Flow (called during admin session, before switchToUserSession)
+> **Full flow tree, role JSON structure, SDADMIN rules, and is_technician paths**: See `framework_rules.md` § "SECTION 33" and `copilot-instructions.md` § "Role Constants".
 
-```
-Entity.run()
-  → initializeScenario(roleId)  →  initializeAdminSession()  →  assignPermission(roleId)
-  → createUserByRole("TECHNICIAN", moduleName, roleId, scenarioUser)
-        ├── getRoleDetails(moduleName, roleId)
-        │     1. reads general.json  (sdadmin / sdsite_admin / sdguest / helpdeskconfig)
-        │     2. if not found: reads <moduleName>.json
-        │     general.json match ALWAYS wins (returns on first match)
-        ├── getUserId(scenarioUser)   → searches users API by email_id → sets entityId
-        ├── handleExistingUserRole()  or  handleNewUserRole()
-        │     is_technician=true  → createTechnician()  (also checkCustomRole + checkProjectRole)
-        │     is_technician=false → createRequester()
-        └── LocalStorage.store("TECHNICIAN", user.getEntityId())
-```
-
-### Two key files
-
-| File | Content | Loaded by |
-|------|---------|----------|
-| `roles/general.json` | `sdadmin`, `sdsite_admin`, `sdguest`, `helpdeskconfig` | always first |
-| `roles/<module>.json` | module-specific roles (Solution_FullControl etc.) | fallback |
-
-### is_technician flag — determines code path
-
-- `true` → `createTechnician()` → assigns built-in SDP role + creates custom role permissions if absent
-- `false` → `createRequester()` → creates requester user with portal login
-
-### SDADMIN special case — no session split
-
-When scenario user email = admin email and `role = Role.SDADMIN`:
-- preProcess: admin session
-- `switchToUserSession()`: logs in as admin again (same account)
-- Test method: **also admin session**
-- Safe to call API methods inside test method body (no permission restrictions)
-- Simplest pattern: `group = "NoPreprocess", dataIds = {}, role = Role.SDADMIN` → zero setup, test runs as admin
+Key deep facts:
+- `getRoleDetails()` reads `general.json` first (sdadmin, sdsite_admin, sdguest, helpdeskconfig) → if found, returns immediately. Module JSON is fallback only.
+- `is_technician=true` → `createTechnician()` (also `checkCustomRole` + `checkProjectRole`); `false` → `createRequester()`
+- SDADMIN + admin email = no session split. Both preProcess and test method run as admin.
