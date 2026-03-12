@@ -194,7 +194,7 @@ After presenting the form, show this legend **below** it (not inside the copy bl
 | Key | What to enter |
 |-----|---------------|
 | hg_username | Your zrepository username |
-| branch | Hg branch to clone (e.g. SDPLIVE_UI_AUTOMATION_BRANCH) |
+| branch | Repo branch name (e.g. SDPLIVE_UI_AUTOMATION_BRANCH) |
 | deps_path | Absolute path to the JARs folder |
 
 ⓘ Hg password is NOT collected here — you'll enter it directly in the terminal.
@@ -226,7 +226,7 @@ After presenting the form, show this legend **below** it (not inside the copy bl
 | Key | What to enter |
 |-----|---------------|
 | hg_username | Your zrepository username |
-| branch | Hg branch to clone (e.g. SDPLIVE_UI_AUTOMATION_BRANCH) |
+| branch | Repo branch name (e.g. SDPLIVE_UI_AUTOMATION_BRANCH) |
 | deps_path | Absolute path to the JARs folder |
 | sdp_url | Full URL of your SDP instance |
 | portal | SDP portal identifier |

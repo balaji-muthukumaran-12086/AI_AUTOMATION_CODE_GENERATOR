@@ -1,4 +1,4 @@
-# AutomaterSelenium — Setup Guide
+# AI Automation Code Generator — User Setup Guide
 
 > Give use-case documents to Copilot agents → get fully generated Selenium test code.
 
@@ -16,29 +16,32 @@
 
 ## Before You Start
 
-**Install these** (one-time):
+1. Install [VS Code](https://code.visualstudio.com/) with **GitHub Copilot** + **Copilot Chat** extensions (v1.99+)
+2. Download **Dependencies** and **Drivers** (Firefox + Geckodriver) zip files from [WorkDrive](https://workdrive.zoho.in/folder/l5o5d7049285d45dd49ae80d7be1a209a6841)
+
+Open VS Code, then open the **Terminal** (`Ctrl+\``) and run:
 
 ```bash
 sudo apt install openjdk-17-jdk git mercurial python3 python3-venv
 ```
 
-**Also need:**
-- [VS Code](https://code.visualstudio.com/) with **GitHub Copilot** + **Copilot Chat** extensions (v1.99+)
-- **Zoho VPN** connected (`vpn.zohocorporation.com:10443`)
-- **Dependencies folder** (JARs) — get from a team member
-- Firefox + Geckodriver — only if you want to **run** tests (not just generate)
-
 ---
 
 ## Step 1 — Clone & Open
 
+In the same VS Code terminal, run these one by one:
+
 ```bash
 git clone https://github.com/balaji-muthukumaran-12086/AI_AUTOMATION_CODE_GENERATOR.git
+```
+```bash
 cd AI_AUTOMATION_CODE_GENERATOR
+```
+```bash
 python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 ```
 
-Open the folder in VS Code: **File → Open Folder → AI_AUTOMATION_CODE_GENERATOR**
+Now open this folder in VS Code: **File → Open Folder** → select `AI_AUTOMATION_CODE_GENERATOR`
 
 ---
 
