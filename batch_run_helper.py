@@ -128,7 +128,12 @@ def run_single_test(entity_class, method_name):
         report_path = reports[-1]
         with open(report_path, 'r') as f:
             html = f.read()
-        passed = 'scenario-result PASS' in html
+
+        # ScenarioReport.html is the AUTHORITATIVE source of truth.
+        # The HTML contains: <div class="scenario-result PASS|FAIL" ...>
+        # Trust this over any stdout/stderr noise (cleanup logs, DELETE
+        # messages, benign exceptions during post-process, etc.).
+        passed = 'scenario-result PASS' in html and 'scenario-result FAIL' not in html
 
         failure_info = ""
         if not passed:
