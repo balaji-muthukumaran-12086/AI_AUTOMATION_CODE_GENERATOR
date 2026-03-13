@@ -221,3 +221,59 @@ else
     echo "   in your dependencies folder and re-run this script."
   fi
 fi
+
+# ── 7. Generate .vscode/settings.json (Java classpath for VS Code) ───────────
+# Eliminates red-line import errors in VS Code by configuring Java Language Server.
+# Safe to run multiple times — preserves existing settings, only updates Java keys.
+echo ""
+echo "🔧 Configuring VS Code Java classpath..."
+VSCODE_DIR="$WORKSPACE/.vscode"
+SETTINGS_FILE="$VSCODE_DIR/settings.json"
+mkdir -p "$VSCODE_DIR"
+
+python3 - "$PROJECT_NAME" "$DEPS" "$SETTINGS_FILE" <<'PYEOF'
+import json, sys, os
+
+project_name = sys.argv[1]
+deps_dir = sys.argv[2]
+settings_path = sys.argv[3]
+
+# Load existing settings (strip // comments for JSON parsing)
+existing = {}
+if os.path.isfile(settings_path):
+    with open(settings_path, "r") as f:
+        lines = f.readlines()
+    cleaned = []
+    for line in lines:
+        stripped = line.lstrip()
+        if stripped.startswith("//"):
+            continue
+        # Remove inline // comments (naive but sufficient for settings.json)
+        idx = line.find("//")
+        if idx > 0 and '"' not in line[idx:]:
+            line = line[:idx] + "\n"
+        cleaned.append(line)
+    try:
+        existing = json.loads("".join(cleaned))
+    except json.JSONDecodeError:
+        existing = {}
+
+# Update Java classpath settings
+existing["java.project.sourcePaths"] = [project_name + "/src"]
+existing["java.project.outputPath"] = project_name + "/bin"
+existing["java.project.referencedLibraries"] = [deps_dir + "/**/*.jar"]
+existing.setdefault("java.errors.incompleteClasspath.severity", "ignore")
+
+with open(settings_path, "w") as f:
+    json.dump(existing, f, indent=2)
+
+print("  ✅ " + settings_path)
+print("     sourcePaths:          " + project_name + "/src")
+print("     outputPath:           " + project_name + "/bin")
+print("     referencedLibraries:  " + deps_dir + "/**/*.jar")
+PYEOF
+
+echo ""
+echo "======================================================"
+echo "  Setup complete."
+echo "======================================================"
