@@ -51,7 +51,7 @@ RUN_CONFIG = {
     "portal_name":   SDP_PORTAL,
     "password":      SDP_ADMIN_PASS,
     "skip_compile":  True,   # keep True — full compile is broken
-    "skip_cleanup":  False,
+    "skip_cleanup":  True,   # skip cleanup — SDP instance bulk-delete returns 4007
 }
 
 DEPS_DIR            = _DEPS_DIR           # from config/project_config.py → dependencies17
