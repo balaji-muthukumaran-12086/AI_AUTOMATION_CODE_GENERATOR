@@ -191,19 +191,31 @@ cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
 
 ### 2d. Parse Result
 
-Check output using priority order:
-1. `$$Failure` in output → **FAILED**
-2. `"Additional Specific Info":["` + `"successfully"` → **PASSED**
-3. `BUILD FAILED` → **FAILED**
-4. `BUILD SUCCESSFUL` → **PASSED**
-5. Java exceptions (`NullPointerException`, `NoSuchElementException`, `TimeoutException`, etc.) → **FAILED**
-6. No positive signal → **FAILED**
+> **ScenarioReport.html is the SOLE AUTHORITY for pass/fail.** Stdout markers (`BUILD SUCCESSFUL`, `Additional Specific Info`) only indicate the JVM/ant process completed — they do NOT indicate whether the test scenario passed. Always check the report first.
 
-Also check ScenarioReport.html:
+**Step 1 — Find the report (MANDATORY):**
 ```bash
-ls -t $PROJECT/reports/LOCAL_<methodName>_* | head -1
+REPORT_DIR=$(ls -dt $PROJECT/reports/LOCAL_<methodName>_* 2>/dev/null | head -1)
 ```
-Read the HTML for `data-result="PASS"` / `data-result="FAIL"` / `scenario-result FAIL`.
+
+**Step 2 — Check report for pass/fail:**
+```bash
+grep -o 'scenario-result [A-Z]*' "$REPORT_DIR/ScenarioReport.html" | head -1
+```
+
+| Report contains | Result |
+|---|---|
+| `scenario-result PASS` | **PASSED** — done, move to next test |
+| `scenario-result FAIL` | **FAILED** — proceed to Step 3 (debug loop) |
+| Report dir missing / no ScenarioReport.html | Fall back to stdout checks below |
+
+**Step 3 — Stdout fallback (ONLY if no ScenarioReport.html exists):**
+1. `$$Failure` in output → **FAILED**
+2. `BUILD FAILED` → **FAILED**
+3. Java exceptions (`NullPointerException`, `NoSuchElementException`, `TimeoutException`, etc.) → **FAILED**
+4. No positive signal → **FAILED**
+
+> ⚠️ `BUILD SUCCESSFUL` in stdout means **ant compilation succeeded**, NOT that the test passed. NEVER use `BUILD SUCCESSFUL` as a pass signal.
 
 ### 2e. On PASS → done. On FAIL → Step 3 (debug loop).
 
@@ -431,7 +443,7 @@ Process every test the same way as a single test:
 
 1. **Configure** `run_test.py` with the test's `entity_class` + `method_name` (Step 2a)
 2. **Run** `.venv/bin/python run_test.py 2>&1` (Step 2c)
-3. **Parse** result using the 6 priority-order checks (Step 2d)
+3. **Parse** result using ScenarioReport.html as sole authority (Step 2d)
 4. **On PASS** → report `[N/total] ✅ Entity.method — PASSED` → move to next test
 5. **On FAIL** → apply debug-fix loop (Step 3), max 3 attempts:
    - Read ScenarioReport.html
@@ -651,19 +663,21 @@ Blind retries without diagnosis are FORBIDDEN. Reading Java files before Playwri
 ✅ CORRECT:  Test fails → read report → Playwright snapshot → diagnose → read specific Java file to fix → fix → re-run
 ```
 
-#### 3. ScenarioReport.html is the AUTHORITATIVE pass/fail source
+#### 3. ScenarioReport.html is the SOLE AUTHORITY for pass/fail
 
-**What happened**: A test's ScenarioReport.html showed `scenario-result PASS`, but the agent misread stdout cleanup noise (DELETE API calls, benign exceptions) as failure signals and kept retrying.
+**What happened**: (a) A test's stdout showed `BUILD SUCCESSFUL`, so the agent declared PASS — but ScenarioReport.html had `scenario-result FAIL`. The agent never checked the report. (b) A test's ScenarioReport.html showed `scenario-result PASS`, but the agent misread stdout cleanup noise (DELETE API calls, benign exceptions) as failure signals and kept retrying.
 
 **Rule**: After every test execution:
 1. Find the latest report: `ls -dt $PROJECT/reports/LOCAL_<method>_* | head -1`
-2. Check `ScenarioReport.html` for `scenario-result PASS` or `scenario-result FAIL`
-3. **If HTML says PASS → test PASSED. Stop. Move to next test.**
-4. Ignore stdout/stderr noise — cleanup DELETEs, post-process exceptions, and benign warnings do NOT indicate failure
+2. `grep -o 'scenario-result [A-Z]*' "$REPORT_DIR/ScenarioReport.html"` — this is the ONLY truth
+3. **If HTML says PASS → test PASSED. If HTML says FAIL → test FAILED.**
+4. NEVER use `BUILD SUCCESSFUL` from stdout as a pass signal — it only means ant/javac succeeded
+5. Ignore stdout/stderr noise — cleanup DELETEs, post-process exceptions, and benign warnings do NOT indicate failure
 
 ```
+❌ FORBIDDEN: stdout has BUILD SUCCESSFUL → declare PASS without checking HTML report
 ❌ FORBIDDEN: HTML says PASS but agent retries because stdout has "Exception" or "DELETE"
-✅ CORRECT:  HTML says PASS → done, report PASS, move on
+✅ CORRECT:  Check HTML FIRST → scenario-result PASS|FAIL → that's the answer
 ```
 
 #### 4. NEVER modify tests_to_run.json or add entries not from @test-generator
