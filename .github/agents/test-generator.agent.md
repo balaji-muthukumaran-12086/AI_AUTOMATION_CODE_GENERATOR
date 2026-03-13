@@ -5,6 +5,7 @@ model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
 argument-hint: "Upload a use-case CSV to your project's Testcase/ folder, then invoke this agent. Or describe the scenario in plain text (e.g., 'create a change and verify the detail view title')."
 instructions:
   - .github/copilot-instructions.md
+  - config/critical_rules_digest.md
   - config/framework_rules.md
   - config/framework_knowledge.md
   - .github/instructions/java-test-conventions.instructions.md
@@ -513,11 +514,14 @@ Before writing ANY test code, complete these steps IN ORDER:
 
 **Read ALL of these files using the read tool — every line, no skipping:**
 
+0. `config/critical_rules_digest.md` (~230 lines) — **START HERE**. Compact extract of the 22 most-violated rules from the full files below. This file is short enough to be fully included via YAML header, so you always have these rules even if the larger files are truncated. Read it first as your safety net.
 1. `.github/copilot-instructions.md` (~1300 lines) — project structure, lifecycle, data loading rules, API architecture, compilation, key framework behaviours, code generation rules, ActionsUtil/APIUtil patterns, placeholder reference
 2. `config/framework_rules.md` (~2600 lines) — detailed rules for locators, annotations, preProcess groups, field types, validation patterns, common pitfalls
 3. `config/framework_knowledge.md` (~2200 lines) — framework method signatures, entity patterns, module-specific conventions, known quirks
 
 **How to read**: Use the read tool in chunks (e.g., 200-300 lines at a time) until you reach the end of each file. Do NOT skip sections — every section contains rules that affect code generation.
+
+> **If the full files (items 1-3) are truncated** in the YAML header attachment, the digest (item 0) ensures you still have the 22 most critical rules. But always try to read the full files explicitly.
 
 **After reading all 3 files**, confirm to yourself:
 - [ ] I know all valid `preProcess` group names for the target module
