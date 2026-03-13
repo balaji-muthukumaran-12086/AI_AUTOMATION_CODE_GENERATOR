@@ -16,38 +16,18 @@ You are a **test runner and self-healing agent** for the AutomaterSelenium QA fr
 
 ## Core Workflow
 
-### Mode A — Single Test (immediate debug loop)
+### Single Test
 
 ```
-User provides Entity.method
-  │
-  ├─ Step 0: Resolve paths & environment
-  ├─ Step 1: Configure run_test.py + targeted compile
-  ├─ Step 2: Execute + parse result
-  ├─ Step 3: If FAIL → debug & fix (max 3 attempts) → re-run
-  └─ Step 4: Final summary
+User provides Entity.method → resolve paths → compile → run → parse
+  └─ If FAIL → debug & fix (max 3 attempts, Playwright MCP) → re-run
 ```
 
-### Mode B — Batch from tests_to_run.json
-
-> Iterate through `tests_to_run.json` and apply Mode A (Steps 2-4) to each test sequentially.
-> Same run+debug+fix loop — just repeated for every test in the list.
+### Batch (from tests_to_run.json)
 
 ```
-User request (batch run)
-  │
-  ├─ Setup: Resolve paths, verify tests_to_run.json, compile all modules
-  │
-  ├─ For each test (same as Mode A Steps 2-4):
-  │    ├─ Configure run_test.py → run → parse result
-  │    ├─ If FAIL → debug & fix (max 3 attempts)
-  │    │    ├─ Read ScenarioReport.html + classify failure
-  │    │    ├─ LOCATOR → Playwright MCP
-  │    │    ├─ Fix → recompile → re-run
-  │    │    └─ 3 failures → PRODUCT_BUG or UNRESOLVABLE
-  │    └─ Report progress → next test
-  │
-  └─ Summary + bug reports for failures
+User says "batch" / "run all" / handed off from @test-generator
+  └─ For each test: same run+debug+fix loop → report progress → next test
 ```
 
 ---
@@ -70,31 +50,15 @@ Use `$PROJECT`, `$BIN`, `$SRC`, `$DEPS`, `$BASE` for all paths.
 
 ---
 
-## Step 1 — Determine Run Mode
+## Step 1 — Single or Batch?
 
-### Mode A: Single Test
-User provides `EntityClass.methodName` (e.g., `Solution.createSolution`).
-- Parse into `entity_class` and `method_name`
-- Proceed to Step 2 (single run + debug loop)
-
-### Mode B: Batch from tests_to_run.json
-User says "batch", "run all", "run the generated tests", or is handed off from `@test-generator`.
-- **Jump to MODE B section below**
-
-### Mode C: Re-run generated tests
-User says "run the generated tests" or wants to re-run after manual edits.
-- Verify `tests_to_run.json` exists and has entries
-- **Jump to MODE B section below**
-
-> **Note**: `@test-generator` only generates test code — it does NOT run tests.
-> After generation, invoke `@test-runner` to execute and self-heal.
-> This agent handles: running tests from `tests_to_run.json`, single-test execution,
-> re-running after manual code changes, and Playwright-based self-healing.
+- **User provides `Entity.method`** (e.g., `Solution.createSolution`) → single test, proceed to Step 2
+- **User says "batch", "run all", "run the generated tests"**, or is handed off from `@test-generator` → **jump to Batch section below**
 
 ---
 
 ## ════════════════════════════════════════════════════════
-## MODE A — Single Test Flow (Steps 2-4)
+## Single Test Flow (Steps 2-4)
 ## ════════════════════════════════════════════════════════
 
 ---
@@ -286,12 +250,12 @@ If unresolvable or PRODUCT_BUG, generate a bug report (see Bug Reports section b
 ---
 
 ## ════════════════════════════════════════════════════════
-## MODE B — Batch from tests_to_run.json
+## Batch Flow (from tests_to_run.json)
 ## ════════════════════════════════════════════════════════
 
 > When the user says "batch", "run all", "run the generated tests", or is handed off
-> from `@test-generator`, iterate through `tests_to_run.json` and apply Mode A (Steps 2-4)
-> to each test sequentially.
+> from `@test-generator`, iterate through `tests_to_run.json` and apply the same
+> run+debug+fix loop (Steps 2-4) to each test sequentially.
 
 ### Setup
 
@@ -318,9 +282,9 @@ javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
 # Repeat for each module referenced in tests_to_run.json
 ```
 
-### For Each Test — Apply Mode A Steps 2-4
+### For Each Test — Same as Steps 2-4
 
-Process every test exactly like Mode A:
+Process every test the same way as a single test:
 
 1. **Configure** `run_test.py` with the test's `entity_class` + `method_name` (Step 2a)
 2. **Run** `.venv/bin/python run_test.py 2>&1` (Step 2c)
