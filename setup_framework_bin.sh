@@ -63,20 +63,10 @@ if [ ! -d "$WORKSPACE/$PROJECT_NAME" ]; then
   exit 1
 fi
 
+# Create bin/ if it doesn't exist (e.g., bin/ was in .hgignore and not cloned)
 if [ ! -d "$BIN" ]; then
-  echo "❌ bin/ directory not found at: $BIN"
-  exit 1
-fi
-
-# Check if framework source is available (optional — only maintainers have this)
-HAS_FRAMEWORK=false
-if [ -d "$WORKSPACE/AutomaterSeleniumFramework" ]; then
-  if [ -d "$FW_SRC" ]; then
-    HAS_FRAMEWORK=true
-    echo "✅ Framework source found"
-  fi
-else
-  echo "ℹ️  AutomaterSeleniumFramework/ not present — will use pre-compiled classes from bin/"
+  echo "ℹ️  bin/ not found — creating: $BIN"
+  mkdir -p "$BIN"
 fi
 
 if [ ! -d "$DEPS" ]; then
@@ -85,34 +75,102 @@ if [ ! -d "$DEPS" ]; then
 fi
 echo "✅ Paths OK"
 
-# ── 2. Check / switch hg branch (only if framework source is present) ─────────
-if [ "$HAS_FRAMEWORK" = true ]; then
-  CURRENT_BRANCH=$(cd "$FW_DIR" && hg branch 2>/dev/null)
-  if [ "$CURRENT_BRANCH" != "$TARGET_BRANCH" ]; then
-    echo "⚠️  Framework is on branch '$CURRENT_BRANCH', switching to '$TARGET_BRANCH'..."
-    cd "$FW_DIR" && hg update "$TARGET_BRANCH"
-    echo "✅ Switched to $TARGET_BRANCH"
+# ── 1b. Determine framework source ──────────────────────────────────────────
+# Priority:
+#   1. AutomaterSeleniumFramework/ hg repo (maintainers only)
+#   2. Framework source ZIP in dependencies (automater-selenium-framework-*.zip)
+#   3. Pre-compiled classes already in bin/ (from hg clone of base branch)
+FW_SOURCE="none"
+FW_COMPILE_DIR=""
+
+if [ -d "$WORKSPACE/AutomaterSeleniumFramework" ] && [ -d "$FW_SRC" ]; then
+  FW_SOURCE="hg_repo"
+  FW_COMPILE_DIR="$FW_SRC"
+  echo "✅ Framework source found (hg repo: AutomaterSeleniumFramework/)"
+else
+  # Try to extract framework source from ZIP in dependencies
+  FW_ZIP=$(find "$DEPS" -name 'automater-selenium-framework-*.zip' -type f 2>/dev/null | head -1)
+  if [ -n "$FW_ZIP" ]; then
+    FW_SOURCE="zip"
+    FW_EXTRACT_DIR=$(mktemp -d /tmp/fw_extract_XXXXXX)
+    echo "ℹ️  AutomaterSeleniumFramework/ not present — extracting from ZIP:"
+    echo "   $FW_ZIP"
+    unzip -q "$FW_ZIP" -d "$FW_EXTRACT_DIR"
+    FW_COMPILE_DIR="$FW_EXTRACT_DIR"
+
+    # ── Patch ZIP source for compatibility with old AutomationFrameWork.jar ──
+    # The ZIP may reference CommonVariables fields/methods that only exist in
+    # newer builds (setisSkipScreenShot, launchPrimaryInRemote, gridURL).
+    # The hg repo has these patched out; we apply the same patches here.
+    echo "🔧 Patching ZIP source for JAR compatibility..."
+    _EC="$FW_EXTRACT_DIR/com/zoho/automater/selenium/base/EntityCase.java"
+    _DU="$FW_EXTRACT_DIR/com/zoho/automater/selenium/base/utils/DriverUtil.java"
+    _FF="$FW_EXTRACT_DIR/com/zoho/automater/selenium/base/drivers/FirefoxWebDriver.java"
+    _CH="$FW_EXTRACT_DIR/com/zoho/automater/selenium/base/drivers/ChromeWebDriver.java"
+    # EntityCase: comment out setisSkipScreenShot calls
+    if [ -f "$_EC" ]; then
+      sed -i 's|CommonVariables\.setisSkipScreenShot(false);|// CommonVariables.setisSkipScreenShot(false); // patched: method not in JAR|g' "$_EC"
+      sed -i 's|CommonVariables\.setisSkipScreenShot(true);|// CommonVariables.setisSkipScreenShot(true); // patched: method not in JAR|g' "$_EC"
+    fi
+    # DriverUtil: replace launchPrimaryInRemote access with default false
+    if [ -f "$_DU" ]; then
+      sed -i 's|LOGGER\.info("\[Aalam\] CommonVariables\.launchPrimaryInRemote = " + CommonVariables\.launchPrimaryInRemote);|LOGGER.info("[Aalam] launchPrimaryInRemote defaulting to false (local build)");|g' "$_DU"
+      sed -i 's|return CommonVariables\.launchPrimaryInRemote;|return false;|g' "$_DU"
+      # Remove the import if it was added (not in original hg source)
+      sed -i '/^import com\.zoho\.automation\.CommonVariables;$/d' "$_DU"
+    fi
+    # FirefoxWebDriver: comment out gridURL assignment
+    if [ -f "$_FF" ]; then
+      sed -i 's|CommonVariables\.gridURL = gridURL;|// CommonVariables.gridURL = gridURL; // patched: field not in JAR|g' "$_FF"
+    fi
+    # ChromeWebDriver: comment out gridURL assignment
+    if [ -f "$_CH" ]; then
+      sed -i 's|CommonVariables\.gridURL = gridURL;|// CommonVariables.gridURL = gridURL; // patched: field not in JAR|g' "$_CH"
+    fi
+
+    echo "✅ Framework source extracted and patched from ZIP"
   else
-    echo "✅ Framework branch: $TARGET_BRANCH"
+    echo "ℹ️  No framework source available (no hg repo, no ZIP in deps)"
+  fi
+fi
+
+# ── 2. Compile framework source (from hg repo or ZIP) ────────────────────────
+if [ "$FW_SOURCE" != "none" ]; then
+
+  # Switch hg branch (only for hg repo source)
+  if [ "$FW_SOURCE" = "hg_repo" ]; then
+    CURRENT_BRANCH=$(cd "$FW_DIR" && hg branch 2>/dev/null)
+    if [ "$CURRENT_BRANCH" != "$TARGET_BRANCH" ]; then
+      echo "⚠️  Framework is on branch '$CURRENT_BRANCH', switching to '$TARGET_BRANCH'..."
+      cd "$FW_DIR" && hg update "$TARGET_BRANCH"
+      echo "✅ Switched to $TARGET_BRANCH"
+    else
+      echo "✅ Framework branch: $TARGET_BRANCH"
+    fi
   fi
 
-  # ── 3. Build classpath (all JARs under dependencies/ recursively) ───────────
+  # ── 3. Build classpath (all JARs under deps recursively) ───────────────────
   CP="$BIN:$(find "$DEPS" -name "*.jar" | tr '\n' ':')"
 
   # ── 4. Collect source files — exclude Aalam-only BeforeAndAfterCaseActions ──
   SOURCES_FILE=$(mktemp /tmp/fw_sources_XXXXXX.txt)
-  find "$FW_SRC" -name "*.java" | grep -v "BeforeAndAfterCaseActions" > "$SOURCES_FILE"
+  find "$FW_COMPILE_DIR" -name "*.java" | grep -v "BeforeAndAfterCaseActions" > "$SOURCES_FILE"
   FILE_COUNT=$(wc -l < "$SOURCES_FILE")
   echo "📂 Source files to compile: $FILE_COUNT"
 
   # ── 5. Compile ──────────────────────────────────────────────────────────────
   echo "⚙️  Compiling..."
-  if javac -encoding UTF-8 -cp "$CP" -d "$BIN" @"$SOURCES_FILE" 2>&1 | grep "error:"; then
+  COMPILE_OUTPUT=$(javac -encoding UTF-8 -cp "$CP" -d "$BIN" @"$SOURCES_FILE" 2>&1)
+  COMPILE_EXIT=$?
+  if echo "$COMPILE_OUTPUT" | grep -q "error:"; then
+    echo "$COMPILE_OUTPUT" | grep "error:" | head -20
     echo "❌ Compile FAILED — see errors above"
     rm -f "$SOURCES_FILE"
+    [ -n "${FW_EXTRACT_DIR:-}" ] && rm -rf "$FW_EXTRACT_DIR"
     exit 1
   fi
   rm -f "$SOURCES_FILE"
+  [ -n "${FW_EXTRACT_DIR:-}" ] && rm -rf "$FW_EXTRACT_DIR"
 
   # ── 6. Spot-check key classes ───────────────────────────────────────────────
   echo ""
@@ -136,7 +194,9 @@ if [ "$HAS_FRAMEWORK" = true ]; then
 
   echo ""
   if [ "$MISSING" -eq 0 ]; then
-    echo "✅ Framework compiled successfully into $PROJECT_NAME/bin/"
+    SRC_LABEL="hg repo"
+    [ "$FW_SOURCE" = "zip" ] && SRC_LABEL="ZIP in dependencies"
+    echo "✅ Framework compiled successfully into $PROJECT_NAME/bin/ (from $SRC_LABEL)"
     echo "   $(find "$BIN/com/zoho/automater/selenium/base" -name "*.class" | wc -l) framework classes total"
   else
     echo "❌ $MISSING expected class(es) missing — compile may have partially failed"
@@ -144,7 +204,7 @@ if [ "$HAS_FRAMEWORK" = true ]; then
   fi
 
 else
-  # ── No framework source — check if pre-compiled classes already exist ───────
+  # ── No framework source at all — check if pre-compiled classes exist ────────
   echo ""
   echo "🔍 Checking for pre-compiled framework classes in $PROJECT_NAME/bin/..."
   KEY_CLASS="$BIN/com/zoho/automater/selenium/base/EntityCase.class"
@@ -152,15 +212,12 @@ else
     FW_CLASS_COUNT=$(find "$BIN/com/zoho/automater/selenium/base" -name "*.class" 2>/dev/null | wc -l)
     echo "✅ Found $FW_CLASS_COUNT pre-compiled framework classes in bin/"
     echo "   Tests will use these classes + the framework JAR from dependencies."
-    echo ""
-    echo "ℹ️  If you need the latest framework source overrides (local-run report fixes),"
-    echo "   ask the framework maintainer to push the compiled classes to the hg branch,"
-    echo "   or clone AutomaterSeleniumFramework/ and re-run this script."
   else
     echo "⚠️  No pre-compiled framework classes found in bin/"
     echo "   Tests will rely on AutomationFrameWork.jar from dependencies."
     echo "   Local-run HTML reports may not generate correctly (missing isLocalSetup guard)."
     echo ""
-    echo "   To fix: clone AutomaterSeleniumFramework/ and re-run this script."
+    echo "   To fix: place the framework ZIP (automater-selenium-framework-*.zip)"
+    echo "   in your dependencies folder and re-run this script."
   fi
 fi

@@ -167,10 +167,18 @@ NOT handled by fillInputForAnEntity (silent skip — manual click required):
 ```bash
 ./setup_framework_bin.sh
 ```
-This compiles all 90+ `AutomaterSeleniumFramework` source files (branch `AI_Automation_Code_Generator`)
-into `$PROJECT_NAME/bin/`, overriding old classes from `AutomationFrameWork.jar`.
-**Required** because `EntityCase`, `ScenarioReport`, `LocalSetupManager` etc. need UmeshBranch versions
-for local runs to work correctly (report/screenshot generation depends on `isLocalSetup()` guards).
+This compiles 90+ framework source files into `$PROJECT_NAME/bin/`, overriding old classes
+from `AutomationFrameWork.jar`. The script auto-detects the framework source using this
+priority chain:
+1. `AutomaterSeleniumFramework/` hg repo (maintainers only — has the full source tree)
+2. `automater-selenium-framework-*.zip` in `$DEPS_DIR` (all users — extracted & compiled automatically)
+3. Pre-compiled framework classes already in `bin/` from the hg clone (fallback — no compilation)
+
+**Required** because `EntityCase`, `ScenarioReport`, `LocalSetupManager` etc. need the
+local-run versions for reports/screenshots to work correctly (`isLocalSetup()` guards).
+
+> ⚠️ **NEVER copy `bin/` from another project folder** (e.g., `.SDPLIVE_LATEST_AUTOMATER_SELENIUM/`)
+> as a workaround for compilation failures. Each project's `bin/` must be self-contained.
 
 ### Step 2 — Module targeted compile (after editing module source):
 ```bash
