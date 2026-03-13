@@ -424,13 +424,31 @@ find $PROJECT_NAME/src -path "*modules/<module>/<entity>*" -name "*.java"
 ```
 Sub-Module value in CSV
   ↓
-  Does an existing leaf class match the Sub-Module name?
-  → YES: Place scenario in that class (e.g., "CI Details - Sub Form" → CIDetails.java or nearest)
-  → NO:  Is there a close match in the module?
-         → YES: Use that class (prefer existing over creating new)
-         → NO:  Generate entity skeleton: run GenerateSkeletonForAnEntity.java
-                with MODULE_NAME + ENTITY_NAME in PascalCase, then extend the parent class
+  Step 1: Does an existing leaf class match the Sub-Module name exactly?
+  → YES: Place scenario in that class
+  ↓ NO
+  Step 2: Is the Sub-Module a FEATURE or TAB within an existing view?
+          (e.g., "Linking Change" = Associations tab in detail view,
+           "Approval" = approval section, "Notes" = notes tab)
+  → YES: Place in the existing view class that owns that feature:
+         - Detail view features → DetailsView.java (or entity-specific DV class)
+         - List view features → ListView.java
+         - Stage-specific features → <Stage>Stage.java
+         DO NOT create a new entity class for a feature/tab.
+  ↓ NO
+  Step 3: Is there a close match in the module?
+  → YES: Use that class (prefer existing over creating new)
+  ↓ NO
+  Step 4: Generate entity skeleton (LAST RESORT — only for genuinely new entities
+          like ChangeWorklog, ChangeTask, ChangeConversations that have their own
+          API path, own data JSON, own field config):
+          run GenerateSkeletonForAnEntity.java with MODULE_NAME + ENTITY_NAME
 ```
+
+> **Common mistake**: Sub-Module says "Linking Change" or "Change Associations" →
+> TG creates `LinkingChange.java` extending `Change`. WRONG. Linking is a feature within
+> the change detail view's Associations tab → scenarios go in `DetailsView.java`.
+> Only create a new entity when it has its own REST API endpoint (e.g., `changes/{id}/worklogs`).
 
 #### When a Use-Case Document (CSV/XLSX/XLS) Is Provided
 
