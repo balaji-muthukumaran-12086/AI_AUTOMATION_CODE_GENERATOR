@@ -80,6 +80,53 @@ Store the resolved project name as `{TARGET_PROJECT}` for all subsequent steps.
 
 ---
 
+## Step 0.1 — Resolve Owner (BEFORE any generation)
+
+Immediately after resolving the project, resolve the owner. This MUST complete before
+any test code is generated — the resolved value is used in every `@AutomaterScenario`.
+
+```bash
+OWNER=$(.venv/bin/python -c "from config.project_config import OWNER_CONSTANT; print(OWNER_CONSTANT or '')")
+echo "Resolved owner: '$OWNER'"
+```
+
+**If `$OWNER` is empty or `None`** — parse `OwnerConstants.java` from the cloned project and ask the user:
+
+```bash
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+grep -oP 'public static final String \K[A-Z_]+' \
+  "$PROJECT/src/com/zoho/automater/selenium/modules/OwnerConstants.java" | sort | nl -w2 -s'. '
+```
+
+**STOP and present the numbered list:**
+```
+Owner is not configured. Please select your name from the list:
+
+ 1. ABHISHEK_RAV
+ 2. ABINAYA_AK
+ 3. AISHWARYA_JAYASANKAR
+ 4. ANITHA_A
+ 5. ANTONYRAJAN_D
+ 6. BALAJI_M
+ 7. BALAJI_MR
+ ...
+
+Reply with the number or constant name (e.g., "6" or "BALAJI_M").
+```
+
+**Wait for the user's reply.** Once they pick, persist and store:
+```bash
+echo "OWNER_CONSTANT=<CHOSEN>" >> .env
+```
+
+Store the resolved owner as `{OWNER}` (e.g., `BALAJI_M`) for all subsequent steps.
+
+**If `$OWNER` is already set** — store it as `{OWNER}` and proceed (no prompt needed).
+
+> This ensures every `@AutomaterScenario` in this session uses the same `owner = OwnerConstants.{OWNER}`.
+
+---
+
 ## Input Mode Detection — Do This First
 
 Before anything else, determine how the user is providing input.
@@ -823,43 +870,8 @@ ls -la "$BACKUP_DIR/src/" "$BACKUP_DIR/resources/" 2>/dev/null
 
 ### @AutomaterScenario — Always Include All 9 Fields
 
-Before writing the `owner` field, resolve the configured owner:
-
-```bash
-.venv/bin/python -c "from config.project_config import OWNER_CONSTANT; print(OWNER_CONSTANT)"
-```
-
-**If the output is `None` or empty** — the owner is not configured yet. Parse `OwnerConstants.java`
-from the cloned project and present the list to the user:
-
-```bash
-# Extract all owner constant names from OwnerConstants.java
-PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
-grep -oP 'public static final String \K[A-Z_]+' \
-  "$PROJECT/src/com/zoho/automater/selenium/modules/OwnerConstants.java" | sort
-```
-
-Present the list as a numbered selection:
-```
-Owner is not configured. Please select your name from the list:
-
-  1. ABHISHEK_RAV          2. ABINAYA_AK           3. AISHWARYA_JAYASANKAR
-  4. ANITHA_A              5. ANTONYRAJAN_D         6. BALAJI_M
-  7. BALAJI_MR             8. BINESH_N              9. DEVIRANI_R
-  ...
-
-Reply with the number or constant name (e.g., "6" or "BALAJI_M").
-```
-
-After the user replies, persist the choice so it is not asked again:
-```bash
-# Append to .env so future runs auto-resolve
-echo "OWNER_CONSTANT=<CHOSEN_CONSTANT>" >> .env
-```
-
-Then use the chosen value for all `owner = OwnerConstants.<CHOSEN>` in this session.
-
-**If the output is a valid constant** (e.g., `BALAJI_M`) — use it directly in all generated annotations:
+The `owner` field uses `{OWNER}` resolved in **Step 0.1** (before generation starts).
+If `{OWNER}` is not yet set, **STOP** — go back to Step 0.1 and resolve it first.
 
 ```java
 @AutomaterScenario(
@@ -869,7 +881,7 @@ Then use the chosen value for all `owner = OwnerConstants.<CHOSEN>` in this sess
     dataIds     = {...},
     tags        = {},
     description = "Plain English description",     // If from CSV: "[USECASE_ID] <description>"
-    owner       = OwnerConstants.<RESOLVED_OWNER>, // from OWNER_CONSTANT in project_config
+    owner       = OwnerConstants.{OWNER},          // resolved in Step 0.1
     runType     = ScenarioRunType.USER_BASED,      // ALWAYS explicit — never omit
     switchOn    = SwitchToUserSession.AFTER_PRE_PROCESS
 )
