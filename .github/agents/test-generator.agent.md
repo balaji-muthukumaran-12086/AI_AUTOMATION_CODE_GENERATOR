@@ -829,7 +829,37 @@ Before writing the `owner` field, resolve the configured owner:
 .venv/bin/python -c "from config.project_config import OWNER_CONSTANT; print(OWNER_CONSTANT)"
 ```
 
-Use the output value (e.g., `BALAJI_M`, `RAJESHWARAN_A`) in all generated annotations:
+**If the output is `None` or empty** — the owner is not configured yet. Parse `OwnerConstants.java`
+from the cloned project and present the list to the user:
+
+```bash
+# Extract all owner constant names from OwnerConstants.java
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+grep -oP 'public static final String \K[A-Z_]+' \
+  "$PROJECT/src/com/zoho/automater/selenium/modules/OwnerConstants.java" | sort
+```
+
+Present the list as a numbered selection:
+```
+Owner is not configured. Please select your name from the list:
+
+  1. ABHISHEK_RAV          2. ABINAYA_AK           3. AISHWARYA_JAYASANKAR
+  4. ANITHA_A              5. ANTONYRAJAN_D         6. BALAJI_M
+  7. BALAJI_MR             8. BINESH_N              9. DEVIRANI_R
+  ...
+
+Reply with the number or constant name (e.g., "6" or "BALAJI_M").
+```
+
+After the user replies, persist the choice so it is not asked again:
+```bash
+# Append to .env so future runs auto-resolve
+echo "OWNER_CONSTANT=<CHOSEN_CONSTANT>" >> .env
+```
+
+Then use the chosen value for all `owner = OwnerConstants.<CHOSEN>` in this session.
+
+**If the output is a valid constant** (e.g., `BALAJI_M`) — use it directly in all generated annotations:
 
 ```java
 @AutomaterScenario(
