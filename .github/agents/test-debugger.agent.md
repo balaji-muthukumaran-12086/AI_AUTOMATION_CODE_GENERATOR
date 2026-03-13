@@ -8,6 +8,21 @@ instructions:
   - config/framework_rules.md
   - config/framework_knowledge.md
   - .github/instructions/java-test-conventions.instructions.md
+
+# ── VS Code 1.111: Agent Permissions ──
+# Debugger needs browser access (MCP) and file edits for locator fixes.
+# execute = automatic — asks before destructive commands but allows reads.
+permissions:
+  read: "allow-always"
+  edit: "allow-always"
+  search: "allow-always"
+  execute: "automatic"
+  mcp: "allow-always"
+
+# ── VS Code 1.111: Autopilot (Preview) ──
+# Autonomous Playwright-driven debug loop: snapshot→diagnose→fix→verify.
+autopilot: true
+maxTurns: 20
 ---
 
 You are a **test debugging specialist** for the AutomaterSelenium QA framework. You diagnose and fix failing Selenium tests for ServiceDesk Plus (SDP) using Playwright browser tools.

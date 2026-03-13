@@ -10,6 +10,22 @@ instructions:
   - config/framework_knowledge.md
   - .github/instructions/java-test-conventions.instructions.md
   - .github/instructions/test-data-format.instructions.md
+
+# ── VS Code 1.111: Agent Permissions ──
+# Controls what this agent can do without asking for confirmation.
+# read/edit/search = allowed silently | execute = ask first for destructive commands
+permissions:
+  read: "allow-always"
+  edit: "allow-always"
+  search: "allow-always"
+  execute: "automatic"
+  mcp: "automatic"
+
+# ── VS Code 1.111: Autopilot (Preview) ──
+# Enables autonomous iteration — agent works through CSV rows, generates
+# all scenarios, data entries, and constants without pausing between steps.
+autopilot: true
+maxTurns: 30
 ---
 
 You are a **test generation specialist** for the AutomaterSelenium QA framework. You generate Java test scenarios for ServiceDesk Plus (SDP) following strict framework conventions.
@@ -217,6 +233,27 @@ ls "$PROJECT/Testcase/"*.{csv,xls,xlsx,md,txt} 2>/dev/null | head -20
 ❌ FORBIDDEN: Using previously generated scenarios as input for new generation
    Agent sees old code in src/ and generates more tests based on existing patterns
    → New generation MUST come from user-provided input (document or explicit description)
+
+❌ FORBIDDEN: Copying use-case documents from other locations into Testcase/
+   Agent runs: cp "docs/UseCase/<file>.csv" "$PROJECT/Testcase/"
+   Agent runs: cp "web/uploads/<file>.md" "$PROJECT/Testcase/"
+   Agent runs: cp "<any_path_outside_Testcase>/<file>" "$PROJECT/Testcase/"
+   → The USER must place documents in Testcase/ themselves. The agent MUST NOT
+     copy, move, or symlink documents from docs/UseCase/, docs/Feature_Document/,
+     web/uploads/, or any other directory into Testcase/. This prevents false
+     positives where the agent "finds" a document it placed there itself.
+
+❌ FORBIDDEN: Generating or creating a use-case document (CSV, MD, TXT) and placing it in Testcase/
+   Agent creates: "$PROJECT/Testcase/auto_generated_usecases.csv"
+   Agent writes: CSV rows derived from feature documents or existing code
+   → The agent MUST NOT author, generate, synthesize, or fabricate use-case documents.
+     Only the USER provides use-case documents. The agent consumes them — never creates them.
+
+❌ FORBIDDEN: Reading feature documents from docs/Feature_Document/ as a substitute for Testcase/
+   Agent reads: "docs/Feature_Document/Linking Change and Lookup field Enhancement.md"
+   Agent treats this as the use-case input and starts generating tests
+   → Feature documents in docs/ are reference material, NOT test input.
+     Only files physically present in {TARGET_PROJECT}/Testcase/ count as use-case input.
 ```
 
 ### When the gate blocks — show this prompt and WAIT
@@ -247,6 +284,8 @@ I cannot generate tests without input. Please do ONE of the following:
 
 **Do NOT proceed** to Mode A or Mode B until the user provides valid input. Wait for their response.
 **Do NOT invent scenarios, guess what the user might want, or use existing code as a template for new tests.**
+**Do NOT copy documents from `docs/UseCase/`, `docs/Feature_Document/`, `web/uploads/`, or any other location into `Testcase/`.** The user must place documents there themselves.
+**Do NOT generate, synthesize, or fabricate use-case documents.** You consume documents — you never author them.
 
 **If valid input IS found**, continue to the appropriate mode below.
 
@@ -1249,25 +1288,21 @@ This is fire-and-forget — if the orchestrator server isn't running, the event 
 
 ### Step P4 — Save Artifacts to Testcase/ Folder
 
-Copy ALL generation artifacts into the project's `Testcase/` folder for traceability:
+Save generation artifacts (execution plan, batch progress) into the project's `Testcase/` folder for traceability.
+
+> **IMPORTANT**: Do NOT copy use-case documents into Testcase/ — the user must have already placed them there before invoking this agent. Only save agent-generated *artifacts* (execution plans, batch progress).
 
 ```bash
 PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
 mkdir -p "$PROJECT/Testcase"
 
-# 1. Copy the original use-case document (Mode A only)
-if [ -f "<uploaded_file_path>" ]; then
-  cp "<uploaded_file_path>" "$PROJECT/Testcase/"
-  echo "Saved use-case document to $PROJECT/Testcase/"
-fi
-
-# 2. Copy the CSV analysis / execution plan MD (generated in Step P2c)
+# 1. Copy the CSV analysis / execution plan MD (generated in Step P2c)
 if [ -f "$PROJECT/execution_plan.md" ]; then
   cp "$PROJECT/execution_plan.md" "$PROJECT/Testcase/execution_plan_$(date +%Y%m%d_%H%M%S).md"
   echo "Saved execution plan to $PROJECT/Testcase/"
 fi
 
-# 3. Copy batch progress tracker (if batching was used)
+# 2. Copy batch progress tracker (if batching was used)
 if [ -f "$PROJECT/Testcase/batch_progress.md" ]; then
   echo "Batch progress tracker already in Testcase/ — up to date"
 fi

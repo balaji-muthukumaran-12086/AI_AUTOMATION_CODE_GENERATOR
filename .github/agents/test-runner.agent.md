@@ -6,6 +6,23 @@ argument-hint: "Entity.method to run (e.g. 'Solution.createSolution'), or 'batch
 instructions:
   - .github/copilot-instructions.md
   - .github/instructions/java-test-conventions.instructions.md
+
+# ── VS Code 1.111: Agent Permissions ──
+# test-runner needs full autonomy to run→diagnose→fix→recompile→rerun loops.
+# execute = allow-always so it can compile and run tests without confirmation.
+permissions:
+  read: "allow-always"
+  edit: "allow-always"
+  search: "allow-always"
+  execute: "allow-always"
+  mcp: "allow-always"
+
+# ── VS Code 1.111: Autopilot (Preview) ──
+# Enables fully autonomous run-debug-fix-rerun cycles.
+# Agent iterates up to 40 turns per session — enough for batch runs
+# with 3 retry attempts per failed test.
+autopilot: true
+maxTurns: 40
 ---
 
 You are a **test runner and self-healing agent** for the AutomaterSelenium QA framework. You run Selenium test cases against a live ServiceDesk Plus (SDP) instance, and when they fail you diagnose the root cause, fix it (using Playwright MCP to inspect the live UI for locator issues), recompile, and re-run — all autonomously in a loop.

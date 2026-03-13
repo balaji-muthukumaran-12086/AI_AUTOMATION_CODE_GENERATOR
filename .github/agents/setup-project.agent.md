@@ -3,6 +3,19 @@ description: "Set up or reconfigure the automation project: clone hg branch, pic
 tools: [read, edit, search, execute]
 model: ['Claude Sonnet 4.6 (copilot)', 'Claude Opus 4.6 (copilot)']
 argument-hint: "Just say 'setup' to start."
+
+# ── VS Code 1.111: Agent Permissions ──
+# Setup agent needs user confirmation for destructive operations (hg clone,
+# framework compile, .env writes). Read/search are silent.
+permissions:
+  read: "allow-always"
+  edit: "automatic"
+  search: "allow-always"
+  execute: "ask-always"
+
+# ── VS Code 1.111: Autopilot ──
+# Disabled — setup requires interactive user input (mode selection, form filling).
+autopilot: false
 ---
 
 ## YOUR FIRST AND ONLY ACTION — SHOW THIS GREETING
@@ -91,8 +104,8 @@ Agent: [ZERO tool calls] → shows greeting → STOPS and WAITS
 User: "2"
 Agent: [ZERO tool calls] → shows form (no owner field) → STOPS and WAITS
 User: [pastes filled form]
-Agent: [parses form] → [clones branch] → [reads OwnerConstants.java from cloned project] → shows owner list → STOPS and WAITS
-User: "6"
+Agent: [parses form] → [clones branch or detects existing folder] → [auto-resolves owner from hg_username via project_config.py] → [if auto-resolved: skips interactive list, proceeds to .env update + framework compile] → [if NOT auto-resolved: reads OwnerConstants.java, shows owner list, STOPS and WAITS]
+User: "6" (only if auto-resolve failed)
 Agent: [resolves owner] → [updates .env] → [runs setup_framework_bin.sh]
 ```
 
@@ -562,7 +575,29 @@ If spreadsheets were converted, also show:
 
 > **This step runs AFTER Step 3** (clone/refresh/detect). The project folder `{WORKSPACE_DIR}/{PROJECT_NAME}` now exists on disk, so `OwnerConstants.java` is guaranteed to be available.
 
-### 4a. Read the owner list from the cloned project
+### 4-pre. Auto-resolve owner from hg_username (MANDATORY — always try before showing list)
+
+Before presenting any interactive owner list, **always** try to auto-resolve the owner from the user's `hg_username` using `project_config.py`:
+
+```bash
+cd {WORKSPACE_DIR}
+.venv/bin/python -c "from config.project_config import resolve_owner_constant; r = resolve_owner_constant('{HG_USERNAME}'); print(f'AUTO_RESOLVED={r}' if r else 'NO_MATCH')"
+```
+
+**If output contains `AUTO_RESOLVED=<CONSTANT>`**:
+- Set `RESOLVED_OWNER_CONSTANT = <CONSTANT>`
+- Tell the user: `✅ Owner auto-resolved: OwnerConstants.<CONSTANT> (from hg_username: {HG_USERNAME})`
+- **Skip Steps 4a and 4b entirely** — proceed directly to Step 5
+- Do NOT show the full numbered list. Do NOT ask for confirmation. Just proceed.
+
+**If output contains `NO_MATCH`**:
+- Auto-resolution failed — fall through to Step 4a (show full list).
+
+> **Why auto-resolve first?** The `_OWNER_MAP` in `project_config.py` already maps hg usernames to
+> `OwnerConstants` Java constants. For most team members, this resolves instantly — no interactive
+> list needed. The interactive list (Step 4a/4b) is a fallback for unmapped usernames only.
+
+### 4a. Read the owner list from the cloned project (FALLBACK — only when auto-resolve fails)
 
 ```bash
 grep 'public static final String' "{WORKSPACE_DIR}/{PROJECT_NAME}/src/com/zoho/automater/selenium/modules/OwnerConstants.java" | sed 's/.*String \([A-Z_]*\).*/\1/' | sort | nl -ba
@@ -572,12 +607,13 @@ This will always succeed because `OwnerConstants.java` is part of every cloned b
 
 Build a numbered list from the output and add a final entry: **"NEW USER (not in the list)"**.
 
-### 4b. Present the owner list and ask the user to pick
+### 4b. Present the owner list and ask the user to pick (FALLBACK — only when auto-resolve fails)
 
 Show the user:
 
 ```
-📋 Now pick your name from the owner list:
+📋 Owner could not be auto-resolved from hg_username `{HG_USERNAME}`.
+Please pick your name from the owner list:
 
   1. ABHISHEK_RAV
   2. ABINAYA_AK
@@ -848,7 +884,7 @@ If it **fails**, show the last 20 lines and ask the user to fix:
 - **NEVER embed hg credentials in clone URLs** — let the terminal prompt the user interactively
 - **NEVER modify any line in `.env` other than the setup-managed keys** (PROJECT_NAME, HG_USERNAME, HG_BRANCH, OWNER_CONSTANT, DEPS_DIR, SETUP_MODE, ORCHESTRATOR_URL, and the SDP_*/DRIVERS_*/FIREFOX_*/GECKODRIVER_* keys)
 - **NEVER modify `project_config.py`** — it reads `PROJECT_NAME` from `.env` automatically; no manual edit is needed
-- **STEP ORDERING IS SACRED**: The agent MUST follow this exact sequence: Step 0 (detect workspace) → Step 1 (greet + mode) → Step 1b (form, no owner) → Step 2 (parse reply) → Step 3 (clone) → Step 4 (owner selection from cloned project) → Step 5+ (configure). You may NOT run `hg clone`, `setup_framework_bin.sh`, `javac`, or edit `.env` before completing Step 2. The ONLY exception is when the user provides ALL form values in their initial message (see next rule).
+- **STEP ORDERING IS SACRED**: The agent MUST follow this exact sequence: Step 0 (detect workspace) → Step 1 (greet + mode) → Step 1b (form, no owner) → Step 2 (parse reply) → Step 3 (clone) → Step 4 (auto-resolve owner from hg_username, fallback to interactive list) → Step 5+ (configure). You may NOT run `hg clone`, `setup_framework_bin.sh`, `javac`, or edit `.env` before completing Step 2. The ONLY exception is when the user provides ALL form values in their initial message (see next rule).
 - If the user provides all values in their initial message (via key=value or inline), skip Step 1/1b and go directly to Step 3. Infer `SETUP_MODE` from which keys are present: if SDP URL / deps / drivers are provided but NO hg_username → `reconfigure`; if SDP URL + hg_username → `generate_and_run`; if only hg username → `generate_only`. **Owner selection (Step 4) still happens after clone/detect** — if owner is not provided in the initial message, show the owner list from the cloned project and ask
 - `FIREFOX_BINARY` and `GECKODRIVER_PATH` are always derived from `DRIVERS_DIR` as `{DRIVERS_DIR}/firefox/firefox` and `{DRIVERS_DIR}/geckodriver` — never ask for them separately
 - If the user initially chose `generate_only` and later wants to enable execution, they can re-run `@setup-project setup` and choose mode 3 (Reconfigure) — the agent will auto-detect the project folder and only ask for the SDP/path values
