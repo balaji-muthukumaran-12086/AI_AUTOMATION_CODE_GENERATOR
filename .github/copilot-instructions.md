@@ -428,12 +428,7 @@ Sub-Module value in CSV
   → YES: Place scenario in that class
   ↓ NO
   Step 2: Is the Sub-Module a FEATURE or TAB within an existing view?
-          (e.g., "Linking Change" = Associations tab in detail view,
-           "Approval" = approval section, "Notes" = notes tab)
-  → YES: Place in the existing view class that owns that feature:
-         - Detail view features → DetailsView.java (or entity-specific DV class)
-         - List view features → ListView.java
-         - Stage-specific features → <Stage>Stage.java
+  → YES: Place in the existing view class that owns that feature.
          DO NOT create a new entity class for a feature/tab.
   ↓ NO
   Step 3: Is there a close match in the module?
@@ -445,10 +440,25 @@ Sub-Module value in CSV
           run GenerateSkeletonForAnEntity.java with MODULE_NAME + ENTITY_NAME
 ```
 
-> **Common mistake**: Sub-Module says "Linking Change" or "Change Associations" →
-> TG creates `LinkingChange.java` extending `Change`. WRONG. Linking is a feature within
-> the change detail view's Associations tab → scenarios go in `DetailsView.java`.
-> Only create a new entity when it has its own REST API endpoint (e.g., `changes/{id}/worklogs`).
+**Step 2 applies to ALL modules — not just Changes.** Examples across modules:
+
+| Sub-Module in CSV | Module | Is it a feature/tab? | Correct placement |
+|---|---|---|---|
+| Linking Change / Associations | Changes | YES — Associations tab | `DetailsView.java` (changes/change/) |
+| Approval | Changes / Requests | YES — Approval section in DV | `DetailsView.java` or stage class |
+| Notes | Requests / Problems | YES — Notes tab in DV | `DetailsView.java` or existing `*Notes.java` if present |
+| Resolution | Requests | YES — Resolution tab in DV | `DetailsView.java` (requests/request/) |
+| Bulk Actions | Any module | YES — List view feature | `ListView.java` |
+| Column Search / Filters | Any module | YES — List view feature | `ListView.java` |
+| Custom Fields / UDF | Any module | YES — Form/DV feature | `DetailsView.java` or parent entity |
+| Solution Comments | Solutions | YES — Comments tab in DV | `DetailsView.java` (solutions/solution/) |
+| Stage Transition | Changes / Releases | YES — Stage flow | `<Stage>Stage.java` |
+| Change Worklog | Changes | **NO — own API** (`changes/{id}/worklogs`) | `ChangeWorklog.java` (separate entity) |
+| Change Task | Changes | **NO — own API** (`changes/{id}/tasks`) | `ChangeTask.java` (separate entity) |
+
+> **Decision rule**: Does the sub-module have its **own REST API endpoint** (own CRUD path like
+> `<module>/{id}/<sub-resource>`)? NO → it's a feature/tab → existing view class.
+> YES → genuine sub-entity → skeleton generation is justified.
 
 #### When a Use-Case Document (CSV/XLSX/XLS) Is Provided
 
