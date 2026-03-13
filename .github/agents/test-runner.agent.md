@@ -28,30 +28,26 @@ User provides Entity.method
   └─ Step 4: Final summary
 ```
 
-### Mode B — Batch Pipeline (sequential run + heal)
+### Mode B — Batch from tests_to_run.json
 
-> This is the primary batch workflow. When the user says "batch", "run all",
-> "run the generated tests", or is handed off from `@test-generator`, use this flow.
-> **Each test is run and self-healed individually before moving to the next.**
+> Iterate through `tests_to_run.json` and apply Mode A (Steps 2-4) to each test sequentially.
+> Same run+debug+fix loop — just repeated for every test in the list.
 
 ```
 User request (batch run)
   │
-  ├─ Phase 0: Resolve paths & environment
-  ├─ Phase 1: Load tests_to_run.json + generate execution plan MD
-  ├─ Phase 2: SEQUENTIAL RUN + HEAL — for each test, one at a time:
-  │    ├─ Configure run_test.py + targeted compile
-  │    ├─ Execute + parse result
-  │    ├─ If FAIL → debug & fix (max 3 attempts, same as Mode A Step 3)
-  │    │    ├─ Analyze ScenarioReport.html + classify failure
-  │    │    ├─ LOCATOR → Playwright MCP to inspect live UI
-  │    │    ├─ Apply fix + targeted recompile + re-run
-  │    │    └─ If unfixable after 3 attempts → PRODUCT_BUG or UNRESOLVABLE
-  │    ├─ Log result to orchestrator
-  │    └─ Update execution plan MD → proceed to next test
-  ├─ Phase 3: Final summary + bug reports
-  ├─ Phase 4: Learning extraction → framework_rules.md + framework_knowledge.md + learnings.jsonl
-  └─ Phase 5: End-to-end migration summary → $PROJECT/Testcase/migration_summary_*.md
+  ├─ Setup: Resolve paths, verify tests_to_run.json, compile all modules
+  │
+  ├─ For each test (same as Mode A Steps 2-4):
+  │    ├─ Configure run_test.py → run → parse result
+  │    ├─ If FAIL → debug & fix (max 3 attempts)
+  │    │    ├─ Read ScenarioReport.html + classify failure
+  │    │    ├─ LOCATOR → Playwright MCP
+  │    │    ├─ Fix → recompile → re-run
+  │    │    └─ 3 failures → PRODUCT_BUG or UNRESOLVABLE
+  │    └─ Report progress → next test
+  │
+  └─ Summary + bug reports for failures
 ```
 
 ---
@@ -81,14 +77,14 @@ User provides `EntityClass.methodName` (e.g., `Solution.createSolution`).
 - Parse into `entity_class` and `method_name`
 - Proceed to Step 2 (single run + debug loop)
 
-### Mode B: Batch Pipeline (sequential run + heal)
+### Mode B: Batch from tests_to_run.json
 User says "batch", "run all", "run the generated tests", or is handed off from `@test-generator`.
-- **Skip directly to Phase 1** (the batch pipeline below)
+- **Jump to MODE B section below**
 
 ### Mode C: Re-run generated tests
 User says "run the generated tests" or wants to re-run after manual edits.
 - Verify `tests_to_run.json` exists and has entries
-- **Skip directly to Phase 1** (same batch pipeline)
+- **Jump to MODE B section below**
 
 > **Note**: `@test-generator` only generates test code — it does NOT run tests.
 > After generation, invoke `@test-runner` to execute and self-heal.
@@ -290,233 +286,71 @@ If unresolvable or PRODUCT_BUG, generate a bug report (see Bug Reports section b
 ---
 
 ## ════════════════════════════════════════════════════════
-## MODE B — Batch Pipeline (Sequential Run + Heal)
+## MODE B — Batch from tests_to_run.json
 ## ════════════════════════════════════════════════════════
 
-> This is the structured end-to-end workflow for batch execution.
-> Use this when the user says "batch", "run all", or when handed off from `@test-generator`.
+> When the user says "batch", "run all", "run the generated tests", or is handed off
+> from `@test-generator`, iterate through `tests_to_run.json` and apply Mode A (Steps 2-4)
+> to each test sequentially.
 
----
+### Setup
 
-### Phase 0 — Environment Setup
-
-Same as Step 0 — resolve paths. Additionally:
-
-1. Verify `tests_to_run.json` exists and has entries:
+1. Resolve paths (same as Step 0)
+2. Verify `tests_to_run.json` exists and list the tests:
 ```bash
-cat tests_to_run.json | .venv/bin/python -c "import json,sys; d=json.load(sys.stdin); print(f'Tests to run: {len(d.get(\"tests\",[]))}')"
-```
-
-2. Ensure targeted compile is done for all modules involved:
-```bash
-# List unique entity classes to determine which modules need compilation
 cat tests_to_run.json | .venv/bin/python -c "
-import json,sys
-d=json.load(sys.stdin)
-entities = set(t['entity_class'] for t in d.get('tests',[]))
-print('Entity classes:', ', '.join(sorted(entities)))
+import json, sys
+d = json.load(sys.stdin)
+tests = d.get('tests', [])
+print(f'Tests to run: {len(tests)}')
+for i, t in enumerate(tests, 1):
+    print(f'  {i}. {t[\"entity_class\"]}.{t[\"method_name\"]}')
 "
 ```
 
-3. Compile all relevant module source files BEFORE the batch run (compile once, run many):
+3. Compile all relevant modules upfront (compile once, run many):
 ```bash
 CP="$BIN:$(find "$DEPS" -name "*.jar" | tr '\n' ':')"
 javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
-  $SRC/com/zoho/automater/selenium/modules/<module>/<entity>/common/<Entity>Locators.java \
-  $SRC/com/zoho/automater/selenium/modules/<module>/<entity>/<EntityBase>.java \
-  $SRC/com/zoho/automater/selenium/modules/<module>/<entity>/<Entity>.java \
-  $SRC/com/zoho/automater/selenium/modules/<module>/<entity>/utils/<Entity>ActionsUtil.java
-# Include ALL files for ALL entity classes found in tests_to_run.json
+  $SRC/com/zoho/automater/selenium/modules/<module>/<entity>/*.java \
+  $SRC/com/zoho/automater/selenium/modules/<module>/<entity>/common/*.java \
+  $SRC/com/zoho/automater/selenium/modules/<module>/<entity>/utils/*.java
+# Repeat for each module referenced in tests_to_run.json
 ```
 
----
+### For Each Test — Apply Mode A Steps 2-4
 
-### Phase 1 — Load Tests + Generate Execution Plan
+Process every test exactly like Mode A:
 
-Create a categorized execution plan that tracks progress as each test is run and healed sequentially.
+1. **Configure** `run_test.py` with the test's `entity_class` + `method_name` (Step 2a)
+2. **Run** `.venv/bin/python run_test.py 2>&1` (Step 2c)
+3. **Parse** result using the 6 priority-order checks (Step 2d)
+4. **On PASS** → report `[N/total] ✅ Entity.method — PASSED` → move to next test
+5. **On FAIL** → apply debug-fix loop (Step 3), max 3 attempts:
+   - Read ScenarioReport.html
+   - Classify failure (LOCATOR / API / LOGIC / COMPILE / PRODUCT_BUG)
+   - For LOCATOR: use Playwright MCP to inspect live UI and find correct selector
+   - Apply fix → targeted recompile → re-run
+   - After 3 failed attempts → mark as PRODUCT_BUG or UNRESOLVABLE → move on
+6. **Report progress** after each test:
+   ```
+   [3/15] ✅ DetailsView.verifyAssociationTab — PASSED (attempt 1)
+   [4/15] 🔧 DetailsView.verifyParentChange — PASSED (attempt 2, fixed XPath)
+   [5/15] 🐛 ListView.verifyColumnSearch — PRODUCT_BUG after 3 attempts
+   ```
 
-**Generate the execution plan:**
-```bash
-.venv/bin/python -c "
-import json, os
-from datetime import datetime
-from config.project_config import PROJECT_NAME
+### After All Tests — Summary + Bug Reports
 
-with open('tests_to_run.json') as f:
-    data = json.load(f)
-tests = data.get('tests', [])
-
-groups = {}
-for t in tests:
-    entity = t.get('entity_class', 'Unknown')
-    groups.setdefault(entity, []).append(t)
-
-lines = [
-    f'# Execution Plan — {PROJECT_NAME}',
-    f'',
-    f'**Generated**: {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}  ',
-    f'**Total tests**: {len(tests)}  ',
-    f'**Entity classes**: {len(groups)}  ',
-    f'',
-    f'---',
-    f'',
-    f'## Test Progress',
-    f'',
-    f'| # | Entity.Method | Scenario ID | Status | Attempts | Fix Applied | Notes |',
-    f'|---|--------------|-------------|--------|----------|-------------|-------|',
-]
-
-idx = 0
-for entity in sorted(groups.keys()):
-    for t in groups[entity]:
-        idx += 1
-        method = t.get('method_name', '?')
-        sid = t.get('_id', '—')
-        lines.append(f'| {idx} | {entity}.{method} | {sid} | ⏳ | 0 | — | — |')
-
-lines.extend([
-    f'',
-    f'---',
-    f'',
-    f'## Grouped by Entity',
-    f'',
-])
-
-for entity in sorted(groups.keys()):
-    methods = groups[entity]
-    lines.append(f'### {entity} ({len(methods)} tests)')
-    for t in methods:
-        lines.append(f'- [ ] {t.get(\"method_name\", \"?\")} ({t.get(\"_id\", \"—\")})')
-    lines.append('')
-
-plan_path = f'{PROJECT_NAME}/execution_plan.md'
-os.makedirs(os.path.dirname(plan_path), exist_ok=True)
-with open(plan_path, 'w') as f:
-    f.write('\\n'.join(lines) + '\\n')
-print(f'Execution plan written to {plan_path}')
-"
-```
-
-Read the generated execution plan to confirm:
-```bash
-cat $PROJECT/execution_plan.md
-```
-
----
-
-### Phase 2 — Sequential Run + Heal (one test at a time)
-
-> **Core principle**: Process each test fully (run → diagnose → fix → re-run) before moving to the next.
-> This is identical to Mode A Steps 2-4 applied in a loop over `tests_to_run.json`.
-
-**For each test in `tests_to_run.json`:**
-
-#### 2a. Configure + Compile
-
-Update `run_test.py` with the current test's entity_class and method_name (same as Mode A Step 2a).
-If any Java files were modified since the last compile, run targeted compile.
-
-#### 2b. Execute + Parse
-
-```bash
-.venv/bin/python run_test.py 2>&1
-```
-
-Parse using the same priority-order checks from Mode A Step 2d:
-1. `$$Failure` → FAILED
-2. `"Additional Specific Info":["` + `"successfully"` → PASSED
-3. `BUILD FAILED` → FAILED / `BUILD SUCCESSFUL` → PASSED
-4. Java exceptions → FAILED
-5. No positive signal → FAILED
-
-Also check `ScenarioReport.html` for `data-result` attributes.
-
-#### 2c. On PASS → Log + Next Test
-
-Log the pass to the orchestrator and update the execution plan:
-```bash
-.venv/bin/python -c "
-from orchestrator.client import get_client
-get_client().scenario_passed(scenario_id='<ID>', method_name='<method>', module='<module>')
-"
-```
-Update the test's row in `$PROJECT/execution_plan.md`: Status → `✅ PASS`, Attempts → `1`.
-
-Proceed to the next test.
-
-#### 2d. On FAIL → Debug & Fix (max 3 attempts)
-
-Apply the **same debug-fix loop as Mode A Step 3** — analyze ScenarioReport.html, classify failure, use Playwright MCP for LOCATOR issues, apply fix, targeted recompile, re-run.
-
-| Symptom | Type | Fix Target |
-|---------|------|------------|
-| `NoSuchElementException` / `TimeoutException` | LOCATOR | `*Locators.java` — inspect with Playwright |
-| `NullPointerException` in restAPI / preProcess | API | preProcess data / API paths |
-| `AssertionException` / wrong validation | LOGIC | Test method in `*Base.java` |
-| javac errors | COMPILE | Syntax/import fix |
-| SDP behaviour differs from spec | **PRODUCT_BUG** | No code fix — report |
-
-**After each attempt**, re-run and parse. If it passes, log success + move to next test.
-
-**After 3 failed attempts**, mark as PRODUCT_BUG or UNRESOLVABLE:
-```bash
-.venv/bin/python -c "
-from orchestrator.client import get_client
-get_client().scenario_failed(scenario_id='<ID>', method_name='<method>', module='<module>', error_message='<error>')
-"
-```
-Update the execution plan row: Status → `🐛 PRODUCT_BUG` or `⛔ UNRESOLVABLE`, Attempts → `3`, Notes → failure summary.
-
-Proceed to the next test.
-
-#### 2e. Progress Reporting
-
-After every test (pass or fail), report progress to the user:
-```
-[3/15] ✅ DetailsView.verifyAssociationTab — PASSED (attempt 1)
-[4/15] 🔧 DetailsView.verifyParentChange — PASSED (attempt 2, fixed XPath)
-[5/15] 🐛 ListView.verifyColumnSearch — PRODUCT_BUG after 3 attempts
-```
-
----
-
-### Phase 3 — Final Summary + Bug Reports
-
-#### Summary Table
-
-Present the final results:
-
+Present a summary table:
 ```
 | # | Entity.Method | Result | Attempts | Fix Applied |
 |---|--------------|--------|----------|-------------|
 | 1 | DV.verifyAssociationTab | ✅ PASS | 1 | — |
 | 2 | DV.verifyParentChange | ✅ PASS | 2 | 🔧 XPath fix |
-| 3 | LV.verifyColumnSearch | 🐛 BUG | 3 | — (SDP issue) |
-| 4 | DV.verifyDetach | ⛔ UNRESOLVED | 3 | Attempted API fix |
+| 3 | LV.verifyColumnSearch | 🐛 BUG | 3 | — (product issue) |
 ```
 
-#### Aggregate Stats
-
-```
-📊 Final Batch Results:
-- Total: {N}
-- ✅ Passed (first attempt): {N}
-- 🔧 Passed (after self-heal): {N}
-- 🐛 Product Bugs: {N}
-- ⛔ Unresolvable Failures: {N}
-- Final Success Rate: {N}%
-```
-
-#### Update Execution Plan MD
-
-Write the final status to `$PROJECT/execution_plan.md`:
-- Convert `[ ]` checkboxes to `[x]` for passed tests
-- Add a "Final Results" section at the bottom with aggregate stats
-
-### Bug Reports (for PRODUCT_BUG and unresolvable FAILED tests)
-
-For every test that ends as **PRODUCT_BUG** or **FAILED after max attempts**, generate a bug report block.
-This gives the user everything needed to log the bug:
+For every test that ends as **PRODUCT_BUG** or **UNRESOLVABLE**, generate a bug report:
 
 ```
 ---
@@ -524,432 +358,18 @@ This gives the user everything needed to log the bug:
 
 **Scenario ID**: <@AutomaterScenario id>
 **Failure Type**: PRODUCT_BUG | UNRESOLVABLE_FAILURE
-**Module**: <module name (e.g., Changes, Requests, Solutions)>
-**Severity**: <Critical / Major / Minor — based on impact>
+**Module**: <module name>
+**Severity**: <Critical / Major / Minor>
 
-**Summary**:
-<2-3 sentence description of what failed and why it appears to be a product issue
-vs a test code issue>
+**Steps to Reproduce** (manual — as if a QA engineer will follow):
+1. Login as <role>
+2. Navigate to <module> → <page>
+3. <exact UI steps>
+4. Expected: <X>  |  Actual: <Y>
 
-**Steps to Reproduce**:
-1. Login as <role> (e.g., SDAdmin)
-2. Navigate to <module> → <specific page>
-3. <exact UI steps that lead to the failure>
-4. <what was expected vs what actually happened>
-
-**Expected Result**: <what the test expected to see>
-**Actual Result**: <what SDP actually showed/returned>
-
-**Report Path**: `<absolute path to ScenarioReport.html>`
-**Screenshot Path**: `<absolute path to screenshots/ folder>`
-
-**Evidence**:
-- ScenarioReport.html failure row: <copy the $$Failure line or error message>
-- Console error (if any): <Java exception or JS error>
-- Playwright snapshot (if captured): <key observation from accessibility tree>
-
-**Debug Notes**: <any additional context from the debug attempts>
+**Report Path**: `<path to ScenarioReport.html>`
+**Evidence**: <$$Failure message, Java exception, Playwright observation>
 ---
-```
-
-**Rules for bug reports:**
-1. **Always include the report path** — find it with: `ls -dt $PROJECT/reports/LOCAL_<methodName>_* | head -1`
-2. **Steps to Reproduce must be manual-testable** — write them as if a human QA engineer will follow them
-3. **Include the $$Failure message** from ScenarioReport.html
-4. **Differentiate PRODUCT_BUG from test issues**: Test code, locators, and data verified correct but SDP behaves unexpectedly → PRODUCT_BUG. Test code issue we couldn't fix after 3 attempts → UNRESOLVABLE_FAILURE
-5. **One report per failed test**
-
----
-
-### Phase 4 — Learning Extraction (Closed Feedback Loop)
-
-> **Purpose**: After all tests are run (Phase 3 complete), analyze the results to extract
-> actionable learnings — failure rules and success patterns — and persist them so that
-> future `@test-generator` runs (Step 0.7) benefit from this execution's outcomes.
-> This is the WRITE side of the learning feedback loop within the Copilot agent ecosystem.
-
-#### 6a. Persist batch results to learnings.jsonl
-
-For EACH test result (passed AND failed), create a JSONL entry:
-
-```bash
-.venv/bin/python << 'LEARNING_EXTRACT'
-import json, os
-from datetime import datetime
-from pathlib import Path
-
-LEARNINGS_LOG = Path("logs/learnings.jsonl")
-LEARNINGS_LOG.parent.mkdir(parents=True, exist_ok=True)
-
-# Load results from Phase 2 (sequential run + heal)
-results_file = "batch_run_results.json"
-if not os.path.exists(results_file):
-    print("No batch_run_results.json found — skipping learning extraction.")
-    exit(0)
-
-with open(results_file) as f:
-    data = json.load(f)
-
-results = data if isinstance(data, list) else data.get("results", [])
-entries = []
-
-for r in results:
-    status = r.get("status", "UNKNOWN")
-    method = r.get("method_name", "?")
-    entity = r.get("entity_class", "?")
-    error  = r.get("error", r.get("failure_info", ""))
-
-    if status in ("PASS", "PASSED"):
-        entry = {
-            "timestamp": datetime.now().isoformat(),
-            "learning_type": "PATTERN",
-            "title": f"{entity}.{method} passed",
-            "body": f"Test {entity}.{method} executed successfully. The locators, data setup, and validation logic are verified working.",
-            "source": f"test-runner batch @ {datetime.now().strftime('%Y-%m-%d')}",
-            "entity_class": entity,
-            "method_name": method,
-        }
-    else:
-        entry = {
-            "timestamp": datetime.now().isoformat(),
-            "learning_type": "RULE",
-            "title": f"{entity}.{method} failed: {error[:80]}",
-            "body": f"DO NOT repeat this pattern. Test {entity}.{method} failed with: {error[:200]}",
-            "source": f"test-runner batch @ {datetime.now().strftime('%Y-%m-%d')}",
-            "entity_class": entity,
-            "method_name": method,
-        }
-    entries.append(entry)
-
-# Append to JSONL
-with open(LEARNINGS_LOG, "a", encoding="utf-8") as f:
-    for e in entries:
-        f.write(json.dumps(e) + "\n")
-
-print(f"Persisted {len(entries)} learnings to {LEARNINGS_LOG}")
-print(f"  - PATTERN (success): {sum(1 for e in entries if e['learning_type'] == 'PATTERN')}")
-print(f"  - RULE (failure):    {sum(1 for e in entries if e['learning_type'] == 'RULE')}")
-LEARNING_EXTRACT
-```
-
-#### 6b. Update framework knowledge files (for failures with diagnosed root causes)
-
-For tests that FAILED and were FIXED during Phase 2 (self-heal), extract a DO/DON'T rule
-and append it to `config/framework_rules.md`:
-
-```bash
-.venv/bin/python << 'RULES_UPDATE'
-from pathlib import Path
-
-RULES_FILE = Path("config/framework_rules.md")
-LEARNED_HEADER = "\n\n---\n\n## LEARNED RULES (auto-generated by test-runner)\n"
-
-# Collect rules from Phase 2 fix records (self-heal fixes applied during sequential run)
-# Format: list of {"test": "Entity.method", "fix_type": "LOCATOR|API|LOGIC", "description": "what was wrong and how it was fixed"}
-fix_records = []  # ← populated from Phase 3 fix tracking
-
-# Example: After Phase 2, you tracked fixes like:
-# fix_records = [
-#   {"test": "DV.verifyAssociationTab", "fix_type": "LOCATOR", "description": "Changed //div[@id='old-id'] to //section[@data-tab='associations']"},
-#   {"test": "DV.verifyParentChange", "fix_type": "API", "description": "API path changed from changes/link to changes/{id}/link_parent_change"},
-# ]
-
-if not fix_records:
-    print("No fix records from Phase 2 — skipping framework_rules.md update.")
-    exit(0)
-
-content = RULES_FILE.read_text(encoding="utf-8") if RULES_FILE.exists() else ""
-
-if LEARNED_HEADER.strip() not in content:
-    content += LEARNED_HEADER
-
-rules_to_add = []
-for fix in fix_records:
-    rule = f"\n- **{fix['fix_type']}** (`{fix['test']}`): {fix['description']}"
-    if rule.strip() not in content:
-        rules_to_add.append(rule)
-
-if rules_to_add:
-    content += "\n".join(rules_to_add) + "\n"
-    RULES_FILE.write_text(content, encoding="utf-8")
-    print(f"Appended {len(rules_to_add)} learned rules to {RULES_FILE}")
-else:
-    print("All fix rules already in framework_rules.md — no update needed.")
-RULES_UPDATE
-```
-
-For tests that PASSED, extract success patterns to `config/framework_knowledge.md`:
-
-```bash
-.venv/bin/python << 'PATTERNS_UPDATE'
-from pathlib import Path
-
-KNOWLEDGE_FILE = Path("config/framework_knowledge.md")
-LEARNED_HEADER = "\n\n---\n\n## LEARNED PATTERNS (auto-generated by test-runner)\n"
-
-# Count passes by module to identify which modules are well-covered
-import json, os
-results_file = "batch_run_results.json"
-if not os.path.exists(results_file):
-    exit(0)
-
-with open(results_file) as f:
-    data = json.load(f)
-
-results = data if isinstance(data, list) else data.get("results", [])
-passed_by_entity = {}
-for r in results:
-    if r.get("status") in ("PASS", "PASSED"):
-        entity = r.get("entity_class", "Unknown")
-        passed_by_entity.setdefault(entity, []).append(r.get("method_name", "?"))
-
-if not passed_by_entity:
-    print("No passed tests — skipping framework_knowledge.md update.")
-    exit(0)
-
-content = KNOWLEDGE_FILE.read_text(encoding="utf-8") if KNOWLEDGE_FILE.exists() else ""
-
-if LEARNED_HEADER.strip() not in content:
-    content += LEARNED_HEADER
-
-from datetime import datetime
-date_str = datetime.now().strftime("%Y-%m-%d")
-patterns = []
-for entity, methods in passed_by_entity.items():
-    line = f"\n- **{entity}** ({date_str}): {len(methods)} tests passed — `{'`, `'.join(methods[:5])}`{'...' if len(methods) > 5 else ''}"
-    if entity not in content.split(LEARNED_HEADER.strip())[-1] if LEARNED_HEADER.strip() in content else True:
-        patterns.append(line)
-
-if patterns:
-    content += "\n".join(patterns) + "\n"
-    KNOWLEDGE_FILE.write_text(content, encoding="utf-8")
-    print(f"Appended {len(patterns)} success patterns to {KNOWLEDGE_FILE}")
-else:
-    print("Patterns already recorded — no update needed.")
-PATTERNS_UPDATE
-```
-
-#### 6c. Log learning event to orchestrator
-
-```bash
-.venv/bin/python -c "
-from orchestrator.client import get_client
-oc = get_client()
-oc.log_event(
-    event_type='CUSTOM',
-    agent='test-runner',
-    module='batch',
-    feature_name='learning_extraction',
-    status='completed',
-    metadata={'phase': 'learning_extraction', 'source': 'copilot_test_runner'},
-)
-print('Learning extraction event logged to orchestrator.')
-"
-```
-
-> **This step closes the feedback loop.** The `@test-generator` agent reads these learnings
-> in Step 0.7 before generating new code. The cycle is:
-> `@test-generator` Step 0.7 (read) → Steps 1-6 (generate) → `@test-runner` Phase 2
-> (run + heal) → Phase 4 (extract & persist) → next `@test-generator` Step 0.7 (read improved).
-
----
-
-### Phase 5 — End-to-End Migration Summary
-
-> **Purpose**: Generate a single consolidated document that traces the FULL lifecycle:
-> CSV use-case rows → generated test methods → execution results → self-heal fixes →
-> bug reports → learned rules. This is the audit trail and deliverable.
-
-```bash
-PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
-```
-
-Generate the migration summary:
-
-```bash
-.venv/bin/python << 'MIGRATION_SUMMARY'
-import json, os
-from datetime import datetime
-from pathlib import Path
-
-PROJECT = os.popen(".venv/bin/python -c \"from config.project_config import PROJECT_NAME; print(PROJECT_NAME)\"").read().strip()
-TESTCASE_DIR = Path(PROJECT) / "Testcase"
-TESTCASE_DIR.mkdir(parents=True, exist_ok=True)
-
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-summary_path = TESTCASE_DIR / f"migration_summary_{timestamp}.md"
-
-# ── Gather data sources ──
-batch_results = []
-results_file = "batch_run_results.json"
-if os.path.exists(results_file):
-    with open(results_file) as f:
-        data = json.load(f)
-    batch_results = data if isinstance(data, list) else data.get("results", [])
-
-tests_to_run = []
-if os.path.exists("tests_to_run.json"):
-    with open("tests_to_run.json") as f:
-        tests_to_run = json.load(f).get("tests", [])
-
-execution_plan = ""
-plan_path = Path(PROJECT) / "execution_plan.md"
-if plan_path.exists():
-    execution_plan = plan_path.read_text(encoding="utf-8")
-
-learnings = []
-learnings_path = Path("logs/learnings.jsonl")
-if learnings_path.exists():
-    for line in learnings_path.read_text(encoding="utf-8").strip().splitlines()[-20:]:
-        line = line.strip()
-        if line:
-            try:
-                learnings.append(json.loads(line))
-            except Exception:
-                pass
-
-# ── Stats ──
-total = len(batch_results)
-passed = sum(1 for r in batch_results if r.get("status") in ("PASS", "PASSED"))
-failed = sum(1 for r in batch_results if r.get("status") in ("FAIL", "FAILED", "ERROR"))
-healed = sum(1 for r in batch_results if r.get("status") in ("PASS", "PASSED") and r.get("was_healed"))
-bugs   = sum(1 for r in batch_results if "PRODUCT_BUG" in str(r.get("failure_info", "")))
-
-# ── Build document ──
-lines = [
-    f"# End-to-End Migration Summary",
-    f"",
-    f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-    f"**Project**: {PROJECT}",
-    f"",
-    f"---",
-    f"",
-    f"## Pipeline Overview",
-    f"",
-    f"```",
-    f"CSV Use-Case Document",
-    f"  └─ @test-generator (code generation)",
-    f"       └─ @test-runner (batch execution)",
-    f"            ├─ Phase 2: Sequential Run + Heal (per test)",
-    f"            ├─ Phase 3: Final Summary + Bug Reports",
-    f"            ├─ Phase 4: Learning Extraction ← framework self-correction",
-    f"            └─ Phase 5: This Summary ← you are here",
-    f"```",
-    f"",
-    f"---",
-    f"",
-    f"## Execution Statistics",
-    f"",
-    f"| Metric | Count |",
-    f"|--------|-------|",
-    f"| Tests Generated | {len(tests_to_run)} |",
-    f"| Tests Executed | {total} |",
-    f"| Passed (first run) | {passed - healed} |",
-    f"| Passed (after self-heal) | {healed} |",
-    f"| Failed (product bugs) | {bugs} |",
-    f"| Failed (unresolvable) | {failed - bugs} |",
-    f"| **Final Success Rate** | **{((passed/total)*100) if total else 0:.1f}%** |",
-    f"",
-    f"---",
-    f"",
-    f"## Test Results Detail",
-    f"",
-    f"| # | Entity.Method | Status | Error (if any) |",
-    f"|---|--------------|--------|----------------|",
-]
-
-for i, r in enumerate(batch_results, 1):
-    entity = r.get("entity_class", "?")
-    method = r.get("method_name", "?")
-    status = r.get("status", "?")
-    error  = r.get("error", r.get("failure_info", ""))[:60]
-    icon   = "✅" if status in ("PASS", "PASSED") else "❌"
-    lines.append(f"| {i} | {entity}.{method} | {icon} {status} | {error} |")
-
-lines += [
-    f"",
-    f"---",
-    f"",
-    f"## Learnings Extracted This Run",
-    f"",
-]
-
-if learnings:
-    rules   = [l for l in learnings if l.get("learning_type") == "RULE"]
-    patterns = [l for l in learnings if l.get("learning_type") == "PATTERN"]
-    lines.append(f"### Failure Rules ({len(rules)} extracted)")
-    lines.append(f"")
-    for r in rules[-10:]:
-        lines.append(f"- **{r.get('title', '?')}**: {r.get('body', '')[:120]}")
-    lines.append(f"")
-    lines.append(f"### Success Patterns ({len(patterns)} recorded)")
-    lines.append(f"")
-    for p in patterns[-10:]:
-        lines.append(f"- {p.get('title', '?')}")
-else:
-    lines.append("_No learnings extracted (first run or learnings.jsonl empty)._")
-
-lines += [
-    f"",
-    f"---",
-    f"",
-    f"## Framework Files Updated",
-    f"",
-    f"| File | Section | Impact |",
-    f"|------|---------|--------|",
-    f"| `config/framework_rules.md` | LEARNED RULES | Failure rules appended — prevents repeat mistakes |",
-    f"| `config/framework_knowledge.md` | LEARNED PATTERNS | Success patterns appended — guides future generation |",
-    f"| `logs/learnings.jsonl` | (append-only log) | Full history — read by @test-generator Step 0.7 on next generation run |",
-    f"",
-    f"---",
-    f"",
-    f"## Artifacts",
-    f"",
-    f"| Artifact | Location |",
-    f"|----------|----------|",
-    f"| Use-case CSV | `{PROJECT}/Testcase/` (original upload) |",
-    f"| Execution Plan | `{PROJECT}/execution_plan.md` |",
-    f"| Run Results | `batch_run_results.json` (if generated) |",
-    f"| Bug Reports | See Phase 3 output above |",
-    f"| This Summary | `{summary_path}` |",
-    f"| ScenarioReport HTMLs | `{PROJECT}/reports/LOCAL_*/ScenarioReport.html` |",
-    f"",
-]
-
-summary_path.write_text("\n".join(lines), encoding="utf-8")
-print(f"Migration summary written to: {summary_path}")
-print(f"Stats: {total} tests | {passed} passed | {failed} failed | {((passed/total)*100) if total else 0:.1f}% success rate")
-MIGRATION_SUMMARY
-```
-
-Read and present the summary to the user:
-
-```bash
-cat "$PROJECT/Testcase/migration_summary_"*.md | tail -1 | xargs -I{} dirname {} | head -1
-# Or simply:
-ls -t "$PROJECT/Testcase/migration_summary_"*.md 2>/dev/null | head -1 | xargs cat
-```
-
-Present the key stats:
-
-```
-📋 End-to-End Migration Summary Generated
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Pipeline: CSV → @test-generator → @test-runner → Learning Extraction
-Tests: {N} generated → {N} executed → {pass_rate}% success rate
-
-✅ Passed (first run): {N}
-🔧 Passed (self-healed): {N}
-🐛 Product Bugs: {N}
-⛔ Unresolvable: {N}
-
-📝 Learnings: {N} rules + {N} patterns → framework files updated
-📁 Summary: {PROJECT}/Testcase/migration_summary_{timestamp}.md
-
-The learning loop is now closed:
-  @test-generator reads learnings → generates code → @test-runner executes →
-  extracts learnings → updates framework files → @test-generator reads improved context
 ```
 
 ---
