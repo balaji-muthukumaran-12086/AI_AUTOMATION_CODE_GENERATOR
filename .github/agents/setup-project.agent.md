@@ -787,6 +787,7 @@ Then continue for all modes:
 **Files updated:**
 - `config/project_config.py` → reads PROJECT_NAME from `.env` automatically (no edit needed)
 - `.env` → PROJECT_NAME, HG_BRANCH, OWNER_CONSTANT, DEPS_DIR, SETUP_MODE{, HG_USERNAME (if not reconfigure)}{, SDP_URL, ..., GECKODRIVER_PATH (if generate_and_run or reconfigure)}
+- `.vscode/settings.json` → Java Language Server classpath (sourcePaths, outputPath, referencedLibraries) — eliminates red import errors in VS Code
 ```
 
 **If `generate_only`**, show:
@@ -878,13 +879,78 @@ If it **fails**, show the last 20 lines and ask the user to fix:
 
 ---
 
+## Step 10 — Configure VS Code Java Language Server (eliminate red lines)
+
+> **Why**: Without this step, VS Code's Java Language Server cannot resolve `com.zoho.automater.selenium.*` imports — every Java file shows red error underlines. This is cosmetic (javac compilation still works via CLI) but confusing and annoying for all users.
+
+Generate `.vscode/settings.json` with the correct `java.project.sourcePaths`, `java.project.outputPath`, and `java.project.referencedLibraries` entries. This tells the LS where to find source files, compiled classes, and dependency JARs.
+
+```python
+import json, os
+
+workspace = "{WORKSPACE_DIR}"
+settings_path = os.path.join(workspace, ".vscode", "settings.json")
+
+# Load existing settings (if any)
+if os.path.isfile(settings_path):
+    with open(settings_path, "r") as f:
+        # Handle comments in JSON (VS Code settings allow // comments)
+        import re
+        raw = f.read()
+        # Strip single-line comments for parsing
+        stripped = re.sub(r'//.*?$', '', raw, flags=re.MULTILINE)
+        # Strip trailing commas before } or ]
+        stripped = re.sub(r',\s*([}\]])', r'\1', stripped)
+        try:
+            settings = json.loads(stripped)
+        except json.JSONDecodeError:
+            settings = {}
+else:
+    os.makedirs(os.path.join(workspace, ".vscode"), exist_ok=True)
+    settings = {}
+
+# Set Java classpath configuration
+settings["java.project.sourcePaths"] = [
+    "{PROJECT_NAME}/src"
+]
+settings["java.project.outputPath"] = "{PROJECT_NAME}/bin"
+settings["java.project.referencedLibraries"] = [
+    "{DEPS_DIR}/**/*.jar"
+]
+# Suppress "build path" warnings for pre-existing errors in unrelated modules
+settings["java.errors.incompleteClasspath.severity"] = "ignore"
+
+with open(settings_path, "w") as f:
+    json.dump(settings, f, indent=2)
+    f.write("\n")
+
+print(f"✅ VS Code Java classpath configured:")
+print(f"   sourcePaths: {settings['java.project.sourcePaths']}")
+print(f"   outputPath:  {settings['java.project.outputPath']}")
+print(f"   libraries:   {settings['java.project.referencedLibraries']}")
+```
+
+After writing settings.json, trigger a classpath reload:
+```bash
+# The Java LS will auto-detect the settings change, but nudge it:
+echo "VS Code Java Language Server will reload classpath automatically."
+echo "If red lines persist, run: Ctrl+Shift+P → 'Java: Clean Language Server Workspace'"
+```
+
+> **Notes:**
+> - `.vscode/settings.json` is already in `.gitignore` — machine-specific paths are safe here
+> - `{DEPS_DIR}/**/*.jar` uses a glob to include ALL JARs recursively (including `framework/` subdirectory)
+> - If the user later runs `@setup-project` again (reconfigure mode), this step overwrites the Java paths with current values — always in sync
+
+---
+
 ## Important rules
 
 - **NEVER print the password in plain text** — always mask SDP passwords as `●●●●●●●●` in confirmations and summaries
 - **NEVER embed hg credentials in clone URLs** — let the terminal prompt the user interactively
 - **NEVER modify any line in `.env` other than the setup-managed keys** (PROJECT_NAME, HG_USERNAME, HG_BRANCH, OWNER_CONSTANT, DEPS_DIR, SETUP_MODE, ORCHESTRATOR_URL, and the SDP_*/DRIVERS_*/FIREFOX_*/GECKODRIVER_* keys)
 - **NEVER modify `project_config.py`** — it reads `PROJECT_NAME` from `.env` automatically; no manual edit is needed
-- **STEP ORDERING IS SACRED**: The agent MUST follow this exact sequence: Step 0 (detect workspace) → Step 1 (greet + mode) → Step 1b (form, no owner) → Step 2 (parse reply) → Step 3 (clone) → Step 4 (auto-resolve owner from hg_username, fallback to interactive list) → Step 5+ (configure). You may NOT run `hg clone`, `setup_framework_bin.sh`, `javac`, or edit `.env` before completing Step 2. The ONLY exception is when the user provides ALL form values in their initial message (see next rule).
+- **STEP ORDERING IS SACRED**: The agent MUST follow this exact sequence: Step 0 (detect workspace) → Step 1 (greet + mode) → Step 1b (form, no owner) → Step 2 (parse reply) → Step 3 (clone) → Step 4 (auto-resolve owner from hg_username, fallback to interactive list) → Step 5+ (configure) → Step 9 (compile framework) → Step 10 (configure VS Code Java LS). You may NOT run `hg clone`, `setup_framework_bin.sh`, `javac`, or edit `.env` before completing Step 2. The ONLY exception is when the user provides ALL form values in their initial message (see next rule).
 - If the user provides all values in their initial message (via key=value or inline), skip Step 1/1b and go directly to Step 3. Infer `SETUP_MODE` from which keys are present: if SDP URL / deps / drivers are provided but NO hg_username → `reconfigure`; if SDP URL + hg_username → `generate_and_run`; if only hg username → `generate_only`. **Owner selection (Step 4) still happens after clone/detect** — if owner is not provided in the initial message, show the owner list from the cloned project and ask
 - `FIREFOX_BINARY` and `GECKODRIVER_PATH` are always derived from `DRIVERS_DIR` as `{DRIVERS_DIR}/firefox/firefox` and `{DRIVERS_DIR}/geckodriver` — never ask for them separately
 - If the user initially chose `generate_only` and later wants to enable execution, they can re-run `@setup-project setup` and choose mode 3 (Reconfigure) — the agent will auto-detect the project folder and only ask for the SDP/path values
