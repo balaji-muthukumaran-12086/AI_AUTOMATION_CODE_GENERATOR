@@ -121,7 +121,7 @@ Read the HTML for `data-result="PASS"` / `data-result="FAIL"` / `scenario-result
 
 **Maximum 3 debug-fix-rerun attempts per test.** After 3 failures, report as unresolvable.
 
-### 3a. Analyze the Failure
+### 3a. Analyze the Failure (REPORT ONLY — do NOT read Java source files yet)
 
 1. Read the ScenarioReport.html:
 ```bash
@@ -135,6 +135,11 @@ cat "$REPORT_DIR/ScenarioReport.html"
    - `TimeoutException` → element slow to appear or selector wrong
    - `ClassNotFoundException` → missing ENTITY_IMPORT_MAP entry
    - `AssertionException` → logic/validation mismatch
+
+> **⚠️ STOP HERE — do NOT read Java source files (DetailsView.java, Change.java, *Locators.java,
+> *ActionsUtil.java, etc.) as part of failure analysis.** The ScenarioReport.html and stdout
+> exception type are sufficient to classify the failure. Reading source files before Playwright
+> wastes steps and delays the actual diagnosis. Go directly to Step 3b → 3c.
 
 ### 3b. Classify Failure
 
@@ -151,7 +156,16 @@ cat "$REPORT_DIR/ScenarioReport.html"
 > because the SDP application itself behaves differently from the expected specification — that's
 > a product bug. Do NOT keep retrying. Mark as `PRODUCT_BUG` and include it in the bug report.
 
-### 3c. LOCATOR Failures — Use Playwright MCP
+### 3c. LOCATOR Failures — Launch Playwright MCP IMMEDIATELY
+
+> **Order of operations (MANDATORY):**
+> 1. Read ScenarioReport.html (Step 3a) — identify failure type
+> 2. **Launch Playwright MCP** — `browser_navigate` → replicate the failing state → `browser_snapshot`
+> 3. Compare snapshot with the XPath in Java source — fix the locator
+>
+> **FORBIDDEN**: Reading `*Locators.java`, `*Base.java`, `Change.java`, or ANY Java file
+> before launching Playwright. The DOM is the source of truth, not the Java code.
+> Only read Java files AFTER you have the Playwright snapshot and know which locator to fix.
 
 This is the most common failure type. Use Playwright browser tools to inspect the live SDP UI and find the correct selector.
 
@@ -466,24 +480,26 @@ If the orchestrator isn't running, events are silently saved to `orchestrator/of
 ✅ CORRECT:  browser_evaluate → run JS query → read result
 ```
 
-#### 2. MANDATORY Playwright MCP on EVERY failure — no blind retries
+#### 2. MANDATORY Playwright MCP on EVERY failure — no blind retries, no source-code reading first
 
-**What happened**: A test failed, the agent re-ran it without diagnosis, and it passed by luck on the second attempt. No root cause was identified.
+**What happened**: (a) A test failed, the agent re-ran it without diagnosis, and it passed by luck on the second attempt. No root cause was identified. (b) A test failed, and the agent spent 6+ tool calls reading Java source files (DetailsView.java, Change.java, ChangeLocators.java, *ActionsUtil.java) before launching Playwright — wasting time on code that was already generated correctly.
 
 **Rule**: On ANY test failure (even the first attempt), you MUST:
-1. **Read ScenarioReport.html** — identify the exact failure step
-2. **Open Playwright MCP** — navigate to the failing page state
+1. **Read ScenarioReport.html** — identify the exact failure step and exception type
+2. **Launch Playwright MCP IMMEDIATELY** — navigate to the failing page state
 3. **Take `browser_snapshot`** — capture the actual DOM/accessibility tree
 4. **Identify root cause** — locator mismatch, timing issue, missing element, etc.
-5. **Apply a fix** (or classify as PRODUCT_BUG)
-6. **Then re-run**
+5. **THEN read Java source** — only the specific file you need to fix (e.g., `*Locators.java`)
+6. **Apply a fix** (or classify as PRODUCT_BUG)
+7. **Re-run**
 
-Blind retries without diagnosis are FORBIDDEN. If a test fails, there IS a reason — find it.
+Blind retries without diagnosis are FORBIDDEN. Reading Java files before Playwright is FORBIDDEN.
 
 ```
 ❌ FORBIDDEN: Test fails → immediately re-run without analysis
 ❌ FORBIDDEN: Test fails → re-run 3 times hoping it passes
-✅ CORRECT:  Test fails → read report → Playwright snapshot → diagnose → fix → re-run
+❌ FORBIDDEN: Test fails → read DetailsView.java → read Change.java → read ChangeLocators.java → ... → finally launch Playwright
+✅ CORRECT:  Test fails → read report → Playwright snapshot → diagnose → read specific Java file to fix → fix → re-run
 ```
 
 #### 3. ScenarioReport.html is the AUTHORITATIVE pass/fail source
