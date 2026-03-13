@@ -5,8 +5,6 @@ model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
 argument-hint: "Entity.method to run (e.g. 'Solution.createSolution'), or 'batch' to run all from tests_to_run.json, or describe what to run and fix"
 instructions:
   - .github/copilot-instructions.md
-  - config/framework_rules.md
-  - config/framework_knowledge.md
   - .github/instructions/java-test-conventions.instructions.md
 ---
 
