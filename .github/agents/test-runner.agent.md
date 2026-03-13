@@ -28,29 +28,30 @@ User provides Entity.method
   └─ Step 4: Final summary
 ```
 
-### Mode B — Full Batch Pipeline (5-phase flow)
+### Mode B — Batch Pipeline (sequential run + heal)
 
 > This is the primary batch workflow. When the user says "batch", "run all",
 > "run the generated tests", or is handed off from `@test-generator`, use this flow.
+> **Each test is run and self-healed individually before moving to the next.**
 
 ```
 User request (batch run)
   │
   ├─ Phase 0: Resolve paths & environment
-  ├─ Phase 1: Generate / update execution plan MD (categorized batch report)
-  ├─ Phase 2: DRY RUN — run ALL tests sequentially, collect PASS/FAIL for every test
-  │            (NO debugging in this phase — just run and record results)
-  ├─ Phase 3: SELF-HEAL — for each FAILED test from Phase 2:
-  │    ├─ 3a. Read ScenarioReport.html + classify failure
-  │    ├─ 3b. For LOCATOR: use Playwright MCP to inspect live UI
-  │    ├─ 3c. Apply fix (Locators / Base / ActionsUtil / APIUtil)
-  │    ├─ 3d. Targeted recompile
-  │    └─ 3e. If unfixable after 3 attempts → mark PRODUCT_BUG or UNRESOLVABLE
-  ├─ Phase 4: VALIDATION RUN — re-run ONLY previously failed tests
-  │            Repeat Phase 3→4 loop if new failures appear (max 2 validation cycles)
-  ├─ Phase 5: Final summary + update execution plan MD + bug reports
-  ├─ Phase 6: Learning extraction → update framework_rules.md + framework_knowledge.md + learnings.jsonl
-  └─ Phase 7: End-to-end migration summary → $PROJECT/Testcase/migration_summary_*.md
+  ├─ Phase 1: Load tests_to_run.json + generate execution plan MD
+  ├─ Phase 2: SEQUENTIAL RUN + HEAL — for each test, one at a time:
+  │    ├─ Configure run_test.py + targeted compile
+  │    ├─ Execute + parse result
+  │    ├─ If FAIL → debug & fix (max 3 attempts, same as Mode A Step 3)
+  │    │    ├─ Analyze ScenarioReport.html + classify failure
+  │    │    ├─ LOCATOR → Playwright MCP to inspect live UI
+  │    │    ├─ Apply fix + targeted recompile + re-run
+  │    │    └─ If unfixable after 3 attempts → PRODUCT_BUG or UNRESOLVABLE
+  │    ├─ Log result to orchestrator
+  │    └─ Update execution plan MD → proceed to next test
+  ├─ Phase 3: Final summary + bug reports
+  ├─ Phase 4: Learning extraction → framework_rules.md + framework_knowledge.md + learnings.jsonl
+  └─ Phase 5: End-to-end migration summary → $PROJECT/Testcase/migration_summary_*.md
 ```
 
 ---
@@ -80,20 +81,19 @@ User provides `EntityClass.methodName` (e.g., `Solution.createSolution`).
 - Parse into `entity_class` and `method_name`
 - Proceed to Step 2 (single run + debug loop)
 
-### Mode B: Full Batch Pipeline
+### Mode B: Batch Pipeline (sequential run + heal)
 User says "batch", "run all", "run the generated tests", or is handed off from `@test-generator`.
-- **Skip directly to Phase 1** (the 5-phase batch pipeline below)
+- **Skip directly to Phase 1** (the batch pipeline below)
 
 ### Mode C: Re-run generated tests
 User says "run the generated tests" or wants to re-run after manual edits.
 - Verify `tests_to_run.json` exists and has entries
-- **Skip directly to Phase 1** (same 5-phase batch pipeline)
+- **Skip directly to Phase 1** (same batch pipeline)
 
-> **Note**: `@test-generator` now includes an inline Run & Self-Heal phase (Step P2d)
-> that executes tests + Playwright MCP debugging immediately after generation — matching
-> the seamless vanilla Copilot chat experience. This agent (`@test-runner`) is still
-> useful for: re-running tests after manual code changes, running a single test in
-> isolation, or re-running the full batch without regenerating.
+> **Note**: `@test-generator` only generates test code — it does NOT run tests.
+> After generation, invoke `@test-runner` to execute and self-heal.
+> This agent handles: running tests from `tests_to_run.json`, single-test execution,
+> re-running after manual code changes, and Playwright-based self-healing.
 
 ---
 
@@ -290,7 +290,7 @@ If unresolvable or PRODUCT_BUG, generate a bug report (see Bug Reports section b
 ---
 
 ## ════════════════════════════════════════════════════════
-## MODE B — Full Batch Pipeline (Phases 0-5)
+## MODE B — Batch Pipeline (Sequential Run + Heal)
 ## ════════════════════════════════════════════════════════
 
 > This is the structured end-to-end workflow for batch execution.
@@ -331,10 +331,9 @@ javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
 
 ---
 
-### Phase 1 — Generate / Update Execution Plan MD
+### Phase 1 — Load Tests + Generate Execution Plan
 
-Create a categorized execution plan Markdown file that tracks the entire batch lifecycle.
-This file is the **single source of truth** for batch progress and is updated after every phase.
+Create a categorized execution plan that tracks progress as each test is run and healed sequentially.
 
 **Generate the execution plan:**
 ```bash
@@ -347,14 +346,13 @@ with open('tests_to_run.json') as f:
     data = json.load(f)
 tests = data.get('tests', [])
 
-# Group tests by entity_class
 groups = {}
 for t in tests:
     entity = t.get('entity_class', 'Unknown')
     groups.setdefault(entity, []).append(t)
 
 lines = [
-    f'# Batch Execution Plan — {PROJECT_NAME}',
+    f'# Execution Plan — {PROJECT_NAME}',
     f'',
     f'**Generated**: {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}  ',
     f'**Total tests**: {len(tests)}  ',
@@ -362,10 +360,10 @@ lines = [
     f'',
     f'---',
     f'',
-    f'## Test Summary',
+    f'## Test Progress',
     f'',
-    f'| # | Entity.Method | Scenario ID | Dry Run | Self-Heal | Validation | Final |',
-    f'|---|--------------|-------------|---------|-----------|------------|-------|',
+    f'| # | Entity.Method | Scenario ID | Status | Attempts | Fix Applied | Notes |',
+    f'|---|--------------|-------------|--------|----------|-------------|-------|',
 ]
 
 idx = 0
@@ -374,19 +372,9 @@ for entity in sorted(groups.keys()):
         idx += 1
         method = t.get('method_name', '?')
         sid = t.get('_id', '—')
-        lines.append(f'| {idx} | {entity}.{method} | {sid} | ⏳ | — | — | — |')
+        lines.append(f'| {idx} | {entity}.{method} | {sid} | ⏳ | 0 | — | — |')
 
 lines.extend([
-    f'',
-    f'---',
-    f'',
-    f'## Phase Status',
-    f'',
-    f'| Phase | Status | Started | Finished | Pass | Fail |',
-    f'|-------|--------|---------|----------|------|------|',
-    f'| Phase 2: Dry Run | ⏳ NOT STARTED | — | — | — | — |',
-    f'| Phase 3: Self-Heal | ⏳ NOT STARTED | — | — | — | — |',
-    f'| Phase 4: Validation | ⏳ NOT STARTED | — | — | — | — |',
     f'',
     f'---',
     f'',
@@ -416,169 +404,95 @@ cat $PROJECT/execution_plan.md
 
 ---
 
-### Phase 2 — DRY RUN (run ALL tests, no debugging)
+### Phase 2 — Sequential Run + Heal (one test at a time)
 
-> **Purpose**: Get a baseline — run every test once, record PASS/FAIL for all.
-> Do NOT debug or fix anything in this phase. Just collect results.
+> **Core principle**: Process each test fully (run → diagnose → fix → re-run) before moving to the next.
+> This is identical to Mode A Steps 2-4 applied in a loop over `tests_to_run.json`.
 
-Run the full batch using `batch_run_helper.py`:
+**For each test in `tests_to_run.json`:**
+
+#### 2a. Configure + Compile
+
+Update `run_test.py` with the current test's entity_class and method_name (same as Mode A Step 2a).
+If any Java files were modified since the last compile, run targeted compile.
+
+#### 2b. Execute + Parse
+
 ```bash
-cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
-.venv/bin/python batch_run_helper.py --batch 2>&1
+.venv/bin/python run_test.py 2>&1
 ```
 
-This produces:
-- `batch_run_results.json` — structured results for programmatic access
-- `batch_run_results.md` — human-readable summary table
-- Console output with `BATCH_SUMMARY:TOTAL=N|PASS=N|FAIL=N|SKIP=N`
+Parse using the same priority-order checks from Mode A Step 2d:
+1. `$$Failure` → FAILED
+2. `"Additional Specific Info":["` + `"successfully"` → PASSED
+3. `BUILD FAILED` → FAILED / `BUILD SUCCESSFUL` → PASSED
+4. Java exceptions → FAILED
+5. No positive signal → FAILED
 
-**After the dry run completes:**
+Also check `ScenarioReport.html` for `data-result` attributes.
 
-1. Read the results:
+#### 2c. On PASS → Log + Next Test
+
+Log the pass to the orchestrator and update the execution plan:
 ```bash
-cat batch_run_results.json | .venv/bin/python -c "
-import json, sys
-d = json.load(sys.stdin)
-print(f'Phase: {d[\"phase\"]}')
-print(f'Total: {d[\"total\"]} | Pass: {d[\"passed\"]} | Fail: {d[\"failed\"]}')
-print()
-for r in d['results']:
-    icon = '✅' if r['status'] == 'PASS' else '❌'
-    print(f'{icon} {r[\"test_key\"]} → {r[\"status\"]}')
-    if r.get('failure_info'):
-        print(f'   ⚠️  {r[\"failure_info\"][:120]}')
+.venv/bin/python -c "
+from orchestrator.client import get_client
+get_client().scenario_passed(scenario_id='<ID>', method_name='<method>', module='<module>')
 "
 ```
+Update the test's row in `$PROJECT/execution_plan.md`: Status → `✅ PASS`, Attempts → `1`.
 
-2. **Update the execution plan MD** — mark each test's Dry Run status:
-   - Read `batch_run_results.json`
-   - For each test: replace `⏳` in the Dry Run column with `✅ PASS` or `❌ FAIL`
-   - Update Phase 2 row in the Phase Status table
+Proceed to the next test.
 
-3. Report the dry run summary to the user:
-```
-📊 Dry Run Complete:
-- Total: {N} | ✅ PASS: {N} | ❌ FAIL: {N}
-- Failed tests: [list of Entity.method names]
+#### 2d. On FAIL → Debug & Fix (max 3 attempts)
 
-Proceeding to Phase 3 (Self-Heal) for {N} failed tests...
-```
-
-**If ALL tests passed**: Skip Phases 3 and 4, go directly to Phase 5 (summary).
-
----
-
-### Phase 3 — SELF-HEAL (diagnose and fix each failed test)
-
-> **Purpose**: For each test that FAILED in Phase 2, diagnose the root cause,
-> apply a fix, and prepare for re-validation. This is where Playwright MCP is used.
-
-**For each failed test** (from `batch_run_results.json` where status = "FAIL" or "ERROR"):
-
-#### 3a. Analyze the Failure
-
-1. Read the ScenarioReport.html for this test:
-```bash
-REPORT_DIR=$(ls -dt $PROJECT/reports/LOCAL_<methodName>_* 2>/dev/null | head -1)
-cat "$REPORT_DIR/ScenarioReport.html"
-```
-
-2. Classify the failure (same as Single Test Step 3b):
+Apply the **same debug-fix loop as Mode A Step 3** — analyze ScenarioReport.html, classify failure, use Playwright MCP for LOCATOR issues, apply fix, targeted recompile, re-run.
 
 | Symptom | Type | Fix Target |
 |---------|------|------------|
-| `NoSuchElementException` / `TimeoutException` | LOCATOR | `*Locators.java` |
+| `NoSuchElementException` / `TimeoutException` | LOCATOR | `*Locators.java` — inspect with Playwright |
 | `NullPointerException` in restAPI / preProcess | API | preProcess data / API paths |
 | `AssertionException` / wrong validation | LOGIC | Test method in `*Base.java` |
 | javac errors | COMPILE | Syntax/import fix |
 | SDP behaviour differs from spec | **PRODUCT_BUG** | No code fix — report |
 
-#### 3b. For LOCATOR failures — Use Playwright MCP
+**After each attempt**, re-run and parse. If it passes, log success + move to next test.
 
-Login to SDP, navigate to the failing state, use `browser_snapshot` to inspect the accessibility tree, and find the correct selector. Same procedure as Single Test Step 3c.
-
-#### 3c. Apply Fix
-
-Edit the relevant Java source file (`*Locators.java`, `*Base.java`, `*ActionsUtil.java`, etc.).
-
-#### 3d. Targeted Recompile
-
-After fixing one or more tests, recompile ALL affected files:
-```bash
-CP="$BIN:$(find "$DEPS" -name "*.jar" | tr '\n' ':')"
-javac -encoding UTF-8 -cp "$CP" -d "$BIN" <list of ALL changed .java files>
-```
-
-> **Batch recompile optimization**: Collect ALL fixes for ALL failed tests before recompiling.
-> If multiple tests fail due to the same locator or shared util method, fix it once and it
-> benefits all. Only recompile after all self-heal fixes are applied.
-
-#### 3e. Record fix for each test
-
-Track what was fixed in a structured format:
-```
-| Test | Fix Type | Fix Description |
-|------|----------|----------------|
-| DetailsView.verifyAssociationTab | LOCATOR | Fixed XPath: association tab ID changed |
-| DetailsView.verifyParentChange | API | preProcess API path corrected |
-| ListView.verifyColumnSearch | PRODUCT_BUG | SDP returns wrong column sort order |
-```
-
-**Update the execution plan MD** — mark the Self-Heal column:
-- Fixed tests: `🔧 FIXED`
-- Product bugs: `🐛 PRODUCT_BUG`
-- Unfixable after 3 attempts: `⛔ UNRESOLVABLE`
-
----
-
-### Phase 4 — VALIDATION RUN (re-run previously failed tests)
-
-> **Purpose**: Re-run ONLY the tests that failed in Phase 2 (and were fixed in Phase 3)
-> to confirm they now pass. Tests marked PRODUCT_BUG or UNRESOLVABLE are skipped.
-
-1. Build a list of tests to re-run:
+**After 3 failed attempts**, mark as PRODUCT_BUG or UNRESOLVABLE:
 ```bash
 .venv/bin/python -c "
-import json
-with open('batch_run_results.json') as f:
-    data = json.load(f)
-failed_methods = [r['method_name'] for r in data['results'] if r['status'] in ('FAIL', 'ERROR')]
-print(f'Tests to re-run: {len(failed_methods)}')
-for m in failed_methods:
-    print(f'  - {m}')
+from orchestrator.client import get_client
+get_client().scenario_failed(scenario_id='<ID>', method_name='<method>', module='<module>', error_message='<error>')
 "
 ```
+Update the execution plan row: Status → `🐛 PRODUCT_BUG` or `⛔ UNRESOLVABLE`, Attempts → `3`, Notes → failure summary.
 
-2. Run each failed test individually via `batch_run_helper.py` (single mode):
-```bash
-.venv/bin/python batch_run_helper.py <EntityClass> <methodName>
+Proceed to the next test.
+
+#### 2e. Progress Reporting
+
+After every test (pass or fail), report progress to the user:
 ```
-Parse the `RESULT:PASS|...` or `RESULT:FAIL|...` output.
-
-3. **If a test still fails after the fix**: Apply one more debug-fix cycle (max 3 total attempts per test across Phase 3 + Phase 4). If it still fails, mark as UNRESOLVABLE.
-
-4. **Update the execution plan MD** — mark the Validation column:
-   - `✅ PASS` for tests that now pass
-   - `❌ STILL_FAILING` for tests that failed again
-   - `⏭️ SKIPPED` for PRODUCT_BUG / UNRESOLVABLE tests
-
-5. **Repeat validation if needed**: If Phase 4 introduced NEW failures (e.g., a fix for test A broke test B), run one more validation cycle. Maximum 2 validation cycles total.
+[3/15] ✅ DetailsView.verifyAssociationTab — PASSED (attempt 1)
+[4/15] 🔧 DetailsView.verifyParentChange — PASSED (attempt 2, fixed XPath)
+[5/15] 🐛 ListView.verifyColumnSearch — PRODUCT_BUG after 3 attempts
+```
 
 ---
 
-### Phase 5 — Final Summary + Reports
+### Phase 3 — Final Summary + Bug Reports
 
 #### Summary Table
 
 Present the final results:
 
 ```
-| # | Entity.Method | Dry Run | Fix | Validation | Final |
-|---|--------------|---------|-----|------------|-------|
-| 1 | DV.verifyAssociationTab | ❌ FAIL | 🔧 XPath fix | ✅ PASS | ✅ PASS |
-| 2 | DV.verifyParentChange | ✅ PASS | — | — | ✅ PASS |
-| 3 | LV.verifyColumnSearch | ❌ FAIL | 🐛 PRODUCT_BUG | ⏭️ SKIP | 🐛 BUG |
-| 4 | DV.verifyDetach | ❌ FAIL | 🔧 API fix | ❌ STILL_FAIL | ⛔ UNRESOLVED |
+| # | Entity.Method | Result | Attempts | Fix Applied |
+|---|--------------|--------|----------|-------------|
+| 1 | DV.verifyAssociationTab | ✅ PASS | 1 | — |
+| 2 | DV.verifyParentChange | ✅ PASS | 2 | 🔧 XPath fix |
+| 3 | LV.verifyColumnSearch | 🐛 BUG | 3 | — (SDP issue) |
+| 4 | DV.verifyDetach | ⛔ UNRESOLVED | 3 | Attempted API fix |
 ```
 
 #### Aggregate Stats
@@ -586,19 +500,18 @@ Present the final results:
 ```
 📊 Final Batch Results:
 - Total: {N}
-- ✅ Passed (first run): {N}
+- ✅ Passed (first attempt): {N}
 - 🔧 Passed (after self-heal): {N}
 - 🐛 Product Bugs: {N}
 - ⛔ Unresolvable Failures: {N}
-- Success Rate: {N}% → {N}% (dry run → final)
+- Final Success Rate: {N}%
 ```
 
 #### Update Execution Plan MD
 
 Write the final status to `$PROJECT/execution_plan.md`:
-- Update Phase Status table with final timestamps and counts
 - Convert `[ ]` checkboxes to `[x]` for passed tests
-- Add a "Final Results" section at the bottom
+- Add a "Final Results" section at the bottom with aggregate stats
 
 ### Bug Reports (for PRODUCT_BUG and unresolvable FAILED tests)
 
@@ -641,16 +554,16 @@ vs a test code issue>
 
 **Rules for bug reports:**
 1. **Always include the report path** — find it with: `ls -dt $PROJECT/reports/LOCAL_<methodName>_* | head -1`
-2. **Steps to Reproduce must be manual-testable** — write them as if a human QA engineer will follow them with a browser, not in terms of automation code
-3. **Include the $$Failure message** from ScenarioReport.html — this is the exact assertion that failed
-4. **Differentiate PRODUCT_BUG from test issues**: If the test code, locators, and data setup are all verified correct but SDP behaves unexpectedly → PRODUCT_BUG. If there's a test code issue we couldn't fix after 3 attempts → UNRESOLVABLE_FAILURE
-5. **One report per failed test** — even in batch mode, each test gets its own report block
+2. **Steps to Reproduce must be manual-testable** — write them as if a human QA engineer will follow them
+3. **Include the $$Failure message** from ScenarioReport.html
+4. **Differentiate PRODUCT_BUG from test issues**: Test code, locators, and data verified correct but SDP behaves unexpectedly → PRODUCT_BUG. Test code issue we couldn't fix after 3 attempts → UNRESOLVABLE_FAILURE
+5. **One report per failed test**
 
 ---
 
-### Phase 6 — Learning Extraction (Closed Feedback Loop)
+### Phase 4 — Learning Extraction (Closed Feedback Loop)
 
-> **Purpose**: After all tests are run (Phase 5 complete), analyze the results to extract
+> **Purpose**: After all tests are run (Phase 3 complete), analyze the results to extract
 > actionable learnings — failure rules and success patterns — and persist them so that
 > future `@test-generator` runs (Step 0.7) benefit from this execution's outcomes.
 > This is the WRITE side of the learning feedback loop within the Copilot agent ecosystem.
@@ -668,7 +581,7 @@ from pathlib import Path
 LEARNINGS_LOG = Path("logs/learnings.jsonl")
 LEARNINGS_LOG.parent.mkdir(parents=True, exist_ok=True)
 
-# Load batch results (from Phase 2/4)
+# Load results from Phase 2 (sequential run + heal)
 results_file = "batch_run_results.json"
 if not os.path.exists(results_file):
     print("No batch_run_results.json found — skipping learning extraction.")
@@ -721,7 +634,7 @@ LEARNING_EXTRACT
 
 #### 6b. Update framework knowledge files (for failures with diagnosed root causes)
 
-For tests that FAILED and were FIXED during Phase 3 (self-heal), extract a DO/DON'T rule
+For tests that FAILED and were FIXED during Phase 2 (self-heal), extract a DO/DON'T rule
 and append it to `config/framework_rules.md`:
 
 ```bash
@@ -731,18 +644,18 @@ from pathlib import Path
 RULES_FILE = Path("config/framework_rules.md")
 LEARNED_HEADER = "\n\n---\n\n## LEARNED RULES (auto-generated by test-runner)\n"
 
-# Collect rules from Phase 3 fix records
+# Collect rules from Phase 2 fix records (self-heal fixes applied during sequential run)
 # Format: list of {"test": "Entity.method", "fix_type": "LOCATOR|API|LOGIC", "description": "what was wrong and how it was fixed"}
 fix_records = []  # ← populated from Phase 3 fix tracking
 
-# Example: After Phase 3, you tracked fixes like:
+# Example: After Phase 2, you tracked fixes like:
 # fix_records = [
 #   {"test": "DV.verifyAssociationTab", "fix_type": "LOCATOR", "description": "Changed //div[@id='old-id'] to //section[@data-tab='associations']"},
 #   {"test": "DV.verifyParentChange", "fix_type": "API", "description": "API path changed from changes/link to changes/{id}/link_parent_change"},
 # ]
 
 if not fix_records:
-    print("No fix records from Phase 3 — skipping framework_rules.md update.")
+    print("No fix records from Phase 2 — skipping framework_rules.md update.")
     exit(0)
 
 content = RULES_FILE.read_text(encoding="utf-8") if RULES_FILE.exists() else ""
@@ -836,12 +749,12 @@ print('Learning extraction event logged to orchestrator.')
 
 > **This step closes the feedback loop.** The `@test-generator` agent reads these learnings
 > in Step 0.7 before generating new code. The cycle is:
-> `@test-generator` Step 0.7 (read) → Steps 1-6 (generate) → `@test-runner` Phases 2-5
-> (execute) → Phase 6 (extract & persist) → next `@test-generator` Step 0.7 (read improved).
+> `@test-generator` Step 0.7 (read) → Steps 1-6 (generate) → `@test-runner` Phase 2
+> (run + heal) → Phase 4 (extract & persist) → next `@test-generator` Step 0.7 (read improved).
 
 ---
 
-### Phase 7 — End-to-End Migration Summary
+### Phase 5 — End-to-End Migration Summary
 
 > **Purpose**: Generate a single consolidated document that traces the FULL lifecycle:
 > CSV use-case rows → generated test methods → execution results → self-heal fixes →
@@ -917,12 +830,10 @@ lines = [
     f"CSV Use-Case Document",
     f"  └─ @test-generator (code generation)",
     f"       └─ @test-runner (batch execution)",
-    f"            ├─ Phase 2: Dry Run",
-    f"            ├─ Phase 3: Self-Heal",
-    f"            ├─ Phase 4: Validation",
-    f"            ├─ Phase 5: Summary + Bug Reports",
-    f"            ├─ Phase 6: Learning Extraction ← framework self-correction",
-    f"            └─ Phase 7: This Summary ← you are here",
+    f"            ├─ Phase 2: Sequential Run + Heal (per test)",
+    f"            ├─ Phase 3: Final Summary + Bug Reports",
+    f"            ├─ Phase 4: Learning Extraction ← framework self-correction",
+    f"            └─ Phase 5: This Summary ← you are here",
     f"```",
     f"",
     f"---",
@@ -998,8 +909,8 @@ lines += [
     f"|----------|----------|",
     f"| Use-case CSV | `{PROJECT}/Testcase/` (original upload) |",
     f"| Execution Plan | `{PROJECT}/execution_plan.md` |",
-    f"| Batch Results | `batch_run_results.json` |",
-    f"| Bug Reports | See Phase 5 output above |",
+    f"| Run Results | `batch_run_results.json` (if generated) |",
+    f"| Bug Reports | See Phase 3 output above |",
     f"| This Summary | `{summary_path}` |",
     f"| ScenarioReport HTMLs | `{PROJECT}/reports/LOCAL_*/ScenarioReport.html` |",
     f"",
@@ -1090,7 +1001,6 @@ The batch runner is invoked from the terminal. It supports two modes:
 **Structured result format** (in `batch_run_results.json`):
 ```json
 {
-  "phase": "dry_run",
   "started_at": "2026-03-11 14:30:00",
   "finished_at": "2026-03-11 15:45:00",
   "total": 34,
@@ -1113,16 +1023,6 @@ The batch runner is invoked from the terminal. It supports two modes:
 ```
 
 ---
-
-## Key Framework Behaviors (Reference)
-
-| Behavior | Detail |
-|----------|--------|
-| `actions.click(locator)` | Calls `waitForAjaxComplete()` BEFORE clicking — never add redundant waits between clicks |
-| `actions.type(locator, value)` | Calls `waitForAjaxComplete()` internally |
-| `actions.getText(locator)` | Has 3-second `waitForAnElementToAppear` timeout — can miss slow pages |
-| `actions.navigate.to(locator)` | `click()` + `waitForAjaxCompleteLoad()` — double wait internal |
-| `fillInputForAnEntity` | Silently skips `checkbox`, `radio`, `boolean` fields |
 
 ## Report Locations
 
@@ -1152,7 +1052,7 @@ from orchestrator.client import get_client
 get_client().scenario_failed(scenario_id='<ID>', method_name='<method>', module='<module>', error_message='<error>')
 "
 ```
-If the orchestrator isn't running, events are silently dropped.
+If the orchestrator isn't running, events are silently saved to `orchestrator/offline_events.jsonl`.
 
 ---
 
@@ -1163,4 +1063,3 @@ If the orchestrator isn't running, events are silently dropped.
 - NEVER guess locators — always verify with `browser_snapshot` first
 - ALWAYS clean up test data created during Playwright debugging sessions
 - Maximum 3 debug-fix-rerun attempts per failed test before moving on
-- In batch mode: collect all results in dry run (Phase 2) FIRST, then debug all failures in self-heal (Phase 3)
