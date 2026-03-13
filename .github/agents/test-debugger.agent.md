@@ -32,30 +32,58 @@ You are a **test debugging specialist** for the AutomaterSelenium QA framework. 
 ### Step 0 — Resolve Dynamic Paths
 Before any file access, resolve the active project folder:
 ```bash
-cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
+cd /home/balaji-12086/AI_AUTOMATION_CODE_GENERATOR
 eval $(.venv/bin/python -c "
-from config.project_config import DEPS_DIR, PROJECT_ROOT, PROJECT_NAME, BASE_DIR
+from config.project_config import DEPS_DIR, PROJECT_ROOT, PROJECT_NAME, BASE_DIR, SDP_URL, SDP_ADMIN_EMAIL, SDP_ADMIN_PASS
 print(f'export DEPS={DEPS_DIR}')
 print(f'export BIN={PROJECT_ROOT}/bin')
 print(f'export SRC={PROJECT_ROOT}/src')
 print(f'export PROJECT={PROJECT_NAME}')
 print(f'export BASE={BASE_DIR}')
+print(f'export SDP_URL={SDP_URL}')
+print(f'export SDP_EMAIL={SDP_ADMIN_EMAIL}')
+print(f'export SDP_PASS={SDP_ADMIN_PASS}')
 ")
 ```
 Use `$PROJECT`, `$BIN`, `$SRC`, `$DEPS`, `$BASE` for all paths below.
 
+### Step 0.5 — Playwright MCP Bootstrap (MANDATORY — before any diagnosis)
+
+> **NON-NEGOTIABLE**: You MUST complete this before Step 1. Without a warm browser session,
+> you cannot inspect the live SDP UI and the entire debugging workflow is useless.
+
+1. **Load Playwright tools**: Run `tool_search_tool_regex` with pattern `^mcp_microsoft_pla`
+   - If zero results → STOP: "Playwright MCP server is not available."
+2. **Login to SDP**:
+   ```
+   browser_navigate(url=$SDP_URL)
+   browser_snapshot()                    → find email, password, submit refs
+   browser_fill_form(fields=[
+     {"name": "email", "type": "textbox", "ref": "<email_ref>", "value": "$SDP_EMAIL"},
+     {"name": "password", "type": "textbox", "ref": "<pass_ref>", "value": "$SDP_PASS"}
+   ])
+   browser_click(ref="<submit_ref>")    → click "Next" / "Sign in"
+   browser_snapshot()                    → verify dashboard loaded
+   ```
+   > `browser_fill_form` fields MUST have 4 keys: `name`, `type` (textbox|checkbox|radio|combobox|slider), `ref`, `value`
+   > Alternative: use `browser_type(ref, text)` one field at a time
+3. **Verify session**: `browser_evaluate` → `sdpAPICall('changes', 'get', 'input_data={"list_info":{"row_count":"1"}}').responseJSON`
+   - If null → login failed, retry
+
 ### Step 1 — Analyze the Failure
 1. Read the ScenarioReport.html from `$PROJECT/reports/LOCAL_<method>_<timestamp>/`
 2. Identify failure type: `LOCATOR | API | LOGIC | COMPILE`
-3. Read the Java test code to understand what was expected
+3. **Do NOT read Java source files yet** — go to Step 2 (Playwright) for LOCATOR/API/LOGIC failures
 
-### Step 2 — Inspect with Playwright (for LOCATOR failures)
-1. Navigate to the SDP instance: `browser_navigate` to the SDP URL
-2. Login if needed (admin credentials from `config/project_config.py`)
-3. Create prerequisite data via `browser_evaluate` + `sdpAPICall()` (see Data Creation below)
-4. Navigate to the failing page state
-5. Take a `browser_snapshot` to get the accessibility tree
-6. Identify the correct selector for the missing/changed element
+### Step 2 — Inspect with Playwright (for LOCATOR/API/LOGIC failures)
+
+> The Playwright session is already warm from Step 0.5. Go directly to navigation.
+
+1. Create prerequisite data via `browser_evaluate` + `sdpAPICall()` (see Data Creation below)
+2. Navigate to the failing page state
+3. Take a `browser_snapshot` to get the accessibility tree
+4. Identify the correct selector for the missing/changed element
+5. **NOW** read the specific `*Locators.java` to see what XPath to fix
 
 ### Step 3 — Fix and Validate
 1. Update the locator in `*Locators.java`

@@ -34,15 +34,15 @@ You are a **test runner and self-healing agent** for the AutomaterSelenium QA fr
 ### Single Test
 
 ```
-User provides Entity.method → resolve paths → compile → run → parse
-  └─ If FAIL → debug & fix (max 3 attempts, Playwright MCP) → re-run
+User provides Entity.method → resolve paths → Playwright bootstrap → compile → run → parse
+  └─ If FAIL → debug & fix via WARM Playwright session (max 3 attempts) → re-run
 ```
 
 ### Batch (from tests_to_run.json)
 
 ```
 User says "batch" / "run all" / handed off from @test-generator
-  └─ For each test: same run+debug+fix loop → report progress → next test
+  └─ Playwright bootstrap (login once) → For each test: run+debug+fix loop → report
 ```
 
 ---
@@ -51,17 +51,92 @@ User says "batch" / "run all" / handed off from @test-generator
 
 Before any file access, resolve the active project folder:
 ```bash
-cd /home/balaji-12086/Desktop/Workspace/Zide/ai-automation-qa
+cd /home/balaji-12086/AI_AUTOMATION_CODE_GENERATOR
 eval $(.venv/bin/python -c "
-from config.project_config import DEPS_DIR, PROJECT_ROOT, PROJECT_NAME, BASE_DIR
+from config.project_config import DEPS_DIR, PROJECT_ROOT, PROJECT_NAME, BASE_DIR, SDP_URL, SDP_ADMIN_EMAIL, SDP_ADMIN_PASS
 print(f'export DEPS={DEPS_DIR}')
 print(f'export BIN={PROJECT_ROOT}/bin')
 print(f'export SRC={PROJECT_ROOT}/src')
 print(f'export PROJECT={PROJECT_NAME}')
 print(f'export BASE={BASE_DIR}')
+print(f'export SDP_URL={SDP_URL}')
+print(f'export SDP_EMAIL={SDP_ADMIN_EMAIL}')
+print(f'export SDP_PASS={SDP_ADMIN_PASS}')
 ")
 ```
 Use `$PROJECT`, `$BIN`, `$SRC`, `$DEPS`, `$BASE` for all paths.
+
+---
+
+## Step 0.5 — Playwright MCP Bootstrap (MANDATORY — run BEFORE any test)
+
+> **This step is NON-NEGOTIABLE.** You MUST complete it before running the first test.
+> Without a warm, logged-in Playwright session, failure diagnosis is impossible.
+> The entire self-healing loop depends on this session being ready.
+
+### 0.5a. Load Playwright MCP Tools
+
+Playwright MCP tools are **deferred** — they must be explicitly discovered before use.
+Run `tool_search_tool_regex` with pattern `^mcp_microsoft_pla` to load all Playwright tools.
+
+> ⚠️ If `tool_search_tool_regex` returns zero results → Playwright MCP server is NOT running.
+> **STOP immediately** and tell the user: "Playwright MCP server is not available. Please ensure
+> the MCP server is configured in VS Code settings." Do NOT proceed without Playwright tools.
+
+### 0.5b. Login to SDP (one-time — session persists for all tests)
+
+The SDP credentials come from Step 0 environment variables. Login using this exact sequence:
+
+```
+1. browser_navigate  → $SDP_URL
+2. browser_snapshot  → verify login page loaded (look for "Email address" textbox)
+3. browser_fill_form → fill email + password (see exact syntax below)
+4. browser_click     → ref of "Next" / "Sign in" button
+5. browser_snapshot  → verify dashboard loaded (look for SDP navigation elements)
+```
+
+> **Correct Playwright MCP tool usage for login form:**
+>
+> **Option A — browser_fill_form** (preferred for login — fills both fields at once):
+> ```
+> browser_fill_form(fields=[
+>   {"name": "email", "type": "textbox", "ref": "<email_ref>", "value": "admin@example.com"},
+>   {"name": "password", "type": "textbox", "ref": "<pass_ref>", "value": "Password123"}
+> ])
+> ```
+> Each field object MUST have all 4 keys: `name` (string), `type` (enum: textbox|checkbox|radio|combobox|slider), `ref` (from snapshot), `value` (string).
+>
+> **Option B — browser_type** (fill one field at a time):
+> ```
+> browser_type(ref="<email_ref>", text="admin@example.com")
+> browser_type(ref="<pass_ref>", text="Password123")
+> ```
+>
+> **Example full login sequence:**
+> ```
+> browser_navigate(url=$SDP_URL)
+> browser_snapshot()                              → find email ref=e28, password ref=e31, next ref=e33
+> browser_fill_form(fields=[
+>   {"name": "email", "type": "textbox", "ref": "e28", "value": "user@example.com"},
+>   {"name": "password", "type": "textbox", "ref": "e31", "value": "Password123"}
+> ])
+> browser_click(ref="e33")                        → click "Next" button
+> browser_snapshot()                              → verify logged in
+> ```
+
+**If login redirects to a portal selection page**, select the correct portal.
+**If already logged in** (session reuse), skip login — just verify with `browser_snapshot`.
+
+### 0.5c. Verify Session is Active
+
+After login, confirm the session is usable by running a simple API test:
+```
+browser_evaluate → () => sdpAPICall('changes', 'get', 'input_data={"list_info":{"row_count":"1"}}').responseJSON
+```
+If this returns valid JSON, the session is active. If null → login failed, retry.
+
+> **Session state is preserved** across all `browser_*` calls within the same conversation.
+> You do NOT need to re-login for each test. One login at Step 0.5b serves the entire batch.
 
 ---
 
@@ -176,33 +251,27 @@ cat "$REPORT_DIR/ScenarioReport.html"
 > because the SDP application itself behaves differently from the expected specification — that's
 > a product bug. Do NOT keep retrying. Mark as `PRODUCT_BUG` and include it in the bug report.
 
-### 3c. LOCATOR / API / LOGIC Failures — Launch Playwright MCP IMMEDIATELY
+### 3c. LOCATOR / API / LOGIC Failures — Use Playwright MCP (session is already warm from Step 0.5)
 
 > **Order of operations (MANDATORY):**
 > 1. Read ScenarioReport.html (Step 3a) — identify failure type
-> 2. **Launch Playwright MCP** — `browser_navigate` → replicate the failing state → `browser_snapshot`
+> 2. **Use the WARM Playwright session** (logged in at Step 0.5) — navigate to the failing state → `browser_snapshot`
 > 3. Compare snapshot with the XPath in Java source — fix the locator
 >
 > **FORBIDDEN**: Reading `*Locators.java`, `*Base.java`, `Change.java`, or ANY Java file
-> before launching Playwright. The DOM is the source of truth, not the Java code.
+> before using Playwright. The DOM is the source of truth, not the Java code.
 > Only read Java files AFTER you have the Playwright snapshot and know which locator to fix.
+>
+> **FORBIDDEN**: Skipping Playwright and just re-running the test hoping it passes.
 
-This is the most common failure type. Use Playwright browser tools to inspect the live SDP UI and find the correct selector.
+This is the most common failure type. The Playwright browser session from Step 0.5 is already
+logged in — go directly to navigation + snapshot. Do NOT re-login.
 
-#### Login to SDP
-```
-browser_navigate → SDP_URL (from config)
-browser_snapshot → verify login page
-browser_fill_form → username/password
-browser_click → Login button
-browser_snapshot → verify dashboard loaded
-```
-
-#### Consult API Reference
-Before writing any API path or input wrapper, **read the relevant module section** in `docs/api-doc/SDP_API_Endpoints_Documentation.md` — contains exact V3 paths, HTTP methods, input wrappers, and sub-resource paths for all 16 SDP modules. Do NOT guess.
+#### If session was lost (browser closed or timed out)
+Re-run Step 0.5b login sequence. This should be rare — Playwright sessions persist.
 
 #### Create prerequisite data (if needed for navigation)
-Use `browser_evaluate` with `sdpAPICall()` — browser must be on a logged-in SDP page:
+Use `browser_evaluate` with `sdpAPICall()` — the session is already logged in:
 ```javascript
 // Create entity via API (preferred over UI clicks)
 () => sdpAPICall('changes', 'post',
@@ -227,18 +296,22 @@ Use `browser_evaluate` with `sdpAPICall()` — browser must be on a logged-in SD
 
 #### Navigate to failing state and snapshot
 ```
-browser_navigate → module page
-(create data, click through UI to reach the failing state)
-browser_snapshot → get accessibility tree
+browser_navigate → the specific SDP page where the failure occurred
+browser_snapshot → get accessibility tree (this IS the DOM truth)
 ```
 
-#### Identify the correct selector
-Compare the snapshot accessibility tree with the broken XPath in `*Locators.java`. Find the element and construct the correct XPath.
+For change detail views:
+```
+browser_navigate → $SDP_URL + "app/itdesk/ui/changes/<changeId>/details"
+browser_snapshot → capture Associations tab, LHS nav, etc.
+```
 
-**Key SDP UI patterns:**
-- Select2 dropdowns: `<li>` in `<div class="select2-drop">` at `<body>` level, NOT inside parent dialog
-- Association tab: container ID `change_associations_parent_change`
-- Module title: `//div[@id='details-middle-container']/descendant::h1`
+#### Identify the correct selector from the snapshot
+1. Read the `browser_snapshot` accessibility tree
+2. Find the target element (tab, button, field, etc.)
+3. Note its actual attributes (class, id, text, data-* attributes)
+4. NOW read the specific `*Locators.java` file to find the broken XPath
+5. Write the correct XPath that matches the real DOM
 
 #### Cleanup created data
 Track all entity IDs created during debugging and DELETE before finishing:
@@ -325,7 +398,12 @@ If unresolvable or PRODUCT_BUG, generate a bug report (see Bug Reports section b
 ### Setup
 
 1. Resolve paths (same as Step 0)
-2. Verify `tests_to_run.json` exists and list the tests:
+2. **Playwright bootstrap** (same as Step 0.5 — MANDATORY before first test):
+   - Load Playwright tools via `tool_search_tool_regex` pattern `^mcp_microsoft_pla`
+   - Login to SDP using `browser_navigate` → `browser_type` → `browser_click` → `browser_snapshot`
+   - Verify session with `browser_evaluate` → `sdpAPICall` test call
+   - **If Playwright tools are NOT available → STOP and tell the user**
+3. Verify `tests_to_run.json` exists and list the tests:
 ```bash
 cat tests_to_run.json | .venv/bin/python -c "
 import json, sys
@@ -515,6 +593,24 @@ If the orchestrator isn't running, events are silently saved to `orchestrator/of
 
 ### FORBIDDEN ANTI-PATTERNS (bugs that happened — NEVER repeat)
 
+#### 0. NEVER skip Playwright bootstrap (Step 0.5)
+
+**What happened**: The agent ran tests, encountered failures, but never loaded Playwright MCP tools
+or logged into SDP. On failure, it either re-ran blindly or read Java source files instead of
+using Playwright to inspect the live UI. The entire self-healing capability was nullified.
+
+**Rule**: Step 0.5 is MANDATORY. Before the first test executes:
+1. Load Playwright tools: `tool_search_tool_regex` with pattern `^mcp_microsoft_pla`
+2. Navigate to SDP: `browser_navigate` → login → `browser_snapshot` to confirm
+3. If Playwright tools are unavailable → STOP and tell the user
+
+```
+❌ FORBIDDEN: Running tests without completing Step 0.5
+❌ FORBIDDEN: Skipping Playwright bootstrap and hoping failures won't occur
+❌ FORBIDDEN: Encountering failure → "I don't have Playwright tools available"
+✅ CORRECT:  Step 0.5 completes BEFORE Step 2 begins — always
+```
+
 #### 1. NEVER create diagnostic/throwaway Java methods
 
 **What happened**: The agent created a `diagnoseLinkingChangeLocators()` method with `executeScriptAndFetchValue()` to dump DOM structure, compiled it, ran it 4 times — instead of using Playwright MCP `browser_snapshot` which does the same thing in one call.
@@ -577,3 +673,59 @@ The `tests_to_run.json` file is written exclusively by the `@test-generator` age
 - NEVER add new entries to `tests_to_run.json`
 - NEVER create new test methods and add them to the run queue
 - NEVER modify `entity_class` or `method_name` values in existing entries (except the current `run_test.py` RUN_CONFIG swap for execution)
+
+#### 5. Use correct Playwright tool syntax for form filling
+
+**What happened**: The agent tried `browser_fill_form` with wrong parameter formats — missing
+`type` field, wrong param name (`formFields` instead of `fields`). Multiple tool calls wasted.
+
+**Rule**: Both approaches work — use the correct parameter format:
+
+**browser_fill_form** (preferred — fills multiple fields at once):
+```
+browser_fill_form(fields=[
+  {"name": "email", "type": "textbox", "ref": "e28", "value": "user@example.com"},
+  {"name": "pass",  "type": "textbox", "ref": "e31", "value": "Password123"}
+])
+```
+Each field MUST have all 4 keys: `name` (string), `type` (`textbox|checkbox|radio|combobox|slider`), `ref` (from snapshot), `value` (string).
+
+**browser_type** (alternative — one field at a time):
+```
+browser_type(ref="e28", text="user@example.com")
+browser_type(ref="e31", text="Password123")
+```
+
+```
+❌ WRONG: browser_fill_form(formFields=[...])     → wrong param name
+❌ WRONG: browser_fill_form(fields=[{"ref":"e28", "value":"..."}])  → missing name + type
+✅ CORRECT: browser_fill_form(fields=[{"name":"x","type":"textbox","ref":"e28","value":"..."}])
+✅ CORRECT: browser_type(ref="e28", text="...")
+```
+
+#### 6. NEVER proceed without Playwright when failure type is LOCATOR/API/LOGIC
+
+**What happened**: On failure, the agent read 6+ Java source files (DetailsView.java, Change.java,
+ChangeLocators.java, ChangeActionsUtil.java, ChangeAPIUtil.java, ChangeAnnotationConstants.java)
+trying to "understand the code" before ever opening a browser. The code was correct — the DOM
+had different attributes than expected. All that source-reading was wasted effort.
+
+**Rule**: The debug sequence is ALWAYS:
+```
+1. Read ScenarioReport.html (1 tool call)
+2. browser_snapshot of the failing page (1-3 tool calls: navigate + snapshot)
+3. Compare DOM truth with the Java locator (now read the ONE locator file)
+4. Fix (1 tool call)
+5. Recompile + re-run (2 tool calls)
+Total: 5-8 tool calls per fix
+
+NOT:
+1. Read ScenarioReport.html
+2. Read DetailsView.java (300 lines)
+3. Read Change.java (500 lines)
+4. Read ChangeLocators.java (400 lines)
+5. Read ChangeActionsUtil.java (200 lines)
+6. Read ChangeAPIUtil.java (200 lines)
+7. "Now I understand the code, let me try Playwright..."
+Total: 10+ tool calls before even opening a browser — FORBIDDEN
+```
