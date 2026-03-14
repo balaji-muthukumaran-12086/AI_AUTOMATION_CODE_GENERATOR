@@ -317,21 +317,7 @@ GEN_START_TIME=$(date +%s)
 echo "Generation started at epoch: $GEN_START_TIME"
 ```
 
-**Run use-case analysis** to understand the requirement inventory before generating:
-```bash
-.venv/bin/python generate_batch_summary.py --mode usecase-analysis
-```
-This produces `$PROJECT_NAME/ai_reports/USECASE_ANALYSIS_<timestamp>.md` with:
-- Total use cases, UI-automatable vs API-only breakdown
-- Severity distribution (Critical/Major/Minor)
-- Module and sub-module coverage map
-- Already-generated vs pending use cases
-- **Batch segregation** — pending cases grouped into right-sized batches ready for generation
-- Recommended next steps with effort estimates
-
-Display the key numbers (UI-automatable count, already generated %, pending batches) to the user.
-
-If the file is a spreadsheet, convert it to CSV first before parsing:
+If the file is a spreadsheet, convert it to CSV first (the use-case analysis reads CSVs, so conversion must happen first):
 ```bash
 # Install openpyxl if not already installed
 .venv/bin/pip install openpyxl -q
@@ -363,6 +349,21 @@ except Exception as e:
 - If a sheet has different/missing columns (e.g., a "Summary" sheet without `UseCase ID`), skip that sheet and report it
 
 If the file is already `.csv`, skip conversion and read it directly — a single `.csv` = one sheet.
+
+**After conversion, run use-case analysis** to understand the requirement inventory before generating:
+```bash
+.venv/bin/python generate_batch_summary.py --mode usecase-analysis
+```
+This produces `$PROJECT_NAME/ai_reports/USECASE_ANALYSIS_<timestamp>.md` with:
+- Total use cases, UI-automatable vs API-only breakdown
+- Severity distribution (Critical/Major/Minor)
+- Module and sub-module coverage map
+- Already-generated vs pending use cases
+- **Batch segregation** — pending cases grouped into right-sized batches ready for generation
+- Recommended next steps with effort estimates
+
+Display the key numbers (UI-automatable count, already generated %, pending batches) to the user.
+
 Once you have the CSV(s), read each row by row. Treat the **first row as column headers**. Each subsequent row is one use-case entry.
 
 ---
