@@ -105,6 +105,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ── Setup API (no-LLM project setup form backend) ────────────────────────────
+from web.setup_api import router as setup_router
+app.include_router(setup_router)
+
 # Serve static files (index.html etc.) from web/static/
 static_dir = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
@@ -176,13 +180,17 @@ async def on_startup():
     # Restore run history from disk before accepting requests
     _load_runs_from_disk()
 
-    # Build the pipeline in a thread so the event loop isn't blocked
-    import concurrent.futures
-    from agents.pipeline import build_pipeline
-    loop = asyncio.get_running_loop()
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-        _pipeline = await loop.run_in_executor(pool, build_pipeline, str(BASE_DIR))
-    print(f"[Server] ✅ Pipeline ready (ChromaDB + agents loaded)")
+    # Build the pipeline in a thread so the event loop isn't blocked.
+    # Non-fatal: if LLM keys are missing, the setup page still works.
+    try:
+        import concurrent.futures
+        from agents.pipeline import build_pipeline
+        loop = asyncio.get_running_loop()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+            _pipeline = await loop.run_in_executor(pool, build_pipeline, str(BASE_DIR))
+        print(f"[Server] ✅ Pipeline ready (ChromaDB + agents loaded)")
+    except Exception as e:
+        print(f"[Server] ⚠️  Pipeline init skipped ({e}). Setup page still available at /setup")
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -338,6 +346,13 @@ def _run_pipeline_thread(
 async def serve_index():
     """Serve the main Web UI."""
     html_path = Path(__file__).parent / "static" / "index.html"
+    return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
+
+
+@app.get("/setup", response_class=HTMLResponse)
+async def serve_setup():
+    """Serve the project setup form (no LLM — pure HTML form)."""
+    html_path = Path(__file__).parent / "static" / "setup.html"
     return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
 
 

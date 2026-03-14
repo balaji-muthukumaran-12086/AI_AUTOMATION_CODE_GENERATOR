@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Setup — AutomaterSelenium</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --surface2: #21253a;
+      --border:   #2e3348;
+      --green:    #22c55e;
+      --blue:     #3b82f6;
+      --yellow:   #f59e0b;
+      --red:      #ef4444;
+      --text:     #e2e8f0;
+      --text-dim: #94a3b8;
+      --radius:   10px;
+      --font:     'Segoe UI', system-ui, sans-serif;
+      --mono:     'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+    html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; }
+
+    /* ── Layout ─────────────────────────────────────── */
+    .container { max-width: 720px; margin: 0 auto; padding: 40px 24px 60px; }
+
+    header { text-align: center; margin-bottom: 36px; }
+    header h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    header .subtitle { color: var(--text-dim); font-size: 14px; }
+
+    /* ── Mode selector ──────────────────────────────── */
+    .mode-selector { display: flex; gap: 12px; margin-bottom: 32px; }
+    .mode-card {
+      flex: 1; padding: 16px; border-radius: var(--radius);
+      border: 2px solid var(--border); background: var(--surface);
+      cursor: pointer; transition: .2s; text-align: center;
+    }
+    .mode-card:hover { border-color: var(--blue); }
+    .mode-card.active { border-color: var(--green); background: var(--surface2); }
+    .mode-card .mode-icon { font-size: 28px; margin-bottom: 8px; }
+    .mode-card .mode-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .mode-card .mode-desc { color: var(--text-dim); font-size: 12px; line-height: 1.4; }
+
+    /* ── Form ───────────────────────────────────────── */
+    .form-section { margin-bottom: 28px; }
+    .section-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--text-dim); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+    .field label .required { color: var(--red); }
+    .field .hint { color: var(--text-dim); font-size: 11px; margin-top: 3px; }
+
+    .field input, .field select {
+      width: 100%; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text); font-size: 14px; transition: .15s;
+    }
+    .field input:focus, .field select:focus {
+      outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+    }
+    .field input.error { border-color: var(--red); }
+    .field .error-msg { color: var(--red); font-size: 12px; margin-top: 4px; display: none; }
+
+    /* ── Buttons ─────────────────────────────────────── */
+    .actions { display: flex; gap: 12px; margin-top: 32px; }
+    .btn {
+      padding: 12px 28px; border-radius: 8px; border: none;
+      font-size: 14px; font-weight: 600; cursor: pointer; transition: .15s;
+    }
+    .btn-primary { background: var(--green); color: #000; }
+    .btn-primary:hover { background: #16a34a; }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--blue); }
+
+    /* ── Progress / Result ──────────────────────────── */
+    #progress-panel {
+      display: none; margin-top: 32px; padding: 20px;
+      border-radius: var(--radius); background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    #progress-panel h3 { font-size: 15px; margin-bottom: 12px; }
+    .log-box {
+      background: #000; color: #a3e635; padding: 12px; border-radius: 8px;
+      font-family: var(--mono); font-size: 12px; max-height: 400px;
+      overflow-y: auto; white-space: pre-wrap; line-height: 1.6;
+    }
+    .log-line.error { color: var(--red); }
+    .log-line.success { color: var(--green); }
+    .log-line.info { color: var(--yellow); }
+
+    .result-banner {
+      margin-top: 16px; padding: 14px 18px; border-radius: 8px;
+      font-weight: 600; font-size: 14px;
+    }
+    .result-banner.ok { background: rgba(34,197,94,.12); color: var(--green); border: 1px solid var(--green); }
+    .result-banner.fail { background: rgba(239,68,68,.12); color: var(--red); border: 1px solid var(--red); }
+
+    /* ── Owner modal ────────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6);
+      z-index: 1000; align-items: center; justify-content: center;
+    }
+    .modal-overlay.visible { display: flex; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; width: 480px;
+      max-height: 80vh; overflow-y: auto;
+    }
+    .modal h3 { margin-bottom: 12px; }
+    .modal .owner-search { margin-bottom: 12px; }
+    .modal .owner-search input {
+      width: 100%; padding: 8px 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text); font-size: 13px;
+    }
+    .owner-list { list-style: none; max-height: 300px; overflow-y: auto; }
+    .owner-list li {
+      padding: 8px 12px; border-radius: 6px; cursor: pointer;
+      font-size: 13px; transition: .1s;
+    }
+    .owner-list li:hover { background: var(--surface2); }
+    .owner-list li.selected { background: var(--blue); color: #fff; }
+    .owner-list li .auto-tag {
+      font-size: 10px; color: var(--green); margin-left: 8px;
+      font-weight: 600;
+    }
+
+    /* ── Password toggle ────────────────────────────── */
+    .password-wrap { position: relative; }
+    .password-wrap input { width: 100%; padding-right: 42px; }
+    .pw-toggle {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; font-size: 16px;
+      color: var(--text-dim); padding: 2px 4px; line-height: 1;
+    }
+    .pw-toggle:hover { color: var(--text); }
+
+    /* ── Hidden ──────────────────────────────────────── */
+    .hidden { display: none !important; }
+
+    /* ── Responsive ──────────────────────────────────── */
+    @media (max-width: 600px) {
+      .mode-selector { flex-direction: column; }
+      .container { padding: 20px 16px 40px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🔧 Project Setup</h1>
+    <p class="subtitle">Configure your AutomaterSelenium automation project</p>
+  </header>
+
+  <!-- ── Mode Selection ──────────────────────────────────── -->
+  <div class="mode-selector">
+    <div class="mode-card" data-mode="generate_only" onclick="selectMode('generate_only')">
+      <div class="mode-icon">📝</div>
+      <div class="mode-title">Generate Only</div>
+      <div class="mode-desc">Generate Java test code from feature docs. You run tests manually.</div>
+    </div>
+    <div class="mode-card" data-mode="generate_and_run" onclick="selectMode('generate_and_run')">
+      <div class="mode-icon">🚀</div>
+      <div class="mode-title">Generate & Run</div>
+      <div class="mode-desc">Generate code AND execute against a live SDP instance automatically.</div>
+    </div>
+    <div class="mode-card" data-mode="reconfigure" onclick="selectMode('reconfigure')">
+      <div class="mode-icon">⚙️</div>
+      <div class="mode-title">Reconfigure</div>
+      <div class="mode-desc">Project already cloned. Update environment, credentials, drivers.</div>
+    </div>
+  </div>
+
+  <!-- ── Form ────────────────────────────────────────────── -->
+  <form id="setup-form" class="hidden" onsubmit="return false;">
+
+    <!-- Mercurial Section (not shown for reconfigure) -->
+    <div id="hg-section" class="form-section">
+      <div class="section-label">Mercurial Repository</div>
+
+      <div class="field">
+        <label>Hg Username <span class="required">*</span></label>
+        <input type="text" id="hg_username" placeholder="e.g. balaji-12086" autocomplete="off" />
+        <div class="hint">Your zrepository username (used for clone authentication & owner detection)</div>
+        <div class="error-msg" id="hg_username-err"></div>
+      </div>
+
+      <div class="field">
+        <label>Branch Name <span class="required">*</span></label>
+        <input type="text" id="branch" placeholder="e.g. feature/SDPLIVE_LINKING_CHANGE_AI" autocomplete="off" />
+        <div class="hint">Repo branch name (slashes OK) — folder name is derived from last segment after /</div>
+        <div class="error-msg" id="branch-err"></div>
+      </div>
+    </div>
+
+    <!-- Existing Project Section (only for reconfigure) -->
+    <div id="reconfig-section" class="form-section hidden">
+      <div class="section-label">Existing Project</div>
+      <div class="field">
+        <label>Project Folder <span class="required">*</span></label>
+        <select id="existing_project">
+          <option value="">Loading existing projects...</option>
+        </select>
+        <div class="hint">Select the project folder to reconfigure</div>
+        <div class="error-msg" id="existing_project-err"></div>
+      </div>
+    </div>
+
+    <!-- Dependencies -->
+    <div class="form-section">
+      <div class="section-label">Dependencies</div>
+
+      <div class="field">
+        <label>Dependencies Path <span class="required">*</span></label>
+        <input type="text" id="deps_path" placeholder="/path/to/dependencies" autocomplete="off" />
+        <div class="hint">Absolute path to the JARs folder (must contain *.jar files + framework ZIP)</div>
+        <div class="error-msg" id="deps_path-err"></div>
+      </div>
+    </div>
+
+    <!-- SDP Section (only for generate_and_run + reconfigure) -->
+    <div id="sdp-section" class="form-section hidden">
+      <div class="section-label">SDP Instance</div>
+
+      <div class="field">
+        <label>SDP URL <span class="required">*</span></label>
+        <input type="url" id="sdp_url" placeholder="https://sdpondemand.manageengine.com" autocomplete="off" />
+        <div class="hint">Full URL of your ServiceDesk Plus instance</div>
+        <div class="error-msg" id="sdp_url-err"></div>
+      </div>
+
+      <div class="field">
+        <label>Portal <span class="required">*</span></label>
+        <input type="text" id="portal" placeholder="e.g. itdesk" autocomplete="off" />
+        <div class="hint">SDP portal identifier</div>
+        <div class="error-msg" id="portal-err"></div>
+      </div>
+
+      <div class="field">
+        <label>Admin Email <span class="required">*</span></label>
+        <input type="email" id="admin_email" placeholder="admin@yourorg.com" autocomplete="off" />
+        <div class="hint">Organization admin account email</div>
+        <div class="error-msg" id="admin_email-err"></div>
+      </div>
+
+      <div class="field">
+        <label>Technician Email <span class="required">*</span></label>
+        <input type="email" id="tech_email" placeholder="tech@yourorg.com" autocomplete="off" />
+        <div class="hint">Technician / scenario user email</div>
+        <div class="error-msg" id="tech_email-err"></div>
+      </div>
+
+      <div class="field">
+        <label>Test User Emails</label>
+        <input type="text" id="test_user_emails" placeholder="user1@test.com,user2@test.com (optional)" autocomplete="off" />
+        <div class="hint">Comma-separated emails for TEST_USER_1..4 (leave empty for defaults)</div>
+        <div class="error-msg" id="test_user_emails-err"></div>
+      </div>
+
+      <div class="field">
+        <label>Password <span class="required">*</span></label>
+        <div class="password-wrap">
+          <input type="password" id="password" placeholder="Common password for SDP accounts" autocomplete="new-password" />
+          <button type="button" class="pw-toggle" onclick="togglePw('password', this)" title="Show / Hide">👁</button>
+        </div>
+        <div class="hint">Common password for all SDP accounts (not stored in plaintext logs)</div>
+        <div class="error-msg" id="password-err"></div>
+      </div>
+
+      <div class="field">
+        <label>Drivers Path <span class="required">*</span></label>
+        <input type="text" id="drivers_path" placeholder="/path/to/Drivers" autocomplete="off" />
+        <div class="hint">Absolute path to folder containing firefox/ and geckodriver</div>
+        <div class="error-msg" id="drivers_path-err"></div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button type="button" class="btn btn-primary" id="submit-btn" onclick="submitSetup()">
+        🚀 Run Setup
+      </button>
+      <button type="button" class="btn btn-secondary" onclick="resetForm()">
+        Reset
+      </button>
+    </div>
+  </form>
+
+  <!-- ── Progress Panel ──────────────────────────────────── -->
+  <div id="progress-panel">
+    <h3 id="progress-title">⏳ Setting up project...</h3>
+    <div class="log-box" id="log-box"></div>
+    <div id="result-banner"></div>
+  </div>
+
+  <!-- ── Owner Selection Modal ───────────────────────────── -->
+  <div class="modal-overlay" id="owner-modal">
+    <div class="modal">
+      <h3>👤 Select Your Owner Identity</h3>
+      <p style="color:var(--text-dim);font-size:13px;margin-bottom:12px;" id="owner-auto-msg"></p>
+      <div class="owner-search">
+        <input type="text" id="owner-search-input" placeholder="Search owners..." oninput="filterOwners()" />
+      </div>
+      <ul class="owner-list" id="owner-list"></ul>
+
+      <!-- Register New Member -->
+      <div id="new-member-toggle" style="margin-top:14px;">
+        <a href="#" onclick="toggleNewMemberForm(); return false;" style="font-size:13px;color:var(--yellow);">
+          ➕ Not in the list? Register as new member
+        </a>
+      </div>
+      <div id="new-member-form" class="hidden" style="margin-top:12px;padding:14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:600;color:var(--text-dim);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;">New Member Registration</div>
+        <div class="field" style="margin-bottom:10px;">
+          <label style="font-size:12px;">Full Name <span class="required">*</span></label>
+          <input type="text" id="new-member-name" placeholder="e.g. Priya Sharma" autocomplete="off" style="padding:8px 10px;font-size:13px;" />
+        </div>
+        <div class="field" style="margin-bottom:10px;">
+          <label style="font-size:12px;">Zoho Corp Email <span class="required">*</span></label>
+          <input type="email" id="new-member-email" placeholder="e.g. priya.sharma@zohocorp.com" autocomplete="off" style="padding:8px 10px;font-size:13px;" />
+        </div>
+        <div id="new-member-err" style="color:var(--red);font-size:12px;margin-bottom:8px;display:none;"></div>
+        <button class="btn btn-primary" style="padding:8px 18px;font-size:13px;" onclick="registerNewMember()">Register & Select</button>
+      </div>
+
+      <div style="margin-top: 14px; display: flex; gap: 10px;">
+        <button class="btn btn-primary" id="owner-confirm-btn" onclick="confirmOwner()">Confirm</button>
+        <button class="btn btn-secondary" onclick="confirmOwner()">Skip (use auto-detected)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Hg Password Prompt Modal ─────────────────────────── -->
+  <div class="modal-overlay" id="hg-pw-modal">
+    <div class="modal" style="width:420px;">
+      <h3>🔐 Hg Repository Password</h3>
+      <p id="hg-pw-info" style="color:var(--text-dim);font-size:13px;margin-bottom:14px;"></p>
+      <div class="field" style="margin-bottom:14px;">
+        <label style="font-size:13px;">Password</label>
+        <div class="password-wrap">
+          <input type="password" id="hg-pw-input" placeholder="Your zrepository password" autocomplete="new-password"
+            onkeydown="if(event.key==='Enter') submitHgPassword()" />
+          <button type="button" class="pw-toggle" onclick="togglePw('hg-pw-input', this)" title="Show / Hide">👁</button>
+        </div>
+        <div class="hint">Used only for cloning — never saved to .env or logs</div>
+      </div>
+      <div id="hg-pw-err" style="color:var(--red);font-size:12px;margin-bottom:8px;display:none;"></div>
+      <button class="btn btn-primary" onclick="submitHgPassword()">🔓 Submit & Clone</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────
+let currentMode = null;
+let selectedOwner = null;
+let autoDetectedOwner = null;
+let allOwners = [];
+let setupStreamId = null;
+
+// ── Password show/hide toggle ──────────────────────────────
+function togglePw(fieldId, btn) {
+  const input = document.getElementById(fieldId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁';
+  }
+}
+
+// ── Mode Selection ─────────────────────────────────────────
+function selectMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.mode-card[data-mode="${mode}"]`).classList.add('active');
+
+  const form = document.getElementById('setup-form');
+  form.classList.remove('hidden');
+
+  // Toggle sections
+  const hgSection = document.getElementById('hg-section');
+  const reconfigSection = document.getElementById('reconfig-section');
+  const sdpSection = document.getElementById('sdp-section');
+
+  if (mode === 'reconfigure') {
+    hgSection.classList.add('hidden');
+    reconfigSection.classList.remove('hidden');
+    sdpSection.classList.remove('hidden');
+    loadExistingProjects();
+  } else {
+    hgSection.classList.remove('hidden');
+    reconfigSection.classList.add('hidden');
+    if (mode === 'generate_and_run') {
+      sdpSection.classList.remove('hidden');
+    } else {
+      sdpSection.classList.add('hidden');
+    }
+  }
+
+  // Reset progress
+  document.getElementById('progress-panel').style.display = 'none';
+  clearErrors();
+}
+
+// ── Load Existing Projects (reconfigure mode) ──────────────
+async function loadExistingProjects() {
+  try {
+    const resp = await fetch('/api/setup/projects');
+    const data = await resp.json();
+    const sel = document.getElementById('existing_project');
+    sel.innerHTML = '';
+    if (data.projects && data.projects.length > 0) {
+      data.projects.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        sel.appendChild(opt);
+      });
+    } else {
+      sel.innerHTML = '<option value="">No project folders found</option>';
+    }
+  } catch (e) {
+    document.getElementById('existing_project').innerHTML =
+      '<option value="">Error loading projects</option>';
+  }
+}
+
+// ── Validation ─────────────────────────────────────────────
+function clearErrors() {
+  document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('input.error').forEach(el => el.classList.remove('error'));
+}
+
+function showError(fieldId, msg) {
+  const input = document.getElementById(fieldId);
+  const errEl = document.getElementById(fieldId + '-err');
+  if (input) input.classList.add('error');
+  if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
+}
+
+function validate() {
+  clearErrors();
+  let ok = true;
+
+  if (currentMode !== 'reconfigure') {
+    if (!document.getElementById('hg_username').value.trim()) {
+      showError('hg_username', 'Hg username is required'); ok = false;
+    }
+    if (!document.getElementById('branch').value.trim()) {
+      showError('branch', 'Branch name is required'); ok = false;
+    }
+  } else {
+    if (!document.getElementById('existing_project').value) {
+      showError('existing_project', 'Select a project folder'); ok = false;
+    }
+  }
+
+  const deps = document.getElementById('deps_path').value.trim();
+  if (!deps) { showError('deps_path', 'Dependencies path is required'); ok = false; }
+  else if (!deps.startsWith('/')) { showError('deps_path', 'Must be an absolute path (starts with /)'); ok = false; }
+
+  if (currentMode === 'generate_and_run' || currentMode === 'reconfigure') {
+    const url = document.getElementById('sdp_url').value.trim();
+    if (!url) { showError('sdp_url', 'SDP URL is required'); ok = false; }
+    else if (!/^https?:\/\//i.test(url)) { showError('sdp_url', 'Must start with http:// or https://'); ok = false; }
+
+    if (!document.getElementById('portal').value.trim()) {
+      showError('portal', 'Portal is required'); ok = false;
+    }
+
+    const adminEmail = document.getElementById('admin_email').value.trim();
+    if (!adminEmail) { showError('admin_email', 'Admin email is required'); ok = false; }
+    else if (!adminEmail.includes('@')) { showError('admin_email', 'Must be a valid email'); ok = false; }
+
+    const techEmail = document.getElementById('tech_email').value.trim();
+    if (!techEmail) { showError('tech_email', 'Tech email is required'); ok = false; }
+    else if (!techEmail.includes('@')) { showError('tech_email', 'Must be a valid email'); ok = false; }
+
+    const testEmails = document.getElementById('test_user_emails').value.trim();
+    if (testEmails) {
+      const parts = testEmails.split(',').map(s => s.trim());
+      if (parts.length > 4) { showError('test_user_emails', 'Maximum 4 emails'); ok = false; }
+      else if (parts.some(e => !e.includes('@'))) { showError('test_user_emails', 'Each email must contain @'); ok = false; }
+    }
+
+    if (!document.getElementById('password').value) {
+      showError('password', 'Password is required'); ok = false;
+    }
+
+    const drivers = document.getElementById('drivers_path').value.trim();
+    if (!drivers) { showError('drivers_path', 'Drivers path is required'); ok = false; }
+    else if (!drivers.startsWith('/')) { showError('drivers_path', 'Must be an absolute path (starts with /)'); ok = false; }
+  }
+
+  return ok;
+}
+
+// ── Submit ─────────────────────────────────────────────────
+async function submitSetup() {
+  if (!validate()) return;
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Running...';
+
+  const payload = { mode: currentMode };
+
+  if (currentMode !== 'reconfigure') {
+    payload.hg_username = document.getElementById('hg_username').value.trim();
+    payload.branch = document.getElementById('branch').value.trim();
+  } else {
+    payload.existing_project = document.getElementById('existing_project').value;
+  }
+
+  payload.deps_path = document.getElementById('deps_path').value.trim();
+
+  if (currentMode === 'generate_and_run' || currentMode === 'reconfigure') {
+    payload.sdp_url = document.getElementById('sdp_url').value.trim();
+    payload.portal = document.getElementById('portal').value.trim();
+    payload.admin_email = document.getElementById('admin_email').value.trim();
+    payload.tech_email = document.getElementById('tech_email').value.trim();
+    payload.test_user_emails = document.getElementById('test_user_emails').value.trim();
+    payload.password = document.getElementById('password').value;
+    payload.drivers_path = document.getElementById('drivers_path').value.trim();
+  }
+
+  // Show progress panel
+  const progressPanel = document.getElementById('progress-panel');
+  progressPanel.style.display = 'block';
+  document.getElementById('progress-title').textContent = '⏳ Setting up project...';
+  document.getElementById('log-box').innerHTML = '';
+  document.getElementById('result-banner').innerHTML = '';
+
+  try {
+    const resp = await fetch('/api/setup/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+
+    if (data.setup_id) {
+      // Stream logs via SSE
+      streamSetupLogs(data.setup_id);
+    } else if (data.error) {
+      appendLog('ERROR: ' + data.error, 'error');
+      showResult(false, data.error);
+      btn.disabled = false;
+      btn.textContent = '🚀 Run Setup';
+    }
+  } catch (e) {
+    appendLog('Network error: ' + e.message, 'error');
+    showResult(false, 'Network error — is the server running?');
+    btn.disabled = false;
+    btn.textContent = '🚀 Run Setup';
+  }
+}
+
+// ── SSE Log Streaming ──────────────────────────────────────
+function streamSetupLogs(setupId) {
+  const evtSource = new EventSource('/api/setup/stream/' + setupId);
+  setupStreamId = setupId;
+
+  evtSource.onmessage = function(event) {
+    const msg = JSON.parse(event.data);
+
+    if (msg.type === 'log') {
+      appendLog(msg.data, msg.level || 'info');
+    } else if (msg.type === 'owner_selection') {
+      // Show owner modal
+      allOwners = msg.data.owners;
+      autoDetectedOwner = msg.data.auto_detected;
+      showOwnerModal();
+    } else if (msg.type === 'done') {
+      evtSource.close();
+      showResult(msg.data.success, msg.data.message);
+      document.getElementById('submit-btn').disabled = false;
+      document.getElementById('submit-btn').textContent = '🚀 Run Setup';
+      if (msg.data.success) {
+        document.getElementById('progress-title').textContent = '✅ Setup Complete';
+      } else {
+        document.getElementById('progress-title').textContent = '❌ Setup Failed';
+      }
+    } else if (msg.type === 'hg_password_prompt') {
+      showHgPasswordModal(msg.data.username, msg.data.branch);
+    } else if (msg.type === 'hg_prompt') {
+      appendLog('⚠️ Hg clone requires authentication.', 'info');
+    }
+  };
+
+  evtSource.onerror = function() {
+    evtSource.close();
+    appendLog('Connection to setup stream lost.', 'error');
+    document.getElementById('submit-btn').disabled = false;
+    document.getElementById('submit-btn').textContent = '🚀 Run Setup';
+  };
+}
+
+// ── Hg Password Modal ─────────────────────────────────────
+function showHgPasswordModal(username, branch) {
+  document.getElementById('hg-pw-info').textContent =
+    `Enter password for ${username} to clone branch: ${branch}`;
+  document.getElementById('hg-pw-input').value = '';
+  document.getElementById('hg-pw-err').style.display = 'none';
+  document.getElementById('hg-pw-modal').classList.add('visible');
+  setTimeout(() => document.getElementById('hg-pw-input').focus(), 100);
+}
+
+async function submitHgPassword() {
+  const pw = document.getElementById('hg-pw-input').value;
+  const errEl = document.getElementById('hg-pw-err');
+  if (!pw) { errEl.textContent = 'Password is required'; errEl.style.display = 'block'; return; }
+
+  try {
+    const resp = await fetch('/api/setup/hg-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ setup_id: setupStreamId, password: pw }),
+    });
+    if (resp.ok) {
+      document.getElementById('hg-pw-modal').classList.remove('visible');
+      appendLog('Password submitted — cloning...', 'success');
+    } else {
+      const data = await resp.json();
+      errEl.textContent = data.detail || 'Failed to submit password';
+      errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Network error: ' + e.message;
+    errEl.style.display = 'block';
+  }
+}
+
+// ── Owner Modal ────────────────────────────────────────────
+function showOwnerModal() {
+  const modal = document.getElementById('owner-modal');
+  const list = document.getElementById('owner-list');
+  const msg = document.getElementById('owner-auto-msg');
+
+  if (autoDetectedOwner) {
+    msg.textContent = `Auto-detected from hg username: ${autoDetectedOwner}`;
+    selectedOwner = autoDetectedOwner;
+  } else {
+    msg.textContent = 'Could not auto-detect — please select your name:';
+    selectedOwner = null;
+  }
+
+  renderOwnerList(allOwners);
+  modal.classList.add('visible');
+}
+
+function renderOwnerList(owners) {
+  const list = document.getElementById('owner-list');
+  list.innerHTML = '';
+  owners.forEach(owner => {
+    const li = document.createElement('li');
+    li.textContent = owner;
+    if (owner === autoDetectedOwner) {
+      li.innerHTML += '<span class="auto-tag">← auto-detected</span>';
+    }
+    if (owner === selectedOwner) {
+      li.classList.add('selected');
+    }
+    li.onclick = () => {
+      selectedOwner = owner;
+      list.querySelectorAll('li').forEach(l => l.classList.remove('selected'));
+      li.classList.add('selected');
+    };
+    list.appendChild(li);
+  });
+}
+
+function filterOwners() {
+  const q = document.getElementById('owner-search-input').value.toLowerCase();
+  const filtered = allOwners.filter(o => o.toLowerCase().includes(q));
+  renderOwnerList(filtered);
+}
+
+async function confirmOwner() {
+  const modal = document.getElementById('owner-modal');
+  modal.classList.remove('visible');
+
+  if (!selectedOwner && autoDetectedOwner) {
+    selectedOwner = autoDetectedOwner;
+  }
+
+  if (selectedOwner && setupStreamId) {
+    appendLog(`Owner selected: ${selectedOwner}`, 'success');
+    await fetch('/api/setup/owner', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ setup_id: setupStreamId, owner: selectedOwner }),
+    });
+  }
+}
+
+// ── Log Helpers ────────────────────────────────────────────
+function appendLog(text, level) {
+  const box = document.getElementById('log-box');
+  const line = document.createElement('div');
+  line.className = 'log-line ' + (level || '');
+  line.textContent = text;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
+}
+
+function showResult(success, message) {
+  const banner = document.getElementById('result-banner');
+  banner.className = 'result-banner ' + (success ? 'ok' : 'fail');
+  banner.textContent = (success ? '✅ ' : '❌ ') + message;
+}
+
+// ── Reset ──────────────────────────────────────────────────
+function resetForm() {
+  document.getElementById('setup-form').querySelectorAll('input').forEach(i => i.value = '');
+  clearErrors();
+  document.getElementById('progress-panel').style.display = 'none';
+}
+
+// ── New Member Registration ────────────────────────────────
+function toggleNewMemberForm() {
+  const form = document.getElementById('new-member-form');
+  form.classList.toggle('hidden');
+}
+
+async function registerNewMember() {
+  const name = document.getElementById('new-member-name').value.trim();
+  const email = document.getElementById('new-member-email').value.trim();
+  const errEl = document.getElementById('new-member-err');
+  errEl.style.display = 'none';
+
+  if (!name) { errEl.textContent = 'Full name is required'; errEl.style.display = 'block'; return; }
+  if (!email || !email.includes('@')) { errEl.textContent = 'Valid email is required'; errEl.style.display = 'block'; return; }
+
+  const hgUsername = document.getElementById('hg_username')
+    ? document.getElementById('hg_username').value.trim()
+    : '';
+
+  if (!hgUsername) { errEl.textContent = 'Hg username is required (fill it in the form above first)'; errEl.style.display = 'block'; return; }
+
+  try {
+    const resp = await fetch('/api/setup/register-owner', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        setup_id: setupStreamId || '',
+        hg_username: hgUsername,
+        full_name: name,
+        email: email,
+      }),
+    });
+    const data = await resp.json();
+    if (resp.ok && data.ok) {
+      selectedOwner = data.owner;
+      appendLog(`✅ Registered new member: ${data.owner}`, 'success');
+      // Close modal
+      document.getElementById('owner-modal').classList.remove('visible');
+      document.getElementById('new-member-form').classList.add('hidden');
+    } else {
+      errEl.textContent = data.detail || 'Registration failed';
+      errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Network error: ' + e.message;
+    errEl.style.display = 'block';
+  }
+}
+</script>
+</body>
+</html>
