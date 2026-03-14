@@ -107,7 +107,8 @@ OWNER=$(.venv/bin/python -c "from config.project_config import OWNER_CONSTANT; p
 echo "Resolved owner: '$OWNER'"
 ```
 
-**If `$OWNER` is empty or `None`** — parse `OwnerConstants.java` from the cloned project and ask the user:
+**If `$OWNER` is empty or `None`** — the owner was NOT configured during `@setup-project`.
+Parse `OwnerConstants.java` from the cloned project and **STOP to ask the user**:
 
 ```bash
 PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
@@ -117,7 +118,7 @@ grep -oP 'public static final String \K[A-Z_]+' \
 
 **STOP and present the numbered list:**
 ```
-Owner is not configured. Please select your name from the list:
+⚠️ Owner is not configured. Please select your name from the list:
 
  1. ABHISHEK_RAV
  2. ABINAYA_AK
@@ -127,18 +128,24 @@ Owner is not configured. Please select your name from the list:
  6. BALAJI_M
  7. BALAJI_MR
  ...
+ N. NEW USER (not in the list)
 
 Reply with the number or constant name (e.g., "6" or "BALAJI_M").
 ```
 
 **Wait for the user's reply.** Once they pick, persist and store:
 ```bash
-echo "OWNER_CONSTANT=<CHOSEN>" >> .env
+# Update .env with the chosen owner
+sed -i "s/^OWNER_CONSTANT=.*/OWNER_CONSTANT=<CHOSEN>/" .env || echo "OWNER_CONSTANT=<CHOSEN>" >> .env
 ```
 
 Store the resolved owner as `{OWNER}` (e.g., `BALAJI_M`) for all subsequent steps.
 
-**If `$OWNER` is already set** — store it as `{OWNER}` and proceed (no prompt needed).
+**If `$OWNER` is already set** — confirm it to the user:
+```
+✅ Owner: OwnerConstants.{OWNER} (from .env configuration)
+```
+Store it as `{OWNER}` and proceed.
 
 > This ensures every `@AutomaterScenario` in this session uses the same `owner = OwnerConstants.{OWNER}`.
 
@@ -152,13 +159,24 @@ Before anything else, determine how the user is providing input.
 
 ### Pre-check — Verify input exists (MANDATORY HARD-STOP GATE)
 
-> **Root cause of past bug**: A user cloned a second branch, forgot to upload the use-case document
-> to `Testcase/`, then invoked `@test-generator`. The agent had no input but proceeded anyway —
-> **inventing use cases on its own**. This is FORBIDDEN. The gate below prevents this.
+> **Root cause of past bug (Mar 14, 2026)**: The agent found a CSV in `docs/UseCase/` and copied it
+> to `Testcase/` — **inventing** its own input. This is FORBIDDEN. The agent MUST ONLY read from
+> `{TARGET_PROJECT}/Testcase/`. It MUST NEVER scan `docs/UseCase/`, `docs/Feature_Document/`,
+> `web/uploads/`, or ANY other directory for use-case documents.
 
 **This check MUST run before ANY code generation. There are NO exceptions.**
 
-**Step 1 — Scan the `Testcase/` folder** and auto-convert any spreadsheets to CSV:
+**HARD RULE — SCANNING SCOPE**: The agent's ONLY valid input source is:
+1. `{TARGET_PROJECT}/Testcase/` — files physically placed there by the USER
+2. Files attached directly to the chat message by the USER
+
+**The following directories are NEVER valid input sources (do NOT scan, read, list, or copy from):**
+- `docs/UseCase/` — reference archive, NOT test input
+- `docs/Feature_Document/` — design docs, NOT test input
+- `web/uploads/` — web server uploads, NOT test input
+- Any path outside `{TARGET_PROJECT}/Testcase/`
+
+**Step 1 — Scan ONLY the `{TARGET_PROJECT}/Testcase/` folder** and auto-convert any spreadsheets to CSV:
 
 ```bash
 PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
@@ -217,7 +235,9 @@ ls "$PROJECT/Testcase/"*.{csv,xls,xlsx,md,txt} 2>/dev/null | head -20
 >          → NO:  HARD STOP — show the gate prompt and wait
 > ```
 
-### FORBIDDEN ANTI-PATTERNS (NEVER DO THESE)
+### FORBIDDEN ANTI-PATTERNS (NEVER DO THESE — BUGS THAT ACTUALLY HAPPENED)
+
+> **These are not hypothetical — every pattern below was a real bug caught in production.**
 
 ```
 ❌ FORBIDDEN: Inventing use cases when Testcase/ is empty and user provided no description
@@ -234,14 +254,23 @@ ls "$PROJECT/Testcase/"*.{csv,xls,xlsx,md,txt} 2>/dev/null | head -20
    Agent sees old code in src/ and generates more tests based on existing patterns
    → New generation MUST come from user-provided input (document or explicit description)
 
-❌ FORBIDDEN: Copying use-case documents from other locations into Testcase/
+❌ FORBIDDEN: Scanning docs/UseCase/, docs/Feature_Document/, web/uploads/, or ANY directory
+   outside {TARGET_PROJECT}/Testcase/ for use-case documents
+   Agent runs: ls docs/UseCase/  ← FORBIDDEN — never even list this directory
+   Agent runs: find . -name "*.csv"  ← FORBIDDEN — too broad, will find non-input files
+   Agent runs: cat "docs/Feature_Document/some_feature.md"  ← FORBIDDEN as input source
+   → The ONLY valid scan target is {TARGET_PROJECT}/Testcase/ — nothing else
+
+❌ FORBIDDEN (BUG: Mar 14, 2026): Copying use-case documents from other locations into Testcase/
    Agent runs: cp "docs/UseCase/<file>.csv" "$PROJECT/Testcase/"
    Agent runs: cp "web/uploads/<file>.md" "$PROJECT/Testcase/"
    Agent runs: cp "<any_path_outside_Testcase>/<file>" "$PROJECT/Testcase/"
+   Agent runs: mkdir -p "$PROJECT/Testcase" && cp ...
    → The USER must place documents in Testcase/ themselves. The agent MUST NOT
      copy, move, or symlink documents from docs/UseCase/, docs/Feature_Document/,
      web/uploads/, or any other directory into Testcase/. This prevents false
      positives where the agent "finds" a document it placed there itself.
+   → If Testcase/ is empty, HARD STOP and tell the user to upload. Period.
 
 ❌ FORBIDDEN: Generating or creating a use-case document (CSV, MD, TXT) and placing it in Testcase/
    Agent creates: "$PROJECT/Testcase/auto_generated_usecases.csv"

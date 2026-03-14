@@ -104,8 +104,8 @@ Agent: [ZERO tool calls] → shows greeting → STOPS and WAITS
 User: "2"
 Agent: [ZERO tool calls] → shows form (no owner field) → STOPS and WAITS
 User: [pastes filled form]
-Agent: [parses form] → [clones branch or detects existing folder] → [auto-resolves owner from hg_username via project_config.py] → [if auto-resolved: skips interactive list, proceeds to .env update + framework compile] → [if NOT auto-resolved: reads OwnerConstants.java, shows owner list, STOPS and WAITS]
-User: "6" (only if auto-resolve failed)
+Agent: [parses form] → [clones branch or detects existing folder] → [creates Testcase/ folder] → [reads OwnerConstants.java, shows FULL numbered owner list with auto-detected entry highlighted] → STOPS and WAITS for user confirmation
+User: "6" (or Enter to confirm auto-detected)
 Agent: [resolves owner] → [updates .env] → [runs setup_framework_bin.sh]
 ```
 
@@ -113,6 +113,14 @@ Agent: [resolves owner] → [updates .env] → [runs setup_framework_bin.sh]
 ```
 User: "setup"
 Agent: [reads .env] → [reads project_config.py] → [detects existing folder] → "Already set up!"
+
+User: [pastes form]
+Agent: [clones] → "Owner auto-resolved: BALAJI_M" → [skips list, never asks] → proceeds
+       ← WRONG: Owner list must always be shown for user confirmation
+
+User: [pastes form]
+Agent: [clones] → [proceeds to Step 4] → [Testcase/ not created] → Step 5...
+       ← WRONG: Testcase/ must be created immediately after clone (Step 3e)
 ```
 
 ---
@@ -394,7 +402,7 @@ hg clone --branch "{HG_BRANCH}" "https://zrepository.zohocorpcloud.in/zohocorp/A
 
 > ⚠️ The command runs interactively — Mercurial will prompt for `http authorization required / realm` username and password in the terminal. The user types them directly. Credentials are **never stored** in any file.
 
-**If the clone succeeds** → the branch exists remotely. Proceed to Step 3e.
+**If the clone succeeds** → the branch exists remotely. **IMMEDIATELY run Step 3e (create Testcase/) before doing ANYTHING else.** Do NOT proceed to Step 4 or Step 5 without first creating Testcase/.
 
 **If the clone fails**, check the error:
 - **Authentication error** → tell user to verify hg username/password, retry
@@ -487,16 +495,28 @@ Skip cloning entirely. Proceed to Step 3e (create Testcase/ folder).
 
 > The `hg pull` may also prompt for credentials interactively — same process.
 
-#### Step 3e — Create Testcase/ folder (MANDATORY — always after clone/update)
+#### Step 3e — Create Testcase/ folder (MANDATORY — NEVER SKIP)
 
-**This step is NOT conditional.** Whether you cloned fresh, created a new branch, or the folder already existed, ALWAYS run:
+> **THIS STEP CAUSED A BUG WHEN SKIPPED (Mar 14, 2026).** The Testcase/ folder was not created
+> after clone, forcing the user to create it manually. This step is now MANDATORY and verified.
+
+**This step is NOT conditional.** Whether you cloned fresh, created a new branch, pulled, or the folder already existed, **ALWAYS** run:
 
 ```bash
 mkdir -p {WORKSPACE_DIR}/{PROJECT_NAME}/Testcase
-echo "✅ Created {PROJECT_NAME}/Testcase/ — use-case documents will be stored here"
+echo "✅ Created {PROJECT_NAME}/Testcase/ — place your use-case documents here"
 ```
 
-This folder is where `@test-generator` looks for use-case CSV files. Without it, test generation will prompt the user to create it manually.
+**Verification (MANDATORY — run immediately after mkdir):**
+```bash
+[[ -d "{WORKSPACE_DIR}/{PROJECT_NAME}/Testcase" ]] && echo "VERIFIED: Testcase/ exists" || echo "ERROR: Testcase/ creation failed"
+```
+
+If verification fails, retry `mkdir -p` and report the error.
+
+This folder is where `@test-generator` looks for use-case CSV files. Without it, test generation will hard-stop and ask the user to create it manually.
+
+> **ENFORCEMENT**: Steps 3f, 4, 5, 6, and beyond MUST NOT execute until this verification passes.
 
 #### Step 3f — Convert spreadsheets + check for use-case documents (MANDATORY — always after Step 3e)
 
@@ -612,7 +632,11 @@ Display the key numbers to the user:
 
 > **This step runs AFTER Step 3** (clone/refresh/detect). The project folder `{WORKSPACE_DIR}/{PROJECT_NAME}` now exists on disk, so `OwnerConstants.java` is guaranteed to be available.
 
-### 4-pre. Auto-resolve owner from hg_username (MANDATORY — always try before showing list)
+### 4-pre. Auto-resolve owner from hg_username (MANDATORY — always try, but ALWAYS show confirmation)
+
+> **Bug (Mar 14, 2026)**: Owner was silently auto-resolved without showing the user any list
+> or confirmation. The user had no visibility into which owner was selected. Now, even when
+> auto-resolve succeeds, the FULL numbered list is shown with the auto-resolved entry highlighted.
 
 Before presenting any interactive owner list, **always** try to auto-resolve the owner from the user's `hg_username` using `project_config.py`:
 
@@ -621,20 +645,13 @@ cd {WORKSPACE_DIR}
 .venv/bin/python -c "from config.project_config import resolve_owner_constant; r = resolve_owner_constant('{HG_USERNAME}'); print(f'AUTO_RESOLVED={r}' if r else 'NO_MATCH')"
 ```
 
-**If output contains `AUTO_RESOLVED=<CONSTANT>`**:
-- Set `RESOLVED_OWNER_CONSTANT = <CONSTANT>`
-- Tell the user: `✅ Owner auto-resolved: OwnerConstants.<CONSTANT> (from hg_username: {HG_USERNAME})`
-- **Skip Steps 4a and 4b entirely** — proceed directly to Step 5
-- Do NOT show the full numbered list. Do NOT ask for confirmation. Just proceed.
+**Regardless of whether auto-resolve succeeds or fails, ALWAYS proceed to Step 4a to show the full list.**
 
-**If output contains `NO_MATCH`**:
-- Auto-resolution failed — fall through to Step 4a (show full list).
+The only difference:
+- **If auto-resolved**: Show the list with the auto-resolved entry clearly marked with `← auto-detected`
+- **If NOT auto-resolved**: Show the list without any pre-selection
 
-> **Why auto-resolve first?** The `_OWNER_MAP` in `project_config.py` already maps hg usernames to
-> `OwnerConstants` Java constants. For most team members, this resolves instantly — no interactive
-> list needed. The interactive list (Step 4a/4b) is a fallback for unmapped usernames only.
-
-### 4a. Read the owner list from the cloned project (FALLBACK — only when auto-resolve fails)
+### 4a. Read the owner list from the cloned project (ALWAYS — show full list)
 
 ```bash
 grep 'public static final String' "{WORKSPACE_DIR}/{PROJECT_NAME}/src/com/zoho/automater/selenium/modules/OwnerConstants.java" | sed 's/.*String \([A-Z_]*\).*/\1/' | sort | nl -ba
@@ -644,9 +661,28 @@ This will always succeed because `OwnerConstants.java` is part of every cloned b
 
 Build a numbered list from the output and add a final entry: **"NEW USER (not in the list)"**.
 
-### 4b. Present the owner list and ask the user to pick (FALLBACK — only when auto-resolve fails)
+### 4b. Present the owner list and ask the user to confirm or pick
 
-Show the user:
+**If auto-resolve succeeded** — show the list with the auto-resolved entry highlighted:
+
+```
+📋 Owner auto-detected from hg_username `{HG_USERNAME}`: **{AUTO_RESOLVED_CONSTANT}**
+
+Full owner list (confirm or pick a different one):
+
+  1. ABHISHEK_RAV
+  2. ABINAYA_AK
+  3. ANITHA_A
+  ... (all owners from grep output, sorted alphabetically)
+  X. {AUTO_RESOLVED_CONSTANT}  ← auto-detected from your hg username
+  ... (remaining owners)
+  N. NEW USER (not in the list)
+
+Press Enter or reply with the number for **{AUTO_RESOLVED_CONSTANT}** to confirm,
+or enter a different number to change your selection:
+```
+
+**If auto-resolve failed** — show the list without any pre-selection:
 
 ```
 📋 Owner could not be auto-resolved from hg_username `{HG_USERNAME}`.
@@ -661,7 +697,7 @@ Please pick your name from the owner list:
 Enter the number next to your name (or `new` if you're not listed):
 ```
 
-**STOP and WAIT** for the user's reply.
+**STOP and WAIT** for the user's reply in BOTH cases.
 
 ### 4c. Resolve the owner
 
@@ -987,7 +1023,7 @@ echo "If red lines persist, run: Ctrl+Shift+P → 'Java: Clean Language Server W
 - **NEVER embed hg credentials in clone URLs** — let the terminal prompt the user interactively
 - **NEVER modify any line in `.env` other than the setup-managed keys** (PROJECT_NAME, HG_USERNAME, HG_BRANCH, OWNER_CONSTANT, DEPS_DIR, SETUP_MODE, ORCHESTRATOR_URL, and the SDP_*/DRIVERS_*/FIREFOX_*/GECKODRIVER_* keys)
 - **NEVER modify `project_config.py`** — it reads `PROJECT_NAME` from `.env` automatically; no manual edit is needed
-- **STEP ORDERING IS SACRED**: The agent MUST follow this exact sequence: Step 0 (detect workspace) → Step 1 (greet + mode) → Step 1b (form, no owner) → Step 2 (parse reply) → Step 3 (clone) → Step 4 (auto-resolve owner from hg_username, fallback to interactive list) → Step 5+ (configure) → Step 9 (compile framework) → Step 10 (configure VS Code Java LS). You may NOT run `hg clone`, `setup_framework_bin.sh`, `javac`, or edit `.env` before completing Step 2. The ONLY exception is when the user provides ALL form values in their initial message (see next rule).
+- **STEP ORDERING IS SACRED**: The agent MUST follow this exact sequence: Step 0 (detect workspace) → Step 1 (greet + mode) → Step 1b (form, no owner) → Step 2 (parse reply) → Step 3 (clone) → **Step 3e (create Testcase/ — NEVER SKIP)** → Step 4 (show owner list + confirm) → Step 5+ (configure) → Step 9 (compile framework) → Step 10 (configure VS Code Java LS). You may NOT run `hg clone`, `setup_framework_bin.sh`, `javac`, or edit `.env` before completing Step 2. The ONLY exception is when the user provides ALL form values in their initial message (see next rule).
 - If the user provides all values in their initial message (via key=value or inline), skip Step 1/1b and go directly to Step 3. Infer `SETUP_MODE` from which keys are present: if SDP URL / deps / drivers are provided but NO hg_username → `reconfigure`; if SDP URL + hg_username → `generate_and_run`; if only hg username → `generate_only`. **Owner selection (Step 4) still happens after clone/detect** — if owner is not provided in the initial message, show the owner list from the cloned project and ask
 - `FIREFOX_BINARY` and `GECKODRIVER_PATH` are always derived from `DRIVERS_DIR` as `{DRIVERS_DIR}/firefox/firefox` and `{DRIVERS_DIR}/geckodriver` — never ask for them separately
 - If the user initially chose `generate_only` and later wants to enable execution, they can re-run `@setup-project setup` and choose mode 3 (Reconfigure) — the agent will auto-detect the project folder and only ask for the SDP/path values
