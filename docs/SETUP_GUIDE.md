@@ -58,12 +58,16 @@ The agent walks you through everything:
 - Picks your **mode**: Generate only (1), Generate and Run (2), or Reconfigure (3)
 - Shows a **form** — fill in your values and paste it back
 - Clones the hg branch, compiles framework, writes config
+- **Checks for your use-case document** — setup **blocks** until you upload one to `<PROJECT_NAME>/Testcase/`
+- **Runs use-case analysis** — shows a breakdown of total cases, severity, pending batches
 
 > **New team member?** Pick `new` as owner — the agent registers you automatically.
 >
 > **Already cloned?** Choose mode 3 (Reconfigure) to just update credentials/URL.
 >
 > **Password security**: hg password is entered in the terminal, never in chat.
+>
+> **Use-case document required**: Setup will not complete until you upload your use-case document (`.csv`, `.xlsx`, `.xls`) to `<PROJECT_NAME>/Testcase/`. This is mandatory — the entire pipeline depends on it.
 
 ---
 
@@ -71,9 +75,10 @@ The agent walks you through everything:
 
 ### From a use-case document (recommended for batches)
 
-1. Place your file (`.csv`, `.xlsx`, or `.xls`) in `<PROJECT_NAME>/Testcase/` (template: `docs/templates/usecase_template.csv`)
-2. In Copilot Chat: **`@test-generator`** — it detects the document automatically (`.xlsx`/`.xls` files are auto-converted to CSV)
-3. Review the plan, reply `all` to generate
+1. Place your file (`.csv`, `.xlsx`, or `.xls`) in `<PROJECT_NAME>/Testcase/` **before or during setup** (template: `docs/templates/usecase_template.csv`)
+2. Setup agent detects it, runs **use-case analysis**, and shows a requirement summary
+3. In Copilot Chat: **`@test-generator`** — it picks up the document automatically
+4. Review the plan, reply `all` to generate
 
 > Only rows with `UI To-be-automated = Yes` are processed.
 
@@ -131,6 +136,7 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 | VPN / connection errors | Connect to Zoho VPN first |
 | `NullPointerException` in test | `./setup_framework_bin.sh` |
 | `Testcase/` folder missing | `mkdir -p <PROJECT_NAME>/Testcase` |
+| Setup blocked on document | Upload `.csv`/`.xlsx` to `<PROJECT_NAME>/Testcase/`, then reply in chat |
 | Test fails on first run | Normal — `@test-runner` auto-fixes and reruns |
 | Wrong project targeted | `@test-generator project=BRANCH_NAME` |
 | Need to switch SDP instance | `@setup-project setup` → mode 3 |

@@ -540,20 +540,35 @@ USECASE_COUNT=$(find {WORKSPACE_DIR}/{PROJECT_NAME}/Testcase -maxdepth 1 -type f
 echo "Use-case documents found: $USECASE_COUNT"
 ```
 
-**If `USECASE_COUNT` is 0** (no documents found), show this prominent warning:
+**If `USECASE_COUNT` is 0** (no documents found) — **HARD STOP. Do NOT proceed to Step 4.**
+
+Show this blocking gate message:
 
 ```
-⚠️  No use-case documents found in {PROJECT_NAME}/Testcase/
+🛑 BLOCKED — No use-case documents found in {PROJECT_NAME}/Testcase/
 
-Before using @test-generator, you MUST upload your use-case document to:
+Setup cannot continue until you upload your use-case document.
+The entire pipeline (generate → run → heal) depends on this document as input.
+
+Please upload your use-case document to:
    📁 {PROJECT_NAME}/Testcase/
 
 Accepted formats: .csv (recommended), .xlsx, .xls, .md, .txt
 Spreadsheets (.xlsx/.xls) are auto-converted to CSV on detection.
 CSV template: docs/templates/usecase_template.csv
 
-Without a use-case document, @test-generator will NOT proceed with test generation.
+After uploading, reply here so I can continue setup.
 ```
+
+**STOP and WAIT** for the user to confirm they have uploaded the document.
+
+Once the user replies, **re-run Sub-step 3f** from the top (auto-convert + recount). If `USECASE_COUNT` is still 0, show the gate message again. Do NOT proceed until at least one document exists.
+
+> **Why block here?** Users are chat observers — they follow the pipeline without intervention.
+> If setup completes without a document, `@test-generator` would be invoked next and immediately
+> hard-stop anyway. Blocking here gives clear, early feedback at the right moment.
+
+---
 
 **If `USECASE_COUNT` is > 0**, show:
 ```
@@ -565,8 +580,30 @@ If spreadsheets were converted, also show:
 📄 Converted spreadsheet(s) to CSV — @test-generator will use the CSV versions.
 ```
 
-> This check prevents the common mistake where a user clones a project but forgets to upload
-> the use-case document, then invokes `@test-generator` which has no input to work from.
+**Then auto-run use-case analysis** to give the user a requirement overview:
+
+```bash
+cd {WORKSPACE_DIR}
+.venv/bin/python generate_batch_summary.py --mode usecase-analysis
+```
+
+This produces `{PROJECT_NAME}/ai_reports/USECASE_ANALYSIS_<timestamp>.md` with a full breakdown.
+Display the key numbers to the user:
+
+```
+📊 Use-Case Analysis Summary:
+   Total use cases:     {total}
+   UI-automatable:      {ui_count} ({ui_pct}%)
+   Already generated:   {generated} ({gen_pct}%)
+   Pending:             {pending} → {batch_count} batch(es)
+   Severity breakdown:  Critical: {crit} | Major: {maj} | Minor: {min}
+
+   Full report: {PROJECT_NAME}/ai_reports/USECASE_ANALYSIS_<timestamp>.md
+```
+
+> This gives users (who are chat observers) immediate visibility into the scope of work
+> before `@test-generator` begins, without requiring any interaction.
+
 > Spreadsheets are auto-converted so the user doesn't need to manually convert to CSV.
 
 ---
