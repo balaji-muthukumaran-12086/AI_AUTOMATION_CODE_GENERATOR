@@ -662,6 +662,27 @@ For test `[N/total]`:
 
 ### After All Tests — Summary + Bug Reports
 
+**Step 1 — Generate Batch Summary Report (MANDATORY after every batch)**:
+
+```bash
+cd /home/balaji-12086/AI_AUTOMATION_CODE_GENERATOR
+.venv/bin/python generate_batch_summary.py
+```
+
+This generates:
+- `$PROJECT_NAME/reports/BATCH_SUMMARY_<timestamp>.md` — Rich interactive Markdown with:
+  - Executive dashboard (pass rate, coverage %)
+  - Detailed test results table with attempt counts and self-healing info
+  - Bug analysis with steps to reproduce for each failed test
+  - Automation coverage vs use-case document mapping
+  - Time & effort savings calculation
+  - Run history across all attempts
+- `$PROJECT_NAME/reports/BATCH_SUMMARY_<timestamp>.json` — Machine-readable snapshot
+
+After the script completes, **display the output path** and present the key metrics to the user.
+
+**Step 2 — Present inline summary table**:
+
 Present a summary table:
 ```
 | # | Entity.Method | Result | Mode | Attempts | Fix Applied |
