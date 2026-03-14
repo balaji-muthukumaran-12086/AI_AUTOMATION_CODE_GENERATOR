@@ -100,22 +100,132 @@ JSONObject inputData = getTestCaseData(SolutionDataConstants.SolutionData.MY_KEY
 // ❌ FORBIDDEN — getTestCaseDataUsingFilePath in preProcess (use getTestCaseDataUsingCaseId)
 ```
 
-## `waitForAjaxComplete()` — Use Only Where Required
+## `waitForAjaxComplete()` — NEVER Add Redundantly (STRICT)
 
-`actions.click()` already calls `waitForAjaxComplete()` BEFORE clicking. NEVER add it between consecutive clicks.
+Most framework actions already call `waitForAjaxComplete()` internally. Adding it again is **dead code** that clutters methods and slows execution.
+
+**Actions that ALREADY call `waitForAjaxComplete()` internally — NEVER add before/after these:**
+
+| Method | Internal wait behaviour |
+|--------|------------------------|
+| `actions.click(locator)` | Calls `waitForAjaxComplete()` **before** the click |
+| `actions.type(locator, value)` | Calls `waitForAjaxComplete()` internally |
+| `actions.sendKeys(locator, value)` | Calls `waitForAjaxComplete()` internally |
+| `actions.getText(locator)` | Calls `waitForAjaxComplete()` internally |
+| `actions.navigate.to(locator)` | Calls `click()` + `waitForAjaxCompleteLoad()` — double-wait |
+| `actions.navigate.toModule(name)` | Calls `to()` + additional `waitForAjaxComplete()` — fully waited |
+| `actions.navigate.toDetailsPageUsingRecordId(id)` | Calls `waitForAnElementToAppear` + `to()` + `waitForAjaxComplete()` |
+| `actions.formBuilder.submit()` | Calls `waitForAjaxComplete()` internally |
+| `actions.popUp.clickByName(name)` | Calls `waitForAjaxComplete()` internally |
+
+**The ONLY valid uses of explicit `waitForAjaxComplete()`:**
+1. After `actions.executeScript(...)` that triggers AJAX
+2. After `Thread.sleep(...)` where the next read depends on AJAX
+3. After a `type()` into a **live-search field** where AJAX-loaded dropdown options must appear before the next `click()`
 
 ```java
-// ❌ REDUNDANT — next click already waits
-actions.click(TAB); actions.waitForAjaxComplete(); actions.click(BUTTON);
+// ❌ REDUNDANT — click already waits internally
+actions.click(TAB);
+actions.waitForAjaxComplete();  // DEAD CODE — remove
+actions.click(BUTTON);
 
-// ✅ CORRECT — no wait between clicks
-actions.click(TAB); actions.click(BUTTON);
+// ❌ REDUNDANT — trailing waitForAjaxComplete after consecutive clicks
+actions.click(DROPDOWN);
+actions.click(OPTION);
+actions.waitForAjaxComplete();  // DEAD CODE if next line is another click or getText
 
-// ✅ CORRECT — wait needed before non-click read
-actions.click(TAB); actions.waitForAjaxComplete(); actions.getText(CONTENT);
+// ✅ CORRECT — no unnecessary waits
+actions.click(TAB);
+actions.click(BUTTON);
 
-// ✅ CORRECT — wait needed after type triggers AJAX
-actions.type(SEARCH, value); actions.waitForAjaxComplete(); actions.click(RESULT);
+// ✅ CORRECT — explicit wait after executeScript triggers AJAX
+actions.executeScript("some.ajaxTrigger()");
+actions.waitForAjaxComplete();
+String text = actions.getText(RESULT);
+```
+
+> **Audit rule**: When reviewing generated code, delete every `waitForAjaxComplete()` that follows
+> a `click()`, `type()`, `sendKeys()`, `getText()`, `navigate.*()`, or `submit()` call unless
+> there is a non-framework action (e.g., `Thread.sleep`, `executeScript`) between them.
+
+## ActionsUtil — Generic Parameterized Methods (MANDATORY)
+
+> **Root cause of past bloat**: The AI created near-duplicate methods that differ only in one string
+> argument (e.g., `openAttachParentChangePopup()` and `openAttachChildChangesPopup()`).
+> This is **FORBIDDEN**. Always parameterize.
+
+### Rule: One method per UI operation pattern, parameterized for variants
+
+Before creating any new ActionsUtil method, ask: **"Does another method already do the same sequence with a different value?"** If yes → merge into one parameterized method.
+
+```java
+// ❌ FORBIDDEN — near-duplicate methods differing only by a string
+public static void openAttachParentChangePopup() throws Exception {
+    actions.click(ChangeLocators.LinkingChange.ATTACH_BUTTON_DROPDOWN);
+    actions.click(ChangeLocators.LinkingChange.ATTACH_DROPDOWN_OPTION.apply("Parent Change"));
+}
+public static void openAttachChildChangesPopup() throws Exception {
+    actions.click(ChangeLocators.LinkingChange.ATTACH_BUTTON_DROPDOWN);
+    actions.click(ChangeLocators.LinkingChange.ATTACH_DROPDOWN_OPTION.apply("Child Changes"));
+}
+
+// ✅ CORRECT — single parameterized method
+public static void openAttachPopup(String associationType) throws Exception {
+    actions.click(ChangeLocators.LinkingChange.ATTACH_BUTTON_DROPDOWN);
+    actions.click(ChangeLocators.LinkingChange.ATTACH_DROPDOWN_OPTION.apply(associationType));
+}
+```
+
+### When to use LocalStorage as implicit params vs explicit method params:
+
+| Pattern | Use |
+|---------|-----|
+| **Explicit params** (preferred) | When the caller already has the value in a variable — pass it directly |
+| **LocalStorage** | When the value is set by preProcess and flows across multiple methods — read via `LocalStorage.getAsString("key")` inside the method |
+
+```java
+// ✅ Explicit param — caller has the value
+ChangeActionsUtil.openAttachPopup("Parent Change");
+
+// ✅ LocalStorage — value set by preProcess, used by multiple methods
+LocalStorage.store("associationType", "Parent Change");
+ChangeActionsUtil.openAttachPopup(LocalStorage.getAsString("associationType"));
+```
+
+### Decision flow for every new ActionsUtil method:
+
+```
+Does an existing method perform the same UI steps with different string values?
+  → YES: Add a parameter to the existing method (or create a new parameterized one
+         if the existing method is shared across projects and cannot be modified).
+  → NO:  Create a new method.
+
+Can the method be described as a single step in manual testing?
+  → YES: Good granularity — proceed.
+  → NO (too granular — e.g., just one click): Expand to cover the full UI operation.
+  → NO (too broad — e.g., entire test flow): Split into smaller operations.
+```
+
+### Methods that should NOT exist in ActionsUtil (too thin / already framework methods):
+
+```java
+// ❌ FORBIDDEN — wrapper around a single framework call with no added logic
+public static void navigateToChangesModule() throws Exception {
+    actions.navigate.toModule(ModuleConstants.CHANGES);  // just call this directly
+}
+
+// ❌ FORBIDDEN — wrapper around a single click
+public static void clickSaveButton() throws Exception {
+    actions.click(ChangeLocators.SAVE_BUTTON);  // inline this in the caller
+}
+
+// ✅ CORRECT — multi-step operation that encapsulates a complete UI flow
+public static void gotoChangeDetailsPage() throws Exception {
+    actions.navigate.toModule(ModuleConstants.CHANGES);
+    pageSetup();
+    actions.listView.columnSearch("Title", LocalStorage.getAsString("changeName"));
+    actions.navigate.toDetailsPageUsingRecordId(LocalStorage.getAsString("changeId"));
+}
 ```
 
 ## ActionUtils / APIUtil Pattern (Mandatory)

@@ -1073,13 +1073,76 @@ grep -rn "methodName" $PROJECT_NAME/src/ | grep -v "utils/.*ActionsUtil\|utils/.
 
 #### Method granularity rules
 
-| Bad — too granular | Good — focused unit of work |
-|---|---|
-| `clickAttachDropdown()` | `openAttachParentChangePopup()` (click dropdown + click option + waitForAjax) |
-| `clickYesOnConfirm()` | `detachParentChange()` (click detach + validate confirm dialog + click YES + waitForAjax) |
-| Inline 6-line open+search+select+associate | `linkParentChangeViaUI(name, id)` (all 6 lines encapsulated) |
+| Bad — too granular | Bad — near-duplicate | Good — focused + parameterized |
+|---|---|---|
+| `clickAttachDropdown()` | `openAttachParentChangePopup()` + `openAttachChildChangesPopup()` | `openAttachPopup(String associationType)` (click dropdown + click option) |
+| `clickYesOnConfirm()` | `detachParentChange()` + `detachChildChange()` doing same steps | `detachChange(String detachButtonLocator)` or parameterize the variant |
+| Single-click wrappers | Two methods differing only by one string literal | One parameterized method covering all variants |
+
+> **ANTI-PATTERN**: Creating multiple methods that share the same action sequence but differ
+> only by a string value (entity name, tab name, dropdown option, button label). This inflates
+> the util file and creates maintenance burden. Always parameterize.
 
 Each method should represent **one complete, named UI operation** that a person doing manual testing would describe as a single step.
+
+#### Generic Method Design Rules (MANDATORY for all new ActionsUtil methods)
+
+**Rule 1 — Parameterize, don’t duplicate**
+
+Before creating any new method, search the existing util for methods with the same click/type/navigate sequence. If one exists with a hardcoded string where yours would use a different string → **merge into one parameterized method**.
+
+```java
+// ❌ FORBIDDEN — two methods that differ only by one argument
+public static void openAttachParentChangePopup() throws Exception {
+    actions.click(ChangeLocators.LinkingChange.ATTACH_BUTTON_DROPDOWN);
+    actions.click(ChangeLocators.LinkingChange.ATTACH_DROPDOWN_OPTION.apply("Parent Change"));
+    actions.waitForAjaxComplete(); // Also redundant — see Rule 2
+}
+public static void openAttachChildChangesPopup() throws Exception {
+    actions.click(ChangeLocators.LinkingChange.ATTACH_BUTTON_DROPDOWN);
+    actions.click(ChangeLocators.LinkingChange.ATTACH_DROPDOWN_OPTION.apply("Child Changes"));
+    actions.waitForAjaxComplete(); // Also redundant
+}
+
+// ✅ CORRECT — single parameterized method
+public static void openAttachPopup(String associationType) throws Exception {
+    actions.click(ChangeLocators.LinkingChange.ATTACH_BUTTON_DROPDOWN);
+    actions.click(ChangeLocators.LinkingChange.ATTACH_DROPDOWN_OPTION.apply(associationType));
+}
+```
+
+**Rule 2 — No redundant `waitForAjaxComplete()`**
+
+`actions.click()` already calls `waitForAjaxComplete()` before clicking. NEVER add it:
+- Between consecutive `click()` calls
+- After the last `click()` in a method (the next framework call at the caller will wait internally)
+- After `type()`, `sendKeys()`, `getText()`, `navigate.*()`, or `submit()` — all wait internally
+
+The **only** valid uses: after `executeScript()` that triggers AJAX, or after `Thread.sleep()` where the next read depends on AJAX.
+
+**Rule 3 — No thin wrappers around single framework calls**
+
+Do NOT create a util method that just wraps a single `actions.*` call with no additional logic:
+```java
+// ❌ FORBIDDEN — just call actions.navigate.toModule() directly
+public static void navigateToChanges() { actions.navigate.toModule("Changes"); }
+
+// ❌ FORBIDDEN — single click, no encapsulated flow
+public static void clickSaveButton() { actions.click(SAVE_BUTTON); }
+```
+
+**Rule 4 — Prefer explicit parameters over LocalStorage for method-local values**
+
+Use explicit parameters when the caller has the value. Use `LocalStorage.getAsString()` inside the method only when the value was set by a different lifecycle phase (e.g., preProcess sets it, test method’s util reads it).
+
+```java
+// ✅ Explicit param — caller knows the value
+ChangeActionsUtil.openAttachPopup("Parent Change");
+
+// ✅ LocalStorage — value set by preProcess, read across methods
+String changeName = LocalStorage.getAsString("changeName");
+actions.listView.columnSearch("Title", changeName);
+```
 
 #### Calling convention in test methods
 
