@@ -29,7 +29,7 @@ from pathlib import Path
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(__file__))
-from config.project_config import PROJECT_NAME, PROJECT_ROOT, BASE_DIR
+from config.project_config import PROJECT_NAME, PROJECT_ROOT
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -37,7 +37,7 @@ from config.project_config import PROJECT_NAME, PROJECT_ROOT, BASE_DIR
 # ──────────────────────────────────────────────────────────────────────────────
 REPORTS_DIR = os.path.join(PROJECT_ROOT, "reports")
 TESTCASE_DIR = os.path.join(PROJECT_ROOT, "Testcase")
-TESTS_TO_RUN = os.path.join(BASE_DIR, "tests_to_run.json")
+TESTS_TO_RUN = os.path.join(PROJECT_ROOT, "tests_to_run.json")
 
 # Average manual QA time per test case (minutes) — industry benchmark
 MANUAL_TEST_AVG_MINUTES = 15

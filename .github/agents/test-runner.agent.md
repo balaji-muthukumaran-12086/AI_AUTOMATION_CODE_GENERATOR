@@ -1,8 +1,8 @@
 ---
-description: "Run generated Selenium test cases (single or batch from tests_to_run.json), auto-diagnose failures using Playwright MCP, fix broken locators/code, recompile, and re-run — all in one loop. Replaces the need for a separate debugger agent."
+description: "Run generated Selenium test cases (single or batch from $PROJECT_NAME/tests_to_run.json), auto-diagnose failures using Playwright MCP, fix broken locators/code, recompile, and re-run — all in one loop. Replaces the need for a separate debugger agent."
 tools: [read, search, execute, edit, todo, mcp_microsoft_pla/*]
 model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
-argument-hint: "Entity.method to run (e.g. 'Solution.createSolution'), or 'batch' to run all from tests_to_run.json, or describe what to run and fix"
+argument-hint: "Entity.method to run (e.g. 'Solution.createSolution'), or 'batch' to run all from $PROJECT_NAME/tests_to_run.json, or describe what to run and fix"
 instructions:
   - .github/copilot-instructions.md
   - .github/instructions/java-test-conventions.instructions.md
@@ -44,7 +44,7 @@ User provides Entity.method → resolve paths → Playwright bootstrap → compi
   └─ If FAIL → debug & fix via WARM Playwright session (max 3 attempts) → re-run
 ```
 
-### Batch (from tests_to_run.json)
+### Batch (from $PROJECT_NAME/tests_to_run.json)
 
 ```
 User says "batch" / "run all" / handed off from @test-generator
@@ -552,11 +552,11 @@ If unresolvable or PRODUCT_BUG, generate a bug report (see Bug Reports section b
 ---
 
 ## ════════════════════════════════════════════════════════
-## Batch Flow (from tests_to_run.json)
+## Batch Flow (from $PROJECT_NAME/tests_to_run.json)
 ## ════════════════════════════════════════════════════════
 
 > When the user says "batch", "run all", "run the generated tests", or is handed off
-> from `@test-generator`, iterate through `tests_to_run.json` and apply the same
+> from `@test-generator`, iterate through `$PROJECT_NAME/tests_to_run.json` and apply the same
 > run+debug+fix loop (Steps 2-4) to each test sequentially.
 
 ### Batch Setup (MANDATORY — every step must complete before running tests)
@@ -614,7 +614,7 @@ browser_evaluate → () => sdpAPICall('changes', 'get', 'input_data={"list_info"
 
 **Step 5 — List tests and compile**:
 ```bash
-cat tests_to_run.json | .venv/bin/python -c "
+cat $PROJECT_NAME/tests_to_run.json | .venv/bin/python -c "
 import json, sys
 d = json.load(sys.stdin)
 tests = d.get('tests', [])
@@ -718,9 +718,9 @@ For every test that ends as **PRODUCT_BUG** or **UNRESOLVABLE**, generate a bug 
 
 ---
 
-## Batch Mode — tests_to_run.json Format
+## Batch Mode — $PROJECT_NAME/tests_to_run.json Format
 
-When writing tests to `tests_to_run.json` for batch execution:
+When writing tests to `$PROJECT_NAME/tests_to_run.json` for batch execution:
 
 ```json
 {
@@ -745,14 +745,14 @@ Placeholders `$(SDP_URL)`, `$(SDP_ADMIN_EMAIL)`, `$(SDP_PORTAL)` are resolved at
 
 ### How Batch Execution Works (NO external scripts)
 
-> **CRITICAL**: You MUST iterate `tests_to_run.json` entries YOURSELF using tool calls.
+> **CRITICAL**: You MUST iterate `$PROJECT_NAME/tests_to_run.json` entries YOURSELF using tool calls.
 > You MUST NOT create or invoke ANY Python script that runs multiple tests.
 > External scripts are dumb executors with ZERO self-healing capability —
 > they bypass Playwright entirely.
 
 **The correct batch loop is:**
 ```
-For i, test in tests_to_run.json:
+For i, test in $PROJECT_NAME/tests_to_run.json:
   1. Edit run_test.py RUN_CONFIG with test[i].entity_class + method_name
   2. Run: .venv/bin/python run_test.py 2>&1
   3. Parse ScenarioReport.html (sole authority)
@@ -885,11 +885,11 @@ Blind retries without diagnosis are FORBIDDEN. Reading Java files before Playwri
 ✅ CORRECT:  Check HTML FIRST → scenario-result PASS|FAIL → that's the answer
 ```
 
-#### 4. NEVER modify tests_to_run.json or add entries not from @test-generator
+#### 4. NEVER modify $PROJECT_NAME/tests_to_run.json or add entries not from @test-generator
 
-The `tests_to_run.json` file is written exclusively by the `@test-generator` agent. The test-runner MUST:
-- Run ONLY the tests listed in `tests_to_run.json`
-- NEVER add new entries to `tests_to_run.json`
+The `$PROJECT_NAME/tests_to_run.json` file is written exclusively by the `@test-generator` agent. The test-runner MUST:
+- Run ONLY the tests listed in `$PROJECT_NAME/tests_to_run.json`
+- NEVER add new entries to `$PROJECT_NAME/tests_to_run.json`
 - NEVER create new test methods and add them to the run queue
 - NEVER modify `entity_class` or `method_name` values in existing entries (except the current `run_test.py` RUN_CONFIG swap for execution)
 
@@ -967,7 +967,7 @@ The ONLY files you may **edit** (not create) are:
 - JSON files under `$PROJECT/resources/` — to fix test data
 
 ```
-❌ FORBIDDEN: Creating any script that loops through tests_to_run.json
+❌ FORBIDDEN: Creating any script that loops through $PROJECT_NAME/tests_to_run.json
 ❌ FORBIDDEN: Creating a Python script that calls RunnerAgent in a loop
 ❌ FORBIDDEN: "Let me write a helper script to automate this..."
 ✅ CORRECT:  Edit run_test.py RUN_CONFIG → run → parse → Playwright on failure → fix → repeat
@@ -982,6 +982,6 @@ YOU edit run_test.py → YOU run it → YOU parse the report → YOU launch Play
 Never hand off the iteration to a script. The self-healing loop REQUIRES an AI agent in the middle.
 
 ```
-❌ FORBIDDEN: Creating or invoking ANY script that loops through tests_to_run.json
+❌ FORBIDDEN: Creating or invoking ANY script that loops through $PROJECT_NAME/tests_to_run.json
 ✅ CORRECT:  For each test: edit run_test.py → run → parse → Playwright if FAIL → fix → re-run
 ```

@@ -19,7 +19,7 @@ After generating test code, always perform these steps:
    CP="$BIN:$(find "$DEPS" -name "*.jar" | tr '\n' ':')"
    javac -encoding UTF-8 -cp "$CP" -d "$BIN" <changed .java files>
    ```
-3. **Update tests_to_run.json** — If batch mode, append the newly generated test entry
+3. **Update `$PROJECT_NAME/tests_to_run.json`** — If batch mode, append the newly generated test entry
 4. **Report compilation result** — If compile fails, show the error and fix it before yielding
 
 Do NOT skip compilation. A generated test that doesn't compile is not a valid deliverable.

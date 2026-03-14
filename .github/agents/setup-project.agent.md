@@ -810,7 +810,7 @@ Then continue for all modes:
 2. Upload your use-case document (.csv, .xlsx, .md, or .txt) to:
    📁 {PROJECT_NAME}/Testcase/
 3. Then use `@test-generator` — the agent will generate the code, append scenarios
-   to tests_to_run.json, and tell you to invoke `@test-runner batch`
+   to `$PROJECT_NAME/tests_to_run.json`, and tell you to invoke `@test-runner batch`
 4. `@test-runner` will run each generated test one by one — if a test fails,
    it auto-diagnoses the failure using Playwright MCP, fixes the code, and re-runs
 

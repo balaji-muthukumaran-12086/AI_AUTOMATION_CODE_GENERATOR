@@ -468,7 +468,7 @@ Proceed with Batch 1? (yes / pick a different batch)
 
 **Batching rules:**
 - Group by Module > Sub-Module when splitting (keep related scenarios in the same batch)
-- Each batch writes its own `tests_to_run.json` + execution plan
+- Each batch writes its own `$PROJECT_NAME/tests_to_run.json` + execution plan
 - Track batch progress in a `{TARGET_PROJECT}/Testcase/batch_progress.md` file:
   ```
   # Batch Progress — {CSV filename}
@@ -1100,14 +1100,14 @@ grep -A2 'public void' "$WRAPPER_FILE" | grep -v 'preProcess\|postProcess' | \
 
 **If ANY check fails**: Fix the issue in the generated code, recompile (re-run Step P1), and re-validate. Do NOT proceed to Step P2 with failing checks.
 
-### Step P2 — Write `tests_to_run.json` + Generate Execution Plan + Hand off
+### Step P2 — Write `$PROJECT_NAME/tests_to_run.json` + Generate Execution Plan + Hand off
 
 This step has 4 sub-steps: write the test entries, generate the categorized execution plan MD, detect run mode, and hand off to `@test-runner`.
 
 #### P2a — Read existing file and build new entries
 
 ```bash
-cat tests_to_run.json
+cat $PROJECT_NAME/tests_to_run.json
 ```
 
 For each generated scenario, create a test entry:
@@ -1127,9 +1127,9 @@ For each generated scenario, create a test entry:
 Replace `<SCENARIO_ID>`, `<EntityClass>`, `<methodName>` with the actual generated values.
 Placeholders `$(SDP_URL)`, `$(SDP_ADMIN_EMAIL)`, `$(SDP_PORTAL)` are resolved at runtime.
 
-#### P2b — Write the updated `tests_to_run.json`
+#### P2b — Write the updated `$PROJECT_NAME/tests_to_run.json`
 
-Replace the `"tests"` array in `tests_to_run.json` with **only the newly generated entries** (old entries from previous batches are replaced — each generation session produces a fresh batch):
+Replace the `"tests"` array in `$PROJECT_NAME/tests_to_run.json` with **only the newly generated entries** (old entries from previous batches are replaced — each generation session produces a fresh batch):
 
 ```bash
 .venv/bin/python -c "
@@ -1148,9 +1148,10 @@ data = {
     \"tests\": new_tests,
 }
 
-with open('tests_to_run.json', 'w') as f:
+tests_path = f'{PROJECT_NAME}/tests_to_run.json'
+with open(tests_path, 'w') as f:
     json.dump(data, f, indent=2)
-print(f'Wrote {len(new_tests)} test(s) to tests_to_run.json')
+print(f'Wrote {len(new_tests)} test(s) to {tests_path}')
 "
 ```
 
@@ -1160,7 +1161,7 @@ print(f'Wrote {len(new_tests)} test(s) to tests_to_run.json')
 > the same format used for the linking-change execution plan. The `@test-runner` updates
 > this file during its Dry Run → Self-Heal → Validation phases.
 
-Generate the execution plan from `tests_to_run.json` + the CSV analysis from Step A0:
+Generate the execution plan from `$PROJECT_NAME/tests_to_run.json` + the CSV analysis from Step A0:
 
 ```bash
 .venv/bin/python -c "
@@ -1168,7 +1169,7 @@ import json, os
 from datetime import datetime
 from config.project_config import PROJECT_NAME
 
-with open('tests_to_run.json') as f:
+with open(f'{PROJECT_NAME}/tests_to_run.json') as f:
     data = json.load(f)
 tests = data.get('tests', [])
 
@@ -1249,7 +1250,7 @@ Generation is complete. All test code, data entries, constants, and the executio
 Inform the user:
 
 ```
-Generation complete — {N} scenarios ready in tests_to_run.json.
+Generation complete — {N} scenarios ready in $PROJECT_NAME/tests_to_run.json.
 To execute and self-heal, run: @test-runner batch
 ```
 

@@ -298,7 +298,8 @@ MAX_CONCURRENT_RUNS = 2
 PARALLEL_WORKERS = 2
 
 # Path to the curated list of tests for the parallel learning runner.
-TESTS_TO_RUN_PATH = _os.path.join(_BASE_DIR, "tests_to_run.json")
+# Project-level so each project has its own test manifest.
+TESTS_TO_RUN_PATH = _os.path.join(PROJECT_ROOT, "tests_to_run.json")
 
 # How many recent learnings to inject into CoderAgent and ReviewerAgent prompts.
 LEARNING_TOP_N = 10
