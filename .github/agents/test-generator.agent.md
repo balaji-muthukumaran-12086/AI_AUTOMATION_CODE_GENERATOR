@@ -310,6 +310,13 @@ The user has uploaded or placed a `.csv`, `.xls`, `.xlsx`, `.md`, or `.txt` file
 > **Use case documents can span multiple sheets** in a workbook — every sheet is converted and processed. Only rows with `UI To-be-automated = Yes` are candidates.
 
 #### Step A0 — Spreadsheet Conversion (for `.xls`, `.xlsx`, `.csv` files)
+
+**First, capture the generation start time** (used later in Step P2d for timing analysis):
+```bash
+GEN_START_TIME=$(date +%s)
+echo "Generation started at epoch: $GEN_START_TIME"
+```
+
 If the file is a spreadsheet, convert it to CSV first before parsing:
 ```bash
 # Install openpyxl if not already installed
@@ -1241,7 +1248,28 @@ Read and confirm the plan:
 cat $PROJECT/execution_plan.md
 ```
 
-#### P2d — Hand Off to @test-runner
+#### P2d — Generate Generation Summary Report
+
+Run the batch summary generator in **generation mode** to show coverage, effort saved, and batch overview.
+Pass `--start-time` with the epoch timestamp captured at the start of the generation session (Step A0) to include timing analysis.
+
+```bash
+.venv/bin/python generate_batch_summary.py --mode generate --start-time $GEN_START_TIME
+```
+
+> If `$GEN_START_TIME` was not captured, omit `--start-time` — the report will skip timing
+> analysis but still show coverage and effort metrics.
+
+This produces `$PROJECT_NAME/reports/GENERATION_SUMMARY_<timestamp>.md` with:
+- Number of scenarios generated
+- Use-case coverage % and severity breakdown
+- Manual authoring equivalent (how long it would take a human to write these tests)
+- Time saved by AI generation (if `--start-time` was provided)
+- Next steps for the user
+
+Display the key metrics to the user from the output.
+
+#### P2e — Hand Off to @test-runner
 
 Generation is complete. All test code, data entries, constants, and the execution plan are ready.
 

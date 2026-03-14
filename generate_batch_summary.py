@@ -2,22 +2,29 @@
 """
 generate_batch_summary.py
 -------------------------
-Generates a comprehensive batch execution summary report after test runs.
+Generates batch summary reports for both test generation and execution.
+
+Modes:
+  execution (default)  — post-run summary with pass/fail, self-healing, bug analysis
+  generate             — post-generation summary with coverage, effort saved, batch overview
 
 Reads:
-  - tests_to_run.json        → test manifest (what was planned)
-  - ScenarioReport.html      → per-test results (what actually happened)
-  - Testcase/*.csv            → use-case document (total manual test coverage)
-  - config/project_config.py  → project metadata
+  - $PROJECT_NAME/tests_to_run.json  → test manifest
+  - ScenarioReport.html              → per-test results (execution mode only)
+  - Testcase/*.csv                   → use-case document (coverage mapping)
+  - config/project_config.py         → project metadata
 
 Outputs:
-  - $PROJECT_NAME/reports/BATCH_SUMMARY_<timestamp>.md  (rich interactive Markdown)
+  - $PROJECT_NAME/reports/BATCH_SUMMARY_<timestamp>.md   (execution mode)
+  - $PROJECT_NAME/reports/GENERATION_SUMMARY_<timestamp>.md  (generate mode)
 
 Usage:
-    .venv/bin/python generate_batch_summary.py                  # auto-detect latest batch
-    .venv/bin/python generate_batch_summary.py --json results.json  # from saved results JSON
+    .venv/bin/python generate_batch_summary.py                          # execution summary
+    .venv/bin/python generate_batch_summary.py --mode generate          # generation summary
+    .venv/bin/python generate_batch_summary.py --mode generate --start-time 1773400000  # with timing
 """
 
+import argparse
 import os
 import re
 import csv
@@ -739,5 +746,269 @@ def main():
     return output_path
 
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Generation Mode — post-generation summary (no execution data needed)
+# ──────────────────────────────────────────────────────────────────────────────
+def generate_generation_markdown(batch: dict, coverage: dict, gen_effort: dict) -> str:
+    """Generate Markdown summary for test generation (not execution)."""
+    now = datetime.now()
+    tests = batch.get("results", []) or batch.get("tests", [])
+
+    md = []
+    md.append("# 🧪 Test Generation Summary")
+    md.append("")
+    md.append(f"> **Project**: `{PROJECT_NAME}`  ")
+    md.append(f"> **Generated**: {now.strftime('%B %d, %Y at %I:%M %p')}  ")
+    md.append(f"> **Batch**: {batch.get('manifest_comment', 'N/A')}")
+    md.append("")
+
+    # ── Dashboard ──
+    md.append("---")
+    md.append("")
+    md.append("## 📊 Generation Dashboard")
+    md.append("")
+    md.append("| Metric | Value |")
+    md.append("|--------|-------|")
+    md.append(f"| **Scenarios Generated** | {gen_effort['total_scenarios']} |")
+    md.append(f"| **Unique Use Cases Covered** | {gen_effort['unique_usecase_ids']} |")
+    md.append(f"| **Entity Classes** | {gen_effort['entity_classes']} |")
+    if gen_effort['generation_time']:
+        md.append(f"| **Generation Time** | {gen_effort['generation_time']} |")
+    md.append(f"| **Manual Authoring Equivalent** | {gen_effort['manual_authoring_time']} |")
+    if gen_effort['time_saved']:
+        md.append(f"| **Time Saved** | 🚀 **{gen_effort['time_saved']}** |")
+    md.append(f"| **Automation Coverage** | {coverage['coverage_pct']}% of UI-automatable cases |")
+    md.append("")
+
+    # Coverage bar
+    cov_filled = int(coverage["coverage_pct"] / 5)
+    cov_empty = 20 - cov_filled
+    cov_bar = "█" * cov_filled + "░" * cov_empty
+    md.append(f"**Coverage**: `{cov_bar}` {coverage['coverage_pct']}%")
+    md.append("")
+
+    # ── Generated Scenarios Table ──
+    md.append("---")
+    md.append("")
+    md.append("## 📋 Generated Scenarios")
+    md.append("")
+    md.append("| # | UseCase ID | Entity | Method |")
+    md.append("|---|-----------|--------|--------|")
+
+    for i, t in enumerate(tests, 1):
+        uc_id = t.get("test_ids", t.get("_id", ""))
+        entity = t.get("entity_class", "")
+        method = t.get("method_name", "")
+        if len(uc_id) > 35:
+            uc_id = uc_id[:32] + "..."
+        md.append(f"| {i} | `{uc_id}` | `{entity}` | `{method}` |")
+    md.append("")
+
+    # ── Coverage Analysis ──
+    if coverage["total_usecases"] > 0:
+        md.append("---")
+        md.append("")
+        md.append("## 📈 Coverage vs Use-Case Document")
+        md.append("")
+        md.append("| Metric | Count |")
+        md.append("|--------|-------|")
+        md.append(f"| **Total Use Cases** | {coverage['total_usecases']} |")
+        md.append(f"| **UI Automatable** | {coverage['total_ui_automatable']} |")
+        md.append(f"| **Covered by This Batch** | {coverage['automated_count']} |")
+        md.append(f"| **Remaining** | {coverage['total_ui_automatable'] - coverage['automated_count']} |")
+        md.append(f"| **Coverage** | **{coverage['coverage_pct']}%** |")
+        md.append("")
+
+        # Severity breakdown
+        md.append("### Coverage by Severity")
+        md.append("")
+        md.append("| Severity | Total | Covered | % |")
+        md.append("|----------|-------|---------|---|")
+        for sev in ["Critical", "Major", "Minor"]:
+            s = coverage["severity_coverage"][sev]
+            pct = round((s["covered"] / s["total"] * 100) if s["total"] > 0 else 0, 1)
+            md.append(f"| {sev} | {s['total']} | {s['covered']} | {pct}% |")
+        md.append("")
+
+        remaining = coverage['total_ui_automatable'] - coverage['automated_count']
+        if remaining > 0:
+            md.append(f"> **Next batch**: {remaining} UI-automatable use cases remaining. ")
+            md.append(f"> Run `@test-generator` again with the same CSV to generate the next batch.")
+            md.append("")
+
+    # ── Time & Effort ──
+    md.append("---")
+    md.append("")
+    md.append("## ⏱️ Effort Analysis")
+    md.append("")
+    md.append("| Metric | Value |")
+    md.append("|--------|-------|")
+    if gen_effort['generation_time']:
+        md.append(f"| **AI Generation Time** | {gen_effort['generation_time']} |")
+    md.append(f"| **Manual Authoring Equivalent** | {gen_effort['manual_authoring_time']} |")
+    if gen_effort['time_saved']:
+        md.append(f"| **Time Saved** | 🚀 **{gen_effort['time_saved']}** |")
+        md.append(f"| **Speed-up Factor** | **{gen_effort['speedup_factor']}** |")
+    md.append(f"| **Manual Execution Time (per run)** | {gen_effort['manual_execution_time']} |")
+    md.append("")
+
+    if gen_effort['time_saved']:
+        md.append(f"> **💡 Key Insight**: AI generated {gen_effort['total_scenarios']} test scenarios ")
+        md.append(f"> in {gen_effort['generation_time']}, saving **{gen_effort['time_saved']}** ")
+        md.append(f"> compared to manual authoring ({gen_effort['speedup_factor']} faster).")
+    else:
+        md.append(f"> **💡 Key Insight**: Manual authoring of {gen_effort['total_scenarios']} test scenarios ")
+        md.append(f"> would take approximately **{gen_effort['manual_authoring_time']}**.")
+    md.append("")
+
+    # ── Next Steps ──
+    md.append("---")
+    md.append("")
+    md.append("## 🚀 Next Steps")
+    md.append("")
+    md.append(f"1. **Run the batch**: `@test-runner batch`")
+    md.append(f"2. **Review execution summary**: `generate_batch_summary.py` (auto-runs after batch)")
+    remaining = coverage['total_ui_automatable'] - coverage['automated_count']
+    if remaining > 0:
+        md.append(f"3. **Generate next batch**: {remaining} use cases remaining — re-run `@test-generator`")
+    md.append("")
+
+    # ── Footer ──
+    md.append("---")
+    md.append("")
+    md.append(f"<sub>Generated by **AutomaterSelenium AI Test Generator** • "
+              f"{now.strftime('%Y-%m-%d %H:%M:%S')} • "
+              f"Project: {PROJECT_NAME}</sub>")
+
+    return "\n".join(md)
+
+
+def calculate_generation_effort(tests: list, coverage: dict, start_epoch: float = None) -> dict:
+    """Calculate effort metrics for test generation."""
+    total_scenarios = len(tests)
+    unique_ids = set()
+    entity_classes = set()
+    for t in tests:
+        for uid in t.get("_id", "").split(","):
+            uid = uid.strip()
+            if uid:
+                unique_ids.add(uid)
+        entity_classes.add(t.get("entity_class", "Unknown"))
+
+    manual_authoring_minutes = total_scenarios * MANUAL_AUTHORING_AVG_MINUTES
+    manual_execution_minutes = total_scenarios * MANUAL_TEST_AVG_MINUTES
+
+    generation_time = None
+    time_saved = None
+    speedup_factor = None
+    if start_epoch:
+        elapsed_seconds = datetime.now().timestamp() - start_epoch
+        elapsed_minutes = elapsed_seconds / 60
+        generation_time = _seconds_to_display(int(elapsed_seconds))
+        saved_minutes = manual_authoring_minutes - elapsed_minutes
+        if saved_minutes > 0:
+            time_saved = f"{saved_minutes:.0f} min ({saved_minutes / 60:.1f}h)"
+            speedup_factor = f"{manual_authoring_minutes / elapsed_minutes:.1f}x" if elapsed_minutes > 0 else "N/A"
+
+    return {
+        "total_scenarios": total_scenarios,
+        "unique_usecase_ids": len(unique_ids),
+        "entity_classes": len(entity_classes),
+        "generation_time": generation_time,
+        "manual_authoring_time": f"{manual_authoring_minutes} min ({manual_authoring_minutes // 60}h {manual_authoring_minutes % 60}m)",
+        "manual_execution_time": f"{manual_execution_minutes} min ({manual_execution_minutes // 60}h {manual_execution_minutes % 60}m)",
+        "time_saved": time_saved,
+        "speedup_factor": speedup_factor,
+    }
+
+
+def main_generate(start_epoch: float = None):
+    """Generate a post-generation summary (no execution data needed)."""
+    print(f"{'=' * 60}")
+    print(f"  AutomaterSelenium — Generation Summary")
+    print(f"  Project: {PROJECT_NAME}")
+    print(f"{'=' * 60}")
+
+    # 1. Load test manifest
+    print("\n📥 Loading test manifest...")
+    with open(TESTS_TO_RUN, "r") as f:
+        manifest = json.load(f)
+    tests = manifest.get("tests", [])
+    comment = manifest.get("_comment", "")
+    print(f"   Found {len(tests)} scenarios")
+
+    # 2. Load use-case document
+    print("\n📄 Loading use-case document...")
+    usecases = load_usecase_csv()
+    print(f"   Found {len(usecases)} use cases")
+
+    # 3. Build coverage map
+    automated_ids = set()
+    for t in tests:
+        for uid in t.get("_id", "").split(","):
+            uid = uid.strip()
+            if uid:
+                automated_ids.add(uid)
+    coverage = build_coverage_map(usecases, automated_ids)
+    print(f"   Coverage: {coverage['automated_count']}/{coverage['total_ui_automatable']} UI cases = {coverage['coverage_pct']}%")
+
+    # 4. Calculate generation effort
+    gen_effort = calculate_generation_effort(tests, coverage, start_epoch)
+
+    # 5. Generate Markdown
+    print("\n📝 Generating generation summary...")
+    batch = {
+        "manifest_comment": comment,
+        "test_count": len(tests),
+        "tests": tests,
+    }
+    markdown = generate_generation_markdown(batch, coverage, gen_effort)
+
+    # 6. Write to file
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_path = os.path.join(REPORTS_DIR, f"GENERATION_SUMMARY_{timestamp}.md")
+    os.makedirs(REPORTS_DIR, exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(markdown)
+
+    print(f"\n✅ Summary saved to: {output_path}")
+    print(f"   File size: {os.path.getsize(output_path):,} bytes")
+
+    # JSON snapshot
+    json_path = os.path.join(REPORTS_DIR, f"GENERATION_SUMMARY_{timestamp}.json")
+    summary_data = {
+        "generated_at": datetime.now().isoformat(),
+        "mode": "generate",
+        "project": PROJECT_NAME,
+        "generation_effort": gen_effort,
+        "coverage": {k: v for k, v in coverage.items() if k != "not_covered"},
+        "scenarios": [
+            {"method": t["method_name"], "entity": t.get("entity_class", ""), "ids": t.get("_id", "")}
+            for t in tests
+        ],
+    }
+    with open(json_path, "w") as f:
+        json.dump(summary_data, f, indent=2)
+    print(f"   JSON snapshot: {json_path}")
+
+    print(f"\n{'=' * 60}")
+    print(f"  Scenarios: {gen_effort['total_scenarios']} | Coverage: {coverage['coverage_pct']}%")
+    if gen_effort['generation_time']:
+        print(f"  Generation Time: {gen_effort['generation_time']} | Saved: {gen_effort['time_saved']}")
+    print(f"{'=' * 60}")
+
+    return output_path
+
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Batch summary generator")
+    parser.add_argument("--mode", choices=["execution", "generate"], default="execution",
+                        help="'execution' (default) for post-run summary, 'generate' for post-generation summary")
+    parser.add_argument("--start-time", type=float, default=None,
+                        help="Epoch timestamp when generation started (for timing calculation)")
+    args = parser.parse_args()
+
+    if args.mode == "generate":
+        main_generate(start_epoch=args.start_time)
+    else:
+        main()
