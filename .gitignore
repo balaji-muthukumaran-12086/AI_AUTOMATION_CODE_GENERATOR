@@ -29,6 +29,11 @@ generated/
 orchestrator/orchestrator.db
 orchestrator/offline_events.jsonl
 
+# ── Node.js (Playwright MCP) ─────────────────────────────────────────────────
+node_modules/
+package-lock.json
+.playwright_mcp.pid
+
 # ── Knowledge base binaries & generated data ──────────────────────────────────
 knowledge_base/chroma_db/
 knowledge_base/raw/

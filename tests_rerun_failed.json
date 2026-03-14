@@ -1,0 +1,146 @@
+{
+  "parallelism": 1,
+  "learning_retries": 1,
+  "tests": [
+    {
+      "_id": "SDPOD_LNKCHG_UI_006",
+      "entity_class": "DetailsView",
+      "method_name": "verifyDetachButtonVisible",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_007",
+      "entity_class": "DetailsView",
+      "method_name": "verifyRefreshPreservesAssociations",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_010",
+      "entity_class": "DetailsView",
+      "method_name": "verifyExternalLinkOpensDetailPage",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_010a,SDPOD_LNKCHG_UI_010b",
+      "entity_class": "DetailsView",
+      "method_name": "verifySectionLabelAndDropdownToggle",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_010c",
+      "entity_class": "DetailsView",
+      "method_name": "verifyTabResetsAfterDetachAll",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_010d",
+      "entity_class": "DetailsView",
+      "method_name": "verifyBreadcrumbsOnAssociationsPage",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_011",
+      "entity_class": "DetailsView",
+      "method_name": "verifyParentChangePopupOpens",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_012",
+      "entity_class": "DetailsView",
+      "method_name": "verifyParentPopupFilterDropdown",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_014",
+      "entity_class": "DetailsView",
+      "method_name": "verifyParentChangeAssociateSuccess",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_015",
+      "entity_class": "DetailsView",
+      "method_name": "verifyParentPopupCommentsField",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_016",
+      "entity_class": "DetailsView",
+      "method_name": "verifyParentPopupPagination",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_021",
+      "entity_class": "DetailsView",
+      "method_name": "verifyParentPopupModalBehavior",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_022",
+      "entity_class": "DetailsView",
+      "method_name": "verifyAlreadyLinkedExcludedFromList",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    },
+    {
+      "_id": "SDPOD_LNKCHG_UI_023",
+      "entity_class": "DetailsView",
+      "method_name": "verifyAttachHiddenWhenClosed",
+      "url": "https://sdpod-am1.csez.zohocorpin.com:55091/",
+      "admin_mail_id": "balaji.muthukumaran@zohotest.com",
+      "email_id": "balaji.muthukumaran@zohotest.com",
+      "portal_name": "itdesk",
+      "skip_compile": true
+    }
+  ]
+}

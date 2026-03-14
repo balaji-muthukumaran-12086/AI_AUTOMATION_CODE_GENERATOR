@@ -22,7 +22,7 @@
 Open VS Code, then open the **Terminal** (`Ctrl+\``) and run:
 
 ```bash
-sudo apt install openjdk-17-jdk git mercurial python3 python3-venv
+sudo apt install openjdk-17-jdk git mercurial python3 python3-venv nodejs npm
 ```
 
 ---
@@ -39,6 +39,9 @@ cd AI_AUTOMATION_CODE_GENERATOR
 ```
 ```bash
 python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+```
+```bash
+npm install                      # installs @playwright/mcp + auto-downloads Chromium browser
 ```
 
 Now open this folder in VS Code: **File → Open Folder** → select `AI_AUTOMATION_CODE_GENERATOR`
@@ -115,6 +118,8 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 | Run one test | `@test-runner Entity.methodName` |
 | Debug a failure | `@test-debugger <test ID> <error>` |
 | Recompile framework | `./setup_framework_bin.sh` |
+| Setup Playwright MCP | `npm install && npx playwright install chromium` |
+| Verify Playwright | `./start_playwright_mcp.sh` |
 | Start dashboard | `./orchestrator.sh start` → `http://localhost:9600` |
 
 ---
@@ -129,6 +134,8 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 | Test fails on first run | Normal — `@test-runner` auto-fixes and reruns |
 | Wrong project targeted | `@test-generator project=BRANCH_NAME` |
 | Need to switch SDP instance | `@setup-project setup` → mode 3 |
+| Playwright MCP not available | `npm install && npx playwright install chromium` then `./start_playwright_mcp.sh` |
+| `@test-runner` skips locator fixes | Playwright MCP not loaded — restart VS Code or run `./start_playwright_mcp.sh --start` |
 
 ---
 

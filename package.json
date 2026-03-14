@@ -1,0 +1,27 @@
+{
+  "name": "ai_automation_code_generator",
+  "version": "1.0.0",
+  "description": "> **Generate production-ready Selenium test cases from natural language using an AI-powered agentic pipeline**",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "postinstall": "npx playwright install chromium",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/balaji-muthukumaran-12086/AI_AUTOMATION_CODE_GENERATOR.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/balaji-muthukumaran-12086/AI_AUTOMATION_CODE_GENERATOR/issues"
+  },
+  "homepage": "https://github.com/balaji-muthukumaran-12086/AI_AUTOMATION_CODE_GENERATOR#readme",
+  "dependencies": {
+    "@playwright/mcp": "^0.0.68"
+  }
+}

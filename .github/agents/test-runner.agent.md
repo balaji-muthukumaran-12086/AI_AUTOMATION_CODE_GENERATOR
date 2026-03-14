@@ -74,16 +74,72 @@ Use `$PROJECT`, `$BIN`, `$SRC`, `$DEPS`, `$BASE` for all paths.
 > Without a warm, logged-in Playwright session, failure diagnosis is impossible.
 > The entire self-healing loop depends on this session being ready.
 
-### 0.5a. Load Playwright MCP Tools
+### 0.5a. Auto-Invoke Playwright MCP Startup (MANDATORY — first action on every invocation)
 
-Playwright MCP tools are **deferred** — they must be explicitly discovered before use.
-Run `tool_search_tool_regex` with pattern `^mcp_microsoft_pla` to load all Playwright tools.
+> **This runs EVERY TIME `@test-runner` is invoked** — whether single test or batch mode.
+> Do NOT skip. Do NOT assume Playwright is already running from a previous session.
 
-> ⚠️ If `tool_search_tool_regex` returns zero results → Playwright MCP server is NOT running.
-> **STOP immediately** and tell the user: "Playwright MCP server is not available. Please ensure
-> the MCP server is configured in VS Code settings." Do NOT proceed without Playwright tools.
+**Step 1 — Run the preflight check script immediately:**
+```bash
+cd /home/balaji-12086/AI_AUTOMATION_CODE_GENERATOR
+./start_playwright_mcp.sh
+```
+This verifies: Node.js available, `@playwright/mcp` package installed, Chromium browser cached.
 
-### 0.5b. Login to SDP (one-time — session persists for all tests)
+**Step 2 — If the script reports ANY failure** (missing node, missing package, missing browser):
+```bash
+npm install @playwright/mcp
+npx playwright install chromium
+# Then re-run preflight:
+./start_playwright_mcp.sh
+```
+
+**Step 3 — Load Playwright MCP tools** (deferred — must be explicitly discovered):
+```
+tool_search_tool_regex(pattern="^mcp_microsoft_pla")
+```
+
+**Step 4 — If `tool_search_tool_regex` returns zero results** → stdio server is not responding.
+**Recovery — start SSE fallback server:**
+```bash
+./start_playwright_mcp.sh --start
+```
+Then retry:
+```
+tool_search_tool_regex(pattern="^mcp_microsoft_pla")
+```
+
+### 0.5b. Playwright Availability Gate — PROMPT USER if Unavailable
+
+> **This is an INTERACTIVE gate.** If Playwright is still unavailable after 0.5a, the agent
+> MUST prompt the user to decide. Do NOT silently degrade. Do NOT proceed without user input.
+
+**If `tool_search_tool_regex` returned Playwright tools → FULL MODE.** Proceed to Step 0.5c.
+
+**If `tool_search_tool_regex` still returns zero results after recovery attempt:**
+
+**PROMPT the user with this EXACT message:**
+
+> ⚠️ **Playwright MCP is not available.**
+>
+> The startup script and SSE fallback were attempted but Playwright tools could not be loaded.
+> Without Playwright, only **Mode 1 fixes** (API errors, timing, compile, data path issues)
+> can be applied automatically. **Mode 2 fixes** (broken XPath locators, UI structural changes)
+> will be deferred — those test failures cannot be diagnosed or fixed in this run.
+>
+> **Options:**
+> - **(A) Fix Playwright now** — Restart VS Code, check `.vscode/mcp.json`, or troubleshoot
+>   the MCP server, then re-invoke `@test-runner`.
+> - **(B) Continue in Mode 1 only** — Proceed with test execution. Report-based fixes will
+>   still be applied. Locator failures will be logged as `NEEDS_PLAYWRIGHT` and skipped.
+>
+> Which option? (A or B)
+
+**Wait for the user's response:**
+- **User chooses (A):** STOP execution. Do NOT proceed. Tell the user what to check.
+- **User chooses (B):** Set `PLAYWRIGHT_AVAILABLE = false`. Skip Steps 0.5c and 0.5d (no browser to login). Proceed to Step 1 (single) or Step 5 (batch).
+
+### 0.5c. Login to SDP (one-time — session persists for all tests)
 
 The SDP credentials come from Step 0 environment variables. Login using this exact sequence:
 
@@ -127,7 +183,7 @@ The SDP credentials come from Step 0 environment variables. Login using this exa
 **If login redirects to a portal selection page**, select the correct portal.
 **If already logged in** (session reuse), skip login — just verify with `browser_snapshot`.
 
-### 0.5c. Verify Session is Active
+### 0.5d. Verify Session is Active
 
 After login, confirm the session is usable by running a simple API test:
 ```
@@ -136,7 +192,33 @@ browser_evaluate → () => sdpAPICall('changes', 'get', 'input_data={"list_info"
 If this returns valid JSON, the session is active. If null → login failed, retry.
 
 > **Session state is preserved** across all `browser_*` calls within the same conversation.
-> You do NOT need to re-login for each test. One login at Step 0.5b serves the entire batch.
+> You do NOT need to re-login for each test. One login at Step 0.5c serves the entire batch.
+
+### 0.5e. VERIFICATION GATE — Confirm readiness before proceeding
+
+> **By this point, Playwright availability was already resolved in Step 0.5b.**
+> If the user chose (B) in 0.5b, `PLAYWRIGHT_AVAILABLE = false` — skip checks 2 and 3.
+
+Before proceeding to Step 1 (or Batch Step 5), verify:
+
+| # | Check | How | If FAILS |
+|---|-------|-----|----------|
+| 1 | Playwright tools loaded | `tool_search_tool_regex` returned `mcp_microsoft_pla_browser_*` tools | Already handled in Step 0.5b — user was prompted |
+| 2 | Browser logged into SDP | `browser_snapshot` shows SDP dashboard (not login page) | Retry login (max 2 attempts) → prompt user if still failing |
+| 3 | API session active | `browser_evaluate` sdpAPICall returns valid JSON | Retry login → prompt user if still failing |
+
+```
+PLAYWRIGHT_AVAILABLE = true AND all 3 pass?
+  → FULL MODE: Proceed with Mode 1 + Mode 2 diagnosis
+
+PLAYWRIGHT_AVAILABLE = false (user chose B in 0.5b)?
+  → MODE 1 ONLY: Proceed with test execution
+  → Mode 1 failures: fix → recompile → re-run (normal loop)
+  → Mode 2 failures: log as NEEDS_PLAYWRIGHT, move to next test
+
+Checks 2/3 fail despite PLAYWRIGHT_AVAILABLE = true?
+  → Prompt user: "Browser session could not be established. Continue in Mode 1 only? (A: Fix now / B: Continue)"
+```
 
 ---
 
@@ -247,23 +329,85 @@ cat "$REPORT_DIR/ScenarioReport.html"
 > exception type are sufficient to classify the failure. Reading source files before targeted
 > diagnosis wastes steps and delays the fix. Go directly to Step 3b → 3c (the matching sub-step).
 
-### 3b. Classify Failure
+### 3b. Two-Mode Diagnosis Strategy
 
-| Symptom | Type | Fix Target | Diagnosis Method |
-|---------|------|------------|-----------------|
-| `NoSuchElementException` / `TimeoutException` on UI element | LOCATOR | `*Locators.java` | **Playwright** (Step 3c) |
-| `NullPointerException` in restAPI / preProcess | API | preProcess / API path | **Playwright** (Step 3c) |
-| `File not found` / resource path errors | DATA | `*_data.json` / resource files | **`ls` + `find`** (Step 3c-data) |
-| `AssertionException` / wrong validation | LOGIC | Test method logic | **Playwright** (Step 3c) |
-| javac errors / `cannot find symbol` | COMPILE | Syntax/import fix | **Read error message** (Step 3c-compile) |
-| Test code is correct but SDP behaviour is wrong | **PRODUCT_BUG** | **No code fix — report to user** | — |
+> **The self-healing loop has two independent diagnosis modes.** Choose the correct mode
+> based on the failure type. **Mode 1 does NOT require Playwright** — if Playwright MCP
+> is unavailable, Mode 1 fixes can still be applied. Only Mode 2 requires a live browser.
+
+#### Mode 1 — Report-Based Diagnosis (works WITHOUT Playwright)
+
+Fixes that can be fully diagnosed from the ScenarioReport.html and stdout alone:
+
+| Failure Pattern in Report | Root Cause | Fix | Playwright Needed? |
+|---|---|---|---|
+| `"Invalid Method"` / status_code 4001 | Wrong HTTP method (PUT vs POST) | Change `restAPI.update()` → `restAPI.createAndGetFullResponse()` | **No** |
+| `before=false after=false` (both false) | Timing — AJAX table not rendered yet | Add `Thread.sleep()` / `waitForAjaxComplete()` after tab click | **No** |
+| `before=true after=false` | Timing — page refresh didn't wait long enough | Increase sleep after `refreshPage()` | **No** |
+| `status_code 4000` / `"Required field missing"` | Missing field in API payload | Add field to `*_data.json` | **No** |
+| `cannot find symbol` / javac error | Compile error — typo, missing import | Read compiler error message, fix syntax | **No** |
+| `ClassNotFoundException` | Missing `ENTITY_IMPORT_MAP` entry | Add entry in `runner_agent.py` | **No** |
+| `File not found in the provided path` | Missing resource file | `find` + create/move file | **No** |
+| `NullPointerException` at `LocalStorage.getAsString` | preProcess didn't store expected key | Fix preProcess to store the key | **No** |
+
+**Action**: Apply the fix directly from report analysis → recompile → re-run.
+
+#### Mode 2 — DOM-Based Diagnosis (REQUIRES Playwright)
+
+Fixes that need live browser inspection to determine the correct selector:
+
+| Failure Pattern in Report | Root Cause | Fix | Why Playwright? |
+|---|---|---|---|
+| `NoSuchElementException` on a UI locator | XPath doesn't match real DOM | Navigate + `browser_snapshot` → write correct XPath | **Must see actual HTML structure** |
+| `TimeoutException` waiting for element | Element exists but under different path | `browser_snapshot` to find real element tree | **Must see actual HTML structure** |
+| `AssertionException` — expected vs actual text mismatch | UI shows different text than expected | `browser_snapshot` to read real text | **Must see actual rendered text** |
+| Element found but wrong one clicked (silent wrong behavior) | Ambiguous XPath matches multiple elements | `browser_snapshot` to count matches | **Must see full DOM tree** |
+
+**Action**: Use warm Playwright session → navigate to failing page → `browser_snapshot` →
+compare real DOM with Java locator → fix XPath → recompile → re-run.
+
+#### Decision Flow (MANDATORY — follow for every failure)
+
+```
+Read ScenarioReport.html → identify failure pattern
+  │
+  ├── Pattern matches Mode 1 table?
+  │     → YES: Fix directly from report. No Playwright needed.
+  │            Edit Java/JSON → recompile → re-run.
+  │
+  └── Pattern matches Mode 2 table?
+        → Playwright available?
+        │   → YES: Navigate + browser_snapshot → fix locator → recompile → re-run.
+        │   → NO:  Can you infer the fix from the error + existing code?
+        │           → YES: Best-effort fix → recompile → re-run (may need another attempt).
+        │           → NO:  Mark as NEEDS_PLAYWRIGHT, log the failure, move to next test.
+        │                  Do NOT waste retries guessing XPaths blindly.
+```
+
+> **Critical**: When Playwright is unavailable, the agent MUST still attempt Mode 1 fixes.
+> The previous behavior of skipping ALL fixes when Playwright was down is **FORBIDDEN**.
+> Mode 1 covers ~40% of real-world test failures (API errors, timing, compile, data paths).
+
+### 3b-classify. Failure Classification Table
+
+| Symptom | Type | Diagnosis Mode | Fix Target |
+|---------|------|---------------|------------|
+| `"Invalid Method"` / wrong HTTP verb | API | **Mode 1** (report) | APIUtil method call |
+| `before=false` / timing race | TIMING | **Mode 1** (report) | Add sleep/waitForAjax |
+| `status_code 4000` / missing field | API_DATA | **Mode 1** (report) | `*_data.json` payload |
+| `cannot find symbol` / javac | COMPILE | **Mode 1** (report) | Syntax/import fix |
+| `File not found` / resource path | DATA | **Mode 1** (report) | File system fix |
+| `NoSuchElementException` on UI element | LOCATOR | **Mode 2** (Playwright) | `*Locators.java` XPath |
+| `TimeoutException` on UI element | LOCATOR | **Mode 2** (Playwright) | `*Locators.java` XPath |
+| `AssertionException` / text mismatch | LOGIC | **Mode 2** (Playwright) | Test assertions |
+| Correct code but SDP behaves wrong | **PRODUCT_BUG** | **Neither** | No code fix — report |
 
 > **PRODUCT_BUG detection**: After fixing LOCATOR/API/LOGIC issues and confirming the test code
 > is correct (element exists, API returns expected data, locator matches), if the test STILL fails
 > because the SDP application itself behaves differently from the expected specification — that's
 > a product bug. Do NOT keep retrying. Mark as `PRODUCT_BUG` and include it in the bug report.
 
-### 3c. LOCATOR / API / LOGIC Failures — Use Playwright MCP (session is already warm from Step 0.5)
+### 3c. Mode 2 — LOCATOR / LOGIC Failures — Use Playwright MCP (session is already warm from Step 0.5)
 
 > **Order of operations (MANDATORY):**
 > 1. Read ScenarioReport.html (Step 3a) — identify failure type
@@ -407,15 +551,60 @@ If unresolvable or PRODUCT_BUG, generate a bug report (see Bug Reports section b
 > from `@test-generator`, iterate through `tests_to_run.json` and apply the same
 > run+debug+fix loop (Steps 2-4) to each test sequentially.
 
-### Setup
+### Batch Setup (MANDATORY — every step must complete before running tests)
 
-1. Resolve paths (same as Step 0)
-2. **Playwright bootstrap** (same as Step 0.5 — MANDATORY before first test):
-   - Load Playwright tools via `tool_search_tool_regex` pattern `^mcp_microsoft_pla`
-   - Login to SDP using `browser_navigate` → `browser_type` → `browser_click` → `browser_snapshot`
-   - Verify session with `browser_evaluate` → `sdpAPICall` test call
-   - **If Playwright tools are NOT available → STOP and tell the user**
-3. Verify `tests_to_run.json` exists and list the tests:
+> **HARD GATE**: Steps 1-4 below are sequential prerequisites. If ANY step fails,
+> STOP and tell the user. Do NOT skip ahead. Do NOT create workaround scripts.
+
+**Step 1 — Resolve paths** (same as Step 0)
+
+**Step 2 — Playwright MCP bootstrap** (MANDATORY — auto-invoked):
+
+> **This is the SAME flow as Step 0.5a/0.5b.** The batch setup calls them automatically.
+> If `@test-runner` was already invoked (single mode first), the tools may already be loaded.
+> Still verify — do NOT assume.
+
+```bash
+# Auto-invoke preflight check:
+cd /home/balaji-12086/AI_AUTOMATION_CODE_GENERATOR
+./start_playwright_mcp.sh
+```
+Then load tools:
+```
+tool_search_tool_regex(pattern="^mcp_microsoft_pla")
+```
+- If tools found → proceed to Step 3.
+- If zero results → attempt recovery: `./start_playwright_mcp.sh --start`, retry tool search.
+- If STILL zero results → **PROMPT the user** (same interactive gate as Step 0.5b):
+
+> ⚠️ **Playwright MCP is not available for batch run.**
+>
+> **Options:**
+> - **(A) Fix Playwright now** — then re-invoke `@test-runner batch`.
+> - **(B) Continue in Mode 1 only** — report-based fixes applied, locator failures deferred.
+>
+> Which option? (A or B)
+
+- User chooses (A) → STOP batch. Do NOT proceed.
+- User chooses (B) → Set `PLAYWRIGHT_AVAILABLE = false`. Skip Steps 3-4. Jump to Step 5.
+
+**Step 3 — Login to SDP via Playwright** (session persists for all tests):
+```
+browser_navigate → $SDP_URL
+browser_snapshot → find login fields
+browser_fill_form / browser_type → fill email + password
+browser_click → Sign in
+browser_snapshot → verify dashboard loaded
+```
+
+**Step 4 — Verify session is active**:
+```
+browser_evaluate → () => sdpAPICall('changes', 'get', 'input_data={"list_info":{"row_count":"1"}}').responseJSON
+```
+- If null → login failed, retry Step 3 (max 2 retries)
+- If valid JSON → session is active, proceed
+
+**Step 5 — List tests and compile**:
 ```bash
 cat tests_to_run.json | .venv/bin/python -c "
 import json, sys
@@ -426,47 +615,54 @@ for i, t in enumerate(tests, 1):
     print(f'  {i}. {t[\"entity_class\"]}.{t[\"method_name\"]}')
 "
 ```
-
-3. Compile all relevant modules upfront (compile once, run many):
+Compile all relevant modules upfront (compile once, run many):
 ```bash
 CP="$BIN:$(find "$DEPS" -name "*.jar" | tr '\n' ':')"
 javac -encoding UTF-8 -cp "$CP" -d "$BIN" \
   $SRC/com/zoho/automater/selenium/modules/<module>/<entity>/*.java \
   $SRC/com/zoho/automater/selenium/modules/<module>/<entity>/common/*.java \
   $SRC/com/zoho/automater/selenium/modules/<module>/<entity>/utils/*.java
-# Repeat for each module referenced in tests_to_run.json
 ```
 
-### For Each Test — Same as Steps 2-4
+### For Each Test — Iterate Manually (NO batch scripts)
 
-Process every test the same way as a single test:
+> **You MUST process each test one at a time using tool calls.**
+> Do NOT create or invoke any Python/shell scripts to automate the loop.
+> The self-healing loop REQUIRES you (the AI agent) in the loop.
 
-1. **Configure** `run_test.py` with the test's `entity_class` + `method_name` (Step 2a)
+For test `[N/total]`:
+
+1. **Configure** `run_test.py` with the test's `entity_class` + `method_name` (edit RUN_CONFIG)
 2. **Run** `.venv/bin/python run_test.py 2>&1` (Step 2c)
-3. **Parse** result using ScenarioReport.html as sole authority (Step 2d)
-4. **On PASS** → report `[N/total] ✅ Entity.method — PASSED` → move to next test
-5. **On FAIL** → apply debug-fix loop (Step 3), max 3 attempts:
-   - Read ScenarioReport.html
-   - Classify failure (LOCATOR / API / LOGIC / COMPILE / PRODUCT_BUG)
-   - For LOCATOR: use Playwright MCP to inspect live UI and find correct selector
-   - Apply fix → targeted recompile → re-run
-   - After 3 failed attempts → mark as PRODUCT_BUG or UNRESOLVABLE → move on
+3. **Parse** result using ScenarioReport.html as **sole authority** (Step 2d)
+4. **On PASS** → report `[N/total] Entity.method — PASSED` → move to next test
+5. **On FAIL** → apply two-mode debug-fix loop (Step 3), max 3 attempts:
+   - Read ScenarioReport.html — identify failure step and exception
+   - **Classify as Mode 1 or Mode 2** (see Step 3b decision flow):
+     - **Mode 1** (API/timing/compile/data): Fix directly from report → recompile → re-run
+     - **Mode 2** (locator/DOM): Use Playwright → navigate → `browser_snapshot` → fix XPath → recompile → re-run
+     - If Mode 2 needed but `PLAYWRIGHT_AVAILABLE = false`: mark as `NEEDS_PLAYWRIGHT`, move on
+   - After 3 failed attempts → mark UNRESOLVABLE or PRODUCT_BUG → move on
 6. **Report progress** after each test:
    ```
-   [3/15] ✅ DetailsView.verifyAssociationTab — PASSED (attempt 1)
-   [4/15] 🔧 DetailsView.verifyParentChange — PASSED (attempt 2, fixed XPath)
-   [5/15] 🐛 ListView.verifyColumnSearch — PRODUCT_BUG after 3 attempts
+   [3/15] DetailsView.verifyAssociationTab — PASSED (attempt 1)
+   [4/15] DetailsView.verifyParentChange — PASSED (attempt 2, Mode 1: fixed API method)
+   [5/15] ListView.verifyColumnSearch — PASSED (attempt 2, Mode 2: fixed XPath via Playwright)
+   [6/15] DV.verifyExternalLink — NEEDS_PLAYWRIGHT (Mode 2 required, Playwright unavailable)
+   [7/15] LV.verifyBulkAction — PRODUCT_BUG after 3 attempts
    ```
 
 ### After All Tests — Summary + Bug Reports
 
 Present a summary table:
 ```
-| # | Entity.Method | Result | Attempts | Fix Applied |
-|---|--------------|--------|----------|-------------|
-| 1 | DV.verifyAssociationTab | ✅ PASS | 1 | — |
-| 2 | DV.verifyParentChange | ✅ PASS | 2 | 🔧 XPath fix |
-| 3 | LV.verifyColumnSearch | 🐛 BUG | 3 | — (product issue) |
+| # | Entity.Method | Result | Mode | Attempts | Fix Applied |
+|---|--------------|--------|------|----------|-------------|
+| 1 | DV.verifyAssociationTab | ✅ PASS | — | 1 | — |
+| 2 | DV.verifyParentChange | ✅ PASS | M1 | 2 | 🔧 Fixed API method (PUT→POST) |
+| 3 | LV.verifyColumnSearch | ✅ PASS | M2 | 2 | 🔧 Fixed XPath via Playwright |
+| 4 | DV.verifyExternalLink | 🔍 DEFERRED | M2 | 1 | Needs Playwright (unavailable) |
+| 5 | LV.verifyBulkAction | 🐛 BUG | — | 3 | — (product issue) |
 ```
 
 For every test that ends as **PRODUCT_BUG** or **UNRESOLVABLE**, generate a bug report:
@@ -518,48 +714,28 @@ When writing tests to `tests_to_run.json` for batch execution:
 
 Placeholders `$(SDP_URL)`, `$(SDP_ADMIN_EMAIL)`, `$(SDP_PORTAL)` are resolved at runtime from `config/project_config.py`.
 
-### batch_run_helper.py API
+### How Batch Execution Works (NO external scripts)
 
-The batch runner is invoked from the terminal. It supports two modes:
+> **CRITICAL**: You MUST iterate `tests_to_run.json` entries YOURSELF using tool calls.
+> You MUST NOT create or invoke ANY Python script that runs multiple tests.
+> External scripts are dumb executors with ZERO self-healing capability —
+> they bypass Playwright entirely.
 
-```bash
-# Single test (returns RESULT:PASS|... or RESULT:FAIL|...)
-.venv/bin/python batch_run_helper.py <EntityClass> <methodName>
-
-# Full batch from tests_to_run.json (runs all sequentially)
-.venv/bin/python batch_run_helper.py --batch
-
-# Batch from a specific JSON file
-.venv/bin/python batch_run_helper.py --batch --json path/to/tests.json
+**The correct batch loop is:**
+```
+For i, test in tests_to_run.json:
+  1. Edit run_test.py RUN_CONFIG with test[i].entity_class + method_name
+  2. Run: .venv/bin/python run_test.py 2>&1
+  3. Parse ScenarioReport.html (sole authority)
+  4. If PASS → log result, move to test[i+1]
+  5. If FAIL → Playwright debug-fix loop (Step 3), max 3 attempts
+     → After fix: recompile → re-run → re-parse
+  6. After 3 failed attempts → mark UNRESOLVABLE, move to test[i+1]
 ```
 
-**Batch output files:**
-- `batch_run_results.json` — structured results with status, report_path, failure_info per test
-- `batch_run_results.md` — human-readable Markdown summary table
-
-**Structured result format** (in `batch_run_results.json`):
-```json
-{
-  "started_at": "2026-03-11 14:30:00",
-  "finished_at": "2026-03-11 15:45:00",
-  "total": 34,
-  "passed": 28,
-  "failed": 6,
-  "skipped": 0,
-  "results": [
-    {
-      "entity_class": "DetailsView",
-      "method_name": "verifyAssociationTab",
-      "scenario_id": "LNKCHG_DV_001",
-      "status": "PASS",
-      "report_path": "/path/to/ScenarioReport.html",
-      "failure_info": "",
-      "duration_seconds": 45.2,
-      "test_key": "DetailsView.verifyAssociationTab"
-    }
-  ]
-}
-```
+**Results tracking**: Maintain a todo list with each test's status. At the end,
+present a summary table to the user. Do NOT write results to any JSON/MD file
+unless the user explicitly requests it.
 
 ---
 
@@ -742,4 +918,41 @@ NOT:
 6. Read ChangeAPIUtil.java (200 lines)
 7. "Now I understand the code, let me try Playwright..."
 Total: 10+ tool calls before even opening a browser — FORBIDDEN
+```
+
+#### 7. NEVER create new Python or shell scripts
+
+**What happened**: The agent created batch runner scripts that called `RunnerAgent.run_test()`
+in a loop. These scripts bypassed the entire Playwright self-healing loop because they are
+dumb executors with zero diagnostic capability — tests failed with no diagnosis.
+
+**Rule**: You MUST NOT create, write, or execute ANY new script file. This includes:
+- Python scripts (`run_batch_*.py`, `batch_run*.py`, `debug_*.py`, `fix_*.py`, etc.)
+- Shell scripts (`run_all.sh`, `batch.sh`, etc.)
+- Java diagnostic methods or throwaway test classes
+- Jupyter notebooks, temporary files, or helper utilities
+
+The ONLY files you may **edit** (not create) are:
+- `run_test.py` — to update RUN_CONFIG for each test
+- Java source files under `$PROJECT/src/` — to fix locators, methods, data
+- JSON files under `$PROJECT/resources/` — to fix test data
+
+```
+❌ FORBIDDEN: Creating any script that loops through tests_to_run.json
+❌ FORBIDDEN: Creating a Python script that calls RunnerAgent in a loop
+❌ FORBIDDEN: "Let me write a helper script to automate this..."
+✅ CORRECT:  Edit run_test.py RUN_CONFIG → run → parse → Playwright on failure → fix → repeat
+```
+
+#### 8. NEVER delegate batch execution to external scripts
+
+**Rule**: For batch runs, YOU (the AI agent) must be in the loop for every test:
+```
+YOU edit run_test.py → YOU run it → YOU parse the report → YOU launch Playwright on failure → YOU fix the code → YOU re-run
+```
+Never hand off the iteration to a script. The self-healing loop REQUIRES an AI agent in the middle.
+
+```
+❌ FORBIDDEN: Creating or invoking ANY script that loops through tests_to_run.json
+✅ CORRECT:  For each test: edit run_test.py → run → parse → Playwright if FAIL → fix → re-run
 ```
