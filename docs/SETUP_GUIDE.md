@@ -50,7 +50,23 @@ Now open this folder in VS Code: **File → Open Folder** → select `AI_AUTOMAT
 
 ## Step 2 — Project Setup
 
-You have **two options** — the Web UI (recommended) or the Copilot Chat agent.
+You have **two options** — the Web UI or the Copilot Chat agent. Both perform the full setup including use-case document upload and analysis.
+
+| Capability | Web UI | @setup-project agent |
+|-----------|--------|---------------------|
+| Mode selection (generate only / generate & run / reconfigure) | ✅ | ✅ |
+| Hg clone with branch creation fallback | ✅ | ✅ |
+| Password entry | Browser modal (secure) | Terminal prompt (secure) |
+| Owner selection + new member registration | ✅ | ✅ |
+| `.env` + `.gitignore` + VS Code settings | ✅ | ✅ |
+| Framework compilation | ✅ | ✅ |
+| Testcase/ folder creation + spreadsheet conversion | ✅ | ✅ |
+| **Use-case document upload** | ✅ (drag & drop modal) | ✅ (blocks until uploaded) |
+| **Use-case analysis report** | ✅ (runs `generate_batch_summary.py`) | ✅ (runs `generate_batch_summary.py`) |
+| **Folder-exists handling** (Pull/Delete/Use-as-is) | Auto-pulls | ✅ (asks user) |
+| **Reveal project in VS Code Explorer** | ❌ | ✅ |
+
+> **TL;DR**: Use the **Web UI** for quick, full-featured setup. Use `@setup-project` only if you need interactive folder-exists choices or VS Code Explorer reveal.
 
 ### Option A — Web UI Setup (recommended)
 

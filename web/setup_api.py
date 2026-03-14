@@ -21,7 +21,7 @@ import uuid
 from pathlib import Path
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
@@ -323,7 +323,61 @@ def _execute_setup(setup_id: str, req: SetupRequest):
         if doc_count > 0:
             _log(setup_id, f"Found {doc_count} use-case document(s) in Testcase/", "success")
         else:
-            _log(setup_id, "No use-case documents in Testcase/ yet — upload them before running @test-generator", "info")
+            _log(setup_id, "No use-case documents in Testcase/ — prompting for upload...", "info")
+
+        # ── Step 3b: Use-case document gate ──────────────────────────
+        # Prompt user to upload use-case docs if Testcase/ is empty
+        if doc_count == 0 and mode != "reconfigure":
+            state = _setups[setup_id]
+            state["usecase_upload_resolved"] = threading.Event()
+            state["usecase_files"] = []
+
+            _push(setup_id, "usecase_upload_prompt", {
+                "project_name": project_name,
+            })
+
+            _log(setup_id, "Waiting for use-case document upload...", "info")
+            resolved = state["usecase_upload_resolved"].wait(timeout=600)
+            if resolved and state.get("usecase_files"):
+                uploaded = state["usecase_files"]
+                _log(setup_id, f"Uploaded {len(uploaded)} file(s): {', '.join(uploaded)}", "success")
+
+                # Re-count docs after upload
+                doc_count = len(list(testcase_dir.glob("*.csv"))) + len(list(testcase_dir.glob("*.md"))) + len(list(testcase_dir.glob("*.txt")))
+            elif resolved and state.get("usecase_skipped"):
+                _log(setup_id, "Use-case upload skipped — you can upload later via @test-generator", "info")
+            else:
+                _log(setup_id, "Upload timed out — continuing without use-case docs", "info")
+
+        # ── Step 3c: Run use-case analysis report ────────────────────
+        csv_count = len(list(testcase_dir.glob("*.csv")))
+        if csv_count > 0 and mode != "reconfigure":
+            _log(setup_id, "Running use-case analysis...", "info")
+            rc, output = _run_cmd(
+                setup_id,
+                f'"{WORKSPACE_DIR / ".venv" / "bin" / "python"}" generate_batch_summary.py --mode usecase-analysis 2>&1',
+                cwd=str(WORKSPACE_DIR),
+                timeout=120,
+            )
+            # Find the generated analysis report
+            ai_reports_dir = project_dir / "ai_reports"
+            if ai_reports_dir.exists():
+                reports = sorted(ai_reports_dir.glob("USECASE_ANALYSIS_*.md"), reverse=True)
+                if reports:
+                    _log(setup_id, f"Analysis report: {reports[0].name}", "success")
+                    # Send report content to the UI
+                    try:
+                        report_content = reports[0].read_text(encoding="utf-8")
+                        _push(setup_id, "usecase_analysis_report", {
+                            "filename": reports[0].name,
+                            "content": report_content,
+                        })
+                    except Exception:
+                        pass
+            if rc != 0:
+                _log(setup_id, "Analysis completed with warnings — check report", "info")
+            else:
+                _log(setup_id, "Use-case analysis complete", "success")
 
         # ── Step 4: Owner selection ──────────────────────────────────────
         hg_username = req.hg_username or ""
@@ -638,3 +692,201 @@ async def list_owners():
     """Return the full owner constant list from _OWNER_MAP (no project clone required)."""
     from config.project_config import _OWNER_MAP
     return {"owners": sorted(set(_OWNER_MAP.values()))}
+
+
+@router.post("/upload-usecase")
+async def upload_usecase(
+    setup_id: str = Form(...),
+    project_name: str = Form(...),
+    files: list[UploadFile] = File(...),
+):
+    """Receive use-case document uploads, save to Testcase/, convert spreadsheets to CSV."""
+    # Validate project_name — prevent path traversal
+    safe_name = re.sub(r'[^a-zA-Z0-9_\-]', '', project_name)
+    if safe_name != project_name:
+        raise HTTPException(400, "Invalid project name")
+
+    testcase_dir = WORKSPACE_DIR / project_name / "Testcase"
+    testcase_dir.mkdir(parents=True, exist_ok=True)
+
+    allowed_exts = {".csv", ".xlsx", ".xls", ".md", ".txt"}
+    saved_files = []
+
+    for f in files:
+        ext = Path(f.filename).suffix.lower()
+        if ext not in allowed_exts:
+            continue
+        # Sanitize filename — keep only safe chars
+        safe_filename = re.sub(r'[^a-zA-Z0-9_\-\.]', '_', f.filename)
+        dest = testcase_dir / safe_filename
+        content = await f.read()
+        dest.write_bytes(content)
+        saved_files.append(safe_filename)
+
+    # Convert xlsx/xls to CSV
+    xlsx_files = list(testcase_dir.glob("*.xlsx")) + list(testcase_dir.glob("*.xls"))
+    for xlf in xlsx_files:
+        try:
+            subprocess.run(
+                [str(WORKSPACE_DIR / ".venv" / "bin" / "python"), "-c",
+                 "import sys, csv, os, openpyxl; "
+                 "wb = openpyxl.load_workbook(sys.argv[1], data_only=True); "
+                 "base = os.path.splitext(sys.argv[1])[0]; "
+                 "[csv.writer(open(base + '_' + s.replace(' ', '_') + '.csv', 'w', newline='', encoding='utf-8')).writerows(wb[s].values) for s in wb.sheetnames]",
+                 str(xlf)],
+                capture_output=True, text=True, cwd=str(WORKSPACE_DIR), timeout=30,
+            )
+        except Exception:
+            pass  # conversion failure is non-fatal
+
+    # Signal the setup thread that files are uploaded
+    state = _setups.get(setup_id)
+    if state:
+        state["usecase_files"] = saved_files
+        evt = state.get("usecase_upload_resolved")
+        if evt:
+            evt.set()
+
+    return {"ok": True, "files": saved_files}
+
+
+@router.post("/skip-usecase-upload")
+async def skip_usecase_upload(data: dict):
+    """User chose to skip use-case upload — unblock the setup thread."""
+    setup_id = data.get("setup_id", "")
+    state = _setups.get(setup_id)
+    if not state:
+        raise HTTPException(404, "Setup not found")
+
+    state["usecase_skipped"] = True
+    evt = state.get("usecase_upload_resolved")
+    if evt:
+        evt.set()
+    return {"ok": True}
+
+
+@router.post("/upload-and-analyze")
+async def upload_and_analyze(
+    project_name: str = Form(...),
+    files: list[UploadFile] = File(...),
+):
+    """Standalone: upload use-case docs to Testcase/ and run analysis. Works outside the setup flow."""
+    # Validate project_name — prevent path traversal
+    safe_name = re.sub(r'[^a-zA-Z0-9_\-]', '', project_name)
+    if safe_name != project_name:
+        raise HTTPException(400, "Invalid project name")
+
+    project_dir = WORKSPACE_DIR / project_name
+    if not project_dir.is_dir():
+        raise HTTPException(400, f"Project folder {project_name}/ not found")
+
+    testcase_dir = project_dir / "Testcase"
+    testcase_dir.mkdir(parents=True, exist_ok=True)
+
+    allowed_exts = {".csv", ".xlsx", ".xls", ".md", ".txt"}
+    saved_files = []
+
+    for f in files:
+        ext = Path(f.filename).suffix.lower()
+        if ext not in allowed_exts:
+            continue
+        safe_filename = re.sub(r'[^a-zA-Z0-9_\-\.]', '_', f.filename)
+        dest = testcase_dir / safe_filename
+        content = await f.read()
+        dest.write_bytes(content)
+        saved_files.append(safe_filename)
+
+    # Convert xlsx/xls to CSV
+    xlsx_files = list(testcase_dir.glob("*.xlsx")) + list(testcase_dir.glob("*.xls"))
+    for xlf in xlsx_files:
+        try:
+            subprocess.run(
+                [str(WORKSPACE_DIR / ".venv" / "bin" / "python"), "-c",
+                 "import sys, csv, os, openpyxl; "
+                 "wb = openpyxl.load_workbook(sys.argv[1], data_only=True); "
+                 "base = os.path.splitext(sys.argv[1])[0]; "
+                 "[csv.writer(open(base + '_' + s.replace(' ', '_') + '.csv', 'w', newline='', encoding='utf-8')).writerows(wb[s].values) for s in wb.sheetnames]",
+                 str(xlf)],
+                capture_output=True, text=True, cwd=str(WORKSPACE_DIR), timeout=30,
+            )
+        except Exception:
+            pass
+
+    # Run analysis — temporarily set PROJECT_NAME for the subprocess
+    env = os.environ.copy()
+    env["PROJECT_NAME"] = project_name
+    try:
+        result = subprocess.run(
+            [str(WORKSPACE_DIR / ".venv" / "bin" / "python"),
+             "generate_batch_summary.py", "--mode", "usecase-analysis"],
+            capture_output=True, text=True, cwd=str(WORKSPACE_DIR), timeout=120, env=env,
+        )
+        analysis_output = result.stdout + result.stderr
+    except Exception as e:
+        analysis_output = f"Analysis error: {e}"
+
+    # Find latest report
+    ai_reports_dir = project_dir / "ai_reports"
+    report_content = None
+    report_filename = None
+    if ai_reports_dir.exists():
+        reports = sorted(ai_reports_dir.glob("USECASE_ANALYSIS_*.md"), reverse=True)
+        if reports:
+            report_filename = reports[0].name
+            try:
+                report_content = reports[0].read_text(encoding="utf-8")
+            except Exception:
+                pass
+
+    return {
+        "ok": True,
+        "files": saved_files,
+        "analysis_output": analysis_output,
+        "report_filename": report_filename,
+        "report_content": report_content,
+    }
+
+
+@router.post("/run-analysis")
+async def run_analysis(data: dict):
+    """Standalone: run use-case analysis on existing Testcase/ CSVs (no upload needed)."""
+    project_name = data.get("project_name", "")
+    safe_name = re.sub(r'[^a-zA-Z0-9_\-]', '', project_name)
+    if safe_name != project_name or not (WORKSPACE_DIR / project_name).is_dir():
+        raise HTTPException(400, "Invalid project name")
+
+    testcase_dir = WORKSPACE_DIR / project_name / "Testcase"
+    csv_count = len(list(testcase_dir.glob("*.csv"))) if testcase_dir.exists() else 0
+    if csv_count == 0:
+        raise HTTPException(400, "No CSV files found in Testcase/ — upload documents first")
+
+    env = os.environ.copy()
+    env["PROJECT_NAME"] = project_name
+    try:
+        result = subprocess.run(
+            [str(WORKSPACE_DIR / ".venv" / "bin" / "python"),
+             "generate_batch_summary.py", "--mode", "usecase-analysis"],
+            capture_output=True, text=True, cwd=str(WORKSPACE_DIR), timeout=120, env=env,
+        )
+        analysis_output = result.stdout + result.stderr
+    except Exception as e:
+        raise HTTPException(500, f"Analysis failed: {e}")
+
+    ai_reports_dir = WORKSPACE_DIR / project_name / "ai_reports"
+    report_content = None
+    report_filename = None
+    if ai_reports_dir.exists():
+        reports = sorted(ai_reports_dir.glob("USECASE_ANALYSIS_*.md"), reverse=True)
+        if reports:
+            report_filename = reports[0].name
+            try:
+                report_content = reports[0].read_text(encoding="utf-8")
+            except Exception:
+                pass
+
+    return {
+        "ok": True,
+        "analysis_output": analysis_output,
+        "report_filename": report_filename,
+        "report_content": report_content,
+    }

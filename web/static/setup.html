@@ -148,6 +148,39 @@
     /* ── Hidden ──────────────────────────────────────── */
     .hidden { display: none !important; }
 
+    /* ── Upload dropzone ────────────────────────────── */
+    .dropzone {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 28px 20px; text-align: center; cursor: pointer;
+      transition: .2s; background: var(--surface);
+    }
+    .dropzone:hover, .dropzone.dragover { border-color: var(--blue); background: var(--surface2); }
+    .dropzone .dz-icon { font-size: 32px; margin-bottom: 8px; }
+    .dropzone .dz-text { color: var(--text-dim); font-size: 13px; }
+    .dropzone .dz-text strong { color: var(--text); }
+    .file-list { margin-top: 10px; font-size: 12px; color: var(--text-dim); }
+    .file-list .file-item {
+      display: flex; align-items: center; gap: 6px; padding: 4px 0;
+    }
+    .file-list .file-item .remove-file {
+      color: var(--red); cursor: pointer; font-size: 14px; border: none;
+      background: none; padding: 0 4px; line-height: 1;
+    }
+
+    /* ── Analysis report panel ──────────────────────── */
+    .report-panel {
+      margin-top: 12px; padding: 14px; border-radius: var(--radius);
+      background: var(--surface2); border: 1px solid var(--border);
+    }
+    .report-panel summary {
+      cursor: pointer; font-size: 13px; font-weight: 600; color: var(--green);
+    }
+    .report-panel pre {
+      margin-top: 10px; font-family: var(--mono); font-size: 12px;
+      color: var(--text); white-space: pre-wrap; line-height: 1.5;
+      max-height: 400px; overflow-y: auto;
+    }
+
     /* ── Responsive ──────────────────────────────────── */
     @media (max-width: 600px) {
       .mode-selector { flex-direction: column; }
@@ -296,6 +329,42 @@
     </div>
   </form>
 
+  <!-- ── Standalone Upload & Analyze ─────────────────────── -->
+  <div id="standalone-section" style="margin-top:36px;padding:24px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);">
+    <h3 style="font-size:16px;margin-bottom:6px;">📄 Upload & Analyze Use-Case Documents</h3>
+    <p style="color:var(--text-dim);font-size:13px;margin-bottom:16px;">Upload use-case files to an existing project and run analysis — no full setup required.</p>
+
+    <div style="display:flex;gap:12px;margin-bottom:14px;">
+      <div class="field" style="flex:1;margin-bottom:0;">
+        <label style="font-size:13px;">Project Folder <span class="required">*</span></label>
+        <select id="sa-project" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:14px;">
+          <option value="">Loading...</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="dropzone" id="sa-dropzone"
+         onclick="document.getElementById('sa-file-input').click()"
+         ondragover="event.preventDefault(); this.classList.add('dragover')"
+         ondragleave="this.classList.remove('dragover')"
+         ondrop="handleSaDrop(event)">
+      <div class="dz-icon">📁</div>
+      <div class="dz-text"><strong>Click to browse</strong> or drag & drop files here</div>
+      <div class="dz-text" style="font-size:11px;margin-top:4px;">Accepted: .csv, .xlsx, .xls, .md, .txt</div>
+    </div>
+    <input type="file" id="sa-file-input" multiple accept=".csv,.xlsx,.xls,.md,.txt" style="display:none"
+           onchange="handleSaFileSelect(this.files)" />
+    <div class="file-list" id="sa-file-list"></div>
+    <div id="sa-err" style="color:var(--red);font-size:12px;margin-top:8px;display:none;"></div>
+
+    <div style="margin-top:14px;display:flex;gap:10px;">
+      <button class="btn btn-primary" id="sa-upload-btn" onclick="saUploadAndAnalyze()">📤 Upload & Analyze</button>
+      <button class="btn btn-secondary" id="sa-analyze-btn" onclick="saAnalyzeOnly()">📊 Analyze Existing</button>
+    </div>
+
+    <div id="sa-result" style="display:none;margin-top:14px;"></div>
+  </div>
+
   <!-- ── Progress Panel ──────────────────────────────────── -->
   <div id="progress-panel">
     <h3 id="progress-title">⏳ Setting up project...</h3>
@@ -358,6 +427,34 @@
       <button class="btn btn-primary" onclick="submitHgPassword()">🔓 Submit & Clone</button>
     </div>
   </div>
+
+  <!-- ── Use-Case Upload Modal ───────────────────────────── -->
+  <div class="modal-overlay" id="usecase-upload-modal">
+    <div class="modal" style="width:520px;">
+      <h3>📄 Upload Use-Case Documents</h3>
+      <p style="color:var(--text-dim);font-size:13px;margin-bottom:14px;">
+        Upload your use-case CSV, XLSX, or XLS files. These will be placed in
+        <code style="color:var(--yellow);">Testcase/</code> and analyzed automatically.
+      </p>
+      <div class="dropzone" id="usecase-dropzone"
+           onclick="document.getElementById('usecase-file-input').click()"
+           ondragover="event.preventDefault(); this.classList.add('dragover')"
+           ondragleave="this.classList.remove('dragover')"
+           ondrop="handleUsecaseDrop(event)">
+        <div class="dz-icon">📁</div>
+        <div class="dz-text"><strong>Click to browse</strong> or drag & drop files here</div>
+        <div class="dz-text" style="font-size:11px;margin-top:4px;">Accepted: .csv, .xlsx, .xls, .md, .txt</div>
+      </div>
+      <input type="file" id="usecase-file-input" multiple accept=".csv,.xlsx,.xls,.md,.txt" style="display:none"
+             onchange="handleUsecaseFileSelect(this.files)" />
+      <div class="file-list" id="usecase-file-list"></div>
+      <div id="usecase-upload-err" style="color:var(--red);font-size:12px;margin-top:8px;display:none;"></div>
+      <div style="margin-top:14px;display:flex;gap:10px;">
+        <button class="btn btn-primary" id="usecase-upload-btn" onclick="submitUsecaseUpload()">📤 Upload & Analyze</button>
+        <button class="btn btn-secondary" onclick="skipUsecaseUpload()">Skip for now</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -367,6 +464,8 @@ let selectedOwner = null;
 let autoDetectedOwner = null;
 let allOwners = [];
 let setupStreamId = null;
+let usecaseProjectName = null;
+let usecaseFiles = [];  // File objects staged for upload
 
 // ── Password show/hide toggle ──────────────────────────────
 function togglePw(fieldId, btn) {
@@ -595,6 +694,11 @@ function streamSetupLogs(setupId) {
       }
     } else if (msg.type === 'hg_password_prompt') {
       showHgPasswordModal(msg.data.username, msg.data.branch);
+    } else if (msg.type === 'usecase_upload_prompt') {
+      usecaseProjectName = msg.data.project_name;
+      showUsecaseUploadModal();
+    } else if (msg.type === 'usecase_analysis_report') {
+      showAnalysisReport(msg.data.filename, msg.data.content);
     } else if (msg.type === 'hg_prompt') {
       appendLog('⚠️ Hg clone requires authentication.', 'info');
     }
@@ -764,7 +868,7 @@ async function registerNewMember() {
     const data = await resp.json();
     if (resp.ok && data.ok) {
       selectedOwner = data.owner;
-      appendLog(`✅ Registered new member: ${data.owner}`, 'success');
+      appendLog(`Registered new member: ${data.owner}`, 'success');
       // Close modal
       document.getElementById('owner-modal').classList.remove('visible');
       document.getElementById('new-member-form').classList.add('hidden');
@@ -775,6 +879,258 @@ async function registerNewMember() {
   } catch (e) {
     errEl.textContent = 'Network error: ' + e.message;
     errEl.style.display = 'block';
+  }
+}
+
+// ── Use-Case Upload Modal ──────────────────────────────────
+function showUsecaseUploadModal() {
+  usecaseFiles = [];
+  renderUsecaseFileList();
+  document.getElementById('usecase-file-input').value = '';
+  document.getElementById('usecase-upload-err').style.display = 'none';
+  document.getElementById('usecase-upload-modal').classList.add('visible');
+}
+
+function handleUsecaseDrop(event) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('dragover');
+  if (event.dataTransfer.files) {
+    addUsecaseFiles(event.dataTransfer.files);
+  }
+}
+
+function handleUsecaseFileSelect(fileList) {
+  addUsecaseFiles(fileList);
+}
+
+function addUsecaseFiles(fileList) {
+  const allowed = ['.csv', '.xlsx', '.xls', '.md', '.txt'];
+  for (const f of fileList) {
+    const ext = f.name.substring(f.name.lastIndexOf('.')).toLowerCase();
+    if (allowed.includes(ext)) {
+      // Avoid duplicates by name
+      if (!usecaseFiles.some(uf => uf.name === f.name)) {
+        usecaseFiles.push(f);
+      }
+    }
+  }
+  renderUsecaseFileList();
+}
+
+function removeUsecaseFile(index) {
+  usecaseFiles.splice(index, 1);
+  renderUsecaseFileList();
+}
+
+function renderUsecaseFileList() {
+  const list = document.getElementById('usecase-file-list');
+  if (usecaseFiles.length === 0) {
+    list.innerHTML = '';
+    return;
+  }
+  list.innerHTML = usecaseFiles.map((f, i) =>
+    `<div class="file-item">
+       <span>📄 ${f.name} <span style="color:var(--text-dim)">(${(f.size / 1024).toFixed(1)} KB)</span></span>
+       <button class="remove-file" onclick="removeUsecaseFile(${i})" title="Remove">✕</button>
+     </div>`
+  ).join('');
+}
+
+async function submitUsecaseUpload() {
+  const errEl = document.getElementById('usecase-upload-err');
+  errEl.style.display = 'none';
+
+  if (usecaseFiles.length === 0) {
+    errEl.textContent = 'Please select at least one file';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('usecase-upload-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Uploading...';
+
+  const formData = new FormData();
+  formData.append('setup_id', setupStreamId);
+  formData.append('project_name', usecaseProjectName);
+  for (const f of usecaseFiles) {
+    formData.append('files', f);
+  }
+
+  try {
+    const resp = await fetch('/api/setup/upload-usecase', {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await resp.json();
+    if (resp.ok && data.ok) {
+      document.getElementById('usecase-upload-modal').classList.remove('visible');
+      appendLog(`Uploaded ${data.files.length} file(s): ${data.files.join(', ')}`, 'success');
+    } else {
+      errEl.textContent = data.detail || 'Upload failed';
+      errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Network error: ' + e.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📤 Upload & Analyze';
+  }
+}
+
+async function skipUsecaseUpload() {
+  document.getElementById('usecase-upload-modal').classList.remove('visible');
+  appendLog('Use-case upload skipped', 'info');
+  try {
+    await fetch('/api/setup/skip-usecase-upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ setup_id: setupStreamId }),
+    });
+  } catch (e) { /* non-fatal */ }
+}
+
+// ── Analysis Report Display ────────────────────────────────
+function showAnalysisReport(filename, content) {
+  const panel = document.createElement('details');
+  panel.className = 'report-panel';
+  panel.innerHTML =
+    `<summary>📊 ${filename} (click to expand)</summary>` +
+    `<pre>${content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>`;
+  document.getElementById('log-box').parentNode.insertBefore(panel, document.getElementById('result-banner'));
+}
+
+// ── Standalone Upload & Analyze ────────────────────────────
+let saFiles = [];
+
+(async function loadSaProjects() {
+  try {
+    const resp = await fetch('/api/setup/projects');
+    const data = await resp.json();
+    const sel = document.getElementById('sa-project');
+    sel.innerHTML = '';
+    if (data.projects && data.projects.length > 0) {
+      data.projects.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p; opt.textContent = p;
+        sel.appendChild(opt);
+      });
+    } else {
+      sel.innerHTML = '<option value="">No projects found</option>';
+    }
+  } catch (e) {
+    document.getElementById('sa-project').innerHTML = '<option value="">Error loading</option>';
+  }
+})();
+
+function handleSaDrop(event) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('dragover');
+  if (event.dataTransfer.files) addSaFiles(event.dataTransfer.files);
+}
+function handleSaFileSelect(fileList) { addSaFiles(fileList); }
+
+function addSaFiles(fileList) {
+  const allowed = ['.csv', '.xlsx', '.xls', '.md', '.txt'];
+  for (const f of fileList) {
+    const ext = f.name.substring(f.name.lastIndexOf('.')).toLowerCase();
+    if (allowed.includes(ext) && !saFiles.some(sf => sf.name === f.name)) {
+      saFiles.push(f);
+    }
+  }
+  renderSaFileList();
+}
+
+function removeSaFile(index) { saFiles.splice(index, 1); renderSaFileList(); }
+
+function renderSaFileList() {
+  const list = document.getElementById('sa-file-list');
+  if (saFiles.length === 0) { list.innerHTML = ''; return; }
+  list.innerHTML = saFiles.map((f, i) =>
+    `<div class="file-item">
+       <span>📄 ${f.name} <span style="color:var(--text-dim)">(${(f.size / 1024).toFixed(1)} KB)</span></span>
+       <button class="remove-file" onclick="removeSaFile(${i})" title="Remove">✕</button>
+     </div>`
+  ).join('');
+}
+
+function showSaResult(html) {
+  const el = document.getElementById('sa-result');
+  el.innerHTML = html;
+  el.style.display = 'block';
+}
+
+async function saUploadAndAnalyze() {
+  const errEl = document.getElementById('sa-err');
+  errEl.style.display = 'none';
+  const project = document.getElementById('sa-project').value;
+  if (!project) { errEl.textContent = 'Select a project'; errEl.style.display = 'block'; return; }
+  if (saFiles.length === 0) { errEl.textContent = 'Select at least one file'; errEl.style.display = 'block'; return; }
+
+  const btn = document.getElementById('sa-upload-btn');
+  btn.disabled = true; btn.textContent = '⏳ Uploading & analyzing...';
+
+  const formData = new FormData();
+  formData.append('project_name', project);
+  for (const f of saFiles) formData.append('files', f);
+
+  try {
+    const resp = await fetch('/api/setup/upload-and-analyze', { method: 'POST', body: formData });
+    const data = await resp.json();
+    if (resp.ok && data.ok) {
+      let html = `<div class="result-banner ok">✅ Uploaded ${data.files.length} file(s) — analysis complete</div>`;
+      if (data.report_content) {
+        html += `<details class="report-panel" open>
+          <summary>📊 ${data.report_filename}</summary>
+          <pre>${data.report_content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+        </details>`;
+      }
+      showSaResult(html);
+      saFiles = []; renderSaFileList();
+      document.getElementById('sa-file-input').value = '';
+    } else {
+      errEl.textContent = data.detail || 'Upload failed'; errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Network error: ' + e.message; errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = '📤 Upload & Analyze';
+  }
+}
+
+async function saAnalyzeOnly() {
+  const errEl = document.getElementById('sa-err');
+  errEl.style.display = 'none';
+  const project = document.getElementById('sa-project').value;
+  if (!project) { errEl.textContent = 'Select a project'; errEl.style.display = 'block'; return; }
+
+  const btn = document.getElementById('sa-analyze-btn');
+  btn.disabled = true; btn.textContent = '⏳ Analyzing...';
+
+  try {
+    const resp = await fetch('/api/setup/run-analysis', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ project_name: project }),
+    });
+    const data = await resp.json();
+    if (resp.ok && data.ok) {
+      let html = `<div class="result-banner ok">✅ Analysis complete</div>`;
+      if (data.report_content) {
+        html += `<details class="report-panel" open>
+          <summary>📊 ${data.report_filename}</summary>
+          <pre>${data.report_content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+        </details>`;
+      }
+      showSaResult(html);
+    } else {
+      errEl.textContent = data.detail || 'Analysis failed'; errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Network error: ' + e.message; errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = '📊 Analyze Existing';
   }
 }
 </script>
