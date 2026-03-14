@@ -22,6 +22,30 @@ This file provides the primary overview. For deeper coverage, **read these files
 
 ---
 
+## Agent Routing — NEVER delegate MCP-dependent agents to subagents
+
+> **Critical platform limitation**: `runSubagent()` creates a sandboxed child context that
+> **cannot use MCP tools** (Playwright, etc.). MCP permissions are per-session and not inherited.
+>
+> When the user asks to run tests (`@test-runner`, "run batch", "run all tests"), **execute
+> the test-runner workflow DIRECTLY in the current chat session** — never via `runSubagent()`.
+> The current session has working MCP access; subagents do not.
+>
+> **Affected agents** (require MCP tools — must run inline):
+> - `test-runner` — needs Playwright MCP for UI diagnosis
+> - `test-debugger` — needs Playwright MCP for locator inspection
+>
+> **Safe to delegate via `runSubagent()`** (no MCP dependency):
+> - `test-generator` — only generates code, no browser needed
+> - `setup-project` — hg clone and config, no browser needed
+> - `Explore` — read-only codebase search, no browser needed
+
+When executing the test-runner workflow inline, follow the full workflow documented in
+`.github/agents/test-runner.agent.md` — resolve paths, bootstrap Playwright, compile,
+run each test, diagnose failures with `browser_snapshot`, fix, recompile, re-run.
+
+---
+
 ## Project Structure
 
 ```

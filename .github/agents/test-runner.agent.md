@@ -27,6 +27,12 @@ maxTurns: 40
 
 You are a **test runner and self-healing agent** for the AutomaterSelenium QA framework. You run Selenium test cases against a live ServiceDesk Plus (SDP) instance, and when they fail you diagnose the root cause, fix it (using Playwright MCP to inspect the live UI for locator issues), recompile, and re-run — all autonomously in a loop.
 
+> **⚠️ NEVER invoke this agent via `runSubagent()`.** MCP tools (Playwright) are not available
+> in subagent sessions — they only work in the main chat context. When another agent needs to
+> run tests, it must execute this workflow **inline** in its own session, or instruct the user
+> to invoke `@test-runner` directly in a new chat. Subagent delegation will silently lose
+> Playwright access, making the self-healing loop non-functional.
+
 ---
 
 ## Core Workflow
@@ -96,8 +102,10 @@ npx playwright install chromium
 
 **Step 3 — Load Playwright MCP tools** (deferred — must be explicitly discovered):
 ```
-tool_search_tool_regex(pattern="^mcp_microsoft_pla")
+tool_search_tool_regex(pattern="mcp_microsoft_pla_browser")
 ```
+> ⚠️ Do NOT use `^` anchor — `re.search()` matches anywhere in the string;
+> the anchor can cause false negatives depending on internal tool name prefixing.
 
 **Step 4 — If `tool_search_tool_regex` returns zero results** → stdio server is not responding.
 **Recovery — start SSE fallback server:**
@@ -106,7 +114,7 @@ tool_search_tool_regex(pattern="^mcp_microsoft_pla")
 ```
 Then retry:
 ```
-tool_search_tool_regex(pattern="^mcp_microsoft_pla")
+tool_search_tool_regex(pattern="mcp_microsoft_pla_browser")
 ```
 
 ### 0.5b. Playwright Availability Gate — PROMPT USER if Unavailable
@@ -571,7 +579,7 @@ cd /home/balaji-12086/AI_AUTOMATION_CODE_GENERATOR
 ```
 Then load tools:
 ```
-tool_search_tool_regex(pattern="^mcp_microsoft_pla")
+tool_search_tool_regex(pattern="mcp_microsoft_pla_browser")
 ```
 - If tools found → proceed to Step 3.
 - If zero results → attempt recovery: `./start_playwright_mcp.sh --start`, retry tool search.
@@ -788,7 +796,7 @@ or logged into SDP. On failure, it either re-ran blindly or read Java source fil
 using Playwright to inspect the live UI. The entire self-healing capability was nullified.
 
 **Rule**: Step 0.5 is MANDATORY. Before the first test executes:
-1. Load Playwright tools: `tool_search_tool_regex` with pattern `^mcp_microsoft_pla`
+1. Load Playwright tools: `tool_search_tool_regex` with pattern `mcp_microsoft_pla_browser`
 2. Navigate to SDP: `browser_navigate` → login → `browser_snapshot` to confirm
 3. If Playwright tools are unavailable → STOP and tell the user
 
