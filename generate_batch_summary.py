@@ -15,8 +15,8 @@ Reads:
   - config/project_config.py         → project metadata
 
 Outputs:
-  - $PROJECT_NAME/reports/BATCH_SUMMARY_<timestamp>.md   (execution mode)
-  - $PROJECT_NAME/reports/GENERATION_SUMMARY_<timestamp>.md  (generate mode)
+  - $PROJECT_NAME/ai_reports/BATCH_SUMMARY_<timestamp>.md   (execution mode)
+  - $PROJECT_NAME/ai_reports/GENERATION_SUMMARY_<timestamp>.md  (generate mode)
 
 Usage:
     .venv/bin/python generate_batch_summary.py                          # execution summary
@@ -43,6 +43,7 @@ from config.project_config import PROJECT_NAME, PROJECT_ROOT
 # Constants
 # ──────────────────────────────────────────────────────────────────────────────
 REPORTS_DIR = os.path.join(PROJECT_ROOT, "reports")
+AI_REPORTS_DIR = os.path.join(PROJECT_ROOT, "ai_reports")
 TESTCASE_DIR = os.path.join(PROJECT_ROOT, "Testcase")
 TESTS_TO_RUN = os.path.join(PROJECT_ROOT, "tests_to_run.json")
 
@@ -708,7 +709,8 @@ def main():
 
     # 6. Write to file
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_path = os.path.join(REPORTS_DIR, f"BATCH_SUMMARY_{timestamp}.md")
+    os.makedirs(AI_REPORTS_DIR, exist_ok=True)
+    output_path = os.path.join(AI_REPORTS_DIR, f"BATCH_SUMMARY_{timestamp}.md")
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(markdown)
 
@@ -716,7 +718,7 @@ def main():
     print(f"   File size: {os.path.getsize(output_path):,} bytes")
 
     # Also save a JSON snapshot for programmatic access
-    json_path = os.path.join(REPORTS_DIR, f"BATCH_SUMMARY_{timestamp}.json")
+    json_path = os.path.join(AI_REPORTS_DIR, f"BATCH_SUMMARY_{timestamp}.json")
     summary_data = {
         "generated_at": datetime.now().isoformat(),
         "project": PROJECT_NAME,
@@ -966,8 +968,8 @@ def main_generate(start_epoch: float = None):
 
     # 6. Write to file
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_path = os.path.join(REPORTS_DIR, f"GENERATION_SUMMARY_{timestamp}.md")
-    os.makedirs(REPORTS_DIR, exist_ok=True)
+    output_path = os.path.join(AI_REPORTS_DIR, f"GENERATION_SUMMARY_{timestamp}.md")
+    os.makedirs(AI_REPORTS_DIR, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(markdown)
 
@@ -975,7 +977,7 @@ def main_generate(start_epoch: float = None):
     print(f"   File size: {os.path.getsize(output_path):,} bytes")
 
     # JSON snapshot
-    json_path = os.path.join(REPORTS_DIR, f"GENERATION_SUMMARY_{timestamp}.json")
+    json_path = os.path.join(AI_REPORTS_DIR, f"GENERATION_SUMMARY_{timestamp}.json")
     summary_data = {
         "generated_at": datetime.now().isoformat(),
         "mode": "generate",

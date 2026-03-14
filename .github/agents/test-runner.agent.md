@@ -670,14 +670,14 @@ cd /home/balaji-12086/AI_AUTOMATION_CODE_GENERATOR
 ```
 
 This generates:
-- `$PROJECT_NAME/reports/BATCH_SUMMARY_<timestamp>.md` — Rich interactive Markdown with:
+- `$PROJECT_NAME/ai_reports/BATCH_SUMMARY_<timestamp>.md` — Rich interactive Markdown with:
   - Executive dashboard (pass rate, coverage %)
   - Detailed test results table with attempt counts and self-healing info
   - Bug analysis with steps to reproduce for each failed test
   - Automation coverage vs use-case document mapping
   - Time & effort savings calculation
   - Run history across all attempts
-- `$PROJECT_NAME/reports/BATCH_SUMMARY_<timestamp>.json` — Machine-readable snapshot
+- `$PROJECT_NAME/ai_reports/BATCH_SUMMARY_<timestamp>.json` — Machine-readable snapshot
 
 After the script completes, **display the output path** and present the key metrics to the user.
 

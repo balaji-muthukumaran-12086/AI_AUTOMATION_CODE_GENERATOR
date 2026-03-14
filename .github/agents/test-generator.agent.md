@@ -1260,7 +1260,7 @@ Pass `--start-time` with the epoch timestamp captured at the start of the genera
 > If `$GEN_START_TIME` was not captured, omit `--start-time` — the report will skip timing
 > analysis but still show coverage and effort metrics.
 
-This produces `$PROJECT_NAME/reports/GENERATION_SUMMARY_<timestamp>.md` with:
+This produces `$PROJECT_NAME/ai_reports/GENERATION_SUMMARY_<timestamp>.md` with:
 - Number of scenarios generated
 - Use-case coverage % and severity breakdown
 - Manual authoring equivalent (how long it would take a human to write these tests)
