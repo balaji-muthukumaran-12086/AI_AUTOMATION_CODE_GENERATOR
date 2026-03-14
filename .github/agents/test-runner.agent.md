@@ -669,6 +669,12 @@ cd /home/balaji-12086/AI_AUTOMATION_CODE_GENERATOR
 .venv/bin/python generate_batch_summary.py
 ```
 
+> **Tip**: To see the full requirement inventory before running, use:
+> ```bash
+> .venv/bin/python generate_batch_summary.py --mode usecase-analysis
+> ```
+> This produces `$PROJECT_NAME/ai_reports/USECASE_ANALYSIS_<timestamp>.md` with batch segregation and coverage gaps.
+
 This generates:
 - `$PROJECT_NAME/ai_reports/BATCH_SUMMARY_<timestamp>.md` — Rich interactive Markdown with:
   - Executive dashboard (pass rate, coverage %)

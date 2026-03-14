@@ -7,6 +7,7 @@ Generates batch summary reports for both test generation and execution.
 Modes:
   execution (default)  — post-run summary with pass/fail, self-healing, bug analysis
   generate             — post-generation summary with coverage, effort saved, batch overview
+  usecase-analysis     — requirement analysis of use-case CSV with batch segregation
 
 Reads:
   - $PROJECT_NAME/tests_to_run.json  → test manifest
@@ -15,13 +16,15 @@ Reads:
   - config/project_config.py         → project metadata
 
 Outputs:
-  - $PROJECT_NAME/ai_reports/BATCH_SUMMARY_<timestamp>.md   (execution mode)
-  - $PROJECT_NAME/ai_reports/GENERATION_SUMMARY_<timestamp>.md  (generate mode)
+  - $PROJECT_NAME/ai_reports/BATCH_SUMMARY_<timestamp>.md        (execution mode)
+  - $PROJECT_NAME/ai_reports/GENERATION_SUMMARY_<timestamp>.md   (generate mode)
+  - $PROJECT_NAME/ai_reports/USECASE_ANALYSIS_<timestamp>.md     (usecase-analysis mode)
 
 Usage:
     .venv/bin/python generate_batch_summary.py                          # execution summary
     .venv/bin/python generate_batch_summary.py --mode generate          # generation summary
     .venv/bin/python generate_batch_summary.py --mode generate --start-time 1773400000  # with timing
+    .venv/bin/python generate_batch_summary.py --mode usecase-analysis  # requirement analysis
 """
 
 import argparse
@@ -1002,15 +1005,351 @@ def main_generate(start_epoch: float = None):
     return output_path
 
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Use-Case Analysis Mode — requirement analysis with batch segregation
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _batch_size_label(count: int) -> str:
+    """Return a complexity label for a batch based on case count."""
+    if count <= 10:
+        return "Small"
+    elif count <= 25:
+        return "Medium"
+    else:
+        return "Large"
+
+
+def build_usecase_analysis(usecases: list, automated_ids: set) -> dict:
+    """Build comprehensive analysis of use-case inventory."""
+    from collections import Counter, defaultdict
+
+    total = len(usecases)
+    ui_yes = [uc for uc in usecases if uc["ui_automate"].lower() == "yes"]
+    ui_no = [uc for uc in usecases if uc["ui_automate"].lower() == "no"]
+    api_yes = [uc for uc in usecases if uc["api_automate"].lower() == "yes"]
+    api_no = [uc for uc in usecases if uc["api_automate"].lower() != "yes"]
+
+    # Severity breakdown (over all valid IDs)
+    severity_all = Counter(uc["severity"] for uc in usecases if uc["severity"])
+    severity_ui = Counter(uc["severity"] for uc in ui_yes if uc["severity"])
+
+    # Module / Sub-Module breakdown (UI-automatable only)
+    module_counts = Counter(uc["module"] for uc in ui_yes if uc["module"])
+    submodule_counts = Counter(uc["sub_module"] for uc in ui_yes if uc["sub_module"])
+
+    # Automation progress — which UI=Yes cases are already generated
+    ui_generated = [uc for uc in ui_yes if uc["id"] in automated_ids]
+    ui_pending = [uc for uc in ui_yes if uc["id"] not in automated_ids]
+
+    # Group pending by sub-module for batch segregation
+    pending_by_submodule = defaultdict(list)
+    for uc in ui_pending:
+        key = uc["sub_module"] if uc["sub_module"] else "(No Sub-Module)"
+        pending_by_submodule[key].append(uc)
+
+    # Build batch plan — group sub-modules into right-sized batches
+    batches = []
+    current_batch = {"sub_modules": [], "cases": [], "count": 0}
+    # Sort sub-modules: Critical-heavy first, then by count desc
+    def _submod_priority(item):
+        submod, cases = item
+        critical = sum(1 for c in cases if c["severity"] == "Critical")
+        return (-critical, -len(cases), submod)
+
+    for submod, cases in sorted(pending_by_submodule.items(), key=_submod_priority):
+        # Start new batch if adding this sub-module would exceed 30
+        if current_batch["count"] > 0 and current_batch["count"] + len(cases) > 30:
+            batches.append(current_batch)
+            current_batch = {"sub_modules": [], "cases": [], "count": 0}
+        current_batch["sub_modules"].append(submod)
+        current_batch["cases"].extend(cases)
+        current_batch["count"] += len(cases)
+
+    if current_batch["count"] > 0:
+        batches.append(current_batch)
+
+    # Severity breakdown of generated vs pending
+    sev_progress = {}
+    for sev in ["Critical", "Major", "Minor"]:
+        sev_total = sum(1 for uc in ui_yes if uc["severity"] == sev)
+        sev_done = sum(1 for uc in ui_generated if uc["severity"] == sev)
+        sev_progress[sev] = {"total": sev_total, "generated": sev_done,
+                             "pending": sev_total - sev_done}
+
+    # CSV file breakdown
+    csv_files = Counter(uc["csv_file"] for uc in usecases)
+
+    return {
+        "total_usecases": total,
+        "ui_yes_count": len(ui_yes),
+        "ui_no_count": len(ui_no),
+        "api_yes_count": len(api_yes),
+        "api_no_count": len(api_no),
+        "severity_all": dict(severity_all),
+        "severity_ui": dict(severity_ui),
+        "module_counts": dict(module_counts),
+        "submodule_counts": dict(submodule_counts),
+        "generated_count": len(ui_generated),
+        "pending_count": len(ui_pending),
+        "generated_ids": sorted(uc["id"] for uc in ui_generated),
+        "pending_by_submodule": {k: v for k, v in pending_by_submodule.items()},
+        "batches": batches,
+        "sev_progress": sev_progress,
+        "csv_files": dict(csv_files),
+    }
+
+
+def generate_usecase_analysis_markdown(analysis: dict) -> str:
+    """Generate Markdown report for use-case requirement analysis."""
+    now = datetime.now()
+
+    md = []
+    md.append("# 📋 Use-Case Requirement Analysis")
+    md.append("")
+    md.append(f"> **Project**: `{PROJECT_NAME}`  ")
+    md.append(f"> **Generated**: {now.strftime('%B %d, %Y at %H:%M')}  ")
+    md.append(f"> **Source**: `$PROJECT_NAME/Testcase/*.csv`")
+    md.append("")
+
+    # ── 1. Executive Summary ──
+    md.append("---")
+    md.append("## 1. Executive Summary")
+    md.append("")
+    total = analysis["total_usecases"]
+    ui_yes = analysis["ui_yes_count"]
+    generated = analysis["generated_count"]
+    pending = analysis["pending_count"]
+    pct_done = round(generated / ui_yes * 100, 1) if ui_yes > 0 else 0
+    pct_remaining = round(pending / ui_yes * 100, 1) if ui_yes > 0 else 0
+
+    md.append(f"| Metric | Count |")
+    md.append(f"|--------|-------|")
+    md.append(f"| Total Use Cases (valid IDs) | **{total}** |")
+    md.append(f"| UI To-be-automated = Yes | **{ui_yes}** |")
+    md.append(f"| UI To-be-automated = No | {analysis['ui_no_count']} |")
+    md.append(f"| API To-be-automated = Yes | {analysis['api_yes_count']} |")
+    md.append(f"| Already Generated (in manifest) | **{generated}** ({pct_done}%) |")
+    md.append(f"| Pending Generation | **{pending}** ({pct_remaining}%) |")
+    md.append("")
+
+    # Progress bar
+    bar_len = 30
+    filled = round(bar_len * pct_done / 100) if pct_done > 0 else 0
+    bar = "█" * filled + "░" * (bar_len - filled)
+    md.append(f"**Automation Progress**: `[{bar}]` {pct_done}%")
+    md.append("")
+
+    # ── 2. Severity Analysis ──
+    md.append("---")
+    md.append("## 2. Severity Distribution (UI-Automatable)")
+    md.append("")
+    md.append("| Severity | Total | Generated | Pending | Progress |")
+    md.append("|----------|-------|-----------|---------|----------|")
+    for sev in ["Critical", "Major", "Minor"]:
+        sp = analysis["sev_progress"].get(sev, {"total": 0, "generated": 0, "pending": 0})
+        sev_pct = round(sp["generated"] / sp["total"] * 100) if sp["total"] > 0 else 0
+        icon = "🔴" if sev == "Critical" else ("🟡" if sev == "Major" else "🟢")
+        md.append(f"| {icon} {sev} | {sp['total']} | {sp['generated']} | {sp['pending']} | {sev_pct}% |")
+    md.append("")
+
+    # ── 3. Module / Sub-Module Breakdown ──
+    md.append("---")
+    md.append("## 3. Module & Sub-Module Breakdown (UI-Automatable)")
+    md.append("")
+    if analysis["module_counts"]:
+        md.append("### By Module")
+        md.append("| Module | UI Cases |")
+        md.append("|--------|----------|")
+        for mod, cnt in sorted(analysis["module_counts"].items(), key=lambda x: -x[1]):
+            md.append(f"| {mod} | {cnt} |")
+        md.append("")
+
+    if analysis["submodule_counts"]:
+        md.append("### By Sub-Module (Top 20)")
+        md.append("| Sub-Module | UI Cases |")
+        md.append("|------------|----------|")
+        top_subs = sorted(analysis["submodule_counts"].items(), key=lambda x: -x[1])[:20]
+        for sub, cnt in top_subs:
+            md.append(f"| {sub} | {cnt} |")
+        md.append("")
+
+    # ── 4. Already Automated ──
+    md.append("---")
+    md.append("## 4. Already Automated (Generated & In Manifest)")
+    md.append("")
+    gen_ids = analysis["generated_ids"]
+    if gen_ids:
+        md.append(f"**{len(gen_ids)} use cases** already have automation scripts generated:")
+        md.append("")
+        # Group by prefix pattern
+        for uc_id in gen_ids:
+            md.append(f"- `{uc_id}`")
+        md.append("")
+    else:
+        md.append("_No automation scripts generated yet._")
+        md.append("")
+
+    # ── 5. Batch Segregation — Ready for Generation ──
+    md.append("---")
+    md.append("## 5. Pending Batches — Ready for Generation")
+    md.append("")
+    batches = analysis["batches"]
+    if not batches:
+        md.append("_All UI-automatable use cases are already generated!_ 🎉")
+    else:
+        md.append(f"**{analysis['pending_count']} pending cases** grouped into **{len(batches)} batches**:")
+        md.append("")
+        for i, batch in enumerate(batches, 1):
+            cases = batch["cases"]
+            severity_counts = {}
+            for c in cases:
+                sev = c["severity"] if c["severity"] else "Unknown"
+                severity_counts[sev] = severity_counts.get(sev, 0) + 1
+            sev_str = ", ".join(f"{s}: {c}" for s, c in sorted(severity_counts.items()))
+            size = _batch_size_label(batch["count"])
+
+            md.append(f"### Batch {i} — {', '.join(batch['sub_modules'])} ({size})")
+            md.append("")
+            md.append(f"- **Cases**: {batch['count']}")
+            md.append(f"- **Severity**: {sev_str}")
+            md.append(f"- **Estimated generation time**: ~{batch['count'] * 2} min (AI) vs ~{batch['count'] * MANUAL_AUTHORING_AVG_MINUTES} min (manual)")
+            md.append("")
+            md.append("| UseCase ID | Severity | Description |")
+            md.append("|------------|----------|-------------|")
+            for c in cases:
+                sev_icon = "🔴" if c["severity"] == "Critical" else ("🟡" if c["severity"] == "Major" else "🟢")
+                desc = c["description"][:100] + "..." if len(c["description"]) > 100 else c["description"]
+                md.append(f"| `{c['id']}` | {sev_icon} {c['severity']} | {desc} |")
+            md.append("")
+
+    # ── 6. Recommended Next Steps ──
+    md.append("---")
+    md.append("## 6. Recommended Next Steps")
+    md.append("")
+    if batches:
+        first_batch = batches[0]
+        crit_pending = analysis["sev_progress"].get("Critical", {}).get("pending", 0)
+        md.append(f"1. **Priority**: {crit_pending} Critical cases still pending — generate these first")
+        md.append(f"2. **Next batch**: Batch 1 — {', '.join(first_batch['sub_modules'])} ({first_batch['count']} cases)")
+        md.append(f"3. **Command**: Copy the pending use-case IDs into `$PROJECT_NAME/tests_to_run.json` and invoke `@test-generator`")
+        md.append(f"4. **Total remaining effort**: ~{analysis['pending_count'] * 2} min AI generation vs ~{analysis['pending_count'] * MANUAL_AUTHORING_AVG_MINUTES} min manual")
+    else:
+        md.append("All UI-automatable cases are generated. Next step: execute tests with `@test-runner`.")
+    md.append("")
+
+    # ── 7. Source Files ──
+    md.append("---")
+    md.append("## 7. Source Files")
+    md.append("")
+    md.append("| CSV File | Use Cases |")
+    md.append("|----------|-----------|")
+    for csv_name, cnt in sorted(analysis["csv_files"].items()):
+        md.append(f"| `{csv_name}` | {cnt} |")
+    md.append("")
+
+    return "\n".join(md)
+
+
+def main_usecase_analysis() -> str:
+    """Main entry point for use-case analysis mode."""
+    print(f"{'=' * 60}")
+    print(f"  📋 Use-Case Requirement Analysis — {PROJECT_NAME}")
+    print(f"{'=' * 60}")
+
+    # 1. Load use-case CSV
+    print("\n📄 Loading use-case documents...")
+    usecases = load_usecase_csv()
+    if not usecases:
+        print("❌ No use-case CSV files found in Testcase/ directory")
+        return ""
+    print(f"   Found {len(usecases)} use cases across {len(set(uc['csv_file'] for uc in usecases))} CSV file(s)")
+
+    # 2. Load automated IDs from tests_to_run.json (if it exists)
+    automated_ids = set()
+    if os.path.exists(TESTS_TO_RUN):
+        print(f"\n📦 Loading test manifest: {os.path.basename(TESTS_TO_RUN)}")
+        with open(TESTS_TO_RUN, "r") as f:
+            manifest = json.load(f)
+        for test in manifest.get("tests", []):
+            tid = test.get("_id", "")
+            if "," in tid:
+                automated_ids.update(t.strip() for t in tid.split(","))
+            else:
+                automated_ids.add(tid.strip())
+        automated_ids.discard("")
+        print(f"   {len(automated_ids)} unique use-case IDs in manifest")
+    else:
+        print(f"\n⚠️  No tests_to_run.json found — analysis will show 0% generated")
+
+    # 3. Build analysis
+    print("\n🔍 Analyzing use-case inventory...")
+    analysis = build_usecase_analysis(usecases, automated_ids)
+
+    # 4. Generate Markdown
+    print("\n📝 Generating analysis report...")
+    markdown = generate_usecase_analysis_markdown(analysis)
+
+    # 5. Write to file
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    os.makedirs(AI_REPORTS_DIR, exist_ok=True)
+    output_path = os.path.join(AI_REPORTS_DIR, f"USECASE_ANALYSIS_{timestamp}.md")
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(markdown)
+
+    print(f"\n✅ Analysis saved to: {output_path}")
+    print(f"   File size: {os.path.getsize(output_path):,} bytes")
+
+    # JSON snapshot
+    json_path = os.path.join(AI_REPORTS_DIR, f"USECASE_ANALYSIS_{timestamp}.json")
+    summary_data = {
+        "generated_at": datetime.now().isoformat(),
+        "mode": "usecase-analysis",
+        "project": PROJECT_NAME,
+        "total_usecases": analysis["total_usecases"],
+        "ui_automatable": analysis["ui_yes_count"],
+        "generated": analysis["generated_count"],
+        "pending": analysis["pending_count"],
+        "severity_progress": analysis["sev_progress"],
+        "batches": [
+            {
+                "batch_num": i + 1,
+                "sub_modules": b["sub_modules"],
+                "case_count": b["count"],
+                "case_ids": [c["id"] for c in b["cases"]],
+            }
+            for i, b in enumerate(analysis["batches"])
+        ],
+    }
+    with open(json_path, "w") as f:
+        json.dump(summary_data, f, indent=2)
+    print(f"   JSON snapshot: {json_path}")
+
+    ui_yes = analysis["ui_yes_count"]
+    generated = analysis["generated_count"]
+    pending = analysis["pending_count"]
+    pct = round(generated / ui_yes * 100, 1) if ui_yes > 0 else 0
+
+    print(f"\n{'=' * 60}")
+    print(f"  UI-Automatable: {ui_yes} | Generated: {generated} ({pct}%) | Pending: {pending}")
+    print(f"  Batches Ready: {len(analysis['batches'])}")
+    print(f"{'=' * 60}")
+
+    return output_path
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Batch summary generator")
-    parser.add_argument("--mode", choices=["execution", "generate"], default="execution",
-                        help="'execution' (default) for post-run summary, 'generate' for post-generation summary")
+    parser.add_argument("--mode", choices=["execution", "generate", "usecase-analysis"],
+                        default="execution",
+                        help="'execution' (default) for post-run summary, 'generate' for "
+                             "post-generation summary, 'usecase-analysis' for requirement analysis")
     parser.add_argument("--start-time", type=float, default=None,
                         help="Epoch timestamp when generation started (for timing calculation)")
     args = parser.parse_args()
 
     if args.mode == "generate":
         main_generate(start_epoch=args.start_time)
+    elif args.mode == "usecase-analysis":
+        main_usecase_analysis()
     else:
         main()

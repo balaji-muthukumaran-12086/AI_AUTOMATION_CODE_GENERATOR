@@ -317,6 +317,20 @@ GEN_START_TIME=$(date +%s)
 echo "Generation started at epoch: $GEN_START_TIME"
 ```
 
+**Run use-case analysis** to understand the requirement inventory before generating:
+```bash
+.venv/bin/python generate_batch_summary.py --mode usecase-analysis
+```
+This produces `$PROJECT_NAME/ai_reports/USECASE_ANALYSIS_<timestamp>.md` with:
+- Total use cases, UI-automatable vs API-only breakdown
+- Severity distribution (Critical/Major/Minor)
+- Module and sub-module coverage map
+- Already-generated vs pending use cases
+- **Batch segregation** — pending cases grouped into right-sized batches ready for generation
+- Recommended next steps with effort estimates
+
+Display the key numbers (UI-automatable count, already generated %, pending batches) to the user.
+
 If the file is a spreadsheet, convert it to CSV first before parsing:
 ```bash
 # Install openpyxl if not already installed
