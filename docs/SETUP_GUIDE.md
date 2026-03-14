@@ -7,9 +7,9 @@
 ## 3 Steps — That's It
 
 ```
-  1. Setup       →   @setup-project setup         →   Project ready
-  2. Generate    →   @test-generator               →   Java tests generated
-  3. Run         →   @test-runner batch             →   Tests executed & auto-fixed
+  1. Setup       →   Web UI or @setup-project      →   Project ready
+  2. Generate    →   @test-generator                →   Java tests generated
+  3. Run         →   @test-runner batch              →   Tests executed & auto-fixed
 ```
 
 ---
@@ -48,41 +48,86 @@ Now open this folder in VS Code: **File → Open Folder** → select `AI_AUTOMAT
 
 ---
 
-## Step 2 — Run Setup Agent
+## Step 2 — Project Setup
+
+You have **two options** — the Web UI (recommended) or the Copilot Chat agent.
+
+### Option A — Web UI Setup (recommended)
+
+Start the server and open the setup page in your browser:
+
+```bash
+./server.sh start
+```
+
+Open **http://localhost:9500/setup** in your browser.
+
+#### Setup Modes
+
+| Mode | When to Use |
+|------|-------------|
+| **📝 Generate Only** | Generate Java test code from feature docs. You run tests manually. |
+| **🚀 Generate & Run** | Generate code AND execute against a live SDP instance automatically. |
+| **⚙️ Reconfigure** | Project already cloned. Update environment, credentials, drivers. |
+
+#### Generate Only / Generate & Run
+
+1. Select your mode
+2. Fill in:
+   - **Hg Username** — your zrepository username (e.g. `balaji-12086`)
+   - **Branch Name** — hg branch to clone (e.g. `feature/SDPLIVE_LINKING_CHANGE_AI`)
+   - **Dependencies Path** — absolute path to the JARs folder
+3. For **Generate & Run**, also fill in:
+   - **SDP URL**, **Portal**, **Admin Email**, **Tech Email**, **Password**, **Drivers Path**
+4. Click **🚀 Run Setup**
+5. A **password modal** appears in the browser — enter your hg password (used once for cloning, never saved)
+6. An **owner selection modal** appears — pick your name from the list
+   - **New to the team?** Click *"➕ Not in the list? Register as new member"* — enter your full name and Zoho email to register
+7. Watch the progress log — setup clones the branch, compiles the framework, and configures `.env`
+
+#### Reconfigure
+
+1. Select **Reconfigure** mode
+2. Pick your project from the **Project Folder** dropdown (shows all project folders including `MSP_*`, `SDP_*`, `SDPLIVE_*`)
+3. Update credentials/paths as needed
+4. Click **🚀 Run Setup**
+
+#### Server Commands
+
+```bash
+./server.sh start     # Start on port 9500
+./server.sh stop      # Stop the server
+./server.sh restart   # Restart
+./server.sh status    # Check if running
+./server.sh logs      # Tail live logs
+PORT=8090 ./server.sh start   # Custom port
+```
+
+### Option B — Copilot Chat Agent
 
 1. Open **Copilot Chat** (`Ctrl+Shift+I`)
 2. Switch to **Agent mode** (dropdown at top)
 3. Type: **`@setup-project setup`**
 
-The agent walks you through everything:
-- Picks your **mode**: Generate only (1), Generate and Run (2), or Reconfigure (3)
-- Shows a **form** — fill in your values and paste it back
-- Clones the hg branch, compiles framework, writes config
-- **Checks for your use-case document** — setup **blocks** until you upload one to `<PROJECT_NAME>/Testcase/`
-- **Runs use-case analysis** — shows a breakdown of total cases, severity, pending batches
+The agent walks you through everything interactively in chat.
 
-> **New team member?** Pick `new` as owner — the agent registers you automatically.
->
-> **Already cloned?** Choose mode 3 (Reconfigure) to just update credentials/URL.
->
-> **Password security**: hg password is entered in the terminal, never in chat.
->
-> **Use-case document required**: Setup will not complete until you upload your use-case document (`.csv`, `.xlsx`, `.xls`) to `<PROJECT_NAME>/Testcase/`. This is mandatory — the entire pipeline depends on it.
+> **Password security**: In both options, the hg password is entered interactively (browser modal or terminal prompt) and never saved to `.env`, logs, or chat history.
 
 ---
 
 ## Step 3 — Generate & Run Tests
 
-### From a use-case document (recommended for batches)
+### Upload your use-case document
 
-1. Place your file (`.csv`, `.xlsx`, or `.xls`) in `<PROJECT_NAME>/Testcase/` **before or during setup** (template: `docs/templates/usecase_template.csv`)
-2. Setup agent detects it, runs **use-case analysis**, and shows a requirement summary
-3. In Copilot Chat: **`@test-generator`** — it picks up the document automatically
-4. Review the plan, reply `all` to generate
+Place your file (`.csv`, `.xlsx`, or `.xls`) in `<PROJECT_NAME>/Testcase/` (template: `docs/templates/usecase_template.csv`).
 
 > Only rows with `UI To-be-automated = Yes` are processed.
 
-### From a description (quick one-offs)
+### Generate from a use-case document (recommended for batches)
+
+In Copilot Chat: **`@test-generator`** — it picks up the document automatically. Review the plan, reply `all` to generate.
+
+### Generate from a description (quick one-offs)
 
 ```
 @test-generator Create an incident request, add a note, and verify it appears in the Notes tab
@@ -115,8 +160,11 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 
 | Task | Command |
 |------|---------|
-| Setup | `@setup-project setup` |
-| Reconfigure | `@setup-project setup` → mode 3 |
+| Start web server | `./server.sh start` → open `http://localhost:9500` |
+| Setup via Web UI | `http://localhost:9500/setup` |
+| Setup via agent | `@setup-project setup` |
+| Reconfigure (Web) | Setup page → Reconfigure mode |
+| Reconfigure (agent) | `@setup-project setup` → mode 3 |
 | Generate from use-case doc | Place file in `Testcase/`, then `@test-generator` |
 | Generate from text | `@test-generator <description>` |
 | Run all tests | `@test-runner batch` |
@@ -126,6 +174,7 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 | Setup Playwright MCP | `npm install && npx playwright install chromium` |
 | Verify Playwright | `./start_playwright_mcp.sh` |
 | Start dashboard | `./orchestrator.sh start` → `http://localhost:9600` |
+| Stop web server | `./server.sh stop` |
 
 ---
 
@@ -136,10 +185,12 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 | VPN / connection errors | Connect to Zoho VPN first |
 | `NullPointerException` in test | `./setup_framework_bin.sh` |
 | `Testcase/` folder missing | `mkdir -p <PROJECT_NAME>/Testcase` |
-| Setup blocked on document | Upload `.csv`/`.xlsx` to `<PROJECT_NAME>/Testcase/`, then reply in chat |
+| Project not in Reconfigure dropdown | Project folder must be in the workspace root; names with `MSP_`/`SDP_`/`SDPLIVE_`/`AALAM_` prefixes or containing `src/` are auto-detected |
+| Owner not in dropdown | Click *"➕ Not in the list? Register as new member"* to add yourself |
+| Hg password prompt not appearing | Ensure the server is running (`./server.sh status`); reload setup page |
 | Test fails on first run | Normal — `@test-runner` auto-fixes and reruns |
 | Wrong project targeted | `@test-generator project=BRANCH_NAME` |
-| Need to switch SDP instance | `@setup-project setup` → mode 3 |
+| Need to switch SDP instance | Setup page → Reconfigure → update URL/credentials |
 | Playwright MCP not available | `npm install && npx playwright install chromium` then `./start_playwright_mcp.sh` |
 | `@test-runner` skips locator fixes | Playwright MCP not loaded — restart VS Code or run `./start_playwright_mcp.sh --start` |
 
