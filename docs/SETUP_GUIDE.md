@@ -40,11 +40,11 @@ In the VS Code terminal, run:
 ```bash
 git clone https://github.com/balaji-muthukumaran-12086/AI_AUTOMATION_CODE_GENERATOR.git
 ```
+Now open this folder in VS Code: **File → Open Folder** → select `AI_AUTOMATION_CODE_GENERATOR`
+
+In the VS Code terminal, run:
+
 ```bash
-cd AI_AUTOMATION_CODE_GENERATOR
-```
-```bash
-# Pick ONE — lightweight (VS Code/Copilot only) or full (LangGraph pipeline + orchestrator):
 python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements_vs.txt   # lightweight — 2 packages
 # python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt    # full — all 22 packages
 ```
@@ -52,7 +52,7 @@ python3 -m venv .venv && source .venv/bin/activate && pip install -r requirement
 npm install                      # installs @playwright/mcp + auto-downloads Chromium browser
 ```
 
-Now open this folder in VS Code: **File → Open Folder** → select `AI_AUTOMATION_CODE_GENERATOR`
+
 
 > **Done!** You won't need to repeat the above. From now on, just open the folder in VS Code and follow the 3 steps below.
 

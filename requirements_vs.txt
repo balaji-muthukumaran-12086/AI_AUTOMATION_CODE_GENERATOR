@@ -3,4 +3,10 @@
 # Full requirements.txt is needed only for the LangGraph AI pipeline (main.py, orchestrator, RAG)
 
 python-dotenv>=1.0.0    # .env file loading (used by config/project_config.py)
-openpyxl>=3.1.0         # XLSX/XLS → CSV conversion for use-case documents
+psutil>=5.9.0           # Java process tree cleanup (used by agents/runner_agent.py)
+openpyxl>=3.1.0         # XLSX/XLS → CSV conversion for use-case documents (test-generator)
+
+# Web server (./server.sh → web/server.py)
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9
