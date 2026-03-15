@@ -523,6 +523,28 @@ async def get_setup_config():
     return {"show_upload_analyze": SHOW_UPLOAD_ANALYZE}
 
 
+@router.get("/saved-paths")
+async def get_saved_paths():
+    """Read .env and return previously configured paths for pre-filling the setup form."""
+    env_path = WORKSPACE_DIR / ".env"
+    result = {}
+    if env_path.exists():
+        for line in env_path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "=" not in line:
+                continue
+            key, _, value = line.partition("=")
+            key = key.strip()
+            value = value.strip()
+            if key in ("DEPS_DIR", "DRIVERS_DIR", "SDP_URL", "SDP_PORTAL",
+                       "SDP_ADMIN_EMAIL", "SDP_EMAIL_ID", "SDP_TEST_USER_EMAILS",
+                       "HG_USERNAME"):
+                result[key] = value
+    return result
+
+
 @router.get("/projects")
 async def list_projects():
     """List existing project folders in the workspace (any folder with src/ or bin/ inside)."""

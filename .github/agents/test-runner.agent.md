@@ -2,7 +2,7 @@
 description: "Run generated Selenium test cases (single or batch from $PROJECT_NAME/tests_to_run.json), auto-diagnose failures using Playwright MCP, fix broken locators/code, recompile, and re-run — all in one loop. Replaces the need for a separate debugger agent."
 tools: [read, search, execute, edit, todo, mcp_microsoft_pla/*]
 model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
-argument-hint: "Entity.method to run (e.g. 'Solution.createSolution'), or 'batch' to run all from $PROJECT_NAME/tests_to_run.json, or describe what to run and fix"
+argument-hint: "Entity.method to run (e.g. 'Solution.createSolution'), or 'batch' to run latest batch, 'batch N' for specific batch, 'batch all' for all tests from $PROJECT_NAME/tests_to_run.json"
 instructions:
   - .github/copilot-instructions.md
   - .github/instructions/java-test-conventions.instructions.md
@@ -47,7 +47,7 @@ User provides Entity.method → resolve paths → Playwright bootstrap → compi
 ### Batch (from $PROJECT_NAME/tests_to_run.json)
 
 ```
-User says "batch" / "run all" / handed off from @test-generator
+User says "batch" → run latest batch | "batch N" → run batch N | "batch all" → run all tests
   └─ Playwright bootstrap (login once) → For each test: run+debug+fix loop → report
 ```
 
@@ -233,7 +233,12 @@ Checks 2/3 fail despite PLAYWRIGHT_AVAILABLE = true?
 ## Step 1 — Single or Batch?
 
 - **User provides `Entity.method`** (e.g., `Solution.createSolution`) → single test, proceed to Step 2
-- **User says "batch", "run all", "run the generated tests"**, or is handed off from `@test-generator` → **jump to Batch section below**
+- **User says "batch", "batch N", "batch all", "run all", "run the generated tests"**, or is handed off from `@test-generator` → **jump to Batch section below**
+
+**Batch filter detection (apply in order — first match wins):**
+1. Message contains `batch all` or `run all` → `BATCH_FILTER = all` (run every test in the file)
+2. Message contains `batch N` (e.g., `batch 2`) → `BATCH_FILTER = N` (run only tests with `"batch": N`)
+3. Message contains `batch` (bare) or handed off from `@test-generator` → `BATCH_FILTER = latest` (run tests with the highest batch number)
 
 ---
 
@@ -555,9 +560,9 @@ If unresolvable or PRODUCT_BUG, generate a bug report (see Bug Reports section b
 ## Batch Flow (from $PROJECT_NAME/tests_to_run.json)
 ## ════════════════════════════════════════════════════════
 
-> When the user says "batch", "run all", "run the generated tests", or is handed off
-> from `@test-generator`, iterate through `$PROJECT_NAME/tests_to_run.json` and apply the same
-> run+debug+fix loop (Steps 2-4) to each test sequentially.
+> When the user says "batch", "batch N", "batch all", "run the generated tests", or is handed off
+> from `@test-generator`, load `$PROJECT_NAME/tests_to_run.json`, apply the `BATCH_FILTER`
+> (from Step 1), and iterate the **filtered** tests through the run+debug+fix loop (Steps 2-4).
 
 ### Batch Setup (MANDATORY — every step must complete before running tests)
 
@@ -618,9 +623,23 @@ cat $PROJECT_NAME/tests_to_run.json | .venv/bin/python -c "
 import json, sys
 d = json.load(sys.stdin)
 tests = d.get('tests', [])
-print(f'Tests to run: {len(tests)}')
-for i, t in enumerate(tests, 1):
-    print(f'  {i}. {t[\"entity_class\"]}.{t[\"method_name\"]}')
+
+# Apply batch filter
+batch_filter = '{BATCH_FILTER}'  # 'all', 'latest', or a number like '2'
+if batch_filter == 'all':
+    filtered = tests
+elif batch_filter == 'latest':
+    max_batch = max((t.get('batch', 1) for t in tests), default=1)
+    filtered = [t for t in tests if t.get('batch', 1) == max_batch]
+    print(f'Filtering to latest batch: {max_batch}')  
+else:
+    n = int(batch_filter)
+    filtered = [t for t in tests if t.get('batch', 1) == n]
+    print(f'Filtering to batch: {n}')
+
+print(f'Tests to run: {len(filtered)} (of {len(tests)} total)')
+for i, t in enumerate(filtered, 1):
+    print(f'  {i}. {t[\"entity_class\"]}.{t[\"method_name\"]} (batch {t.get(\"batch\", 1)})')
 "
 ```
 Compile all relevant modules upfront (compile once, run many):
@@ -741,13 +760,14 @@ When writing tests to `$PROJECT_NAME/tests_to_run.json` for batch execution:
       "admin_mail_id": "$(SDP_ADMIN_EMAIL)",
       "email_id": "$(SDP_ADMIN_EMAIL)",
       "portal_name": "$(SDP_PORTAL)",
-      "skip_compile": true
+      "skip_compile": true,
+      "batch": 1
     }
   ]
 }
 ```
 
-Placeholders `$(SDP_URL)`, `$(SDP_ADMIN_EMAIL)`, `$(SDP_PORTAL)` are resolved at runtime from `config/project_config.py`.
+The `"batch"` field is a tag added by `@test-generator` — the runner uses it to filter which tests to execute based on the user’s invocation (`batch` = latest, `batch N` = specific, `batch all` = everything). Tests without a `"batch"` field default to batch 1.
 
 ### How Batch Execution Works (NO external scripts)
 
@@ -758,7 +778,8 @@ Placeholders `$(SDP_URL)`, `$(SDP_ADMIN_EMAIL)`, `$(SDP_PORTAL)` are resolved at
 
 **The correct batch loop is:**
 ```
-For i, test in $PROJECT_NAME/tests_to_run.json:
+Load tests_to_run.json → apply BATCH_FILTER → get filtered list
+For i, test in filtered:
   1. Edit run_test.py RUN_CONFIG with test[i].entity_class + method_name
   2. Run: .venv/bin/python run_test.py 2>&1
   3. Parse ScenarioReport.html (sole authority)

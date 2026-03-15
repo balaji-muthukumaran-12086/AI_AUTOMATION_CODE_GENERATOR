@@ -465,28 +465,34 @@ I'll split this into {ceil(N/30)} batches:
 Batches are grouped by Module > Sub-Module to keep related scenarios together.
 ```
 
-**If `{CMD_MODE}` = `batch_all`:** Auto-proceed with Batch 1, then **continue to Batch 2, 3, etc.** within the same session. Each batch's entries are **appended** to `tests_to_run.json` (not replaced). The user runs `@test-runner batch` once at the end — after all batches are generated.
+**If `{CMD_MODE}` = `batch_all`:** Auto-proceed with Batch 1, then **continue to Batch 2, 3, etc.** within the same session. Each batch's entries are **appended** to `tests_to_run.json` with a `"batch": N` tag. The user runs `@test-runner batch` once at the end — after all batches are generated.
 
 If context is exhausted mid-session, save progress to `batch_progress.md`. Next `@test-generator batch all` invocation resumes from where it left off, continuing to append.
 
-**If `{CMD_MODE}` = `batch`:** Generate only Batch 1 and **replace** `tests_to_run.json` with this batch's entries. The user runs `@test-runner batch` to execute, then re-invokes `@test-generator batch` for the next batch.
+**If `{CMD_MODE}` = `batch`:** Generate only Batch {N} and **append** entries to `tests_to_run.json` with `"batch": N` tag (cumulative — nothing is ever replaced). The user runs `@test-runner batch` to execute the latest batch, then re-invokes `@test-generator batch` for the next batch.
 
 Show the prompt and wait:
 ```
-I'll generate Batch 1 now. After running tests, invoke `@test-generator batch` for the next batch.
-Proceed with Batch 1? (yes / pick a different batch)
+I'll generate Batch {N} now. After running tests, invoke `@test-generator batch` for the next batch.
+Proceed with Batch {N}? (yes / pick a different batch)
 ```
+
+> **Cumulative design**: `tests_to_run.json` is **never replaced** — both modes always append.
+> Each entry has a `"batch": N` tag so the runner can filter:
+> - `@test-runner batch` → runs only the **latest batch** (highest N)
+> - `@test-runner batch 2` → runs only **batch 2**
+> - `@test-runner batch all` → runs **all tests** across all batches
 
 **Summary:**
 ```
 batch all:  generate Batch 1 → append → generate Batch 2 → append → ... → @test-runner batch (runs ALL)
-batch:      generate Batch 1 → replace → @test-runner batch → generate Batch 2 → replace → @test-runner batch
+batch:      generate Batch 1 → append → @test-runner batch (latest) → generate Batch 2 → append → @test-runner batch (latest)
 ```
 
 **Batching rules:**
 - Group by Module > Sub-Module when splitting (keep related scenarios in the same batch)
-- **`batch all`**: Each batch **appends** to `$PROJECT_NAME/tests_to_run.json`. After all batches, the file contains ALL scenarios.
-- **`batch`**: Each batch **replaces** `$PROJECT_NAME/tests_to_run.json`. Only the current batch's scenarios are in the file.
+- **Both modes** (`batch all` and `batch`): Each batch **appends** to `$PROJECT_NAME/tests_to_run.json` with a `"batch": N` tag. Nothing is ever replaced — no data loss is possible.
+- The runner filters by batch tag: `@test-runner batch` (latest), `@test-runner batch N` (specific), `@test-runner batch all` (everything).
 - Track batch progress in `{TARGET_PROJECT}/ai_reports/batch_progress.md`:
   ```
   # Batch Progress — {CSV filename}
@@ -1147,34 +1153,32 @@ Placeholders `$(SDP_URL)`, `$(SDP_ADMIN_EMAIL)`, `$(SDP_PORTAL)` are resolved at
 
 #### P2b — Write `$PROJECT_NAME/tests_to_run.json`
 
-The write behaviour depends on `{CMD_MODE}`:
-
-- **`batch all`**: **Append** new entries to the existing `tests` array (load existing file, merge, write back)
-- **`batch`**: **Replace** the `tests` array with only this batch's entries
+Both `batch_all` and `batch` use the same cumulative write — always **append** with a `"batch": N` tag.
+Nothing is ever replaced. The runner filters by batch number at execution time.
 
 ```bash
 .venv/bin/python -c "
 import json, os
 from config.project_config import PROJECT_NAME
 
+batch_num = {CURRENT_BATCH_NUM}  # from batch_progress.md — fill in the current batch number
+
 new_tests = [
     # one dict per generated scenario — fill these in
-    {'_id': '<SCENARIO_ID>', 'entity_class': '<EntityClass>', 'method_name': '<methodName>', 'url': '\$(SDP_URL)', 'admin_mail_id': '\$(SDP_ADMIN_EMAIL)', 'email_id': '\$(SDP_ADMIN_EMAIL)', 'portal_name': '\$(SDP_PORTAL)', 'skip_compile': True},
+    {'_id': '<SCENARIO_ID>', 'entity_class': '<EntityClass>', 'method_name': '<methodName>', 'url': '\$(SDP_URL)', 'admin_mail_id': '\$(SDP_ADMIN_EMAIL)', 'email_id': '\$(SDP_ADMIN_EMAIL)', 'portal_name': '\$(SDP_PORTAL)', 'skip_compile': True, 'batch': batch_num},
 ]
 
 tests_path = f'{PROJECT_NAME}/tests_to_run.json'
-cmd_mode = '{CMD_MODE}'  # 'batch_all' or 'batch'
 
+# Always cumulative: load existing, deduplicate, append
 existing_tests = []
-if cmd_mode == 'batch_all' and os.path.exists(tests_path):
+if os.path.exists(tests_path):
     with open(tests_path) as f:
         existing_tests = json.load(f).get('tests', [])
-    # Deduplicate by _id
-    existing_ids = {t['_id'] for t in existing_tests}
-    new_tests = [t for t in new_tests if t['_id'] not in existing_ids]
-    all_tests = existing_tests + new_tests
-else:
-    all_tests = new_tests
+# Deduplicate by _id
+existing_ids = {t['_id'] for t in existing_tests}
+new_tests = [t for t in new_tests if t['_id'] not in existing_ids]
+all_tests = existing_tests + new_tests
 
 data = {
     '_comment': 'Auto-generated by @test-generator. Run with @test-runner batch.',
@@ -1306,8 +1310,10 @@ Do NOT hand off yet. Update `batch_progress.md`, then loop back to generate the 
 **If all batches are done (or `{CMD_MODE}` = `batch`):**
 
 ```
-✅ Generation complete — {N} scenarios ready in $PROJECT_NAME/tests_to_run.json.
-To execute and self-heal, run: @test-runner batch
+✅ Generation complete — Batch {B}: {N} scenarios appended to $PROJECT_NAME/tests_to_run.json ({TOTAL} total).
+To run this batch:           @test-runner batch
+To run a specific batch:     @test-runner batch {B}
+To run all generated tests:  @test-runner batch all
 ```
 
 ### Step P3 — Start Orchestrator & Log to Dashboard

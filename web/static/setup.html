@@ -68,6 +68,7 @@
       outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.15);
     }
     .field input.error { border-color: var(--red); }
+    .field input.prefilled { border-color: var(--green); background: rgba(34,197,94,.06); }
     .field .error-msg { color: var(--red); font-size: 12px; margin-top: 4px; display: none; }
 
     /* ── Buttons ─────────────────────────────────────── */
@@ -1015,6 +1016,34 @@ let saFiles = [];
   } catch (e) { /* default: hidden on error */ 
     document.getElementById('standalone-section').style.display = 'none';
   }
+})();
+
+// Pre-fill paths from previous .env configuration
+(async function prefillSavedPaths() {
+  try {
+    const resp = await fetch('/api/setup/saved-paths');
+    const saved = await resp.json();
+    const fieldMap = {
+      'DEPS_DIR': 'deps_path',
+      'DRIVERS_DIR': 'drivers_path',
+      'SDP_URL': 'sdp_url',
+      'SDP_PORTAL': 'portal',
+      'SDP_ADMIN_EMAIL': 'admin_email',
+      'SDP_EMAIL_ID': 'tech_email',
+      'SDP_TEST_USER_EMAILS': 'test_user_emails',
+      'HG_USERNAME': 'hg_username',
+    };
+    for (const [envKey, inputId] of Object.entries(fieldMap)) {
+      if (saved[envKey]) {
+        const el = document.getElementById(inputId);
+        if (el && !el.value) {
+          el.value = saved[envKey];
+          el.classList.add('prefilled');
+          el.addEventListener('input', () => el.classList.remove('prefilled'), { once: true });
+        }
+      }
+    }
+  } catch (e) { /* silent — fields stay empty */ }
 })();
 
 (async function loadSaProjects() {

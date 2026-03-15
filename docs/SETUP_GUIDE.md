@@ -126,16 +126,33 @@ Place your file (`.csv`, `.xlsx`, or `.xls`) in `<PROJECT_NAME>/Testcase/` (temp
 
 > Only rows with `UI To-be-automated = Yes` are processed.
 
-### Generate from a use-case document (recommended for batches)
+### Generate from a use-case document
+
+Pick the command based on how many test cases you have:
+
+#### `@test-generator batch` — generate and run one batch at a time (recommended for 100+ test cases)
 
 ```
-@test-generator batch all                   # auto-generate all scenarios from CSV (no prompts)
-@test-generator batch                       # show plan first, then confirm what to generate
+@test-generator batch                       # generates Batch 1 (up to 30 scenarios)
+@test-runner batch                          # runs Batch 1 (latest batch)
+@test-generator batch                       # generates Batch 2 (auto-resumes)
+@test-runner batch                          # runs Batch 2 (latest batch)
+...                                         # repeat until all batches done
 ```
 
-- **`batch all`** — reads the CSV, shows the plan briefly, then generates all scenarios automatically. One command, no interaction needed.
-- **`batch`** — reads the CSV, shows the grouped plan, and waits for you to confirm (`all` or pick specific numbers).
+Each batch **appends** to `tests_to_run.json` with a batch tag — nothing is ever lost.
+`@test-runner batch` automatically runs the **latest** batch. Forgot to run a previous batch? Use `@test-runner batch 1`.
+Progress is tracked in `<PROJECT_NAME>/ai_reports/batch_progress.md`.
 
+#### `@test-generator batch all` — generate everything, run once (recommended for under 100 test cases)
+
+```
+@test-generator batch all                   # generates ALL scenarios (batch by batch, no prompts)
+@test-runner batch all                      # runs ALL generated tests at once
+```
+
+Each batch **appends** to `tests_to_run.json`, so after generation completes, all scenarios are in one file ready to run.
+One command to generate, one command to run.
 ### Generate from a description (quick one-offs)
 
 ```
@@ -147,7 +164,9 @@ Place your file (`.csv`, `.xlsx`, or `.xls`) in `<PROJECT_NAME>/Testcase/` (temp
 ## Step 3 — Run Tests
 
 ```
-@test-runner batch                          # run all generated tests
+@test-runner batch                          # run latest batch
+@test-runner batch 2                        # run a specific batch
+@test-runner batch all                      # run ALL generated tests
 @test-runner Solution.createSolution        # run a single test
 ```
 
@@ -171,12 +190,15 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 
 | Task | Command |
 |------|---------|
-| Start web server | `./server.sh start` → open `http://localhost:9500` |
+| Start web server | `./server.sh start` |
 | Step 1: Setup project | `http://localhost:9500/setup` |
 | Step 1: Reconfigure project | Setup page → Reconfigure mode |
-| Step 2: Generate from use-case doc | `@test-generator batch all` (auto) or `@test-generator batch` (review first) |
+| Step 2: Generate (100+ cases) | `@test-generator batch` → `@test-runner batch` → repeat per batch |
+| Step 2: Generate (under 100) | `@test-generator batch all` → `@test-runner batch` (runs all) |
 | Step 2: Generate from text | `@test-generator <description>` |
-| Step 3: Run all tests | `@test-runner batch` |
+| Step 3: Run latest batch | `@test-runner batch` |
+| Step 3: Run specific batch | `@test-runner batch N` |
+| Step 3: Run all tests | `@test-runner batch all` |
 | Step 3: Run one test | `@test-runner Entity.methodName` |
 | Debug a failure | `@test-debugger <test ID> <error>` |
 | Recompile framework | `./setup_framework_bin.sh` |
