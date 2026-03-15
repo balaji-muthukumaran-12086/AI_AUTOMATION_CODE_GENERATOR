@@ -1,0 +1,6 @@
+# Minimal dependencies for VS Code + Copilot (Claude) workflow
+# Use this instead of requirements.txt if you only use @test-generator, @test-runner, @setup-project agents
+# Full requirements.txt is needed only for the LangGraph AI pipeline (main.py, orchestrator, RAG)
+
+python-dotenv>=1.0.0    # .env file loading (used by config/project_config.py)
+openpyxl>=3.1.0         # XLSX/XLS → CSV conversion for use-case documents

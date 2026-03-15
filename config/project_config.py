@@ -39,6 +39,11 @@ HG_AGENT_ENABLED = False
 # Branch prefix used when auto-generating branch names (only relevant when enabled)
 HG_BRANCH_PREFIX = "feature/AI_GEN_"
 
+# ── Web UI Feature Toggles ─────────────────────────────────────────────────
+# Show or hide the "Upload & Analyze Use-Case Documents" section on the setup page.
+# Set to True to display it, False to hide it.
+SHOW_UPLOAD_ANALYZE = _os.environ.get("SHOW_UPLOAD_ANALYZE", "false").lower() in ("true", "1", "yes")
+
 # ── Mercurial Repository Configuration ──────────────────────────────────────
 # Default remote hg repo URL for cloning test-case branches.
 # Users supply branch name + credentials at setup time; the setup-project agent

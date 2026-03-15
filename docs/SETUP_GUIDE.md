@@ -7,7 +7,7 @@
 ## 3 Steps — That's It
 
 ```
-  1. Setup       →   Web UI or @setup-project      →   Project ready
+  1. Setup       →   Web UI (localhost:9500/setup)   →   Project ready
   2. Generate    →   @test-generator                →   Java tests generated
   3. Run         →   @test-runner batch              →   Tests executed & auto-fixed
 ```
@@ -38,7 +38,9 @@ git clone https://github.com/balaji-muthukumaran-12086/AI_AUTOMATION_CODE_GENERA
 cd AI_AUTOMATION_CODE_GENERATOR
 ```
 ```bash
-python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+# Pick ONE — lightweight (VS Code/Copilot only) or full (LangGraph pipeline + orchestrator):
+python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements_vs.txt   # lightweight — 2 packages
+# python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt    # full — all 22 packages
 ```
 ```bash
 npm install                      # installs @playwright/mcp + auto-downloads Chromium browser
@@ -49,26 +51,6 @@ Now open this folder in VS Code: **File → Open Folder** → select `AI_AUTOMAT
 ---
 
 ## Step 2 — Project Setup
-
-You have **two options** — the Web UI or the Copilot Chat agent. Both perform the full setup including use-case document upload and analysis.
-
-| Capability | Web UI | @setup-project agent |
-|-----------|--------|---------------------|
-| Mode selection (generate only / generate & run / reconfigure) | ✅ | ✅ |
-| Hg clone with branch creation fallback | ✅ | ✅ |
-| Password entry | Browser modal (secure) | Terminal prompt (secure) |
-| Owner selection + new member registration | ✅ | ✅ |
-| `.env` + `.gitignore` + VS Code settings | ✅ | ✅ |
-| Framework compilation | ✅ | ✅ |
-| Testcase/ folder creation + spreadsheet conversion | ✅ | ✅ |
-| **Use-case document upload** | ✅ (drag & drop modal) | ✅ (blocks until uploaded) |
-| **Use-case analysis report** | ✅ (runs `generate_batch_summary.py`) | ✅ (runs `generate_batch_summary.py`) |
-| **Folder-exists handling** (Pull/Delete/Use-as-is) | Auto-pulls | ✅ (asks user) |
-| **Reveal project in VS Code Explorer** | ❌ | ✅ |
-
-> **TL;DR**: Use the **Web UI** for quick, full-featured setup. Use `@setup-project` only if you need interactive folder-exists choices or VS Code Explorer reveal.
-
-### Option A — Web UI Setup (recommended)
 
 Start the server and open the setup page in your browser:
 
@@ -84,7 +66,7 @@ Open **http://localhost:9500/setup** in your browser.
 |------|-------------|
 | **📝 Generate Only** | Generate Java test code from feature docs. You run tests manually. |
 | **🚀 Generate & Run** | Generate code AND execute against a live SDP instance automatically. |
-| **⚙️ Reconfigure** | Project already cloned. Update environment, credentials, drivers. |
+| **⚙️ Reconfigure** | Project already set up. Add or update SDP credentials, drivers & environment to enable test execution. |
 
 #### Generate Only / Generate & Run
 
@@ -103,10 +85,15 @@ Open **http://localhost:9500/setup** in your browser.
 
 #### Reconfigure
 
+Use this when your project is already cloned and you need to add or update SDP connection details — for example, after starting in **Generate Only** mode and later wanting to run tests.
+
 1. Select **Reconfigure** mode
 2. Pick your project from the **Project Folder** dropdown (shows all project folders including `MSP_*`, `SDP_*`, `SDPLIVE_*`)
-3. Update credentials/paths as needed
-4. Click **🚀 Run Setup**
+3. Fill in / update SDP credentials and driver paths
+4. Click **🚀 Run Setup** — `.env` is updated, no re-clone or re-generation needed
+
+> **Upgrade workflow**: Generate Only → (days later) → Reconfigure → `@test-runner batch`  
+> Your generated tests are preserved. Reconfigure only adds the missing SDP environment to `.env`.
 
 #### Server Commands
 
@@ -119,15 +106,7 @@ Open **http://localhost:9500/setup** in your browser.
 PORT=8090 ./server.sh start   # Custom port
 ```
 
-### Option B — Copilot Chat Agent
-
-1. Open **Copilot Chat** (`Ctrl+Shift+I`)
-2. Switch to **Agent mode** (dropdown at top)
-3. Type: **`@setup-project setup`**
-
-The agent walks you through everything interactively in chat.
-
-> **Password security**: In both options, the hg password is entered interactively (browser modal or terminal prompt) and never saved to `.env`, logs, or chat history.
+> **Password security**: The hg password is entered via a browser modal during setup and is never saved to `.env`, logs, or chat history.
 
 ---
 
@@ -177,10 +156,8 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 | Task | Command |
 |------|---------|
 | Start web server | `./server.sh start` → open `http://localhost:9500` |
-| Setup via Web UI | `http://localhost:9500/setup` |
-| Setup via agent | `@setup-project setup` |
-| Reconfigure (Web) | Setup page → Reconfigure mode |
-| Reconfigure (agent) | `@setup-project setup` → mode 3 |
+| Setup project | `http://localhost:9500/setup` |
+| Reconfigure project | Setup page → Reconfigure mode |
 | Generate from use-case doc | Place file in `Testcase/`, then `@test-generator` |
 | Generate from text | `@test-generator <description>` |
 | Run all tests | `@test-runner batch` |
@@ -206,7 +183,7 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 | Hg password prompt not appearing | Ensure the server is running (`./server.sh status`); reload setup page |
 | Test fails on first run | Normal — `@test-runner` auto-fixes and reruns |
 | Wrong project targeted | `@test-generator project=BRANCH_NAME` |
-| Need to switch SDP instance | Setup page → Reconfigure → update URL/credentials |
+| Upgrade Generate Only → Run | Setup page → Reconfigure → add SDP URL/credentials/drivers |
 | Playwright MCP not available | `npm install && npx playwright install chromium` then `./start_playwright_mcp.sh` |
 | `@test-runner` skips locator fixes | Playwright MCP not loaded — restart VS Code or run `./start_playwright_mcp.sh --start` |
 

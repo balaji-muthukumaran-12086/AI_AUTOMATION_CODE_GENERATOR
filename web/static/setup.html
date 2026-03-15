@@ -1004,6 +1004,19 @@ function showAnalysisReport(filename, content) {
 // ── Standalone Upload & Analyze ────────────────────────────
 let saFiles = [];
 
+// Feature toggle — hide section if disabled in config
+(async function checkUploadAnalyzeVisibility() {
+  try {
+    const resp = await fetch('/api/setup/config');
+    const cfg = await resp.json();
+    if (!cfg.show_upload_analyze) {
+      document.getElementById('standalone-section').style.display = 'none';
+    }
+  } catch (e) { /* default: hidden on error */ 
+    document.getElementById('standalone-section').style.display = 'none';
+  }
+})();
+
 (async function loadSaProjects() {
   try {
     const resp = await fetch('/api/setup/projects');

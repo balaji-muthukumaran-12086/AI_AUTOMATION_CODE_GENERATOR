@@ -511,6 +511,13 @@ def _execute_setup(setup_id: str, req: SetupRequest):
 
 # ── Routes ────────────────────────────────────────────────────────────────────
 
+@router.get("/config")
+async def get_setup_config():
+    """Return UI feature flags for the setup page."""
+    from config.project_config import SHOW_UPLOAD_ANALYZE
+    return {"show_upload_analyze": SHOW_UPLOAD_ANALYZE}
+
+
 @router.get("/projects")
 async def list_projects():
     """List existing project folders in the workspace (any folder with src/ or bin/ inside)."""
