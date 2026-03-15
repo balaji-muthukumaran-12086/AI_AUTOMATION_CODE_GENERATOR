@@ -4,12 +4,16 @@
 
 ---
 
-## 3 Steps — That's It
+## How It Works
 
 ```
-  1. Setup       →   Web UI (localhost:9500/setup)   →   Project ready
-  2. Generate    →   @test-generator                →   Java tests generated
-  3. Run         →   @test-runner batch              →   Tests executed & auto-fixed
+  One-Time Setup   →   Clone repo, install dependencies, open in VS Code
+       ↓
+  Then repeat for each project / branch:
+       ↓
+  1. Setup Project  →   Web UI (localhost:9500/setup)   →   Project ready
+  2. Generate       →   @test-generator                →   Java tests generated
+  3. Run            →   @test-runner batch              →   Tests executed & auto-fixed
 ```
 
 ---
@@ -27,9 +31,11 @@ sudo apt install openjdk-17-jdk git mercurial python3 python3-venv nodejs npm
 
 ---
 
-## Step 1 — Clone & Open
+## One-Time Setup — Clone & Install
 
-In the same VS Code terminal, run these one by one:
+> **Run these once.** After this, skip straight to **Step 1** for every new project or branch.
+
+In the VS Code terminal, run:
 
 ```bash
 git clone https://github.com/balaji-muthukumaran-12086/AI_AUTOMATION_CODE_GENERATOR.git
@@ -48,9 +54,11 @@ npm install                      # installs @playwright/mcp + auto-downloads Chr
 
 Now open this folder in VS Code: **File → Open Folder** → select `AI_AUTOMATION_CODE_GENERATOR`
 
+> **Done!** You won't need to repeat the above. From now on, just open the folder in VS Code and follow the 3 steps below.
+
 ---
 
-## Step 2 — Project Setup
+## Step 1 — Setup Project
 
 Start the server and open the setup page in your browser:
 
@@ -110,7 +118,7 @@ PORT=8090 ./server.sh start   # Custom port
 
 ---
 
-## Step 3 — Generate & Run Tests
+## Step 2 — Generate Tests
 
 ### Upload your use-case document
 
@@ -120,7 +128,13 @@ Place your file (`.csv`, `.xlsx`, or `.xls`) in `<PROJECT_NAME>/Testcase/` (temp
 
 ### Generate from a use-case document (recommended for batches)
 
-In Copilot Chat: **`@test-generator`** — it picks up the document automatically. Review the plan, reply `all` to generate.
+```
+@test-generator batch all                   # auto-generate all scenarios from CSV (no prompts)
+@test-generator batch                       # show plan first, then confirm what to generate
+```
+
+- **`batch all`** — reads the CSV, shows the plan briefly, then generates all scenarios automatically. One command, no interaction needed.
+- **`batch`** — reads the CSV, shows the grouped plan, and waits for you to confirm (`all` or pick specific numbers).
 
 ### Generate from a description (quick one-offs)
 
@@ -128,7 +142,9 @@ In Copilot Chat: **`@test-generator`** — it picks up the document automaticall
 @test-generator Create an incident request, add a note, and verify it appears in the Notes tab
 ```
 
-### Run tests
+---
+
+## Step 3 — Run Tests
 
 ```
 @test-runner batch                          # run all generated tests
@@ -156,12 +172,12 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 | Task | Command |
 |------|---------|
 | Start web server | `./server.sh start` → open `http://localhost:9500` |
-| Setup project | `http://localhost:9500/setup` |
-| Reconfigure project | Setup page → Reconfigure mode |
-| Generate from use-case doc | Place file in `Testcase/`, then `@test-generator` |
-| Generate from text | `@test-generator <description>` |
-| Run all tests | `@test-runner batch` |
-| Run one test | `@test-runner Entity.methodName` |
+| Step 1: Setup project | `http://localhost:9500/setup` |
+| Step 1: Reconfigure project | Setup page → Reconfigure mode |
+| Step 2: Generate from use-case doc | `@test-generator batch all` (auto) or `@test-generator batch` (review first) |
+| Step 2: Generate from text | `@test-generator <description>` |
+| Step 3: Run all tests | `@test-runner batch` |
+| Step 3: Run one test | `@test-runner Entity.methodName` |
 | Debug a failure | `@test-debugger <test ID> <error>` |
 | Recompile framework | `./setup_framework_bin.sh` |
 | Setup Playwright MCP | `npm install && npx playwright install chromium` |

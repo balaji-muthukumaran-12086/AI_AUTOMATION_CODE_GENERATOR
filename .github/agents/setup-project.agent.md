@@ -869,7 +869,7 @@ Then continue for all modes:
 1. Compiling the framework now... (see below)
 2. Upload your use-case document (.csv, .xlsx, .md, or .txt) to:
    📁 {PROJECT_NAME}/Testcase/
-3. Then use `@test-generator` — the agent will generate the Java test code for you
+3. Then use `@test-generator batch all` — the agent will generate the Java test code for you
 4. To enable test execution later, re-run `@setup-project setup` and choose mode 3 (Reconfigure)
 
 ⚠️ IMPORTANT: @test-generator will NOT generate tests without a use-case document.
@@ -882,7 +882,7 @@ Then continue for all modes:
 1. Compiling the framework now... (see below)
 2. Upload your use-case document (.csv, .xlsx, .md, or .txt) to:
    📁 {PROJECT_NAME}/Testcase/
-3. Then use `@test-generator` — the agent will generate the code, append scenarios
+3. Then use `@test-generator batch all` — the agent will generate the code, append scenarios
    to `$PROJECT_NAME/tests_to_run.json`, and tell you to invoke `@test-runner batch`
 4. `@test-runner` will run each generated test one by one — if a test fails,
    it auto-diagnoses the failure using Playwright MCP, fixes the code, and re-runs
@@ -940,8 +940,8 @@ If it **succeeds**, show:
 ```
 ✅ Framework classes compiled and verified. You're all set!
 
-Just open @test-generator and attach your use-case document (.xlsx, .csv, .md, or plain text).
-The agent will generate, compile, and run the tests for you.
+Just run `@test-generator batch all` after uploading your use-case document (.xlsx, .csv, .md, or plain text).
+The agent will generate, compile, and prepare the tests for you.
 ```
 
 If it **fails**, show the last 20 lines and ask the user to fix:

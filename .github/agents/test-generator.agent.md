@@ -1,8 +1,8 @@
 ---
-description: "Use when generating new Selenium test cases, writing @AutomaterScenario methods, creating test data entries, or adding new preProcess groups for the SDP automation framework. Primary input: upload a use-case CSV to {PROJECT}/Testcase/. Also accepts plain-text descriptions."
+description: "Use when generating new Selenium test cases, writing @AutomaterScenario methods, creating test data entries, or adding new preProcess groups for the SDP automation framework. Use 'batch all' to generate all from CSV automatically, 'batch' to review the plan first, or describe a scenario in plain text."
 tools: [read, edit, search, execute, todo, mcp_microsoft_pla/*]
 model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
-argument-hint: "Upload a use-case CSV to your project's Testcase/ folder, then invoke this agent. Or describe the scenario in plain text (e.g., 'create a change and verify the detail view title')."
+argument-hint: "'batch all' to generate all from CSV automatically, 'batch' to review plan first, or describe a scenario in plain text."
 instructions:
   - .github/copilot-instructions.md
   - config/critical_rules_digest.md
@@ -34,120 +34,56 @@ You are a **test generation specialist** for the AutomaterSelenium QA framework.
 
 ## Step 0 — Resolve Target Project
 
-Before anything else, check if the user specified a **target project** in their message.
-
-The user may say things like:
-- `project=SDPLIVE_UI_AUTOMATION_BRANCH generate tests for ...`
-- `generate in SDPLIVE_FEATURE_X: create a change and verify...`
-- `@test-generator project=AALAM_FRAMEWORK_CHANGES` (with an attached document)
-
-**Detection rules:**
-1. Look for `project=<NAME>` anywhere in the message
-2. Look for `generate in <NAME>:` or `in project <NAME>` patterns
-3. If no project is specified → **scan for all cloned project folders** before defaulting
-
-**If a project is specified:**
-```bash
-# Verify the project folder exists
-ls -d "$(cd "$(dirname "$(find . -path '*/config/project_config.py' -maxdepth 3 | head -1)")" && cd .. && pwd)/<PROJECT_NAME>" 2>/dev/null && echo "EXISTS" || echo "MISSING"
-```
-- If `EXISTS` → temporarily override `PROJECT_NAME` in `project_config.py` to `<PROJECT_NAME>` for this session, then restore it at the end
-- If `MISSING` → tell the user: `"Project folder '<PROJECT_NAME>' not found. Run @setup-project to clone it first, or check the folder name."`
-
-**If no project is specified — detect multiple projects:**
-
-```bash
-# List all cloned project folders (they contain src/com/zoho/automater/)
-WORKSPACE=$(cd "$(dirname "$(find . -path '*/config/project_config.py' -maxdepth 3 | head -1)")" && cd .. && pwd)
-PROJECTS=()
-for dir in "$WORKSPACE"/*/; do
-  if [[ -d "$dir/src/com/zoho/automater" ]]; then
-    PROJECTS+=("$(basename "$dir")")
-  fi
-done
-DEFAULT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
-echo "Default: $DEFAULT"
-echo "All projects: ${PROJECTS[@]}"
-echo "Count: ${#PROJECTS[@]}"
-```
-
-- **If only 1 project folder exists** → use it as `{TARGET_PROJECT}` (no need to ask)
-- **If 2+ project folders exist** → **STOP and ask the user** which project to target:
-
-```
-I found multiple project folders in this workspace:
-
-  1. SDPLIVE_LATEST_AUTOMATER_SELENIUM  ← current default (from .env)
-  2. SDPLIVE_UI_AUTOMATION_BRANCH
-  3. SDPLIVE_FEATURE_X
-  4. AALAM_FRAMEWORK_CHANGES
-  5. SDPLIVE_REGRESSION_TESTS
-
-Which project should I generate tests for? (reply with the number or name)
-
-💡 Tip: Next time you can specify it directly:
-   `@test-generator project=SDPLIVE_FEATURE_X`
-```
-
-Wait for the user's response before proceeding. Once they pick a project, store it as `{TARGET_PROJECT}`.
-
-- **If 0 project folders exist** → tell the user: `"No project folders found. Run @setup-project setup to clone a test-case branch first."`
-
-Store the resolved project name as `{TARGET_PROJECT}` for all subsequent steps.
-
----
-
-## Step 0.1 — Resolve Owner (BEFORE any generation)
-
-Immediately after resolving the project, resolve the owner. This MUST complete before
-any test code is generated — the resolved value is used in every `@AutomaterScenario`.
-
-```bash
-OWNER=$(.venv/bin/python -c "from config.project_config import OWNER_CONSTANT; print(OWNER_CONSTANT or '')")
-echo "Resolved owner: '$OWNER'"
-```
-
-**If `$OWNER` is empty or `None`** — the owner was NOT configured during `@setup-project`.
-Parse `OwnerConstants.java` from the cloned project and **STOP to ask the user**:
+Read `PROJECT_NAME` from `.env` (set by `@setup-project` or the web UI). If the user specified
+`project=<NAME>` in their message, use that instead.
 
 ```bash
 PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
-grep -oP 'public static final String \K[A-Z_]+' \
-  "$PROJECT/src/com/zoho/automater/selenium/modules/OwnerConstants.java" | sort | nl -w2 -s'. '
+echo "Project: $PROJECT"
+[[ -d "$PROJECT/src" ]] && echo "OK" || echo "MISSING"
 ```
 
-**STOP and present the numbered list:**
-```
-⚠️ Owner is not configured. Please select your name from the list:
+- If `project=<NAME>` was specified and exists → use it as `{TARGET_PROJECT}`
+- If `PROJECT_NAME` from `.env` exists → use it as `{TARGET_PROJECT}`
+- If missing or folder not found → **STOP**: `"No project configured. Run @setup-project first (or use http://localhost:9500/setup)."`
 
- 1. ABHISHEK_RAV
- 2. ABINAYA_AK
- 3. AISHWARYA_JAYASANKAR
- 4. ANITHA_A
- 5. ANTONYRAJAN_D
- 6. BALAJI_M
- 7. BALAJI_MR
- ...
- N. NEW USER (not in the list)
+---
 
-Reply with the number or constant name (e.g., "6" or "BALAJI_M").
-```
+## Step 0.1 — Resolve Owner
 
-**Wait for the user's reply.** Once they pick, persist and store:
 ```bash
-# Update .env with the chosen owner
-sed -i "s/^OWNER_CONSTANT=.*/OWNER_CONSTANT=<CHOSEN>/" .env || echo "OWNER_CONSTANT=<CHOSEN>" >> .env
+OWNER=$(.venv/bin/python -c "from config.project_config import OWNER_CONSTANT; print(OWNER_CONSTANT or '')")
+echo "Owner: $OWNER"
 ```
 
-Store the resolved owner as `{OWNER}` (e.g., `BALAJI_M`) for all subsequent steps.
+- If set → store as `{OWNER}`, proceed
+- If empty → **STOP**: `"Owner not configured. Run @setup-project first (or use http://localhost:9500/setup) to select your name."`
 
-**If `$OWNER` is already set** — confirm it to the user:
-```
-✅ Owner: OwnerConstants.{OWNER} (from .env configuration)
-```
-Store it as `{OWNER}` and proceed.
+---
 
-> This ensures every `@AutomaterScenario` in this session uses the same `owner = OwnerConstants.{OWNER}`.
+## Step 0.2 — Parse Command Arguments
+
+Detect the user's invocation style from their message. This determines whether to show
+interactive prompts or run autonomously.
+
+| User invocation | `{CMD_MODE}` | Behaviour |
+|---|---|---|
+| `@test-generator batch all` | `batch_all` | Auto-detect CSV in Testcase/, skip plan confirmation, generate ALL scenarios immediately |
+| `@test-generator batch` | `batch` | Auto-detect CSV in Testcase/, show plan, wait for confirmation |
+| `@test-generator create a change...` | `description` | Plain-text scenario (Mode B) |
+| `@test-generator` (bare) | `interactive` | Show plan if CSV exists, else show gate prompt |
+| `@test-generator project=X batch all` | `batch_all` | Same as `batch all` but targeting project X |
+
+**Detection rules (apply in order — first match wins):**
+1. Message contains `batch all` (case-insensitive) → `CMD_MODE = batch_all`
+2. Message contains `batch` (case-insensitive, but NOT `batch all`) → `CMD_MODE = batch`
+3. Message contains a concrete scenario description (verb + entity noun) → `CMD_MODE = description`
+4. Otherwise → `CMD_MODE = interactive`
+
+Store `{CMD_MODE}` for use in the confirmation step later.
+
+> **Key difference**: `batch` shows the plan and waits. `batch all` shows the plan briefly
+> then proceeds to generate without waiting. Both require a CSV in `Testcase/`.
 
 ---
 
@@ -485,11 +421,26 @@ Related CSV rows (same Module + Sub-Module + similar Impact Area) should be **gr
 [Admin > CI Type Layout]
 6. SDPOD_SFCMDB_ADMIN_016 — Drag and Drop sub form into CI Type layout
 ...
-
-Shall I generate all of them, or only specific ones? (Reply with numbers or 'all')
 ```
 
+#### Confirmation behaviour (depends on `{CMD_MODE}` from Step 0.2)
+
+**If `{CMD_MODE}` = `batch_all`:**
+Show the plan above, then **immediately proceed to generate ALL scenarios** — no user prompt.
+Append this line after the plan:
+```
+✅ batch all — generating all {N} scenarios automatically...
+```
+
+**If `{CMD_MODE}` = `batch` or `interactive`:**
+Show the plan above, then ask for confirmation:
+```
+Shall I generate all of them, or only specific ones? (Reply with numbers or 'all')
+```
 Wait for user confirmation before generating code.
+
+**If `{CMD_MODE}` = `description`:**
+This path is not reached (Mode B handles plain-text descriptions separately).
 
 ### Batch Size Guard (MANDATORY — applies to Mode A only)
 
@@ -497,7 +448,7 @@ Wait for user confirmation before generating code.
 > attempt generating all scenarios in one session — context exhaustion, incomplete code, missed
 > convention checks. Quality degrades sharply beyond ~30 scenarios per session.
 
-**After showing the scenario plan and receiving user confirmation:**
+**After showing the scenario plan and receiving user confirmation (or auto-confirmed via `batch all`):**
 
 1. Count the total scenarios to generate (after filtering + grouping)
 2. If total ≤ 30 → proceed normally
@@ -512,8 +463,13 @@ I'll split this into {ceil(N/30)} batches:
   Batch 3: Scenarios 61–{N} (remaining)
 
 Batches are grouped by Module > Sub-Module to keep related scenarios together.
-I'll generate Batch 1 now. After review, invoke `@test-generator` again for the next batch.
+I'll generate Batch 1 now. After review, invoke `@test-generator batch` again for the next batch.
+```
 
+**If `{CMD_MODE}` = `batch_all`:** Skip the prompt and auto-proceed with Batch 1 immediately.
+**Otherwise:** Show the prompt and wait:
+
+```
 Proceed with Batch 1? (yes / pick a different batch)
 ```
 
@@ -533,7 +489,7 @@ Proceed with Batch 1? (yes / pick a different batch)
 - **FORBIDDEN**: Generating more than 30 scenarios in a single agent session regardless of user request
 
 ### Mode B — Plain-text description (QUICK / SECONDARY)
-The user typed an **explicit, concrete scenario description** directly (e.g., "create a change and verify the detail view title") **AND** the `Testcase/` folder is empty (no documents). This is for quick one-off scenarios only.
+The user typed an **explicit, concrete scenario description** directly (e.g., "create a change and verify the detail view title") **AND** the `Testcase/` folder is empty (no documents). This is for quick one-off scenarios only. **`{CMD_MODE}` must be `description`** — `batch` and `batch_all` always use Mode A.
 
 > **PREREQUISITE CHECK**: Before entering Mode B, confirm that `Testcase/` is truly empty.
 > If any document exists there → go back and use **Mode A** instead. Mode B is the **last resort**
@@ -1387,25 +1343,6 @@ ls -la "$PROJECT/Testcase/" 2>/dev/null
 ```
 
 This keeps a record of which use-case documents AND their analysis results were used to generate tests. The execution plan MD serves as the audit trail connecting CSV rows to generated test methods.
-
-### Step P5 — Restore PROJECT_NAME (if overridden)
-
-If you temporarily changed `PROJECT_NAME` in Step 0 for a non-default project, restore it now:
-
-```bash
-# Only if PROJECT_NAME was changed from the original default
-.venv/bin/python -c "
-import re
-with open('config/project_config.py', 'r') as f:
-    content = f.read()
-content = re.sub(r'PROJECT_NAME = \".*?\"', 'PROJECT_NAME = \"{ORIGINAL_PROJECT_NAME}\"', content)
-with open('config/project_config.py', 'w') as f:
-    f.write(content)
-print('Restored PROJECT_NAME to {ORIGINAL_PROJECT_NAME}')
-"
-```
-
-Skip this step if the default project was used (no override happened).
 
 ---
 
