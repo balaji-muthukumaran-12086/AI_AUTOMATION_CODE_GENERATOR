@@ -190,3 +190,26 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 ---
 
 > **Why VS Code?** The `@agent` workflow requires VS Code Agent mode (1.99+) — Eclipse and IntelliJ don't support it. You can still use Eclipse for regular Java work alongside VS Code for test generation.
+
+---
+
+## Hg Credential Security
+
+Hg repository credentials are handled **transiently with zero persistence**:
+
+1. **In-browser dialog** — Password is entered in a modal dialog on `localhost:9500`. It is sent via POST to the local FastAPI server and **never leaves the machine**.
+
+2. **Config-flag authentication** — Credentials are passed to `hg clone` via Mercurial's `--config auth.*` flags, **not embedded in the URL**:
+   ```
+   hg clone --config auth.tmp.prefix=zrepository.zohocorpcloud.in \
+            --config auth.tmp.username="user" \
+            --config auth.tmp.password="****" \
+            --config auth.tmp.schemes=https \
+            --branch BRANCH REPO_URL PROJECT/
+   ```
+
+3. **Log masking** — All SSE log output replaces the password with `●●●●` before streaming to the browser. The raw password never appears in the progress log.
+
+4. **Memory cleanup** — The password is cleared from the server's in-memory state (`state["hg_password_value"] = None`) immediately after the clone command is constructed — before the clone even finishes.
+
+5. **No disk persistence** — The password is **never** written to `.env`, log files, hgrc, or any other file on disk. It exists only in-memory for the duration of the clone subprocess.

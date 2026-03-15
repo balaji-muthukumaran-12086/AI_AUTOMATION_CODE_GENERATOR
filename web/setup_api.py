@@ -245,12 +245,17 @@ def _execute_setup(setup_id: str, req: SetupRequest):
                 _log(setup_id, "Password received — starting clone...", "success")
 
                 hg_user = req.hg_username or ""
-                from urllib.parse import quote as _url_quote
-                auth_url = f"https://{_url_quote(hg_user, safe='')}:{_url_quote(hg_pass, safe='')}@zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium"
                 repo_url = "https://zrepository.zohocorpcloud.in/zohocorp/Automater/AutomaterSelenium"
+                # Pass credentials via --config auth section (never embedded in URL)
+                _hg_auth = (
+                    f'--config auth.tmp.prefix=zrepository.zohocorpcloud.in '
+                    f'--config auth.tmp.username="{hg_user}" '
+                    f'--config auth.tmp.password="{hg_pass}" '
+                    f'--config auth.tmp.schemes=https'
+                )
                 rc, output = _run_cmd(
                     setup_id,
-                    f'hg clone --branch "{hg_branch}" "{auth_url}" "{project_name}" 2>&1',
+                    f'hg clone {_hg_auth} --branch "{hg_branch}" "{repo_url}" "{project_name}" 2>&1',
                     cwd=str(WORKSPACE_DIR),
                     timeout=600,
                     mask=hg_pass,
@@ -265,7 +270,7 @@ def _execute_setup(setup_id: str, req: SetupRequest):
 
                         rc2, _ = _run_cmd(
                             setup_id,
-                            f'hg clone --branch "SDPLIVE_UI_AUTOMATION_BRANCH" "{auth_url}" "{project_name}" 2>&1',
+                            f'hg clone {_hg_auth} --branch "SDPLIVE_UI_AUTOMATION_BRANCH" "{repo_url}" "{project_name}" 2>&1',
                             cwd=str(WORKSPACE_DIR),
                             timeout=600,
                             mask=hg_pass,
