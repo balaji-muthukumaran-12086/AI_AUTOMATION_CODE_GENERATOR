@@ -1315,34 +1315,42 @@ This is fire-and-forget — if the orchestrator server isn't running, the event 
 
 ---
 
-### Step P4 — Save Artifacts to Testcase/ Folder
+### Step P4 — Save Artifacts to ai_reports/
 
-Save generation artifacts (execution plan, batch progress) into the project's `Testcase/` folder for traceability.
+Consolidate all progress artifacts into `ai_reports/` — the single place to check generation progress, batch status, and test results.
 
-> **IMPORTANT**: Do NOT copy use-case documents into Testcase/ — the user must have already placed them there before invoking this agent. Only save agent-generated *artifacts* (execution plans, batch progress).
+> **IMPORTANT**: Do NOT copy use-case documents into Testcase/ — the user must have already placed them there before invoking this agent. Only save agent-generated *artifacts*.
 
 ```bash
 PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
-mkdir -p "$PROJECT/Testcase"
+mkdir -p "$PROJECT/ai_reports"
 
-# 1. Copy the CSV analysis / execution plan MD (generated in Step P2c)
+# 1. Copy execution plan (generated in Step P2c)
 if [ -f "$PROJECT/execution_plan.md" ]; then
-  cp "$PROJECT/execution_plan.md" "$PROJECT/Testcase/execution_plan_$(date +%Y%m%d_%H%M%S).md"
-  echo "Saved execution plan to $PROJECT/Testcase/"
+  cp "$PROJECT/execution_plan.md" "$PROJECT/ai_reports/execution_plan.md"
+  echo "Saved execution_plan.md to ai_reports/"
 fi
 
 # 2. Copy batch progress tracker (if batching was used)
 if [ -f "$PROJECT/Testcase/batch_progress.md" ]; then
-  echo "Batch progress tracker already in Testcase/ — up to date"
+  cp "$PROJECT/Testcase/batch_progress.md" "$PROJECT/ai_reports/batch_progress.md"
+  echo "Saved batch_progress.md to ai_reports/"
 fi
 
-# 4. List all artifacts in Testcase/ for confirmation
+# 3. List all reports for confirmation
 echo ""
-echo "📁 Artifacts in $PROJECT/Testcase/:"
-ls -la "$PROJECT/Testcase/" 2>/dev/null
+echo "📁 All reports in $PROJECT/ai_reports/:"
+ls -1 "$PROJECT/ai_reports/" 2>/dev/null
 ```
 
-This keeps a record of which use-case documents AND their analysis results were used to generate tests. The execution plan MD serves as the audit trail connecting CSV rows to generated test methods.
+**`ai_reports/` contents at a glance:**
+
+| File | What it shows |
+|------|---------------|
+| `USECASE_ANALYSIS_*.md` | CSV breakdown — total, automatable, severity, batches |
+| `GENERATION_SUMMARY_*.md` | Per-batch generation metrics — coverage %, time saved |
+| `execution_plan.md` | Per-test results — Dry Run / Self-Heal / Validation status |
+| `batch_progress.md` | Batch tracker — which batches are done/pending |
 
 ---
 
