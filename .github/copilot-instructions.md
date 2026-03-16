@@ -702,6 +702,65 @@ Role.SDADMIN  |  ModulesRoleSkeleton.SDADMIN
 - `custom_roles` block → framework ensures the custom role exists in SDP before assigning (creates it via UI if missing)
 - Requester entries omit `custom_roles` and `roles[]`; include `login_user`, `requester_allowed_to_view`, etc.
 
+### ⚠️ RBAC Scenario Pattern — MANDATORY for Role-Based Tests
+
+> **Any scenario testing role-based access/permissions MUST follow the `createUserByRole` → `switchUser` flow.**
+> Running RBAC tests as admin verifies nothing — admin always has all permissions.
+> This applies to ALL modules: Changes, Requests, Problems, Solutions, Assets, Releases, Projects, CMDB, Admin, etc.
+
+**Required flow:**
+
+1. **preProcess**: Create user with the target role
+```java
+User user = scenarioDetails.getUser(ScenarioUsers.TEST_USER_3);
+// moduleName = "changes", "requests", "problems", "solutions", etc.
+// roleConfigKey = key in resources/entity/roles/<module>.json or general.json
+actions.createUserByRole(AutomaterConstants.TECHNICIAN, getModuleName(), "roleKey", user);
+LocalStorage.store("techName", user.getDisplayId());
+```
+
+2. **Test method**: Switch to that user, test under their permissions
+```java
+User user = scenarioDetails.getUser(ScenarioUsers.TEST_USER_3);
+actions.switchUser(user);
+// All subsequent UI actions run under the role user's permissions
+actions.navigate.toModule(getModuleName());
+// ... verify what this user CAN or CANNOT do ...
+switchToAdminSession();  // switch back if needed
+```
+
+**`createUserByRole` signature:**
+```java
+actions.createUserByRole(
+    String userType,      // AutomaterConstants.TECHNICIAN or AutomaterConstants.REQUESTER
+    String moduleName,    // "changes", "requests", "problems", "solutions", etc. — selects which role JSON file to read
+    String roleConfigKey, // key in resources/entity/roles/<module>.json or general.json
+    User userObject       // from scenarioDetails.getUser(ScenarioUsers.TEST_USER_N)
+)
+```
+
+**Role JSON files per module** (in `resources/entity/roles/`):
+
+| Module | File | Example keys |
+|--------|------|-------------|
+| Changes | `changes.json` | `SDChangeManager`, `Change_FullControl_With_CMDB` |
+| Requests | `requests.json` | `Requester`, `Full_Control`, `View_Only` |
+| System | `general.json` | `sdadmin`, `sdsite_admin`, `sdguest`, `helpdeskconfig` |
+| Other modules | `<module>.json` | Module-specific custom roles |
+
+**Decision flow for RBAC scenarios (all modules):**
+```
+CSV description says "verify user with/without X permission can/cannot Y"?
+  → 1. Identify role → check <module>.json / general.json for matching key
+  → 2. If no match → add new role entry to the correct module's JSON file
+  → 3. Add preProcess group that calls createUserByRole() + creates test data
+  → 4. In test method: switchUser(user) → test under role → switchToAdminSession()
+```
+
+> **FORBIDDEN**: Testing role restrictions as admin with placeholder comments like
+> "admin baseline — role restriction test requires non-edit user". The test MUST
+> actually switch to the restricted user and validate the behavior.
+
 ### Owner Constants — auto-detected from hg username
 
 The `owner` field in `@AutomaterScenario` is automatically resolved from the user's hg

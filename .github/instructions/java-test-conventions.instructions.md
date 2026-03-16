@@ -434,3 +434,138 @@ actions.switchUser(user);
 - `actions.switchUser(user)` can be called inside the test method to switch to any `TEST_USER_N`
 - After switching, the browser is fully logged in as the new user — all subsequent actions run in that user's session
 - API calls (`restAPI.*`) inside the test method run in the **current browser session** — if you switched to a requester, API calls execute with requester permissions
+
+## ⚠️ RBAC (Role-Based Access Control) Scenarios — MANDATORY Pattern
+
+> **Root cause of past miss**: Generated RBAC scenarios ran entirely as admin — assertions like
+> "verify user without edit permission cannot see Attach/Detach buttons" were meaningless
+> because admin always has all permissions. **RBAC tests MUST switch to the restricted role user.**
+
+### When does this apply?
+
+Any scenario whose description mentions roles, permissions, access control, requester, technician-specific features, owner-based access, manager-based access, stage-based restrictions, or "cannot see/do X" — these ALL require the role-based flow below.
+
+### Required RBAC Test Flow
+
+**Step 1 — preProcess: Create the role user (runs in admin session)**
+
+```java
+// In preProcess() — under a group like "createWithViewOnlyRole":
+User user = scenarioDetails.getUser(ScenarioUsers.TEST_USER_3);
+
+// Create technician/requester with specific role from <module>.json / general.json
+// moduleName = "changes", "requests", "problems", "solutions", etc.
+// roleConfigKey = key in resources/entity/roles/<module>.json or general.json
+actions.createUserByRole(
+    AutomaterConstants.TECHNICIAN,    // or AutomaterConstants.REQUESTER
+    getModuleName(),                  // module for role JSON lookup (or hardcode: "changes", "requests", etc.)
+    "SDChangeManager",                // role key from the module's role JSON
+    user
+);
+LocalStorage.store("techName", user.getDisplayId());
+
+// Also create prerequisite data while still in admin session
+// (use appropriate module APIUtil: ChangeAPIUtil, RequestAPIUtil, ProblemAPIUtil, etc.)
+```
+
+**Step 2 — Test method: Switch to role user, test, then optionally switch back**
+
+```java
+public void verifyViewOnlyUserCannotPerformAction() throws Exception {
+    try {
+        // Get the SAME user created in preProcess
+        User user = scenarioDetails.getUser(ScenarioUsers.TEST_USER_3);
+
+        // CRITICAL: Switch browser to the role-restricted user
+        actions.switchUser(user);
+
+        // Now all UI actions run under the restricted role — works for ANY module
+        actions.navigate.toModule(getModuleName());
+        actions.navigate.toDetailsPageUsingRecordId(getEntityId());
+
+        // Validate what this restricted user CAN or CANNOT see/do
+        boolean actionVisible = actions.isElementPresent(someLocator);
+
+        if (!actionVisible) {
+            addSuccessReport("View-only user correctly cannot see the action button");
+        } else {
+            addFailureReport("Action button should be hidden for view-only user", "");
+        }
+
+        // Switch back to admin if subsequent steps need admin permissions
+        switchToAdminSession();
+    } catch (Exception exception) {
+        addFailureReport("Internal error", exception.getMessage());
+    } finally {
+        report.endMethodFlowInStepsToReproduce();
+    }
+}
+```
+
+### Role JSON — Adding New Roles
+
+Roles are stored in `resources/entity/roles/<module>.json` (one per module). If the needed role doesn't exist, add it to the correct module's JSON file:
+
+| Module | Role JSON file | Example roles |
+|--------|---------------|---------------|
+| Changes | `roles/changes.json` | `SDChangeManager`, `Change_FullControl_With_CMDB` |
+| Requests | `roles/requests.json` | `Requester`, `Full_Control`, `View_Only` |
+| Problems | `roles/problems.json` | Problem-specific custom roles |
+| Solutions | `roles/solutions.json` | Solution-specific custom roles |
+| System-wide | `roles/general.json` | `sdadmin`, `sdsite_admin`, `sdguest`, `helpdeskconfig`, `Requester` |
+
+```json
+"<Module>_ViewOnly": {
+    "user": {
+        "roles": [{"name": "<Module>_ViewOnly"}],
+        "default_project_role": {"name": "Project Admin"}
+    },
+    "custom_roles": {
+        "<Module>_ViewOnly": {
+            "permissions": [{"name": "<modulePrefix>ViewOnly"}]
+        }
+    },
+    "is_technician": true
+}
+```
+
+- `is_technician: true` → `createTechnician()` flow; `false` → `createRequester()` flow
+- `custom_roles` → framework auto-creates these custom roles in SDP if they don't exist
+
+### Decision Flow (apply to EVERY RBAC scenario in ANY module)
+
+```
+Is the scenario about role-based permissions / access control?
+  → YES:
+    1. Identify the role: What kind of user is being tested? (view-only, requester, manager, etc.)
+    2. Find the correct module's role JSON: resources/entity/roles/<module>.json
+       Does it have a matching role key?
+       → NO: Add new role entry to that module's JSON file
+    3. Check existing preProcess groups: Does an existing group already create this role user?
+       → YES: Reuse that group
+       → NO: Add new preProcess group with createUserByRole()
+    4. In the test method:
+       a. Get user: `scenarioDetails.getUser(ScenarioUsers.TEST_USER_N)`
+       b. Switch: `actions.switchUser(user)`
+       c. Test UI behavior under that role's permissions
+       d. `switchToAdminSession()` if needed after role testing
+  → NO: Normal test flow (no role switching needed)
+```
+
+### ❌ FORBIDDEN — RBAC Anti-Patterns
+
+```java
+// ❌ Testing role restrictions as admin — MEANINGLESS
+public void verifyNoEditPermissionHidesButtons() throws Exception {
+    // Running as admin — admin has ALL permissions → buttons always visible
+    actions.navigate.toDetailsPageUsingRecordId(getEntityId());
+    boolean attachVisible = actions.isElementPresent(ATTACH_BUTTON);
+    if (attachVisible) {
+        addSuccessReport("baseline confirmed");  // ← proves nothing about the role
+    }
+}
+
+// ❌ Saying "admin baseline" / "role config pending" — means the test is incomplete
+addSuccessReport("RBAC_001: Admin baseline — role restriction test requires non-edit user");
+// This is NOT a valid test. It should ACTUALLY switch to the restricted role user.
+```
