@@ -355,9 +355,13 @@ def _execute_setup(setup_id: str, req: SetupRequest):
                 _log(setup_id, "Upload timed out — continuing without use-case docs", "info")
 
         # ── Step 3c: Run use-case analysis report ────────────────────
+        # Skip if the upload endpoint already ran analysis
+        analysis_already_done = _setups.get(setup_id, {}).get("usecase_analysis_done", False)
         csv_count = len(list(testcase_dir.glob("*.csv")))
-        if csv_count > 0 and mode != "reconfigure":
+        if csv_count > 0 and mode != "reconfigure" and not analysis_already_done:
             _log(setup_id, "Running use-case analysis...", "info")
+            ai_reports_dir = project_dir / "ai_reports"
+            ai_reports_dir.mkdir(parents=True, exist_ok=True)
             rc, output = _run_cmd(
                 setup_id,
                 f'"{WORKSPACE_DIR / ".venv" / "bin" / "python"}" generate_batch_summary.py --mode usecase-analysis 2>&1',
@@ -365,20 +369,18 @@ def _execute_setup(setup_id: str, req: SetupRequest):
                 timeout=120,
             )
             # Find the generated analysis report
-            ai_reports_dir = project_dir / "ai_reports"
-            if ai_reports_dir.exists():
-                reports = sorted(ai_reports_dir.glob("USECASE_ANALYSIS_*.md"), reverse=True)
-                if reports:
-                    _log(setup_id, f"Analysis report: {reports[0].name}", "success")
-                    # Send report content to the UI
-                    try:
-                        report_content = reports[0].read_text(encoding="utf-8")
-                        _push(setup_id, "usecase_analysis_report", {
-                            "filename": reports[0].name,
-                            "content": report_content,
-                        })
-                    except Exception:
-                        pass
+            reports = sorted(ai_reports_dir.glob("USECASE_ANALYSIS_*.md"), reverse=True)
+            if reports:
+                _log(setup_id, f"Analysis report: {reports[0].name}", "success")
+                # Send report content to the UI
+                try:
+                    report_content = reports[0].read_text(encoding="utf-8")
+                    _push(setup_id, "usecase_analysis_report", {
+                        "filename": reports[0].name,
+                        "content": report_content,
+                    })
+                except Exception:
+                    pass
             if rc != 0:
                 _log(setup_id, "Analysis completed with warnings — check report", "info")
             else:
@@ -773,15 +775,43 @@ async def upload_usecase(
         except Exception:
             pass  # conversion failure is non-fatal
 
-    # Signal the setup thread that files are uploaded
+    # Run use-case analysis after CSV conversion
+    project_dir = WORKSPACE_DIR / project_name
+    ai_reports_dir = project_dir / "ai_reports"
+    ai_reports_dir.mkdir(parents=True, exist_ok=True)
+
+    analysis_report = None
+    csv_count = len(list(testcase_dir.glob("*.csv")))
+    if csv_count > 0:
+        env = os.environ.copy()
+        env["PROJECT_NAME"] = project_name
+        try:
+            subprocess.run(
+                [str(WORKSPACE_DIR / ".venv" / "bin" / "python"),
+                 "generate_batch_summary.py", "--mode", "usecase-analysis"],
+                capture_output=True, text=True, cwd=str(WORKSPACE_DIR), timeout=120, env=env,
+            )
+            # Pick up the latest analysis report
+            reports = sorted(ai_reports_dir.glob("USECASE_ANALYSIS_*.md"), reverse=True)
+            if reports:
+                analysis_report = {
+                    "filename": reports[0].name,
+                    "content": reports[0].read_text(encoding="utf-8"),
+                }
+        except Exception:
+            pass  # analysis failure is non-fatal
+
+    # Signal the setup thread that files are uploaded (+ analysis already done)
     state = _setups.get(setup_id)
     if state:
         state["usecase_files"] = saved_files
+        if analysis_report:
+            state["usecase_analysis_done"] = True
         evt = state.get("usecase_upload_resolved")
         if evt:
             evt.set()
 
-    return {"ok": True, "files": saved_files}
+    return {"ok": True, "files": saved_files, "analysis_report": analysis_report}
 
 
 @router.post("/skip-usecase-upload")
@@ -846,6 +876,10 @@ async def upload_and_analyze(
         except Exception:
             pass
 
+    # Ensure ai_reports/ exists before running analysis
+    ai_reports_dir = project_dir / "ai_reports"
+    ai_reports_dir.mkdir(parents=True, exist_ok=True)
+
     # Run analysis — temporarily set PROJECT_NAME for the subprocess
     env = os.environ.copy()
     env["PROJECT_NAME"] = project_name
@@ -860,17 +894,15 @@ async def upload_and_analyze(
         analysis_output = f"Analysis error: {e}"
 
     # Find latest report
-    ai_reports_dir = project_dir / "ai_reports"
     report_content = None
     report_filename = None
-    if ai_reports_dir.exists():
-        reports = sorted(ai_reports_dir.glob("USECASE_ANALYSIS_*.md"), reverse=True)
-        if reports:
-            report_filename = reports[0].name
-            try:
-                report_content = reports[0].read_text(encoding="utf-8")
-            except Exception:
-                pass
+    reports = sorted(ai_reports_dir.glob("USECASE_ANALYSIS_*.md"), reverse=True)
+    if reports:
+        report_filename = reports[0].name
+        try:
+            report_content = reports[0].read_text(encoding="utf-8")
+        except Exception:
+            pass
 
     return {
         "ok": True,
