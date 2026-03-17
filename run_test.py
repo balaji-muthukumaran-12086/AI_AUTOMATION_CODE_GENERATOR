@@ -43,8 +43,8 @@ the copied problem is searchable in the Problems listview.
 """
 
 RUN_CONFIG = {
-    "entity_class":  "DetailsView",
-    "method_name":   "verifyDetachButtonVisibility",
+    "entity_class":  "ChangeDetailsView",
+    "method_name":   "verifyOpenSourceClosedTargetAllowed",
     "url":           SDP_URL,
     "admin_mail_id": SDP_ADMIN_EMAIL,
     "email_id":      SDP_EMAIL_ID,

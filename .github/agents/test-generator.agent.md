@@ -352,6 +352,8 @@ The standard use-case CSV uses these column names. Match them **case-insensitive
 >
 > **CRITICAL FILTER**: Before planning ANY scenario, filter the CSV rows. ONLY rows with `UI To-be-automated = Yes` are candidates. Discard all others immediately.
 >
+> **MSP FILTER**: After the UI filter, check for **MSP (Managed Service Provider)** rows. If the CSV has an `IS MSP/ SDP` column and a row's value is `MSP`, OR the Module/Sub-Module/Description contains `MSP`-specific keywords (e.g. `MSP`, `Managed Service Provider`, `customer portal`), **skip that row**. MSP uses a different instance/portal with customer-based UI and framework tweaks that are not yet supported. Report skipped MSP rows in the plan summary as: `MSP (skipped — not available yet): {count}`. Do NOT generate any code for MSP rows.
+>
 > **CUMULATION RULE**: For each filtered row, the scenario context = `Impact Area` + `Pre-Requisite` + `Description` combined. Read all three to understand the full picture before designing the test method. If the cumulated scope requires more assertions/steps than fit in ~80 lines, split into multiple methods (e.g., `verifySubFormPage()` and `verifySubFormPage_1()`) — each mapped back to the same UseCase ID via `@AutomaterScenario(id)`.
 
 #### Module Routing Table (CSV Module → Framework Path)
@@ -374,6 +376,7 @@ The standard use-case CSV uses these column names. Match them **case-insensitive
 | `Assets` | `modules/assets/asset/` | |
 | `Projects` | `modules/projects/project/` | |
 | `Contracts` | `modules/contracts/contract/` | |
+| `MSP` | **SKIP — not available yet** | MSP uses a different instance/portal with customer-based UI. Skip all MSP rows and report count in plan summary |
 
 #### Sub-Module Resolution (CSV Sub-Module → Java Entity Class)
 
@@ -407,7 +410,8 @@ Related CSV rows (same Module + Sub-Module + similar Impact Area) should be **gr
 📋 CSV Analysis:
 - Total use cases: 120
 - UI automatable (filtered): 45
-- Skipped (API-only / No): 75
+- MSP (skipped — not available yet): 8
+- Skipped (API-only / No): 67
 
 📋 Scenarios to generate (grouped by Module > Sub-Module):
 

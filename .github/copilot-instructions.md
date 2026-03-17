@@ -130,6 +130,16 @@ ai-automation-qa/
 > **FORBIDDEN**: Using the currently open / most recently edited file as the default target
 > for a new scenario. Always validate module semantics from the use-case description first.
 
+### MSP (Managed Service Provider) Cases — SKIP for Now
+
+> **MSP case generation is NOT available yet.** MSP uses a different instance/portal with
+> customer-based UI and has framework-specific tweaks that are not yet supported in this
+> automation setup. When analyzing use-case CSVs:
+> - If a row's `IS MSP/ SDP` column = `MSP`, or the Module/Description indicates MSP → **skip it**
+> - Report skipped MSP rows in the plan summary: `MSP (skipped — not available yet): {count}`
+> - Do NOT generate any test code, data entries, or annotations for MSP scenarios
+> - MSP-specific automation will be added later once the framework supports it
+
 ---
 
 ## Test Lifecycle
