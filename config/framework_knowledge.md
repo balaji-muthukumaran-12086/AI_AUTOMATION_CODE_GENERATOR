@@ -1803,3 +1803,168 @@ Key deep facts:
 - `getRoleDetails()` reads `general.json` first (sdadmin, sdsite_admin, sdguest, helpdeskconfig) → if found, returns immediately. Module JSON is fallback only.
 - `is_technician=true` → `createTechnician()` (also `checkCustomRole` + `checkProjectRole`); `false` → `createRequester()`
 - SDADMIN + admin email = no session split. Both preProcess and test method run as admin.
+
+---
+
+## RBAC Scenario Lifecycle — Complete Pattern (MANDATORY for Role-Based Tests)
+
+> **Root cause of ~28 failed test cases (Mar 2026 batch)**: RBAC scenarios ran as admin,
+> missing the entire user-role-switch flow. Admin always has all permissions — testing
+> permission restrictions as admin proves nothing.
+
+### Required 3-Phase Lifecycle
+
+**Phase 1 — preProcess: Create user with target role (runs in admin session)**
+```java
+// In parent class preProcess() — add new group for RBAC scenarios:
+} else if ("createWithRole".equalsIgnoreCase(group)) {
+    // Step 1: Clean slate — delete any existing scenario user from prior runs
+    deleteScenarioUser(ScenarioUsers.TEST_USER_3);
+
+    // Step 2: Create user with the target role
+    User user = scenarioDetails.getUser(ScenarioUsers.TEST_USER_3);
+    actions.createUserByRole(AutomaterConstants.TECHNICIAN, getModuleName(), "SDChangeManager", user);
+    LocalStorage.store("techName", user.getDisplayId());
+
+    // Step 3: Create prerequisite data (still in admin session — full permissions)
+    JSONObject inputData = getTestCaseDataUsingCaseId(dataIds[0]);
+    JSONObject response = restAPI.createAndGetResponse(getName(), getModuleName(), getInputData(inputData));
+    LocalStorage.store(getName(), response.getString("id"));
+    LocalStorage.store("entityName", response.getString("title"));
+}
+```
+
+**Phase 2 — Test method: Switch to role user, test under their permissions**
+```java
+public void verifyRoleCanPerformAction() throws Exception {
+    report.startMethodFlowInStepsToReproduce(AutomaterUtil.getPascalValueFromCamelCase(getMethodName()));
+    try {
+        // Switch to the role-specific user
+        User user = scenarioDetails.getUser(ScenarioUsers.TEST_USER_3);
+        actions.switchUser(user);
+
+        // All subsequent UI actions now run under the restricted user's permissions
+        actions.navigate.toModule(getModuleName());
+        // ... verify what this role CAN or CANNOT do ...
+
+        // Switch back to admin if further admin operations needed
+        switchToAdminSession();
+
+        addSuccessReport("Verified role-based access for " + getRole());
+    } catch (Exception exception) {
+        addFailureReport("RBAC test failed", exception.getMessage());
+    } finally {
+        report.endMethodFlowInStepsToReproduce();
+    }
+}
+```
+
+**Phase 3 — Cleanup: `deleteScenarioUser` before creating user (avoids stale state)**
+```java
+// Always call deleteScenarioUser() BEFORE createUserByRole() for clean slate:
+deleteScenarioUser(ScenarioUsers.TEST_USER_3);
+actions.createUserByRole(AutomaterConstants.TECHNICIAN, "changes", "SDChangeManager", user);
+```
+
+### ScenarioUsers Slot Allocation
+
+| ScenarioUsers | Mapped to | Typical role in RBAC tests |
+|---|---|---|
+| `MAIN_USER` | `EMAIL_ID` (tech email from config) | Primary test actor |
+| `TEST_USER_1` | 1st email from `SDP_TEST_USER_EMAILS` | Requester |
+| `TEST_USER_2` | 2nd email | Secondary tech / requester |
+| `TEST_USER_3` | 3rd email | Role-specific user (SDChangeManager, approver, etc.) |
+| `TEST_USER_4` | 4th email | Additional role user |
+
+All 5 users share `DEFAULT_PASSWORD`. Emails configured via `SDP_TEST_USER_EMAILS` in `.env`.
+
+### FORBIDDEN RBAC Anti-Patterns
+
+```java
+// ❌ Testing role restrictions as admin — admin ALWAYS has all permissions → proves nothing
+public void verifyNoEditPermission() throws Exception {
+    // Missing: actions.switchUser(user) — runs as admin → always succeeds
+    actions.navigate.toDetailsPageUsingRecordId(getEntityId());
+    addSuccessReport("baseline confirmed");  // ← meaningless — admin can do everything
+}
+
+// ❌ Placeholder comments instead of actual role switching
+addSuccessReport("Admin baseline — role restriction test requires non-edit user");
+// This is NOT a valid test. MUST actually switch to the restricted user.
+```
+
+---
+
+## Close Change via Stage Transitions (API Pattern)
+
+> **Learned from Linking Changes batch (Mar 2026)**: SDP product requires SDChangeManager
+> privilege to close a change. Admin user may NOT have SDChangeManager role (subscription
+> admin restriction). Solution: create tech with SDChangeManager → assign as change_manager
+> → advance through all 8 stages.
+
+### SDP Change Lifecycle — All 8 Stages in Order
+
+```
+Submission → Planning → CAB Evaluation → Implementation → UAT → Release → Review → Close
+```
+
+### Stage Transition API Pattern
+
+Each transition = PUT to `changes/<id>`:
+```json
+{"change": {"stage": {"name": "Planning"}, "status": {"name": "Planning In Progress"}, "comment": "Moving to Planning"}}
+```
+
+### Complete closeChange Utility Method Pattern
+
+```java
+public static void closeChangeViaAPI(RestAPI restAPI, String changeId) throws Exception {
+    String[][] transitions = {
+        {"Planning", "Planning In Progress"},
+        {"CAB Evaluation", "CAB Evaluation In Progress"},
+        {"Implementation", "Implementation In Progress"},
+        {"UAT", "UAT In Progress"},
+        {"Release", "Release In Progress"},
+        {"Review", "Review In Progress"},
+        {"Close", "Completed"}
+    };
+    for (String[] t : transitions) {
+        JSONObject stageData = new JSONObject();
+        stageData.put("stage", new JSONObject().put("name", t[0]));
+        stageData.put("status", new JSONObject().put("name", t[1]));
+        stageData.put("comment", "Advancing to " + t[0]);
+        restAPI.update("changes/" + changeId, new JSONObject().put("change", stageData));
+    }
+}
+```
+
+### Critical Rules for Stage Transitions
+
+1. **NEVER send `closure_code` field** — always returns `EXTRA_KEY_FOUND_IN_JSON` error
+2. **The API may pick different statuses** than requested but DOES advance the stage correctly
+3. **Tests only check `stage.name == "Close"`** — specific status within Close doesn't matter
+4. **SDChangeManager role required** — admin without this role CANNOT close changes
+5. **For preProcess**: create tech with SDChangeManager → set them as `change_manager` on the change → switch to tech → advance stages → switch back to admin
+
+### preProcess Pattern for Close-Change Scenarios
+
+```java
+} else if ("createAndCloseChange".equalsIgnoreCase(group)) {
+    // 1. Create tech user with SDChangeManager role
+    deleteScenarioUser(ScenarioUsers.TEST_USER_3);
+    User tech = scenarioDetails.getUser(ScenarioUsers.TEST_USER_3);
+    actions.createUserByRole(AutomaterConstants.TECHNICIAN, "changes", "SDChangeManager", tech);
+
+    // 2. Create change with change_manager = tech user
+    LocalStorage.store("change_manager_name", tech.getDisplayId());
+    JSONObject inputData = getTestCaseDataUsingCaseId(dataIds[0]);
+    JSONObject response = restAPI.createAndGetResponse(getName(), getModuleName(), getInputData(inputData));
+    String changeId = response.getString("id");
+    LocalStorage.store(getName(), changeId);
+
+    // 3. Switch to tech → close change → switch back
+    actions.switchUser(tech);
+    ChangeAPIUtil.closeChangeViaAPI(restAPI, changeId);
+    switchToAdminSession();
+}
+```

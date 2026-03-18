@@ -1,0 +1,31 @@
+Found 30 failed tests to re-run.
+
+[1/30] DetailsView.verifyParentClosesWhenAllChildrenClosed
+
+============================================================
+  RUNNING: DetailsView.verifyParentClosesWhenAllChildrenClosed
+============================================================
+  ✗ FAIL
+  Progress: 0 PASS / 1 FAIL / 29 remaining
+
+[2/30] DetailsView.verifyTrashedChildDoesNotBlockClosure
+
+============================================================
+  RUNNING: DetailsView.verifyTrashedChildDoesNotBlockClosure
+============================================================
+  ✗ FAIL
+  Progress: 0 PASS / 2 FAIL / 28 remaining
+
+[3/30] DetailsView.verifyTrashedChangeShowsOwnCounts
+
+============================================================
+  RUNNING: DetailsView.verifyTrashedChangeShowsOwnCounts
+============================================================
+  ✗ FAIL
+  Progress: 0 PASS / 3 FAIL / 27 remaining
+
+[4/30] DetailsView.verifyRestoreRestoresRelationship
+
+============================================================
+  RUNNING: DetailsView.verifyRestoreRestoresRelationship
+============================================================

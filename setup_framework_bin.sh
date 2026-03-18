@@ -127,6 +127,11 @@ else
     if [ -f "$_CH" ]; then
       sed -i 's|CommonVariables\.gridURL = gridURL;|// CommonVariables.gridURL = gridURL; // patched: field not in JAR|g' "$_CH"
     fi
+    # SDPCloudActions: fix "New Role" button xpath for modern SDP UI
+    _SCA="$FW_EXTRACT_DIR/com/zoho/automater/selenium/base/client/SDPCloudActions.java"
+    if [ -f "$_SCA" ]; then
+      sed -i "s|//button\[text()='New Role'\]|//*[normalize-space(text())='New Role']|g" "$_SCA"
+    fi
 
     echo "✅ Framework source extracted and patched from ZIP"
   else

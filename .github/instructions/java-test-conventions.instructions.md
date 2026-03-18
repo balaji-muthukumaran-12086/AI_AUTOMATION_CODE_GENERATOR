@@ -543,13 +543,25 @@ Is the scenario about role-based permissions / access control?
        → NO: Add new role entry to that module's JSON file
     3. Check existing preProcess groups: Does an existing group already create this role user?
        → YES: Reuse that group
-       → NO: Add new preProcess group with createUserByRole()
+       → NO: Add new preProcess group with deleteScenarioUser() + createUserByRole()
     4. In the test method:
        a. Get user: `scenarioDetails.getUser(ScenarioUsers.TEST_USER_N)`
        b. Switch: `actions.switchUser(user)`
        c. Test UI behavior under that role's permissions
        d. `switchToAdminSession()` if needed after role testing
   → NO: Normal test flow (no role switching needed)
+```
+
+### CRITICAL — `deleteScenarioUser` Before `createUserByRole`
+
+Always call `deleteScenarioUser()` before `createUserByRole()` for clean state:
+```java
+// ✅ CORRECT — clean slate before creating role user
+deleteScenarioUser(ScenarioUsers.TEST_USER_3);
+actions.createUserByRole(AutomaterConstants.TECHNICIAN, "changes", "SDChangeManager", user);
+
+// ❌ WRONG — stale user from prior run may have wrong role
+actions.createUserByRole(AutomaterConstants.TECHNICIAN, "changes", "SDChangeManager", user);
 ```
 
 ### ❌ FORBIDDEN — RBAC Anti-Patterns

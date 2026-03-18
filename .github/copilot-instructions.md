@@ -720,8 +720,12 @@ Role.SDADMIN  |  ModulesRoleSkeleton.SDADMIN
 
 **Required flow:**
 
-1. **preProcess**: Create user with the target role
+1. **preProcess**: Clean slate + create user with the target role
 ```java
+// Step 0: Always clean up stale user from prior runs
+deleteScenarioUser(ScenarioUsers.TEST_USER_3);
+
+// Step 1: Create user with role
 User user = scenarioDetails.getUser(ScenarioUsers.TEST_USER_3);
 // moduleName = "changes", "requests", "problems", "solutions", etc.
 // roleConfigKey = key in resources/entity/roles/<module>.json or general.json
@@ -749,6 +753,9 @@ actions.createUserByRole(
 )
 ```
 
+> **CRITICAL**: Always call `deleteScenarioUser(ScenarioUsers.TEST_USER_N)` BEFORE
+> `createUserByRole()` to avoid stale user state from prior test runs.
+
 **Role JSON files per module** (in `resources/entity/roles/`):
 
 | Module | File | Example keys |
@@ -763,13 +770,25 @@ actions.createUserByRole(
 CSV description says "verify user with/without X permission can/cannot Y"?
   → 1. Identify role → check <module>.json / general.json for matching key
   → 2. If no match → add new role entry to the correct module's JSON file
-  → 3. Add preProcess group that calls createUserByRole() + creates test data
+  → 3. Add preProcess group: deleteScenarioUser() + createUserByRole() + create test data
   → 4. In test method: switchUser(user) → test under role → switchToAdminSession()
 ```
 
 > **FORBIDDEN**: Testing role restrictions as admin with placeholder comments like
 > "admin baseline — role restriction test requires non-edit user". The test MUST
 > actually switch to the restricted user and validate the behavior.
+
+### Change Stage Transitions — Close Change Pattern
+
+> SDP changes have 8 lifecycle stages. Closing a change requires SDChangeManager privilege
+> and advancing through all stages via API. See `framework_rules.md` § "SECTION 34" and
+> `framework_knowledge.md` § "Close Change via Stage Transitions" for complete patterns.
+>
+> **Key rules:**
+> - NEVER send `closure_code` field (returns `EXTRA_KEY_FOUND_IN_JSON`)
+> - SDChangeManager role required — admin without this role CANNOT close changes
+> - Stage order: Submission → Planning → CAB Evaluation → Implementation → UAT → Release → Review → Close
+> - preProcess pattern: create tech with role → create change with tech as change_manager → switchUser(tech) → advance all stages → switchToAdminSession()
 
 ### Owner Constants — auto-detected from hg username
 

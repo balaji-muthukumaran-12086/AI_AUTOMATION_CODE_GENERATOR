@@ -2251,7 +2251,7 @@ JSON key → constant name: `roleDetail.toUpperCase()` (no other transformation)
 
 ---
 
-## SECTION 33 — ROLE SYSTEM
+## SECTION 33 — ROLE SYSTEM & RBAC TESTING
 
 > **Full internal flow & JSON structure**: See `framework_knowledge.md` § "createUserByRole" and
 > `copilot-instructions.md` § "Role JSON structure".
@@ -2261,6 +2261,70 @@ JSON key → constant name: `roleDetail.toUpperCase()` (no other transformation)
 - `getRoleDetails()` reads `general.json` first, then `<module>.json`. General wins if same key.
 - Role JSON keys must use only alphanumeric + underscore (spaces create invalid Java identifiers).
 - `is_technician: true` → `createTechnician()` path; `false` → `createRequester()` path.
+
+### 33.2 RBAC Scenario Lifecycle (MANDATORY for role-based tests)
+
+> **Root cause of ~28 failed RBAC test cases (Mar 2026)**: Scenarios ran as admin,
+> skipping the `createUserByRole` → `switchUser` flow entirely. Admin has all
+> permissions — testing restrictions as admin is meaningless.
+
+**Any scenario testing role-based access/permissions MUST follow this exact 3-phase lifecycle:**
+
+#### Phase 1 — preProcess: Create user with target role (admin session)
+
+```java
+} else if ("createWithRole".equalsIgnoreCase(group)) {
+    // Step 1: Clean slate — remove stale user from prior runs
+    deleteScenarioUser(ScenarioUsers.TEST_USER_3);
+
+    // Step 2: Create user with the target role
+    User user = scenarioDetails.getUser(ScenarioUsers.TEST_USER_3);
+    actions.createUserByRole(AutomaterConstants.TECHNICIAN, getModuleName(), "RoleKey", user);
+    LocalStorage.store("techName", user.getDisplayId());
+
+    // Step 3: Create prerequisite data (admin session — full permissions)
+    JSONObject inputData = getTestCaseDataUsingCaseId(dataIds[0]);
+    JSONObject response = restAPI.createAndGetResponse(getName(), getModuleName(), getInputData(inputData));
+    LocalStorage.store(getName(), response.getString("id"));
+}
+```
+
+#### Phase 2 — Test method: Switch to role user, test, switch back
+
+```java
+public void verifyRoleRestriction() throws Exception {
+    report.startMethodFlowInStepsToReproduce(AutomaterUtil.getPascalValueFromCamelCase(getMethodName()));
+    try {
+        User user = scenarioDetails.getUser(ScenarioUsers.TEST_USER_3);
+        actions.switchUser(user);  // ← CRITICAL: all UI actions now under restricted role
+
+        actions.navigate.toModule(getModuleName());
+        // ... test what the role CAN or CANNOT do ...
+
+        switchToAdminSession();  // switch back if further admin ops needed
+        addSuccessReport("Verified role restriction for " + getRole());
+    } catch (Exception exception) {
+        addFailureReport("RBAC test failed", exception.getMessage());
+    } finally {
+        report.endMethodFlowInStepsToReproduce();
+    }
+}
+```
+
+#### Phase 3 — Cleanup: `deleteScenarioUser` before `createUserByRole`
+
+Always call `deleteScenarioUser(ScenarioUsers.TEST_USER_N)` BEFORE `createUserByRole()` for clean state.
+
+### 33.3 `createUserByRole` Signature
+
+```java
+actions.createUserByRole(
+    String userType,      // AutomaterConstants.TECHNICIAN or AutomaterConstants.REQUESTER
+    String moduleName,    // "changes", "requests", "problems", "solutions", etc.
+    String roleConfigKey, // key in resources/entity/roles/<module>.json or general.json
+    User userObject       // from scenarioDetails.getUser(ScenarioUsers.TEST_USER_N)
+)
+```
 
 ### 33.4 SDADMIN = no session split (CRITICAL)
 
@@ -2277,3 +2341,118 @@ When `@AutomaterSuite(role = Role.SDADMIN)` and scenario user email = admin emai
 | `SolutionsRole.SOLUTION_FULLCONTROL` | Testing that a technician WITH a specific role can perform an action |
 | `SolutionsRole.SOLUTION_VIEWONLY` | Testing that view-only users CANNOT perform certain actions |
 | `SolutionsRole.SOLUTION_REQUESTER` | Testing requester portal experience |
+
+### 33.6 RBAC Decision Flow (apply to EVERY role-based scenario)
+
+```
+Is the scenario about testing role-based access/permissions?
+  → YES:
+    1. Does a matching role exist in <module>.json / general.json?
+       → YES: Use that roleConfigKey
+       → NO: Add new role entry to the module's JSON file
+    2. Does an existing preProcess group already create the needed role user?
+       → YES: Reuse that group
+       → NO: Add new preProcess group with deleteScenarioUser() + createUserByRole()
+    3. In the test method:
+       a. Get user: scenarioDetails.getUser(ScenarioUsers.TEST_USER_N)
+       b. Switch: actions.switchUser(user)
+       c. Test UI behavior under that role's permissions
+       d. switchToAdminSession() if needed after
+  → NO: Normal test (no role switching needed)
+```
+
+### 33.7 FORBIDDEN RBAC Anti-Patterns
+
+```java
+// ❌ Running RBAC tests as admin — verifies nothing about role restrictions
+public void verifyNoEditPermissionHidesButtons() throws Exception {
+    // Missing: actions.switchUser(user) — runs as admin → always succeeds
+    actions.navigate.toDetailsPageUsingRecordId(getEntityId());
+    addSuccessReport("baseline confirmed");  // ← meaningless
+}
+
+// ❌ Placeholder comments instead of actual role switching
+addSuccessReport("Admin baseline — role restriction test requires non-edit user");
+// FORBIDDEN — must actually switch to the restricted user and validate behavior.
+
+// ❌ Forgetting deleteScenarioUser before createUserByRole
+// → stale user from prior run may have wrong role → createUserByRole may fail silently
+actions.createUserByRole(AutomaterConstants.TECHNICIAN, "changes", "SDChangeManager", user);
+// ✅ CORRECT — always clean first:
+deleteScenarioUser(ScenarioUsers.TEST_USER_3);
+actions.createUserByRole(AutomaterConstants.TECHNICIAN, "changes", "SDChangeManager", user);
+```
+
+### 33.8 Available Role JSON Files
+
+| Module | File | Example keys |
+|--------|------|-------------|
+| Changes | `changes.json` | `SDChangeManager`, `Change_FullControl_With_CMDB` |
+| Requests | `requests.json` | `Requester`, `Full_Control`, `View_Only` |
+| System | `general.json` | `sdadmin`, `sdsite_admin`, `sdguest`, `helpdeskconfig` |
+| Other modules | `<module>.json` | Module-specific custom roles |
+
+---
+
+## SECTION 34 — CHANGE STAGE TRANSITIONS (CLOSE CHANGE PATTERN)
+
+> **Learned from Linking Changes batch (Mar 2026)**: Closing a change requires
+> SDChangeManager privilege and advancing through all 8 lifecycle stages.
+
+### 34.1 SDP Change Lifecycle — All 8 Stages
+
+```
+Submission → Planning → CAB Evaluation → Implementation → UAT → Release → Review → Close
+```
+
+### 34.2 Stage Transition API
+
+Each transition = PUT to `changes/<id>`:
+```json
+{"change": {"stage": {"name": "<StageName>"}, "status": {"name": "<StatusName>"}, "comment": "Moving to <Stage>"}}
+```
+
+### 34.3 Critical Rules
+
+1. **NEVER send `closure_code` field** — always returns `EXTRA_KEY_FOUND_IN_JSON` error
+2. **API may pick different status** than requested but DOES advance the stage correctly
+3. **SDChangeManager role required** — admin without this role CANNOT close changes
+4. **Tests only check `stage.name == "Close"`** — specific status within Close doesn't matter
+
+### 34.4 preProcess Pattern for Close-Change Scenarios
+
+```java
+} else if ("createAndCloseChange".equalsIgnoreCase(group)) {
+    // 1. Create tech with SDChangeManager role
+    deleteScenarioUser(ScenarioUsers.TEST_USER_3);
+    User tech = scenarioDetails.getUser(ScenarioUsers.TEST_USER_3);
+    actions.createUserByRole(AutomaterConstants.TECHNICIAN, "changes", "SDChangeManager", tech);
+
+    // 2. Create change with change_manager = tech
+    LocalStorage.store("change_manager_name", tech.getDisplayId());
+    JSONObject inputData = getTestCaseDataUsingCaseId(dataIds[0]);
+    JSONObject response = restAPI.createAndGetResponse(getName(), getModuleName(), getInputData(inputData));
+    String changeId = response.getString("id");
+    LocalStorage.store(getName(), changeId);
+
+    // 3. Switch to tech → advance all stages → switch back
+    actions.switchUser(tech);
+    String[][] transitions = {
+        {"Planning", "Planning In Progress"},
+        {"CAB Evaluation", "CAB Evaluation In Progress"},
+        {"Implementation", "Implementation In Progress"},
+        {"UAT", "UAT In Progress"},
+        {"Release", "Release In Progress"},
+        {"Review", "Review In Progress"},
+        {"Close", "Completed"}
+    };
+    for (String[] t : transitions) {
+        JSONObject stageData = new JSONObject();
+        stageData.put("stage", new JSONObject().put("name", t[0]));
+        stageData.put("status", new JSONObject().put("name", t[1]));
+        stageData.put("comment", "Advancing to " + t[0]);
+        restAPI.update("changes/" + changeId, new JSONObject().put("change", stageData));
+    }
+    switchToAdminSession();
+}
+```
