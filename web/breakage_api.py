@@ -172,6 +172,15 @@ def _run_cmd(log_id: str, cmd: str, cwd: str = None, timeout: int = 300,
 @router.get("/projects")
 async def list_projects():
     """List existing cloned project folders in the workspace."""
+    # Read current PROJECT_NAME from .env (not the stale startup value)
+    active_project = DEFAULT_PROJECT_NAME
+    env_path = WORKSPACE_DIR / ".env"
+    if env_path.exists():
+        for line in env_path.read_text(encoding="utf-8").splitlines():
+            if re.match(r"^PROJECT_NAME\s*=", line):
+                active_project = line.split("=", 1)[1].strip()
+                break
+
     projects = []
     for d in WORKSPACE_DIR.iterdir():
         if not d.is_dir() or d.name in _EXCLUDE_DIRS:
@@ -185,7 +194,7 @@ async def list_projects():
                 "has_bin": has_bin,
                 "has_src": has_src,
                 "has_manifest": has_manifest,
-                "is_active": d.name == DEFAULT_PROJECT_NAME,
+                "is_active": d.name == active_project,
             })
     return {"projects": sorted(projects, key=lambda p: p["name"])}
 
@@ -463,6 +472,33 @@ async def get_config():
     return {"drivers_dir": _drv}
 
 
+def _set_env_key(key: str, value: str):
+    """Update a single key in .env (create if missing)."""
+    env_path = WORKSPACE_DIR / ".env"
+    if env_path.exists():
+        lines = env_path.read_text(encoding="utf-8").splitlines(keepends=True)
+    else:
+        lines = []
+
+    patched = []
+    found = False
+    for line in lines:
+        if re.match(rf"^{re.escape(key)}\s*=", line):
+            patched.append(f"{key}={value}\n")
+            found = True
+        else:
+            patched.append(line if line.endswith('\n') else line + '\n')
+    if not found:
+        patched.append(f"{key}={value}\n")
+
+    env_path.write_text("".join(patched), encoding="utf-8")
+
+
+def _set_active_project(project_name: str):
+    """Update PROJECT_NAME in .env so @test-runner uses the same project."""
+    _set_env_key("PROJECT_NAME", project_name)
+
+
 @router.post("/run")
 async def start_analysis(
     retries: int = 3,
@@ -475,6 +511,9 @@ async def start_analysis(
         _loop = asyncio.get_running_loop()
 
     project_name = _validate_project_name(project_name)
+
+    # Sync .env PROJECT_NAME with the selected project so @test-runner uses it too
+    _set_active_project(project_name)
     paths = _project_paths(project_name)
 
     if not paths["manifest"].exists():
@@ -567,11 +606,13 @@ def _execute_analysis(run_id: str, retries: int, project_name: str):
         runner._app_properties = paths["root"] / "product_package" / "conf" / "app.properties"
 
         # If a drivers_path was provided via the UI, override runner's browser paths
+        # and persist to .env so @test-runner also uses it
         ui_drivers_path = state.get("drivers_path")
         if ui_drivers_path:
             import agents.runner_agent as _ra_mod
             _ra_mod._DEFAULT_FIREFOX = os.path.join(ui_drivers_path, "firefox", "firefox")
             _ra_mod._DEFAULT_GECKODRIVER = os.path.join(ui_drivers_path, "geckodriver")
+            _set_env_key("DRIVERS_DIR", ui_drivers_path)
             _log(run_id, f"Drivers path override: {ui_drivers_path}")
 
         # Build entity import map for this project

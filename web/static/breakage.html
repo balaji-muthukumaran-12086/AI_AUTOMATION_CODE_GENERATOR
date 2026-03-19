@@ -310,7 +310,7 @@
 
       <div class="settings-row">
         <label for="retries-input">Retries per test:</label>
-        <input type="number" id="retries-input" value="3" min="1" max="10" />
+        <input type="number" id="retries-input" value="2" min="1" max="10" />
       </div>
 
       <div class="field" style="margin-top:8px;">
@@ -659,7 +659,7 @@
     // ══════════════════════════════════════════════
 
     runBtn.addEventListener('click', async () => {
-      const retries = parseInt($('#retries-input').value) || 3;
+      const retries = parseInt($('#retries-input').value) || 2;
       const driversPath = driversInput.value.trim();
       runBtn.disabled = true;
       runStatus.textContent = 'Starting...';

@@ -603,7 +603,17 @@ async def list_projects():
                           "evaluation", "ingestion", "orchestrator", "dependencies"):
                 continue
             projects.append(d.name)
-    from config.project_config import PROJECT_NAME as _active
+    # Read current PROJECT_NAME from .env (not stale import-time value)
+    _active = None
+    env_path = WORKSPACE_DIR / ".env"
+    if env_path.exists():
+        import re as _re
+        for line in env_path.read_text(encoding="utf-8").splitlines():
+            if _re.match(r"^PROJECT_NAME\s*=", line):
+                _active = line.split("=", 1)[1].strip()
+                break
+    if not _active:
+        from config.project_config import PROJECT_NAME as _active
     return {"projects": sorted(projects), "active_project": _active}
 
 
