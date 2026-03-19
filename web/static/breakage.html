@@ -173,6 +173,7 @@
     .tag-ok { background: rgba(34,197,94,.15); color: var(--green); }
     .tag-warn { background: rgba(245,158,11,.15); color: var(--yellow); }
     .tag-default { background: rgba(59,130,246,.15); color: var(--blue); }
+    .tag-active { background: rgba(168,85,247,.15); color: #a855f7; }
 
     /* ── Clone panel ── */
     .clone-panel {
@@ -459,7 +460,7 @@
           if (p.has_bin)  tags.push('<span class="tag tag-ok">bin</span>');
           else            tags.push('<span class="tag tag-warn">no bin</span>');
           if (p.has_manifest) tags.push('<span class="tag tag-default">manifest</span>');
-          if (p.is_default)   tags.push('<span class="tag tag-ok">default</span>');
+          if (p.is_active)    tags.push('<span class="tag tag-active">active</span>');
 
           card.innerHTML = `
             <div style="font-weight:600;font-size:13px;margin-bottom:4px;word-break:break-all;">${escapeHtml(p.name)}</div>

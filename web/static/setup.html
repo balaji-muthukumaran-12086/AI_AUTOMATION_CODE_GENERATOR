@@ -522,10 +522,12 @@ async function loadExistingProjects() {
     const sel = document.getElementById('existing_project');
     sel.innerHTML = '';
     if (data.projects && data.projects.length > 0) {
+      const activeProject = data.active_project || '';
       data.projects.forEach(p => {
         const opt = document.createElement('option');
         opt.value = p;
-        opt.textContent = p;
+        opt.textContent = p === activeProject ? p + ' (active)' : p;
+        if (p === activeProject) opt.selected = true;
         sel.appendChild(opt);
       });
     } else {

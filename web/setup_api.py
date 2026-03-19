@@ -603,7 +603,8 @@ async def list_projects():
                           "evaluation", "ingestion", "orchestrator", "dependencies"):
                 continue
             projects.append(d.name)
-    return {"projects": sorted(projects)}
+    from config.project_config import PROJECT_NAME as _active
+    return {"projects": sorted(projects), "active_project": _active}
 
 
 @router.post("/run")

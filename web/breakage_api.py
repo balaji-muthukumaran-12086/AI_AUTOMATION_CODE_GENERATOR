@@ -174,7 +174,7 @@ async def list_projects():
                 "has_bin": has_bin,
                 "has_src": has_src,
                 "has_manifest": has_manifest,
-                "is_default": d.name == DEFAULT_PROJECT_NAME,
+                "is_active": d.name == DEFAULT_PROJECT_NAME,
             })
     return {"projects": sorted(projects, key=lambda p: p["name"])}
 
