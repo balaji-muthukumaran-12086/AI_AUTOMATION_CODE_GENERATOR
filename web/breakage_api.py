@@ -445,10 +445,18 @@ async def upload_report(
 
 # ── Run Analysis ──────────────────────────────────────────────────────────────
 
+@router.get("/config")
+async def get_config():
+    """Return current machine config (drivers path, etc.) for UI defaults."""
+    from config.project_config import DRIVERS_DIR as _drv
+    return {"drivers_dir": _drv}
+
+
 @router.post("/run")
 async def start_analysis(
     retries: int = 3,
     project_name: str = Query(DEFAULT_PROJECT_NAME),
+    drivers_path: str = Query(""),
 ):
     """Start rerunning breakage cases from the manifest. Returns run_id for SSE."""
     global _loop
@@ -475,6 +483,7 @@ async def start_analysis(
         "done": False,
         "retries": retries,
         "project_name": project_name,
+        "drivers_path": drivers_path.strip() or None,
         "started_at": datetime.now().isoformat(),
     }
 
@@ -544,6 +553,15 @@ def _execute_analysis(run_id: str, retries: int, project_name: str):
             paths["src"] / "com" / "zoho" / "automater" / "selenium"
             / "standalone" / "AutomaterSeleniumMain.java"
         )
+        runner._app_properties = paths["root"] / "product_package" / "conf" / "app.properties"
+
+        # If a drivers_path was provided via the UI, override runner's browser paths
+        ui_drivers_path = state.get("drivers_path")
+        if ui_drivers_path:
+            import agents.runner_agent as _ra_mod
+            _ra_mod._DEFAULT_FIREFOX = os.path.join(ui_drivers_path, "firefox", "firefox")
+            _ra_mod._DEFAULT_GECKODRIVER = os.path.join(ui_drivers_path, "geckodriver")
+            _log(run_id, f"Drivers path override: {ui_drivers_path}")
 
         # Build entity import map for this project
         import agents.runner_agent as _ra_module
@@ -768,10 +786,13 @@ def _run_analysis_loop(run_id, tests, total, retries, runner, stop_event, paths,
             "phase": "done",
         })
 
-        # Save progress to disk (resume-friendly)
-        manifest = {"total_failures": total, "tests": tests}
+        # Save progress to disk (resume-friendly, preserving top-level fields)
+        with open(paths["manifest"]) as fp:
+            saved = json.load(fp)
+        saved["tests"] = tests
+        saved["total_failures"] = total
         with open(paths["manifest"], "w") as fp:
-            json.dump(manifest, fp, indent=2)
+            json.dump(saved, fp, indent=2)
 
 
 def _get_report_result(method_name: str, reports_path: Path) -> Optional[str]:

@@ -312,6 +312,12 @@
         <input type="number" id="retries-input" value="3" min="1" max="10" />
       </div>
 
+      <div class="field" style="margin-top:8px;">
+        <label for="drivers-path-input">Drivers Path</label>
+        <input type="text" id="drivers-path-input" placeholder="e.g. /home/user/Drivers" />
+        <div class="hint">Folder containing <code>firefox/firefox</code> and <code>geckodriver</code>. Auto-detected from server .env.</div>
+      </div>
+
       <div class="actions">
         <button class="btn btn-primary" id="run-btn">Start Analysis</button>
         <button class="btn btn-danger hidden" id="stop-btn">Stop</button>
@@ -408,6 +414,18 @@
     const cloneBtn    = $('#clone-btn');
     const cloneLogBox = $('#clone-log-box');
     const cloneStatus = $('#clone-status');
+    const driversInput = $('#drivers-path-input');
+
+    // ── Fetch default drivers path from server ──
+    (async function loadDriversDefault() {
+      try {
+        const res = await fetch('/api/breakage/config');
+        const data = await res.json();
+        if (data.drivers_dir && !driversInput.value) {
+          driversInput.value = data.drivers_dir;
+        }
+      } catch (e) { /* ignore — user can fill manually */ }
+    })();
 
     // ── Project query helper ──
     function pq(base) {
@@ -641,11 +659,14 @@
 
     runBtn.addEventListener('click', async () => {
       const retries = parseInt($('#retries-input').value) || 3;
+      const driversPath = driversInput.value.trim();
       runBtn.disabled = true;
       runStatus.textContent = 'Starting...';
 
       try {
-        const res = await fetch(pq(`/api/breakage/run?retries=${retries}`), { method: 'POST' });
+        let url = pq(`/api/breakage/run?retries=${retries}`);
+        if (driversPath) url += `&drivers_path=${encodeURIComponent(driversPath)}`;
+        const res = await fetch(url, { method: 'POST' });
         if (!res.ok) {
           const err = await res.json();
           throw new Error(err.detail || 'Failed to start');
