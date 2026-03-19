@@ -1,0 +1,252 @@
+# Skills Manifest — Available Tools, Agents & Capabilities
+# ═══════════════════════════════════════════════════════════
+# Read this file BEFORE starting any complex task to understand what's available.
+# This prevents reinventing existing capabilities and wasting tokens.
+
+---
+
+# ╔═══════════════════════════════════════════════════════════╗
+# ║  VS CODE COPILOT AGENTS (chat participants)              ║
+# ╚═══════════════════════════════════════════════════════════╝
+
+agents:
+
+  test-generator:
+    file: ".github/agents/test-generator.agent.md"
+    purpose: "Generate new Selenium test cases from CSV use-cases or plain text descriptions"
+    invocation: "@test-generator 'batch all' | 'batch' | <description>"
+    mcp_required: false
+    safe_for_subagent: true
+    skills:
+      - Read use-case CSV/XLSX files
+      - Generate @AutomaterScenario Java code
+      - Create test data entries in *_data.json
+      - Create locators, DataConstants, AnnotationConstants
+      - Compile and validate generated code
+
+  test-runner:
+    file: ".github/agents/test-runner.agent.md"
+    purpose: "Execute Selenium tests, diagnose failures via Playwright, fix and re-run"
+    invocation: "@test-runner 'Entity.method' | 'batch' | 'batch all'"
+    mcp_required: true
+    safe_for_subagent: false  # MUST run inline — needs Playwright MCP
+    skills:
+      - Run Maven/javac compilation
+      - Execute test via run_test.py
+      - Open Playwright browser to inspect SDP UI
+      - Auto-fix broken locators
+      - Recompile and re-run
+
+  test-debugger:
+    file: ".github/agents/test-debugger.agent.md"
+    purpose: "Debug failing tests by inspecting SDP UI via Playwright MCP"
+    invocation: "@test-debugger <failure description>"
+    mcp_required: true
+    safe_for_subagent: false  # MUST run inline — needs Playwright MCP
+    skills:
+      - Inspect live DOM with browser_snapshot
+      - Create prerequisite data via sdpAPICall
+      - Fix XPath locators
+      - Analyze ScenarioReport.html
+
+  setup-project:
+    file: ".github/agents/setup-project.agent.md"
+    purpose: "Clone hg branch, configure framework, set up owner constants"
+    invocation: "@setup-project"
+    mcp_required: false
+    safe_for_subagent: true
+    skills:
+      - Clone Mercurial branches
+      - Configure .env and project_config.py
+      - Run setup_framework_bin.sh
+      - Register new team members
+
+  context-optimizer:
+    file: ".github/agents/context-optimizer.agent.md"
+    purpose: "Optimize token usage, chunk large files, manage session context"
+    invocation: "@context-optimizer"
+    mcp_required: false
+    safe_for_subagent: true
+    skills:
+      - Analyze token usage patterns
+      - Update framework_file_index.yaml chunks
+      - Generate digest files for large documents
+      - Recommend session break points
+
+  explore:
+    description: "Fast read-only codebase exploration and Q&A"
+    invocation: "Explore subagent"
+    mcp_required: false
+    safe_for_subagent: true
+    skills:
+      - Search codebase by pattern or semantics
+      - Answer questions about code structure
+      - Find existing methods and patterns
+
+
+# ╔═══════════════════════════════════════════════════════════╗
+# ║  PYTHON PIPELINE AGENTS (LangGraph)                      ║
+# ╚═══════════════════════════════════════════════════════════╝
+
+pipeline_agents:
+
+  ingestion_agent:
+    file: "agents/ingestion_agent.py"
+    purpose: "Parse uploaded documents (PDF, DOCX, XLSX, PPTX) into structured use cases"
+
+  planner_agent:
+    file: "agents/planner_agent.py"
+    purpose: "Generate test plan from feature description, map scenarios to modules"
+
+  coverage_agent:
+    file: "agents/coverage_agent.py"
+    purpose: "Detect coverage gaps and duplicate scenarios across modules"
+
+  coder_agent:
+    file: "agents/coder_agent.py"
+    purpose: "Generate Java test code using RAG context + framework grammar"
+
+  reviewer_agent:
+    file: "agents/reviewer_agent.py"
+    purpose: "Review generated code against framework rules, request revisions"
+
+  output_agent:
+    file: "agents/output_agent.py"
+    purpose: "Write reviewed code to correct file paths"
+
+  runner_agent:
+    file: "agents/runner_agent.py"
+    purpose: "Compile and execute tests, parse results"
+
+  healer_agent:
+    file: "agents/healer_agent.py"
+    purpose: "Auto-fix test failures using Playwright + LLM analysis"
+
+  learning_agent:
+    file: "agents/learning_agent.py"
+    purpose: "Extract patterns from test results for continuous improvement"
+
+  ui_scout_agent:
+    file: "agents/ui_scout_agent.py"
+    purpose: "Observe live SDP UI via Playwright before code generation"
+
+
+# ╔═══════════════════════════════════════════════════════════╗
+# ║  LLM PROVIDERS                                           ║
+# ╚═══════════════════════════════════════════════════════════╝
+
+llm_providers:
+
+  ollama:
+    config_key: "LLM_PROVIDER=ollama"
+    models: ["qwen2.5-coder:7b", "codellama:13b", "deepseek-coder:6.7b"]
+    tool_calling: false
+    cost: "Free (local)"
+    best_for: "Offline development, quick iterations, no API dependency"
+
+  openai:
+    config_key: "LLM_PROVIDER=openai"
+    models: ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo"]
+    tool_calling: true
+    cost: "Pay-per-token"
+    best_for: "Complex code generation, ReAct agent loop, tool calling"
+
+  openrouter:
+    config_key: "LLM_PROVIDER=openrouter"
+    models: ["openai/gpt-4o", "openai/gpt-4o-mini", "anthropic/claude-3.5-sonnet"]
+    tool_calling: true
+    cost: "Pay-per-token (unified API)"
+    best_for: "Access to multiple model providers via single API key"
+
+
+# ╔═══════════════════════════════════════════════════════════╗
+# ║  KNOWLEDGE BASE & CONTEXT                                ║
+# ╚═══════════════════════════════════════════════════════════╝
+
+knowledge_base:
+
+  vector_store:
+    file: "knowledge_base/vector_store.py"
+    backend: "ChromaDB"
+    collections: ["scenarios", "framework", "modules"]
+    embedding: "text-embedding-3-small (OpenAI) | all-MiniLM-L6-v2 (local fallback)"
+
+  context_builder:
+    file: "knowledge_base/context_builder.py"
+    purpose: "Build rich context payloads from module source files + vector store + grammar"
+
+  framework_file_index:
+    file: "config/framework_file_index.yaml"
+    purpose: "Chunked line-range map for all large files — enables targeted reading"
+
+  critical_rules_digest:
+    file: "config/critical_rules_digest.md"
+    purpose: "Compact extract of top 20 most-violated rules — read this first for 80% of cases"
+
+
+# ╔═══════════════════════════════════════════════════════════╗
+# ║  INSTRUCTION FILES (auto-loaded by VS Code)              ║
+# ╚═══════════════════════════════════════════════════════════╝
+
+instructions:
+
+  java_conventions:
+    file: ".github/instructions/java-test-conventions.instructions.md"
+    applies_to: "src/**/*.java"
+    purpose: "Java coding conventions for the framework"
+
+  test_data_format:
+    file: ".github/instructions/test-data-format.instructions.md"
+    applies_to: "**/*_data.json"
+    purpose: "JSON test data format rules"
+
+  token_budget:
+    file: ".github/instructions/token-budget-rules.instructions.md"
+    applies_to: "**"
+    purpose: "Token budget and session management hard rules"
+
+
+# ╔═══════════════════════════════════════════════════════════╗
+# ║  TEMPLATES                                               ║
+# ╚═══════════════════════════════════════════════════════════╝
+
+templates:
+
+  requirement_doc:
+    file: "docs/templates/requirement_template.md"
+    when: "Before starting any task involving 3+ files or 5+ scenarios"
+
+  implementation_plan:
+    file: "docs/templates/implementation_plan_template.md"
+    when: "After requirement doc is approved, before coding starts"
+
+  usecase_csv:
+    file: "docs/templates/usecase_template.csv"
+    when: "Defining manual test cases for automation"
+
+
+# ╔═══════════════════════════════════════════════════════════╗
+# ║  SCRIPTS & UTILITIES                                     ║
+# ╚═══════════════════════════════════════════════════════════╝
+
+scripts:
+
+  run_test:
+    file: "run_test.py"
+    purpose: "Quick CLI test runner — edit RUN_CONFIG and execute"
+
+  setup_framework_bin:
+    file: "setup_framework_bin.sh"
+    purpose: "Compile framework source into $PROJECT_NAME/bin/"
+
+  generate_constants:
+    file: "generate_constants.sh"
+    purpose: "Regenerate DataConstants from *_data.json files"
+
+  main_pipeline:
+    file: "main.py"
+    purpose: "Full LangGraph pipeline — ingestion → output"
+
+  run_batch:
+    file: "run_batch.py"
+    purpose: "Batch test execution with parallel support"

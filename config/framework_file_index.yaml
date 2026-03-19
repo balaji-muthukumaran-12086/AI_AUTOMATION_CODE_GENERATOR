@@ -1,0 +1,190 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Framework File Index — Chunked Reference for Token-Efficient Context Loading
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# PURPOSE: Instead of reading 2000+ line files in full, agents should:
+#   1. Read THIS index first (tiny — ~120 lines)
+#   2. Identify which CHUNK (line range) is relevant to the task
+#   3. Read ONLY that chunk using `read_file(startLine, endLine)`
+#
+# RULE: Never read an entire file > 300 lines. Use this index to target the exact section.
+# ─────────────────────────────────────────────────────────────────────────────
+
+files:
+
+  # ── framework_rules.md (2458 lines) ─────────────────────────────────────
+  framework_rules:
+    path: "config/framework_rules.md"
+    total_lines: 2458
+    digest: "config/critical_rules_digest.md"   # < 300 lines — read this first for 80% of cases
+    chunks:
+      - id: "FR_ANNOTATIONS"
+        lines: [1, 180]
+        topic: "@AutomaterScenario annotation fields, all 9 fields, valid values, forbidden patterns"
+        keywords: ["id", "group", "priority", "dataIds", "tags", "description", "owner", "runType", "switchOn"]
+
+      - id: "FR_PREPROCESS"
+        lines: [181, 450]
+        topic: "preProcess groups, group reuse, minimal group selection, new group creation rules"
+        keywords: ["preProcess", "group", "dataIds", "LocalStorage", "else-if", "NoPreprocess"]
+
+      - id: "FR_DATA_LOADING"
+        lines: [451, 650]
+        topic: "getTestCaseData vs getTestCaseDataUsingCaseId vs DataUtil, DataConstants, AnnotationConstants"
+        keywords: ["getTestCaseData", "getTestCaseDataUsingCaseId", "DataUtil", "DataConstants", "TestCaseData"]
+
+      - id: "FR_ACTIONSUTIL"
+        lines: [651, 900]
+        topic: "ActionsUtil/APIUtil patterns, parameterization, method granularity, existing method protection"
+        keywords: ["ActionsUtil", "APIUtil", "Utilities", "public static", "parameterize"]
+
+      - id: "FR_LOCATORS"
+        lines: [901, 1100]
+        topic: "Locator interface patterns, XPath rules, Function<String,By> for parameterized locators"
+        keywords: ["Locators", "By.xpath", "Function", "normalize-space", "select2"]
+
+      - id: "FR_REPORTING"
+        lines: [1101, 1350]
+        topic: "addSuccessReport, addFailureReport, addReport, failureMessage, clearFailureMessage"
+        keywords: ["addSuccessReport", "addFailureReport", "addReport", "failureMessage"]
+
+      - id: "FR_ROLES_RBAC"
+        lines: [1351, 1600]
+        topic: "Role constants, RBAC testing pattern, createUserByRole, switchUser, role JSON files"
+        keywords: ["Role", "RBAC", "createUserByRole", "switchUser", "ScenarioUsers", "permissions"]
+
+      - id: "FR_DATA_JSON"
+        lines: [1601, 1850]
+        topic: "Data JSON format, placeholders, $(custom_KEY), $(unique_string), reuse, LocalStorage pre-seed"
+        keywords: ["data.json", "placeholder", "$(custom_", "$(unique_string)", "lookup field"]
+
+      - id: "FR_COMPILATION"
+        lines: [1851, 2050]
+        topic: "Compilation commands, classpath, javac, setup_framework_bin.sh"
+        keywords: ["javac", "compile", "classpath", "bin", "setup_framework_bin"]
+
+      - id: "FR_NAVIGATION_API"
+        lines: [2051, 2458]
+        topic: "actions.navigate, actions.listView, actions.detailsView, actions.validate, formBuilder API"
+        keywords: ["navigate", "listView", "detailsView", "validate", "formBuilder", "fillInputForAnEntity"]
+
+  # ── framework_knowledge.md (1970 lines) ─────────────────────────────────
+  framework_knowledge:
+    path: "config/framework_knowledge.md"
+    total_lines: 1970
+    chunks:
+      - id: "FK_ENTITY_LIFECYCLE"
+        lines: [1, 250]
+        topic: "Entity.java lifecycle, preProcess → process → postProcess, session switching"
+        keywords: ["Entity.java", "preProcess", "postProcess", "initializeAdminSession", "switchToUserSession"]
+
+      - id: "FK_ENTITYCASE_REPORTS"
+        lines: [251, 450]
+        topic: "EntityCase.java, addSuccessReport internals, LocalSetupManager, ScenarioReport.html"
+        keywords: ["EntityCase", "addSuccessReport", "LocalSetupManager", "ScenarioReport", "isLocalSetup"]
+
+      - id: "FK_REST_API"
+        lines: [451, 700]
+        topic: "RestAPI architecture, triggerRestAPI, sdpAPICall JS bridge, input wrappers, auto-cleanup"
+        keywords: ["RestAPI", "triggerRestAPI", "sdpAPICall", "createAndGetResponse", "inputData"]
+
+      - id: "FK_FORMBUILDER"
+        lines: [701, 900]
+        topic: "FormBuilder internals, fillInputForAnEntity skip logic, FieldType constants"
+        keywords: ["FormBuilder", "fillInputForAnEntity", "FieldType", "checkbox", "radio", "boolean"]
+
+      - id: "FK_COMPILATION_DEEP"
+        lines: [901, 1100]
+        topic: "Deep compilation troubleshooting, classpath precedence, framework JAR override"
+        keywords: ["compile", "classpath", "framework", "JAR", "AutomationFrameWork"]
+
+      - id: "FK_RUNNER_AGENT"
+        lines: [1101, 1350]
+        topic: "runner_agent.py internals, _parse_success logic, ENTITY_IMPORT_MAP, report validation"
+        keywords: ["runner_agent", "_parse_success", "ENTITY_IMPORT_MAP", "report", "BUILD"]
+
+      - id: "FK_STAGE_TRANSITIONS"
+        lines: [1351, 1600]
+        topic: "Change stage transitions, close change pattern, SDChangeManager role requirement"
+        keywords: ["stage", "transition", "close", "SDChangeManager", "Submission", "Planning"]
+
+      - id: "FK_PLACEHOLDER_SYSTEM"
+        lines: [1601, 1800]
+        topic: "PlaceholderUtil deep dive, $(rest_api), $(local_storage), $(date), resolution order"
+        keywords: ["PlaceholderUtil", "$(rest_api)", "$(local_storage)", "$(date)", "resolve"]
+
+      - id: "FK_WORKED_EXAMPLES"
+        lines: [1801, 1970]
+        topic: "Complete worked examples, end-to-end scenario generation walkthrough"
+        keywords: ["example", "walkthrough", "end-to-end", "complete scenario"]
+
+  # ── SDP_API_Endpoints_Documentation.md (1299 lines) ─────────────────────
+  api_documentation:
+    path: "docs/api-doc/SDP_API_Endpoints_Documentation.md"
+    total_lines: 1299
+    chunks:
+      - id: "API_REQUESTS"
+        lines: [1, 200]
+        topic: "Requests module API — create, update, notes, tasks, worklogs"
+        keywords: ["requests", "incident", "service request", "notes", "tasks"]
+
+      - id: "API_CHANGES"
+        lines: [201, 400]
+        topic: "Changes module API — create, update, stages, worklogs, tasks"
+        keywords: ["changes", "change", "stage", "worklog", "task"]
+
+      - id: "API_PROBLEMS"
+        lines: [401, 550]
+        topic: "Problems module API — create, update, analysis, worklogs"
+        keywords: ["problems", "problem", "analysis", "root cause"]
+
+      - id: "API_SOLUTIONS"
+        lines: [551, 700]
+        topic: "Solutions module API — create, update, topics, comments, approval"
+        keywords: ["solutions", "solution", "topic", "comment", "approval"]
+
+      - id: "API_ASSETS_CMDB"
+        lines: [701, 900]
+        topic: "Assets & CMDB API — create, relationships, CI types"
+        keywords: ["assets", "asset", "CMDB", "CI", "relationship"]
+
+      - id: "API_PROJECTS_RELEASES"
+        lines: [901, 1100]
+        topic: "Projects & Releases API — create, milestones, tasks"
+        keywords: ["projects", "project", "releases", "release", "milestone"]
+
+      - id: "API_ADMIN_MISC"
+        lines: [1101, 1299]
+        topic: "Admin, Contracts, Purchase Orders, general endpoints"
+        keywords: ["admin", "contracts", "purchase_orders", "setup"]
+
+  # ── copilot-instructions.md (1584 lines) ────────────────────────────────
+  copilot_instructions:
+    path: ".github/copilot-instructions.md"
+    total_lines: 1584
+    note: "Auto-loaded by VS Code — do NOT read in full. Use digest + targeted chunks."
+    chunks:
+      - id: "CI_PROJECT_STRUCTURE"
+        lines: [1, 120]
+        topic: "Project structure, companion files table, agent routing rules"
+        keywords: ["project structure", "agent routing", "companion files"]
+
+      - id: "CI_MODULE_PLACEMENT"
+        lines: [121, 280]
+        topic: "Module placement rules, use-case noun mapping, MSP skip rules"
+        keywords: ["module placement", "use-case noun", "MSP", "FORBIDDEN"]
+
+      - id: "CI_CODE_GEN_RULES"
+        lines: [281, 800]
+        topic: "Code generation rules, annotation fields, preProcess, data loading, ActionsUtil"
+        keywords: ["code generation", "annotation", "preProcess", "ActionsUtil", "APIUtil"]
+
+      - id: "CI_FRAMEWORK_APIS"
+        lines: [801, 1200]
+        topic: "Framework API reference — navigate, listView, detailsView, validate, formBuilder"
+        keywords: ["navigate", "listView", "detailsView", "validate", "formBuilder"]
+
+      - id: "CI_PLAYWRIGHT_MCP"
+        lines: [1201, 1584]
+        topic: "Playwright MCP patterns, sdpAPICall, data creation SOP, cleanup"
+        keywords: ["Playwright", "MCP", "sdpAPICall", "browser_evaluate", "cleanup"]
