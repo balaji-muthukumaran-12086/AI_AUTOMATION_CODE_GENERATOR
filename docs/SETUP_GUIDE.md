@@ -52,7 +52,10 @@ python3 -m venv .venv && source .venv/bin/activate && pip install -r requirement
 npm install                      # installs @playwright/mcp + auto-downloads Chromium browser
 ```
 
-
+**Verify Playwright MCP server is registered in VS Code:**
+1. Press `Ctrl+Shift+P` → type **"MCP: List Servers"**
+2. You should see **"microsoft/playwright-mcp"** in the list (configured via `.vscode/mcp.json`)
+3. If it doesn't appear, restart VS Code (the MCP config is read on startup)
 
 > **Done!** You won't need to repeat the above. From now on, just open the folder in VS Code and follow the 3 steps below.
 

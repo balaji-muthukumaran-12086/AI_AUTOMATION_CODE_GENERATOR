@@ -46,7 +46,8 @@ knowledge_base/scout_snapshots/
 **/.backups/
 
 # ── VS Code ───────────────────────────────────────────────────────────────────
-.vscode/
+.vscode/*
+!.vscode/mcp.json
 
 # ── Archives & logs ───────────────────────────────────────────────────────────
 *.zip
