@@ -18,173 +18,268 @@ files:
     total_lines: 2458
     digest: "config/critical_rules_digest.md"   # < 300 lines — read this first for 80% of cases
     chunks:
+      - id: "FR_MODULE_PLACEMENT"
+        lines: [1, 28]
+        topic: "SECTION 0 — Module placement, derive from use-case, cross-module rules"
+        keywords: ["module placement", "use-case", "cross-module", "FORBIDDEN"]
+
+      - id: "FR_CLASS_ARCHITECTURE"
+        lines: [30, 86]
+        topic: "SECTION 1 — Two-layer class pattern (Entity.java wrapper + EntityBase.java impl)"
+        keywords: ["two-layer", "Entity.java", "EntityBase.java", "class architecture"]
+
       - id: "FR_ANNOTATIONS"
-        lines: [1, 180]
-        topic: "@AutomaterScenario annotation fields, all 9 fields, valid values, forbidden patterns"
-        keywords: ["id", "group", "priority", "dataIds", "tags", "description", "owner", "runType", "switchOn"]
+        lines: [88, 196]
+        topic: "SECTIONS 2-4 — @AutomaterScenario all 9 fields, @AutomaterSuite, @AutomaterCase (forbidden)"
+        keywords: ["@AutomaterScenario", "id", "group", "priority", "dataIds", "runType", "switchOn", "@AutomaterSuite"]
 
       - id: "FR_PREPROCESS"
-        lines: [181, 450]
-        topic: "preProcess groups, group reuse, minimal group selection, new group creation rules"
-        keywords: ["preProcess", "group", "dataIds", "LocalStorage", "else-if", "NoPreprocess"]
+        lines: [198, 367]
+        topic: "SECTION 5 — preProcess groups, ownership, discovery, NoPreprocess, minimal selection, reuse"
+        keywords: ["preProcess", "group", "dataIds", "LocalStorage", "else-if", "NoPreprocess", "minimal group"]
+
+      - id: "FR_CONSTANTS_IDS"
+        lines: [369, 464]
+        topic: "SECTIONS 6-7 — Role/Owner/RunType constants, Test ID format (CSV vs sequential)"
+        keywords: ["Role", "OwnerConstants", "ScenarioRunType", "test ID", "CSV", "sequential"]
+
+      - id: "FR_DATA_JSON"
+        lines: [466, 600]
+        topic: "SECTIONS 8-8b — Data JSON format, placeholders, reuse, nested lookups, forbidden flat fields"
+        keywords: ["data.json", "placeholder", "$(custom_", "$(unique_string)", "lookup field", "reuse"]
 
       - id: "FR_DATA_LOADING"
-        lines: [451, 650]
-        topic: "getTestCaseData vs getTestCaseDataUsingCaseId vs DataUtil, DataConstants, AnnotationConstants"
+        lines: [600, 760]
+        topic: "SECTIONS 9-12 — getTestCaseData, DataConstants, AnnotationConstants, 3 loading methods"
         keywords: ["getTestCaseData", "getTestCaseDataUsingCaseId", "DataUtil", "DataConstants", "TestCaseData"]
 
       - id: "FR_ACTIONSUTIL"
-        lines: [651, 900]
-        topic: "ActionsUtil/APIUtil patterns, parameterization, method granularity, existing method protection"
-        keywords: ["ActionsUtil", "APIUtil", "Utilities", "public static", "parameterize"]
+        lines: [760, 1000]
+        topic: "SECTIONS 13-17 — ActionsUtil/APIUtil patterns, parameterization, method protection, data flow"
+        keywords: ["ActionsUtil", "APIUtil", "Utilities", "public static", "parameterize", "existing method"]
 
-      - id: "FR_LOCATORS"
-        lines: [901, 1100]
-        topic: "Locator interface patterns, XPath rules, Function<String,By> for parameterized locators"
-        keywords: ["Locators", "By.xpath", "Function", "normalize-space", "select2"]
+      - id: "FR_LOCATORS_POPUPS"
+        lines: [1000, 1200]
+        topic: "SECTIONS 18-22 — Locator patterns, XPath rules, by.xpath, Select2, popup types"
+        keywords: ["Locators", "By.xpath", "Function", "normalize-space", "select2", "popup"]
 
-      - id: "FR_REPORTING"
-        lines: [1101, 1350]
-        topic: "addSuccessReport, addFailureReport, addReport, failureMessage, clearFailureMessage"
-        keywords: ["addSuccessReport", "addFailureReport", "addReport", "failureMessage"]
+      - id: "FR_LINKING_CHANGES"
+        lines: [1554, 1748]
+        topic: "SECTION 24 — Linking Changes (CH-286), associations tab, parent/child, API contract"
+        keywords: ["linking", "associations", "parent change", "child change", "CH-286"]
 
-      - id: "FR_ROLES_RBAC"
-        lines: [1351, 1600]
-        topic: "Role constants, RBAC testing pattern, createUserByRole, switchUser, role JSON files"
-        keywords: ["Role", "RBAC", "createUserByRole", "switchUser", "ScenarioUsers", "permissions"]
+      - id: "FR_CHECKSTYLE"
+        lines: [1750, 1852]
+        topic: "SECTIONS 25-26 — Zoho CodeCheck/Checkstyle rules, NeedBraces, task node ports"
+        keywords: ["checkstyle", "NeedBraces", "braces", "codecheck", "task node"]
 
-      - id: "FR_DATA_JSON"
-        lines: [1601, 1850]
-        topic: "Data JSON format, placeholders, $(custom_KEY), $(unique_string), reuse, LocalStorage pre-seed"
-        keywords: ["data.json", "placeholder", "$(custom_", "$(unique_string)", "lookup field"]
+      - id: "FR_REPORTING_LIFECYCLE"
+        lines: [1854, 1920]
+        topic: "SECTIONS 27-28 — EntityCase lifecycle, addReport, clearFailureMessage, preProcess patterns"
+        keywords: ["addReport", "addSuccessReport", "addFailureReport", "clearFailureMessage", "EntityCase"]
 
-      - id: "FR_COMPILATION"
-        lines: [1851, 2050]
-        topic: "Compilation commands, classpath, javac, setup_framework_bin.sh"
-        keywords: ["javac", "compile", "classpath", "bin", "setup_framework_bin"]
+      - id: "FR_SKELETON_CONSTANTS"
+        lines: [1972, 2252]
+        topic: "SECTIONS 31-32 — Skeleton scaffolding, auto-generated constants, FieldDetails, DataConstants naming"
+        keywords: ["skeleton", "GenerateSkeletonForAnEntity", "DataConstants", "FieldDetails", "auto-generate"]
 
-      - id: "FR_NAVIGATION_API"
-        lines: [2051, 2458]
-        topic: "actions.navigate, actions.listView, actions.detailsView, actions.validate, formBuilder API"
-        keywords: ["navigate", "listView", "detailsView", "validate", "formBuilder", "fillInputForAnEntity"]
+      - id: "FR_RBAC"
+        lines: [2254, 2395]
+        topic: "SECTION 33 — RBAC testing, createUserByRole, role JSON files, SDADMIN, decision flow"
+        keywords: ["RBAC", "createUserByRole", "switchUser", "ScenarioUsers", "permissions", "role JSON"]
+
+      - id: "FR_STAGE_TRANSITIONS"
+        lines: [2397, 2458]
+        topic: "SECTION 34 — Change stage transitions, close change pattern, SDChangeManager"
+        keywords: ["stage", "transition", "close", "SDChangeManager", "lifecycle"]
 
   # ── framework_knowledge.md (1970 lines) ─────────────────────────────────
   framework_knowledge:
     path: "config/framework_knowledge.md"
     total_lines: 1970
     chunks:
-      - id: "FK_ENTITY_LIFECYCLE"
-        lines: [1, 250]
-        topic: "Entity.java lifecycle, preProcess → process → postProcess, session switching"
-        keywords: ["Entity.java", "preProcess", "postProcess", "initializeAdminSession", "switchToUserSession"]
+      - id: "FK_FLOW_AND_ARCHITECTURE"
+        lines: [1, 65]
+        topic: "Sections 1-3 — End-to-end test flow, module placement, two-layer class architecture"
+        keywords: ["test flow", "end-to-end", "module placement", "two-layer", "class architecture"]
 
-      - id: "FK_ENTITYCASE_REPORTS"
-        lines: [251, 450]
-        topic: "EntityCase.java, addSuccessReport internals, LocalSetupManager, ScenarioReport.html"
-        keywords: ["EntityCase", "addSuccessReport", "LocalSetupManager", "ScenarioReport", "isLocalSetup"]
+      - id: "FK_ANNOTATION_WRAPPER"
+        lines: [67, 172]
+        topic: "Sections 4-5 — Annotation wrapper pattern (Entity.java), implementation pattern (EntityBase.java)"
+        keywords: ["annotation", "wrapper", "@AutomaterScenario", "implementation", "EntityBase"]
 
-      - id: "FK_REST_API"
-        lines: [451, 700]
-        topic: "RestAPI architecture, triggerRestAPI, sdpAPICall JS bridge, input wrappers, auto-cleanup"
-        keywords: ["RestAPI", "triggerRestAPI", "sdpAPICall", "createAndGetResponse", "inputData"]
+      - id: "FK_PREPROCESS_PATTERNS"
+        lines: [174, 298]
+        topic: "Section 6 — preProcess architecture, where it lives, minimal group, group reuse"
+        keywords: ["preProcess", "group", "minimal", "reuse", "parent class", "subclass"]
+
+      - id: "FK_DATA_LAYER"
+        lines: [300, 421]
+        topic: "Section 7 — Data layer 3 levels (AnnotationConstants, DataConstants, *_data.json), placeholders, LocalStorage pre-seed"
+        keywords: ["AnnotationConstants", "DataConstants", "data.json", "placeholder", "LocalStorage pre-seed"]
 
       - id: "FK_FORMBUILDER"
-        lines: [701, 900]
-        topic: "FormBuilder internals, fillInputForAnEntity skip logic, FieldType constants"
-        keywords: ["FormBuilder", "fillInputForAnEntity", "FieldType", "checkbox", "radio", "boolean"]
+        lines: [423, 500]
+        topic: "Section 8 — FormBuilder internals, FieldType → method mapping, date filling, submit variants"
+        keywords: ["FormBuilder", "fillInputForAnEntity", "FieldType", "checkbox", "radio", "date"]
 
-      - id: "FK_COMPILATION_DEEP"
-        lines: [901, 1100]
-        topic: "Deep compilation troubleshooting, classpath precedence, framework JAR override"
-        keywords: ["compile", "classpath", "framework", "JAR", "AutomationFrameWork"]
+      - id: "FK_API_METHODS"
+        lines: [502, 608]
+        topic: "Sections 9-12 — Key API methods, Entity.java base class lifecycle, protected methods"
+        keywords: ["API methods", "Entity.java", "lifecycle", "getEntityId", "getModuleName"]
 
-      - id: "FK_RUNNER_AGENT"
-        lines: [1101, 1350]
-        topic: "runner_agent.py internals, _parse_success logic, ENTITY_IMPORT_MAP, report validation"
-        keywords: ["runner_agent", "_parse_success", "ENTITY_IMPORT_MAP", "report", "BUILD"]
+      - id: "FK_FIELD_NAVIGATE_LIST_DETAIL"
+        lines: [610, 760]
+        topic: "Sections 13-18 — FieldDetails, Navigate, ListView, DetailsView complete method references"
+        keywords: ["FieldDetails", "Navigate", "ListView", "DetailsView", "navigate.to", "columnSearch"]
 
-      - id: "FK_STAGE_TRANSITIONS"
-        lines: [1351, 1600]
-        topic: "Change stage transitions, close change pattern, SDChangeManager role requirement"
-        keywords: ["stage", "transition", "close", "SDChangeManager", "Submission", "Planning"]
+      - id: "FK_ACTIONSUTIL_REFERENCE"
+        lines: [725, 839]
+        topic: "Sections 19-20b — ActionsUtil rules, ChangeActionsUtil complete method reference"
+        keywords: ["ActionsUtil", "ChangeActionsUtil", "pre-generation analysis", "method reference"]
+
+      - id: "FK_SDPCLOUD_ACTIONS"
+        lines: [841, 1000]
+        topic: "Sections 21e+ — SDPCloudActions methods, waitForAjaxComplete internals"
+        keywords: ["SDPCloudActions", "waitForAjaxComplete", "click", "type", "getText", "sendKeys"]
+
+      - id: "FK_FRAMEWORK_SOURCE"
+        lines: [1571, 1604]
+        topic: "Framework source analysis — methods calling waitForAjaxComplete (verified from source)"
+        keywords: ["waitForAjaxComplete", "framework source", "verified", "Actions.java"]
 
       - id: "FK_PLACEHOLDER_SYSTEM"
-        lines: [1601, 1800]
-        topic: "PlaceholderUtil deep dive, $(rest_api), $(local_storage), $(date), resolution order"
-        keywords: ["PlaceholderUtil", "$(rest_api)", "$(local_storage)", "$(date)", "resolve"]
+        lines: [1606, 1644]
+        topic: "PlaceholderUtil — $(rest_api), $(local_storage), $[custom_KEY], DataUtil caching behavior"
+        keywords: ["PlaceholderUtil", "$(rest_api)", "$(local_storage)", "DataUtil", "caching"]
 
-      - id: "FK_WORKED_EXAMPLES"
-        lines: [1801, 1970]
-        topic: "Complete worked examples, end-to-end scenario generation walkthrough"
-        keywords: ["example", "walkthrough", "end-to-end", "complete scenario"]
+      - id: "FK_REPORT_CLEANUP_LIFECYCLE"
+        lines: [1646, 1734]
+        topic: "Report flow, cleanUp singletons, preProcess patterns, LocalSetupManager detection"
+        keywords: ["addSuccessReport", "addFailureReport", "cleanUp", "LocalSetupManager", "isLocalSetup"]
+
+      - id: "FK_INHERITANCE_SKELETON"
+        lines: [1736, 1796]
+        topic: "BeforeAndAfterCaseActions lifecycle, SolutionBase pattern, skeleton scaffolding"
+        keywords: ["BeforeAndAfterCaseActions", "lifecycle", "SolutionBase", "skeleton", "scaffolding"]
+
+      - id: "FK_RBAC_LIFECYCLE"
+        lines: [1798, 1896]
+        topic: "createUserByRole architecture, RBAC scenario lifecycle, ScenarioUsers slots, forbidden anti-patterns"
+        keywords: ["createUserByRole", "RBAC", "ScenarioUsers", "switchUser", "role system"]
+
+      - id: "FK_CLOSE_CHANGE"
+        lines: [1898, 1970]
+        topic: "Close change via stage transitions, all 8 stages, API pattern, complete utility method"
+        keywords: ["close change", "stage transition", "SDChangeManager", "closeChange", "8 stages"]
 
   # ── SDP_API_Endpoints_Documentation.md (1299 lines) ─────────────────────
   api_documentation:
     path: "docs/api-doc/SDP_API_Endpoints_Documentation.md"
     total_lines: 1299
     chunks:
+      - id: "API_GLOBAL_SECURITY"
+        lines: [1, 110]
+        topic: "Global security, authentication, CORS, file upload security, rate limiting"
+        keywords: ["authentication", "CORS", "rate limiting", "throttle", "security"]
+
       - id: "API_REQUESTS"
-        lines: [1, 200]
-        topic: "Requests module API — create, update, notes, tasks, worklogs"
-        keywords: ["requests", "incident", "service request", "notes", "tasks"]
+        lines: [111, 258]
+        topic: "Module 1 — Requests: core endpoints, sub-resources, approvals, AI endpoints, automation cases"
+        keywords: ["requests", "incident", "service request", "notes", "tasks", "worklogs"]
 
       - id: "API_CHANGES"
-        lines: [201, 400]
-        topic: "Changes module API — create, update, stages, worklogs, tasks"
-        keywords: ["changes", "change", "stage", "worklog", "task"]
+        lines: [259, 358]
+        topic: "Module 2 — Changes: core endpoints, sub-resources, approvals, automation cases"
+        keywords: ["changes", "change", "stage", "worklog", "task", "approval"]
 
       - id: "API_PROBLEMS"
-        lines: [401, 550]
-        topic: "Problems module API — create, update, analysis, worklogs"
+        lines: [359, 416]
+        topic: "Module 3 — Problems: core endpoints, sub-resources, automation cases"
         keywords: ["problems", "problem", "analysis", "root cause"]
 
-      - id: "API_SOLUTIONS"
-        lines: [551, 700]
-        topic: "Solutions module API — create, update, topics, comments, approval"
-        keywords: ["solutions", "solution", "topic", "comment", "approval"]
+      - id: "API_RELEASES"
+        lines: [417, 486]
+        topic: "Module 4 — Releases: core endpoints, sub-resources, approvals, automation cases"
+        keywords: ["releases", "release", "milestone", "rollout"]
+
+      - id: "API_SOLUTIONS_PROJECTS"
+        lines: [487, 650]
+        topic: "Modules 5-6 — Solutions & Projects: endpoints, comments, approval, milestones"
+        keywords: ["solutions", "solution", "projects", "project", "topic", "comment"]
 
       - id: "API_ASSETS_CMDB"
-        lines: [701, 900]
-        topic: "Assets & CMDB API — create, relationships, CI types"
-        keywords: ["assets", "asset", "CMDB", "CI", "relationship"]
+        lines: [651, 830]
+        topic: "Modules 7-9 — Assets, CMDB, Purchase/Contracts: endpoints, relationships, CI types"
+        keywords: ["assets", "asset", "CMDB", "CI", "relationship", "contracts", "purchase"]
 
-      - id: "API_PROJECTS_RELEASES"
-        lines: [901, 1100]
-        topic: "Projects & Releases API — create, milestones, tasks"
-        keywords: ["projects", "project", "releases", "release", "milestone"]
+      - id: "API_USERS_ADMIN"
+        lines: [831, 982]
+        topic: "Modules 10-12 — Users, Admin/Setup: user endpoints, admin resource groups"
+        keywords: ["users", "admin", "setup", "technician", "requester"]
 
-      - id: "API_ADMIN_MISC"
-        lines: [1101, 1299]
-        topic: "Admin, Contracts, Purchase Orders, general endpoints"
-        keywords: ["admin", "contracts", "purchase_orders", "setup"]
+      - id: "API_COMMON_EXIM_PLATFORM"
+        lines: [983, 1152]
+        topic: "Modules 13-16 — Common/Shared, EXIM, Platform, Legacy V2 API"
+        keywords: ["common", "shared", "export", "import", "platform", "V2"]
 
-  # ── copilot-instructions.md (1584 lines) ────────────────────────────────
+      - id: "API_CROSS_MODULE_APPENDIX"
+        lines: [1152, 1299]
+        topic: "Cross-module automation cases, E2E workflows, OAuth scopes, role matrix, response codes"
+        keywords: ["cross-module", "end-to-end", "OAuth", "role matrix", "response codes"]
+
+  # ── copilot-instructions.md (1622 lines) ────────────────────────────────
   copilot_instructions:
     path: ".github/copilot-instructions.md"
-    total_lines: 1584
+    total_lines: 1622
     note: "Auto-loaded by VS Code — do NOT read in full. Use digest + targeted chunks."
     chunks:
-      - id: "CI_PROJECT_STRUCTURE"
-        lines: [1, 120]
-        topic: "Project structure, companion files table, agent routing rules"
-        keywords: ["project structure", "agent routing", "companion files"]
+      - id: "CI_OVERVIEW_TOKEN_RULES"
+        lines: [1, 61]
+        topic: "Overview, companion files, token-efficient loading, session management, requirement-first workflow"
+        keywords: ["companion files", "token budget", "session management", "requirement", "skills"]
+
+      - id: "CI_AGENT_ROUTING_STRUCTURE"
+        lines: [63, 140]
+        topic: "Agent routing (MCP delegation rules), project structure"
+        keywords: ["agent routing", "MCP", "subagent", "project structure"]
 
       - id: "CI_MODULE_PLACEMENT"
-        lines: [121, 280]
+        lines: [141, 181]
         topic: "Module placement rules, use-case noun mapping, MSP skip rules"
         keywords: ["module placement", "use-case noun", "MSP", "FORBIDDEN"]
 
-      - id: "CI_CODE_GEN_RULES"
-        lines: [281, 800]
-        topic: "Code generation rules, annotation fields, preProcess, data loading, ActionsUtil"
-        keywords: ["code generation", "annotation", "preProcess", "ActionsUtil", "APIUtil"]
+      - id: "CI_LIFECYCLE_DATA_COMPILE"
+        lines: [183, 276]
+        topic: "Test lifecycle, data & field config, compilation (framework + module), classpath"
+        keywords: ["lifecycle", "preProcess", "field config", "compile", "javac", "classpath"]
 
-      - id: "CI_FRAMEWORK_APIS"
-        lines: [801, 1200]
-        topic: "Framework API reference — navigate, listView, detailsView, validate, formBuilder"
-        keywords: ["navigate", "listView", "detailsView", "validate", "formBuilder"]
+      - id: "CI_RUNNING_BEHAVIOURS"
+        lines: [278, 440]
+        topic: "Running tests, key framework behaviours, REST API architecture, runner parse logic"
+        keywords: ["run_test", "RUN_CONFIG", "waitForAjaxComplete", "RestAPI", "_parse_success"]
+
+      - id: "CI_CODE_GEN_ANNOTATIONS"
+        lines: [460, 700]
+        topic: "Code generation rules, @AutomaterScenario fields, test ID, preProcess groups, group reuse"
+        keywords: ["code generation", "@AutomaterScenario", "annotation", "preProcess", "group reuse"]
+
+      - id: "CI_ROLES_RBAC_STAGES"
+        lines: [700, 870]
+        topic: "Role constants, RBAC pattern, createUserByRole, stage transitions, owner constants"
+        keywords: ["RBAC", "createUserByRole", "switchUser", "stage transitions", "OwnerConstants"]
+
+      - id: "CI_DATA_PATTERNS"
+        lines: [870, 1072]
+        topic: "DataConstants, data loading methods, AnnotationConstants, JSON format, placeholders, reuse"
+        keywords: ["DataConstants", "AnnotationConstants", "data loading", "JSON format", "placeholder"]
+
+      - id: "CI_ACTIONSUTIL_APIS"
+        lines: [1074, 1520]
+        topic: "ActionsUtil/APIUtil patterns, navigate/listView/detailsView/validate/formBuilder APIs"
+        keywords: ["ActionsUtil", "APIUtil", "navigate", "listView", "detailsView", "formBuilder"]
 
       - id: "CI_PLAYWRIGHT_MCP"
-        lines: [1201, 1584]
-        topic: "Playwright MCP patterns, sdpAPICall, data creation SOP, cleanup"
-        keywords: ["Playwright", "MCP", "sdpAPICall", "browser_evaluate", "cleanup"]
+        lines: [1520, 1622]
+        topic: "AI orchestrator pipeline, Playwright MCP data creation SOP, sdpAPICall, cleanup"
+        keywords: ["Playwright", "MCP", "sdpAPICall", "browser_evaluate", "cleanup", "orchestrator"]
