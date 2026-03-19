@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Breakage Analyzer — AutomaterSelenium</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --surface2: #21253a;
+      --border:   #2e3348;
+      --green:    #22c55e;
+      --blue:     #3b82f6;
+      --yellow:   #f59e0b;
+      --red:      #ef4444;
+      --orange:   #f97316;
+      --purple:   #a855f7;
+      --text:     #e2e8f0;
+      --text-dim: #94a3b8;
+      --radius:   10px;
+      --font:     'Segoe UI', system-ui, sans-serif;
+      --mono:     'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+    html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; }
+
+    /* ── Layout ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px 60px; }
+    header { text-align: center; margin-bottom: 32px; }
+    header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+    header .subtitle { color: var(--text-dim); font-size: 13px; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+    }
+    .card h2 { font-size: 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .card h2 .icon { font-size: 20px; }
+
+    /* ── Upload Zone ── */
+    .upload-zone {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 40px; text-align: center; cursor: pointer; transition: .2s;
+    }
+    .upload-zone:hover, .upload-zone.drag-over { border-color: var(--blue); background: rgba(59,130,246,.05); }
+    .upload-zone .icon { font-size: 40px; margin-bottom: 10px; }
+    .upload-zone .label { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+    .upload-zone .hint { color: var(--text-dim); font-size: 12px; }
+    .upload-zone input { display: none; }
+    .upload-zone .file-name { color: var(--green); font-weight: 600; margin-top: 8px; }
+
+    /* ── Summary chips ── */
+    .summary-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; margin-bottom: 16px; }
+    .chip {
+      padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      border: 1px solid var(--border); background: var(--surface2);
+    }
+    .chip.total { border-color: var(--blue); color: var(--blue); }
+    .chip.flaky { border-color: var(--green); color: var(--green); }
+    .chip.breakage { border-color: var(--red); color: var(--red); }
+    .chip.pending { border-color: var(--yellow); color: var(--yellow); }
+
+    /* ── Buttons ── */
+    .actions { display: flex; gap: 12px; margin-top: 16px; align-items: center; }
+    .btn {
+      padding: 10px 24px; border-radius: 8px; border: none;
+      font-size: 14px; font-weight: 600; cursor: pointer; transition: .15s;
+    }
+    .btn-primary { background: var(--green); color: #000; }
+    .btn-primary:hover { background: #16a34a; }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--blue); }
+
+    /* ── Form fields ── */
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+    .field label .required { color: var(--red); }
+    .field .hint { color: var(--text-dim); font-size: 11px; margin-top: 3px; }
+    .field input, .field select {
+      width: 100%; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text); font-size: 14px; transition: .15s;
+    }
+    .field input:focus, .field select:focus {
+      outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+    }
+
+    /* ── Settings row ── */
+    .settings-row { display: flex; gap: 16px; align-items: center; margin-top: 12px; }
+    .settings-row label { font-size: 13px; font-weight: 500; }
+    .settings-row select, .settings-row input[type="number"] {
+      padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--surface); color: var(--text); font-size: 13px;
+      width: 80px;
+    }
+
+    /* ── Progress bar ── */
+    .progress-container { margin: 16px 0; }
+    .progress-bar-bg {
+      width: 100%; height: 8px; border-radius: 4px; background: var(--surface2); overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; border-radius: 4px; transition: width .3s; background: linear-gradient(90deg, var(--blue), var(--green));
+    }
+    .progress-label { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+
+    /* ── Log box ── */
+    .log-box {
+      background: #000; color: #a3e635; padding: 12px; border-radius: 8px;
+      font-family: var(--mono); font-size: 11px; max-height: 280px;
+      overflow-y: auto; white-space: pre-wrap; line-height: 1.6;
+      margin-top: 12px;
+    }
+    .log-line.error { color: var(--red); }
+    .log-line.success { color: var(--green); }
+    .log-line.warn { color: var(--yellow); }
+    .log-line.info { color: #a3e635; }
+
+    /* ── Results table ── */
+    .results-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+    .results-table th {
+      text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border);
+      font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-dim);
+    }
+    .results-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .results-table tr:hover { background: var(--surface2); }
+
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: 12px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+    }
+    .badge-flaky { background: rgba(34,197,94,.15); color: var(--green); }
+    .badge-breakage { background: rgba(239,68,68,.15); color: var(--red); }
+    .badge-pending { background: rgba(245,158,11,.15); color: var(--yellow); }
+    .badge-running { background: rgba(59,130,246,.15); color: var(--blue); }
+    .badge-skipped { background: rgba(148,163,184,.15); color: var(--text-dim); }
+    .badge-pass { background: rgba(34,197,94,.15); color: var(--green); }
+    .badge-fail { background: rgba(239,68,68,.15); color: var(--red); }
+
+    /* ── Root Cause badges ── */
+    .badge-auto-bug { background: rgba(245,158,11,.15); color: #92400E; }
+    .badge-prod-bug { background: rgba(239,68,68,.15); color: #991B1B; }
+    .badge-env-issue { background: rgba(99,102,241,.15); color: #3730A3; }
+    .badge-undetermined { background: rgba(148,163,184,.15); color: #475569; }
+
+    /* ── Owner breakdown ── */
+    .owner-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin-top: 12px; }
+    .owner-card {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 12px; border-radius: 6px; background: var(--surface2);
+      border: 1px solid var(--border); font-size: 13px;
+    }
+    .owner-card .count { font-weight: 700; }
+
+    /* ── Project cards ── */
+    .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; margin-top: 12px; }
+    .project-card {
+      padding: 14px 16px; border-radius: 8px; background: var(--surface2);
+      border: 2px solid var(--border); cursor: pointer; transition: .2s;
+    }
+    .project-card:hover { border-color: var(--blue); }
+    .project-card.selected { border-color: var(--green); background: rgba(34,197,94,.06); }
+    .project-card .pname { font-weight: 600; font-size: 14px; margin-bottom: 4px; word-break: break-all; }
+    .project-card .pinfo { color: var(--text-dim); font-size: 11px; display: flex; gap: 10px; }
+    .project-card .pinfo .tag {
+      padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600;
+    }
+    .tag-ok { background: rgba(34,197,94,.15); color: var(--green); }
+    .tag-warn { background: rgba(245,158,11,.15); color: var(--yellow); }
+    .tag-default { background: rgba(59,130,246,.15); color: var(--blue); }
+
+    /* ── Clone panel ── */
+    .clone-panel {
+      margin-top: 16px; padding: 16px; border-radius: 8px;
+      background: var(--surface2); border: 1px solid var(--border);
+    }
+    .clone-panel h3 { font-size: 14px; margin-bottom: 12px; }
+
+    /* ── Hidden ── */
+    .hidden { display: none !important; }
+
+    /* ── Tabs ── */
+    .tab-bar { display: flex; gap: 2px; margin-bottom: 16px; border-bottom: 2px solid var(--border); }
+    .tab-btn {
+      padding: 10px 20px; cursor: pointer; border: none; background: transparent;
+      color: var(--text-dim); font-size: 13px; font-weight: 600; transition: .2s;
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+
+    /* ── Filter row ── */
+    .filter-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 5px 12px; border-radius: 16px; border: 1px solid var(--border);
+      background: var(--surface); color: var(--text-dim); font-size: 12px;
+      cursor: pointer; transition: .15s;
+    }
+    .filter-btn:hover { border-color: var(--blue); color: var(--text); }
+    .filter-btn.active { border-color: var(--green); color: var(--green); background: rgba(34,197,94,.08); }
+
+    /* ── Active project badge (sticky) ── */
+    .active-project-bar {
+      display: flex; align-items: center; gap: 10px; padding: 8px 14px;
+      border-radius: 8px; background: var(--surface2); border: 1px solid var(--green);
+      margin-bottom: 16px; font-size: 13px;
+    }
+    .active-project-bar .label { color: var(--text-dim); }
+    .active-project-bar .value { font-weight: 700; color: var(--green); }
+    .active-project-bar .btn-change {
+      margin-left: auto; padding: 4px 12px; font-size: 12px;
+      border-radius: 6px; border: 1px solid var(--border); background: var(--surface);
+      color: var(--text-dim); cursor: pointer;
+    }
+    .active-project-bar .btn-change:hover { border-color: var(--blue); color: var(--text); }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .results-table { font-size: 11px; }
+      .results-table th, .results-table td { padding: 6px; }
+      .owner-grid { grid-template-columns: 1fr; }
+      .project-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Breakage Analyzer</h1>
+      <p class="subtitle">Select project  |  Upload Aalam report  |  Rerun failures  |  Classify Flaky vs Real Breakage</p>
+    </header>
+
+    <!-- ════════════════ Active Project Bar (shown after selection) ════════════════ -->
+    <div id="active-project-bar" class="active-project-bar hidden">
+      <span class="label">Project:</span>
+      <span class="value" id="active-project-name"></span>
+      <button class="btn-change" id="change-project-btn">Change</button>
+    </div>
+
+    <!-- ════════════════ Step 0: Select Project ════════════════ -->
+    <div id="project-card" class="card">
+      <h2><span class="icon">1</span> Select Project</h2>
+      <p style="color:var(--text-dim);font-size:13px;margin-bottom:12px;">
+        Choose an existing cloned project or clone a new branch from the repository.
+      </p>
+
+      <div class="project-grid" id="project-grid">
+        <div style="color:var(--text-dim);">Loading projects...</div>
+      </div>
+
+      <!-- Clone New Branch -->
+      <div class="clone-panel" id="clone-panel">
+        <h3>Clone New Branch</h3>
+        <div class="field">
+          <label>Branch Name <span class="required">*</span></label>
+          <input type="text" id="clone-branch" placeholder="e.g. SDPLIVE_REQ_AUTOMATION_BRANCH" />
+          <div class="hint">The branch name from hg (will become the project folder name)</div>
+        </div>
+        <div style="display:flex;gap:12px;">
+          <div class="field" style="flex:1;">
+            <label>Hg Username <span class="required">*</span></label>
+            <input type="text" id="clone-username" placeholder="e.g. rajeshwaran-a" />
+          </div>
+          <div class="field" style="flex:1;">
+            <label>Hg Password <span class="required">*</span></label>
+            <input type="password" id="clone-password" />
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="clone-btn">Clone Branch</button>
+          <span id="clone-status" class="hint"></span>
+        </div>
+        <div class="log-box hidden" id="clone-log-box" style="max-height:160px;"></div>
+      </div>
+    </div>
+
+    <!-- ════════════════ Step 1: Upload ════════════════ -->
+    <div id="upload-card" class="card hidden">
+      <h2><span class="icon">2</span> Upload Aalam Report</h2>
+      <div class="upload-zone" id="upload-zone">
+        <div class="icon">📄</div>
+        <div class="label">Drop Aalam HTML report here or click to browse</div>
+        <div class="hint">Accepts .html files from REPORT_*_Fw_Integ / Rerun exports</div>
+        <input type="file" id="file-input" accept=".html,.htm" />
+        <div class="file-name hidden" id="file-name"></div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" id="upload-btn" disabled>Upload & Parse</button>
+        <span id="upload-status" class="hint"></span>
+      </div>
+    </div>
+
+    <!-- ════════════════ Step 2: Parsed Summary ════════════════ -->
+    <div id="summary-card" class="card hidden">
+      <h2><span class="icon">3</span> Parsed Failures</h2>
+      <div class="summary-bar">
+        <div class="chip total" id="chip-total">Total: —</div>
+        <div class="chip" id="chip-modules" style="border-color:var(--purple);color:var(--purple);">Modules: —</div>
+        <div class="chip" id="chip-owners" style="border-color:var(--orange);color:var(--orange);">Owners: —</div>
+      </div>
+
+      <h3 style="font-size:14px;margin-bottom:8px;">By Owner</h3>
+      <div class="owner-grid" id="owner-grid"></div>
+
+      <div class="settings-row">
+        <label for="retries-input">Retries per test:</label>
+        <input type="number" id="retries-input" value="3" min="1" max="10" />
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="run-btn">Start Analysis</button>
+        <button class="btn btn-danger hidden" id="stop-btn">Stop</button>
+        <span id="run-status" class="hint"></span>
+      </div>
+    </div>
+
+    <!-- ════════════════ Step 3: Live Progress ════════════════ -->
+    <div id="progress-card" class="card hidden">
+      <h2><span class="icon">4</span> Analysis Progress</h2>
+      <div class="summary-bar">
+        <div class="chip total" id="progress-total">Analyzed: 0 / 0</div>
+        <div class="chip flaky" id="progress-flaky">Flaky: 0</div>
+        <div class="chip breakage" id="progress-breakage">Real: 0</div>
+        <div class="chip pending" id="progress-pending">Pending: 0</div>
+      </div>
+      <div class="progress-container">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar" style="width: 0%"></div></div>
+        <div class="progress-label" id="progress-label">Waiting...</div>
+      </div>
+      <div class="log-box" id="log-box"></div>
+    </div>
+
+    <!-- ════════════════ Step 4: Results ════════════════ -->
+    <div id="results-card" class="card hidden">
+      <h2><span class="icon">5</span> Results</h2>
+
+      <div class="summary-bar" id="final-summary"></div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="all">All</button>
+        <button class="tab-btn" data-tab="breakage">Real Breakage</button>
+        <button class="tab-btn" data-tab="flaky">Flaky</button>
+        <button class="tab-btn" data-tab="pending">Pending</button>
+      </div>
+
+      <div class="filter-row" id="owner-filter-row"></div>
+
+      <div style="overflow-x:auto;">
+        <table class="results-table" id="results-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Entity / Method</th>
+              <th>Module</th>
+              <th>Owner</th>
+              <th>Original Error</th>
+              <th>AI Status</th>
+              <th>Root Cause</th>
+              <th>Runs</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+
+      <div class="actions" style="margin-top:20px;">
+        <button class="btn btn-secondary" id="view-report-btn">View Full Report</button>
+        <button class="btn btn-secondary" id="download-manifest-btn">Download Manifest JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── State ──
+    let selectedProject = null;
+    let uploadedTests = [];
+    let currentRunId = null;
+    let analysisCounters = { done: 0, total: 0, flaky: 0, breakage: 0, pending: 0 };
+    let allTests = [];
+    let activeFilter = 'all';
+    let activeOwner = null;
+
+    // ── Elements ──
+    const $  = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    const projectCard = $('#project-card');
+    const projectGrid = $('#project-grid');
+    const projectBar  = $('#active-project-bar');
+    const uploadCard  = $('#upload-card');
+    const uploadZone  = $('#upload-zone');
+    const fileInput   = $('#file-input');
+    const fileName    = $('#file-name');
+    const uploadBtn   = $('#upload-btn');
+    const uploadStatus = $('#upload-status');
+    const summaryCard = $('#summary-card');
+    const progressCard = $('#progress-card');
+    const resultsCard = $('#results-card');
+    const logBox      = $('#log-box');
+    const runBtn      = $('#run-btn');
+    const stopBtn     = $('#stop-btn');
+    const runStatus   = $('#run-status');
+    const cloneBtn    = $('#clone-btn');
+    const cloneLogBox = $('#clone-log-box');
+    const cloneStatus = $('#clone-status');
+
+    // ── Project query helper ──
+    function pq(base) {
+      return selectedProject ? `${base}${base.includes('?') ? '&' : '?'}project_name=${encodeURIComponent(selectedProject)}` : base;
+    }
+
+    // ══════════════════════════════════════════════
+    //  Step 0 — Project selection
+    // ══════════════════════════════════════════════
+
+    async function loadProjects() {
+      projectGrid.innerHTML = '<div style="color:var(--text-dim);">Loading projects...</div>';
+      try {
+        const res = await fetch('/api/breakage/projects');
+        const data = await res.json();
+        projectGrid.innerHTML = '';
+
+        if (data.projects.length === 0) {
+          projectGrid.innerHTML = '<div style="color:var(--text-dim);">No projects found. Clone a branch below.</div>';
+          return;
+        }
+
+        for (const p of data.projects) {
+          const card = document.createElement('div');
+          card.className = 'project-card';
+          card.dataset.name = p.name;
+
+          const tags = [];
+          if (p.has_src)  tags.push('<span class="tag tag-ok">src</span>');
+          else            tags.push('<span class="tag tag-warn">no src</span>');
+          if (p.has_bin)  tags.push('<span class="tag tag-ok">bin</span>');
+          else            tags.push('<span class="tag tag-warn">no bin</span>');
+          if (p.has_manifest) tags.push('<span class="tag tag-default">manifest</span>');
+          if (p.is_default)   tags.push('<span class="tag tag-ok">default</span>');
+
+          card.innerHTML = `
+            <div style="font-weight:600;font-size:13px;margin-bottom:4px;word-break:break-all;">${escapeHtml(p.name)}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;">${tags.join('')}</div>
+          `;
+          card.addEventListener('click', () => selectProject(p.name));
+          projectGrid.appendChild(card);
+        }
+      } catch (e) {
+        projectGrid.innerHTML = `<div style="color:var(--red);">Failed to load projects: ${escapeHtml(e.message)}</div>`;
+      }
+    }
+
+    function selectProject(name) {
+      selectedProject = name;
+
+      // Highlight selected card
+      $$('.project-card').forEach(c => c.classList.toggle('selected', c.dataset.name === name));
+
+      // Show project bar & reveal upload step
+      $('#active-project-name').textContent = name;
+      projectBar.classList.remove('hidden');
+      projectCard.classList.add('hidden');
+      uploadCard.classList.remove('hidden');
+
+      // Reset downstream steps
+      summaryCard.classList.add('hidden');
+      progressCard.classList.add('hidden');
+      resultsCard.classList.add('hidden');
+      uploadedTests = [];
+      allTests = [];
+
+      // Check for existing manifest for this project
+      checkExistingManifest();
+    }
+
+    // Change project button
+    $('#change-project-btn').addEventListener('click', () => {
+      selectedProject = null;
+      projectBar.classList.add('hidden');
+      projectCard.classList.remove('hidden');
+      uploadCard.classList.add('hidden');
+      summaryCard.classList.add('hidden');
+      progressCard.classList.add('hidden');
+      resultsCard.classList.add('hidden');
+      loadProjects();
+    });
+
+    // ── Clone flow ──
+    cloneBtn.addEventListener('click', async () => {
+      const branch   = $('#clone-branch').value.trim();
+      const username = $('#clone-username').value.trim();
+      const password = $('#clone-password').value;
+
+      if (!branch || !username || !password) {
+        cloneStatus.textContent = 'All fields are required';
+        cloneStatus.style.color = 'var(--red)';
+        return;
+      }
+
+      cloneBtn.disabled = true;
+      cloneStatus.textContent = 'Starting clone...';
+      cloneStatus.style.color = 'var(--text-dim)';
+      cloneLogBox.innerHTML = '';
+      cloneLogBox.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/breakage/clone', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ branch, hg_username: username, hg_password: password }),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'Clone request failed');
+        }
+        const data = await res.json();
+        const cloneId = data.clone_id;
+
+        // Stream clone progress
+        const src = new EventSource(`/api/breakage/clone/stream/${cloneId}`);
+        src.onmessage = (event) => {
+          const payload = JSON.parse(event.data);
+          if (payload.type === 'log') {
+            const line = document.createElement('div');
+            line.className = 'log-line ' + (payload.level || 'info');
+            line.textContent = payload.data;
+            cloneLogBox.appendChild(line);
+            cloneLogBox.scrollTop = cloneLogBox.scrollHeight;
+          } else if (payload.type === 'done') {
+            src.close();
+            if (payload.data && payload.data.success) {
+              cloneStatus.textContent = 'Clone complete!';
+              cloneStatus.style.color = 'var(--green)';
+              const projName = payload.data.project_name;
+              // Refresh project list and auto-select
+              loadProjects().then(() => {
+                setTimeout(() => selectProject(projName), 300);
+              });
+            } else {
+              cloneStatus.textContent = 'Clone failed: ' + (payload.data?.error || 'unknown error');
+              cloneStatus.style.color = 'var(--red)';
+            }
+            cloneBtn.disabled = false;
+          }
+        };
+        src.onerror = () => {
+          cloneStatus.textContent = 'Connection lost during clone';
+          cloneStatus.style.color = 'var(--red)';
+          cloneBtn.disabled = false;
+          src.close();
+        };
+      } catch (e) {
+        cloneStatus.textContent = e.message;
+        cloneStatus.style.color = 'var(--red)';
+        cloneBtn.disabled = false;
+      }
+    });
+
+    // ══════════════════════════════════════════════
+    //  Step 1 — Upload
+    // ══════════════════════════════════════════════
+
+    uploadZone.addEventListener('click', () => fileInput.click());
+    uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+    uploadZone.addEventListener('drop', e => {
+      e.preventDefault();
+      uploadZone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        onFileSelected();
+      }
+    });
+    fileInput.addEventListener('change', onFileSelected);
+
+    function onFileSelected() {
+      const f = fileInput.files[0];
+      if (!f) return;
+      fileName.textContent = f.name;
+      fileName.classList.remove('hidden');
+      uploadBtn.disabled = false;
+    }
+
+    uploadBtn.addEventListener('click', async () => {
+      const f = fileInput.files[0];
+      if (!f) return;
+      uploadBtn.disabled = true;
+      uploadStatus.textContent = 'Uploading & parsing...';
+
+      const formData = new FormData();
+      formData.append('file', f);
+      if (selectedProject) formData.append('project_name', selectedProject);
+
+      try {
+        const res = await fetch('/api/breakage/upload', { method: 'POST', body: formData });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'Upload failed');
+        }
+        const data = await res.json();
+        uploadedTests = data.tests;
+        showParsedSummary(data);
+        let statusMsg = `Parsed ${data.total_failures} failures`;
+        if (data.build_url) {
+          statusMsg += ` | Build: ${data.build_url}`;
+        }
+        uploadStatus.textContent = statusMsg;
+        uploadStatus.style.color = 'var(--green)';
+      } catch (e) {
+        uploadStatus.textContent = e.message;
+        uploadStatus.style.color = 'var(--red)';
+        uploadBtn.disabled = false;
+      }
+    });
+
+    function showParsedSummary(data) {
+      summaryCard.classList.remove('hidden');
+      $('#chip-total').textContent = `Total: ${data.total_failures}`;
+      $('#chip-modules').textContent = `Modules: ${Object.keys(data.by_module).length}`;
+      $('#chip-owners').textContent = `Owners: ${Object.keys(data.by_owner).length}`;
+
+      const ownerGrid = $('#owner-grid');
+      ownerGrid.innerHTML = '';
+      const owners = Object.entries(data.by_owner).sort((a, b) => b[1] - a[1]);
+      for (const [owner, count] of owners) {
+        const card = document.createElement('div');
+        card.className = 'owner-card';
+        card.innerHTML = `<span>${owner}</span><span class="count">${count}</span>`;
+        ownerGrid.appendChild(card);
+      }
+    }
+
+    // ══════════════════════════════════════════════
+    //  Step 2 — Run Analysis
+    // ══════════════════════════════════════════════
+
+    runBtn.addEventListener('click', async () => {
+      const retries = parseInt($('#retries-input').value) || 3;
+      runBtn.disabled = true;
+      runStatus.textContent = 'Starting...';
+
+      try {
+        const res = await fetch(pq(`/api/breakage/run?retries=${retries}`), { method: 'POST' });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'Failed to start');
+        }
+        const data = await res.json();
+        currentRunId = data.run_id;
+        runStatus.textContent = `Run started (${currentRunId})`;
+        runStatus.style.color = 'var(--green)';
+        stopBtn.classList.remove('hidden');
+
+        analysisCounters = { done: 0, total: uploadedTests.length, flaky: 0, breakage: 0, pending: uploadedTests.length };
+        allTests = uploadedTests.map(t => ({ ...t, ai_status: t.ai_status || 'PENDING' }));
+
+        showProgress();
+        startSSE(currentRunId);
+      } catch (e) {
+        runStatus.textContent = e.message;
+        runStatus.style.color = 'var(--red)';
+        runBtn.disabled = false;
+      }
+    });
+
+    stopBtn.addEventListener('click', async () => {
+      if (!currentRunId) return;
+      await fetch(`/api/breakage/stop/${currentRunId}`, { method: 'POST' });
+      stopBtn.classList.add('hidden');
+      runStatus.textContent = 'Stopping...';
+    });
+
+    function showProgress() {
+      progressCard.classList.remove('hidden');
+      updateProgressUI();
+    }
+
+    function updateProgressUI() {
+      const c = analysisCounters;
+      $('#progress-total').textContent = `Analyzed: ${c.done} / ${c.total}`;
+      $('#progress-flaky').textContent = `Flaky: ${c.flaky}`;
+      $('#progress-breakage').textContent = `Real: ${c.breakage}`;
+      $('#progress-pending').textContent = `Pending: ${c.pending}`;
+
+      const pct = c.total > 0 ? Math.round((c.done / c.total) * 100) : 0;
+      $('#progress-bar').style.width = pct + '%';
+      $('#progress-label').textContent = `${pct}% complete — ${c.done} of ${c.total} tests analyzed`;
+    }
+
+    function addLog(msg, level = 'info') {
+      const line = document.createElement('div');
+      line.className = 'log-line ' + level;
+      const ts = new Date().toLocaleTimeString();
+      line.textContent = `[${ts}] ${msg}`;
+      logBox.appendChild(line);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    // ══════════════════════════════════════════════
+    //  SSE Streaming
+    // ══════════════════════════════════════════════
+
+    function startSSE(runId) {
+      const src = new EventSource(`/api/breakage/stream/${runId}`);
+      const seen = new Set();
+
+      src.onmessage = (event) => {
+        const payload = JSON.parse(event.data);
+        const key = event.data;
+
+        if (seen.has(key)) return;
+        seen.add(key);
+
+        if (payload.type === 'log') {
+          addLog(payload.data, payload.level);
+        } else if (payload.type === 'test_update') {
+          handleTestUpdate(payload.data);
+        } else if (payload.type === 'done') {
+          handleDone(payload.data);
+          src.close();
+        }
+      };
+
+      src.onerror = () => {
+        addLog('SSE connection lost — retrying...', 'warn');
+      };
+    }
+
+    function handleTestUpdate(data) {
+      const { index, total, test, phase } = data;
+      analysisCounters.total = total;
+
+      if (phase === 'done') {
+        if (index < allTests.length) {
+          allTests[index] = test;
+        }
+        let flaky = 0, breakage = 0, pending = 0, done = 0;
+        for (const t of allTests) {
+          if (t.ai_status === 'FLAKY') { flaky++; done++; }
+          else if (t.ai_status === 'REAL_BREAKAGE') { breakage++; done++; }
+          else { pending++; }
+        }
+        analysisCounters = { done, total, flaky, breakage, pending };
+      } else if (phase === 'running') {
+        $('#progress-label').textContent = `Running: ${test.entity_class}.${test.method_name}`;
+      }
+
+      updateProgressUI();
+    }
+
+    function handleDone(data) {
+      stopBtn.classList.add('hidden');
+      runBtn.disabled = false;
+
+      if (data.success) {
+        runStatus.textContent = 'Analysis complete!';
+        runStatus.style.color = 'var(--green)';
+        addLog(`Done — Flaky: ${data.flaky}, Real Breakage: ${data.real_breakage}`, 'success');
+        analysisCounters = {
+          done: data.total - (data.pending || 0),
+          total: data.total,
+          flaky: data.flaky,
+          breakage: data.real_breakage,
+          pending: data.pending || 0,
+        };
+        updateProgressUI();
+      } else {
+        runStatus.textContent = 'Analysis failed: ' + data.error;
+        runStatus.style.color = 'var(--red)';
+        addLog('Analysis failed: ' + data.error, 'error');
+      }
+
+      loadResults();
+    }
+
+    // ══════════════════════════════════════════════
+    //  Results Table
+    // ══════════════════════════════════════════════
+
+    async function loadResults() {
+      try {
+        const res = await fetch(pq('/api/breakage/manifest'));
+        if (!res.ok) return;
+        const data = await res.json();
+        allTests = data.tests;
+        showResults();
+      } catch (e) {
+        console.error('Failed to load results:', e);
+      }
+    }
+
+    function showResults() {
+      resultsCard.classList.remove('hidden');
+
+      let flaky = 0, breakage = 0, pending = 0;
+      const owners = new Set();
+      for (const t of allTests) {
+        if (t.ai_status === 'FLAKY') flaky++;
+        else if (t.ai_status === 'REAL_BREAKAGE') breakage++;
+        else pending++;
+        owners.add(t.owner);
+      }
+
+      const fsBar = $('#final-summary');
+      fsBar.innerHTML = `
+        <div class="chip total">Total: ${allTests.length}</div>
+        <div class="chip flaky">Flaky: ${flaky}</div>
+        <div class="chip breakage">Real Breakage: ${breakage}</div>
+        ${pending > 0 ? `<div class="chip pending">Pending: ${pending}</div>` : ''}
+      `;
+
+      const filterRow = $('#owner-filter-row');
+      filterRow.innerHTML = '<button class="filter-btn active" data-owner="all">All Owners</button>';
+      for (const owner of [...owners].sort()) {
+        filterRow.innerHTML += `<button class="filter-btn" data-owner="${escapeHtml(owner)}">${escapeHtml(owner)}</button>`;
+      }
+      filterRow.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterRow.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeOwner = btn.dataset.owner === 'all' ? null : btn.dataset.owner;
+          renderTable();
+        });
+      });
+
+      $$('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          $$('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.dataset.tab;
+          renderTable();
+        });
+      });
+
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = $('#results-body');
+      tbody.innerHTML = '';
+
+      let filtered = allTests;
+      if (activeFilter === 'breakage') filtered = filtered.filter(t => t.ai_status === 'REAL_BREAKAGE');
+      else if (activeFilter === 'flaky') filtered = filtered.filter(t => t.ai_status === 'FLAKY');
+      else if (activeFilter === 'pending') filtered = filtered.filter(t => t.ai_status === 'PENDING');
+      if (activeOwner) filtered = filtered.filter(t => t.owner === activeOwner);
+
+      for (let i = 0; i < filtered.length; i++) {
+        const t = filtered[i];
+        const aiClass = t.ai_status === 'FLAKY' ? 'badge-flaky'
+                      : t.ai_status === 'REAL_BREAKAGE' ? 'badge-breakage'
+                      : t.ai_status === 'PENDING' ? 'badge-pending' : 'badge-running';
+
+        let runsHtml = '—';
+        if (t.ai_runs && t.ai_runs.length > 0) {
+          runsHtml = t.ai_runs.map(r => {
+            const cls = r.status === 'PASS' ? 'badge-pass' : r.status === 'SKIPPED' ? 'badge-skipped' : 'badge-fail';
+            return `<span class="badge ${cls}">${r.status}</span>`;
+          }).join(' ');
+        }
+
+        // Root cause badge
+        let rcHtml = '—';
+        if (t.diagnosis && t.diagnosis.root_cause) {
+          const rc = t.diagnosis.root_cause;
+          const rcConf = t.diagnosis.confidence || '';
+          const rcSummary = escapeHtml(t.diagnosis.summary || '');
+          const rcBadgeClass = rc === 'AUTOMATION_BUG' ? 'badge-auto-bug'
+                             : rc === 'PRODUCT_BUG' ? 'badge-prod-bug'
+                             : rc === 'ENVIRONMENT' ? 'badge-env-issue'
+                             : 'badge-undetermined';
+          const rcLabel = rc.replace('_', ' ');
+          rcHtml = `<span class="badge ${rcBadgeClass}" title="${rcSummary}">${rcLabel}</span>`;
+          if (rcConf) rcHtml += `<br><span style="font-size:0.65rem;color:var(--text-dim)">${rcConf}</span>`;
+        }
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${t.index || (i + 1)}</td>
+          <td><strong>${escapeHtml(t.entity_class)}</strong><br><span style="color:var(--text-dim)">${escapeHtml(t.method_name)}</span></td>
+          <td>${escapeHtml(t.module)}</td>
+          <td>${escapeHtml(t.owner)}</td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeHtml(t.error_category || '')}">${escapeHtml(t.error_category || '—')}</td>
+          <td><span class="badge ${aiClass}">${t.ai_status || 'PENDING'}</span></td>
+          <td>${rcHtml}</td>
+          <td>${runsHtml}</td>
+        `;
+        tbody.appendChild(row);
+      }
+    }
+
+    // ── Report / Download buttons ──
+    $('#view-report-btn').addEventListener('click', () => {
+      window.open(pq('/api/breakage/report'), '_blank');
+    });
+
+    $('#download-manifest-btn').addEventListener('click', async () => {
+      try {
+        const res = await fetch(pq('/api/breakage/manifest'));
+        const data = await res.json();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `breakage_rerun_${selectedProject || 'default'}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        alert('Failed to download manifest');
+      }
+    });
+
+    // ── Check for existing manifest for selected project ──
+    async function checkExistingManifest() {
+      try {
+        const res = await fetch(pq('/api/breakage/manifest'));
+        if (res.ok) {
+          const data = await res.json();
+          if (data.tests && data.tests.length > 0) {
+            allTests = data.tests;
+            uploadedTests = data.tests;
+            const byOwner = {};
+            const byModule = {};
+            for (const t of allTests) {
+              byOwner[t.owner] = (byOwner[t.owner] || 0) + 1;
+              byModule[t.module] = (byModule[t.module] || 0) + 1;
+            }
+            showParsedSummary({
+              total_failures: allTests.length,
+              by_owner: byOwner,
+              by_module: byModule,
+              tests: allTests,
+            });
+            if (allTests.some(t => t.ai_status && t.ai_status !== 'PENDING')) {
+              showResults();
+            }
+          }
+        }
+      } catch (e) { /* no manifest yet */ }
+    }
+
+    // ── Helpers ──
+    function escapeHtml(str) {
+      if (!str) return '';
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    // ── Init ──
+    loadProjects();
+  </script>
+</body>
+</html>

@@ -280,6 +280,7 @@ class RunnerAgent:
         skip_compile: bool = False,
         password: Optional[str] = None,
         skip_cleanup: bool = False,
+        test_user_emails: Optional[str] = None,
     ) -> RunResult:
         """
         Patch, compile (optional), and execute a single test method.
@@ -323,7 +324,7 @@ class RunnerAgent:
                 self._patch_standalone_default(url, email_id, portal_name, admin_mail_id, password)
 
                 # 2b. Patch test user emails in AutomaterSeleniumMain.java (if configured)
-                self._patch_test_user_emails(_DEFAULT_SDP_TEST_USER_EMAILS)
+                self._patch_test_user_emails(test_user_emails or _DEFAULT_SDP_TEST_USER_EMAILS)
 
                 # 3. Full project compile (optional)
                 if not skip_compile:

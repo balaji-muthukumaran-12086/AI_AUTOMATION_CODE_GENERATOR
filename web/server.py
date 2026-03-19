@@ -109,6 +109,10 @@ app.add_middleware(
 from web.setup_api import router as setup_router
 app.include_router(setup_router)
 
+# ── Breakage Analyzer API ─────────────────────────────────────────────────────
+from web.breakage_api import router as breakage_router
+app.include_router(breakage_router)
+
 # Serve static files (index.html etc.) from web/static/
 static_dir = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
@@ -353,6 +357,13 @@ async def serve_index():
 async def serve_setup():
     """Serve the project setup form (no LLM — pure HTML form)."""
     html_path = Path(__file__).parent / "static" / "setup.html"
+    return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
+
+
+@app.get("/breakage", response_class=HTMLResponse)
+async def serve_breakage():
+    """Serve the breakage analyzer UI."""
+    html_path = Path(__file__).parent / "static" / "breakage.html"
     return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
 
 
