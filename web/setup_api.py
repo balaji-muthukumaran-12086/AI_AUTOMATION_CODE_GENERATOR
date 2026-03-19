@@ -479,6 +479,45 @@ def _execute_setup(setup_id: str, req: SetupRequest):
         else:
             _log(setup_id, "Framework compiled successfully", "success")
 
+        # ── Step 7b: Compile ALL module source files into bin/ ───────────
+        _log(setup_id, "Compiling module classes...", "info")
+        try:
+            project_root = WORKSPACE_DIR / project_name
+            src_dir = project_root / "src"
+            bin_dir = project_root / "bin"
+            deps_path = Path(req.deps_path)
+            java_files = list(src_dir.rglob("*.java"))
+            _log(setup_id, f"Found {len(java_files)} source files to compile", "info")
+
+            if java_files:
+                cp_parts = [str(bin_dir)]
+                for jar in deps_path.rglob("*.jar"):
+                    cp_parts.append(str(jar))
+                classpath = ":".join(cp_parts)
+
+                import tempfile
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as tf:
+                    for jf in java_files:
+                        tf.write(str(jf) + "\n")
+                    argfile = tf.name
+
+                proc = subprocess.run(
+                    ["javac", "-encoding", "UTF-8", "-cp", classpath, "-d", str(bin_dir), f"@{argfile}"],
+                    capture_output=True, text=True, cwd=str(WORKSPACE_DIR), timeout=300,
+                )
+                os.unlink(argfile)
+
+                if proc.returncode == 0:
+                    class_count = sum(1 for _ in bin_dir.rglob("*.class"))
+                    _log(setup_id, f"Module compilation successful — {class_count} classes in bin/", "success")
+                else:
+                    error_lines = [l for l in proc.stderr.splitlines() if ": error:" in l]
+                    _log(setup_id, f"Module compilation had {len(error_lines)} errors (some tests may still work)", "warn")
+                    for line in proc.stderr.strip().splitlines()[-5:]:
+                        _log(setup_id, line, "warn")
+        except Exception as e:
+            _log(setup_id, f"Module compilation failed: {e}", "warn")
+
         # ── Step 8: VS Code settings ─────────────────────────────────────
         _log(setup_id, "Configuring VS Code Java classpath...", "info")
         vscode_dir = WORKSPACE_DIR / ".vscode"

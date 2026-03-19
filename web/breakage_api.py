@@ -289,6 +289,47 @@ def _execute_clone(clone_id: str, branch: str, hg_user: str, hg_pass: str, proje
         except Exception as e:
             _log(clone_id, f"Framework compilation failed: {e}", "warn", store)
 
+        # Compile ALL module source files into bin/ (required for test execution)
+        _log(clone_id, "Compiling module classes...", "info", store)
+        try:
+            project_root = WORKSPACE_DIR / project_name
+            src_dir = project_root / "src"
+            bin_dir = project_root / "bin"
+            java_files = list(src_dir.rglob("*.java"))
+            _log(clone_id, f"Found {len(java_files)} source files to compile", "info", store)
+
+            if java_files:
+                # Build classpath: bin/ + all JARs
+                cp_parts = [str(bin_dir)]
+                for jar in DEPS_DIR.rglob("*.jar"):
+                    cp_parts.append(str(jar))
+                classpath = ":".join(cp_parts)
+
+                # Write file list to temp file for javac @argfile
+                import tempfile
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as tf:
+                    for jf in java_files:
+                        tf.write(str(jf) + "\n")
+                    argfile = tf.name
+
+                proc = subprocess.run(
+                    ["javac", "-encoding", "UTF-8", "-cp", classpath, "-d", str(bin_dir), f"@{argfile}"],
+                    capture_output=True, text=True, cwd=str(WORKSPACE_DIR), timeout=300,
+                )
+                os.unlink(argfile)
+
+                if proc.returncode == 0:
+                    class_count = sum(1 for _ in bin_dir.rglob("*.class"))
+                    _log(clone_id, f"Module compilation successful — {class_count} classes in bin/", "success", store)
+                else:
+                    # Count errors vs warnings
+                    error_lines = [l for l in proc.stderr.splitlines() if ": error:" in l]
+                    _log(clone_id, f"Module compilation had {len(error_lines)} errors (some tests may still work)", "warn", store)
+                    for line in proc.stderr.strip().splitlines()[-5:]:
+                        _log(clone_id, line, "warn", store)
+        except Exception as e:
+            _log(clone_id, f"Module compilation failed: {e}", "warn", store)
+
         # Add to .gitignore if not there
         gitignore_path = WORKSPACE_DIR / ".gitignore"
         entry = f"{project_name}/"
