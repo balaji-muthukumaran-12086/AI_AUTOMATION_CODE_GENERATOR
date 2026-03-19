@@ -862,6 +862,10 @@ for i, t in enumerate(filtered, 1):
 > the `.env` / `project_config.py` values (`$SDP_*`). This ensures tests run against the same
 > build with the same account that originally failed.
 >
+> **FORBIDDEN**: Using `SDP_URL`, `SDP_ADMIN_EMAIL`, or any `project_config.py` import in
+> `RUN_CONFIG` for breakage tests. `.env` may point to a completely different branch/URL.
+> Always paste the `$BREAKAGE_*` values as **string literals** into `RUN_CONFIG`.
+>
 > **Credential priority**: `$BREAKAGE_SDP_URL` overrides `$SDP_URL`, `$BREAKAGE_ADMIN_EMAIL`
 > overrides `$SDP_EMAIL`, `$BREAKAGE_PASS` overrides `$SDP_PASS`.
 
@@ -874,6 +878,23 @@ For test `[N/total]` from the filtered breakage list:
    `$BREAKAGE_EMAIL_ID` as `email_id`, `$BREAKAGE_PORTAL` as `portal_name`,
    and `$BREAKAGE_PASS` as `password`. These come from the manifest credentials,
    NOT from `.env` / `project_config.py`.
+
+   **CRITICAL**: Write the credential values as **string literals** in `RUN_CONFIG`, never as
+   `SDP_URL` / `SDP_ADMIN_EMAIL` Python variable references (those resolve from `.env` which
+   may belong to a different branch/URL):
+   ```python
+   RUN_CONFIG = {
+       "entity_class":  "<EntityClass>",
+       "method_name":   "<methodName>",
+       "url":           "<$BREAKAGE_SDP_URL value>",        # string literal, NOT SDP_URL
+       "admin_mail_id": "<$BREAKAGE_ADMIN_EMAIL value>",    # string literal, NOT SDP_ADMIN_EMAIL
+       "email_id":      "<$BREAKAGE_EMAIL_ID value>",       # string literal, NOT SDP_EMAIL_ID
+       "portal_name":   "<$BREAKAGE_PORTAL value>",         # string literal, NOT SDP_PORTAL
+       "password":      "<$BREAKAGE_PASS value>",           # string literal, NOT SDP_ADMIN_PASS
+       "skip_compile":  True,
+       "skip_cleanup":  False,
+   }
+   ```
 2. **Run** `.venv/bin/python run_test.py 2>&1`
 3. **Parse** result using ScenarioReport.html as sole authority
 4. **On PASS** → update the test entry:

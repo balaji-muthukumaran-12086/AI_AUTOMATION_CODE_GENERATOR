@@ -43,17 +43,28 @@ from config.project_config import (
 )
 from root_cause_analyzer import diagnose_failure as _diagnose_failure
 
-# ── Hardcoded credentials (common across all automation builds) ───────────────
-SDP_ADMIN_EMAIL = "jaya.kumar+org1admin1t0@zohotest.com"
-SDP_EMAIL_ID = "jaya.kumar+org1user1t0@zohotest.com"
-SDP_PORTAL = "portal1"
-SDP_ADMIN_PASS = "Zoho@135"
-SDP_TEST_USER_EMAILS = (
+# ── SDP credentials for breakage — HARDCODED, NEVER from .env ──────────────────
+# .env may belong to a different branch/URL/project. Breakage always uses its own
+# fixed credentials below. The build_url comes from the Aalam HTML report
+# (stored in breakage_rerun.json).
+_BREAKAGE_ADMIN_EMAIL = "jaya.kumar+org1admin1t0@zohotest.com"
+_BREAKAGE_EMAIL_ID = "jaya.kumar+org1user1t0@zohotest.com"
+_BREAKAGE_PORTAL = "portal1"
+_BREAKAGE_PASS = "Zoho@135"
+_BREAKAGE_TEST_USER_EMAILS = (
     "jaya.kumar+uorg1user2@zohotest.com,"
     "jaya.kumar+uorg1user3@zohotest.com,"
     "jaya.kumar+uorg1user4@zohotest.com,"
     "jaya.kumar+uorg1user5@zohotest.com"
 )
+
+BREAKAGE_CREDENTIALS = {
+    "admin_email": _BREAKAGE_ADMIN_EMAIL,
+    "email_id": _BREAKAGE_EMAIL_ID,
+    "portal": _BREAKAGE_PORTAL,
+    "password": _BREAKAGE_PASS,
+    "test_user_emails": _BREAKAGE_TEST_USER_EMAILS,
+}
 
 UPLOAD_DIR = BASE_DIR / "web" / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -575,7 +586,7 @@ def _execute_analysis(run_id: str, retries: int, project_name: str):
         _log(run_id, f"Project: {project_name}")
 
         try:
-            _run_analysis_loop(run_id, tests, total, retries, runner, stop_event, paths, sdp_url)
+            _run_analysis_loop(run_id, tests, total, retries, runner, stop_event, paths, sdp_url, BREAKAGE_CREDENTIALS)
         finally:
             # Restore original entity map
             if project_name != DEFAULT_PROJECT_NAME:
@@ -640,8 +651,12 @@ def _execute_analysis(run_id: str, retries: int, project_name: str):
     state["done"] = True
 
 
-def _run_analysis_loop(run_id, tests, total, retries, runner, stop_event, paths, sdp_url):
-    """Core rerun loop — extracted for clean try/finally in caller."""
+def _run_analysis_loop(run_id, tests, total, retries, runner, stop_event, paths, sdp_url, creds):
+    """Core rerun loop — extracted for clean try/finally in caller.
+
+    Args:
+        creds: Hardcoded breakage credentials dict (never from .env).
+    """
     for i, test in enumerate(tests):
         if stop_event.is_set():
             _log(run_id, "Analysis stopped by user", "warn")
@@ -680,13 +695,13 @@ def _run_analysis_loop(run_id, tests, total, retries, runner, stop_event, paths,
                     entity_class=entity,
                     method_name=method,
                     url=sdp_url,
-                    admin_mail_id=SDP_ADMIN_EMAIL,
-                    email_id=SDP_EMAIL_ID,
-                    portal_name=SDP_PORTAL,
+                    admin_mail_id=creds["admin_email"],
+                    email_id=creds["email_id"],
+                    portal_name=creds["portal"],
                     skip_compile=True,
-                    password=SDP_ADMIN_PASS,
+                    password=creds["password"],
                     skip_cleanup=False,
-                    test_user_emails=SDP_TEST_USER_EMAILS,
+                    test_user_emails=creds["test_user_emails"],
                 )
                 duration = time.time() - start_time
 
@@ -759,9 +774,9 @@ def _run_analysis_loop(run_id, tests, total, retries, runner, stop_event, paths,
                     reports_dir=str(paths["reports"]),
                     src_dir=str(paths["src"]),
                     sdp_url=sdp_url,
-                    admin_email=SDP_ADMIN_EMAIL,
-                    admin_pass=SDP_ADMIN_PASS,
-                    portal=SDP_PORTAL,
+                    admin_email=creds["admin_email"],
+                    admin_pass=creds["password"],
+                    portal=creds["portal"],
                     verify=False,
                 )
                 test["diagnosis"] = diag.to_dict()
