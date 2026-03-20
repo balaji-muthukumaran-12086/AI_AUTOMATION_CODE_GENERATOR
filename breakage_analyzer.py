@@ -951,13 +951,20 @@ def _build_real_breakage_section(tests: List[Dict]) -> str:
         else:
             rc_badge = "—"
 
+        # Build evidence tooltip
+        evidence_items = diag.get("evidence", [])
+        evidence_html = ""
+        if evidence_items:
+            evi_lines = "<br>".join(f"• {e[:150]}" for e in evidence_items[:6])
+            evidence_html = f'<div style="font-size:0.62rem;color:#475569;margin-top:4px;padding:4px;background:#F1F5F9;border-radius:3px;max-width:400px;word-break:break-word">{evi_lines}</div>'
+
         rows.append(f"""<tr class="row-breakage">
   <td class="mono" style="text-align:left">{t.get('method_name', '')}</td>
   <td class="mono" style="text-align:left">{t.get('entity_class', '')}</td>
   <td><b>{t.get('module', '')}</b></td>
   <td>{t.get('owner', '')}</td>
   <td><span class="badge b-cat">{t.get('error_category', '')}</span></td>
-  <td>{rc_badge}<br><span style="font-size:0.64rem;color:#64748B">{rc_summary[:120]}</span></td>
+  <td>{rc_badge}<br><span style="font-size:0.64rem;color:#64748B">{rc_summary[:120]}</span>{evidence_html}</td>
   <td style="font-size:0.72rem;max-width:300px;word-break:break-word">{error_text}</td>
 </tr>""")
 

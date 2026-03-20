@@ -63,6 +63,28 @@ class ReportStep:
     step_type: str     # debug, action, rest_api, storage, step, error, user_switch, bidi
     message: str
     is_error: bool = False
+    failure_text: str = ""   # Extracted <b>Failure:</b> content
+    reason_text: str = ""    # Extracted <b>Reason:</b> content
+
+
+@dataclass
+class ScreenshotInfo:
+    src: str               # e.g. "screenshots/Failure_1773981614506.png"
+    alt: str               # action description
+    result: str            # "PASS" or "FAIL"
+    time: str = ""         # relative time e.g. "01:52"
+
+
+@dataclass
+class ReportDetails:
+    """Metadata extracted from the report's details section."""
+    scenario_id: str = ""
+    description: str = ""
+    entity_class: str = ""
+    method_name: str = ""
+    role: str = ""
+    run_type: str = ""
+    total_time: str = ""
 
 
 @dataclass
@@ -74,6 +96,10 @@ class ParsedReport:
     stages: Dict[str, List[ReportStep]]  # pre_process, scenario, post_process, clean_up
     result: str  # PASS or FAIL
     screenshots_dir: str = ""
+    screenshots: List[ScreenshotInfo] = field(default_factory=list)
+    fail_screenshots: List[ScreenshotInfo] = field(default_factory=list)
+    details: ReportDetails = field(default_factory=ReportDetails)
+    all_error_text: str = ""  # Concatenated error text from all error steps
 
 
 class ScenarioReportParser(HTMLParser):
@@ -95,6 +121,28 @@ class ScenarioReportParser(HTMLParser):
         self._step_index = 0
         self._result = "FAIL"
 
+        # Screenshot parsing state
+        self._screenshots: List[ScreenshotInfo] = []
+
+        # Details section parsing state
+        self._details = ReportDetails()
+        self._in_detail_label = False
+        self._in_detail_value = False
+        self._current_label = ""
+        self._current_value = ""
+        self._in_title_div = False
+        self._in_description_div = False
+
+        # Rich error parsing state: track <b> tags inside error messages
+        self._in_bold = False
+        self._bold_text = ""
+        self._current_failure_text = ""
+        self._current_reason_text = ""
+        self._after_failure_tag = False
+        self._after_reason_tag = False
+        self._step_index = 0
+        self._result = "FAIL"
+
     def handle_starttag(self, tag, attrs):
         attr_dict = dict(attrs)
         cls = attr_dict.get("class", "")
@@ -105,6 +153,40 @@ class ScenarioReportParser(HTMLParser):
                 self._result = "PASS"
             elif "FAIL" in cls:
                 self._result = "FAIL"
+
+        # Detect scenario total time from data-totaltime
+        if tag == "div" and "scenario-result" in cls:
+            total_time = attr_dict.get("data-totaltime", "")
+            if total_time:
+                self._details.total_time = total_time
+
+        # Title div
+        if tag == "div" and cls == "title":
+            self._in_title_div = True
+            self._current_text = ""
+
+        # Description div (inside scenario-details or short-info)
+        if tag == "div" and cls == "description":
+            self._in_description_div = True
+            self._current_text = ""
+
+        # Detail labels/values inside scenario-details
+        if tag == "span" and cls == "label":
+            self._in_detail_label = True
+            self._current_label = ""
+        if tag == "span" and ("value" in cls.split()):
+            self._in_detail_value = True
+            self._current_value = ""
+
+        # Screenshot <img> tags
+        if tag == "img" and attr_dict.get("src", "").startswith("screenshots/"):
+            screenshot = ScreenshotInfo(
+                src=attr_dict.get("src", ""),
+                alt=attr_dict.get("alt", ""),
+                result=attr_dict.get("data-result", ""),
+                time=attr_dict.get("data-time", ""),
+            )
+            self._screenshots.append(screenshot)
 
         # Stage headers
         if tag == "div" and "stage header" in cls:
@@ -117,6 +199,11 @@ class ScenarioReportParser(HTMLParser):
             # Extract type from class: "error message-detail" → "error"
             parts = cls.split()
             self._current_type = parts[0] if parts else "unknown"
+            # Reset rich error state for each new step
+            self._current_failure_text = ""
+            self._current_reason_text = ""
+            self._after_failure_tag = False
+            self._after_reason_tag = False
 
         # Step message content
         if tag == "div" and "automater-step-message" in cls:
@@ -128,11 +215,63 @@ class ScenarioReportParser(HTMLParser):
             self._in_time = True
             self._current_text = ""
 
+        # Bold tags inside error messages (<b>Failure:</b>, <b>Reason:</b>)
+        if tag == "b" and self._in_message:
+            self._in_bold = True
+            self._bold_text = ""
+
+        # <br> tags in error messages act as separators
+        if tag == "br" and self._in_message:
+            self._current_text += "\n"
+
     def handle_endtag(self, tag):
+        # Bold tag end — determine if it was Failure: or Reason:
+        if tag == "b" and self._in_bold:
+            self._in_bold = False
+            text = self._bold_text.strip()
+            if "Failure" in text:
+                self._after_failure_tag = True
+                self._after_reason_tag = False
+            elif "Reason" in text:
+                self._after_reason_tag = True
+                self._after_failure_tag = False
+
+        # Detail label/value spans
+        if tag == "span":
+            if self._in_detail_label:
+                self._in_detail_label = False
+                self._current_label = self._current_label.strip()
+            if self._in_detail_value:
+                self._in_detail_value = False
+                val = self._current_value.strip()
+                label = self._current_label.lower()
+                if label == "scenario id":
+                    self._details.scenario_id = val
+                elif label == "description":
+                    self._details.description = val
+                elif label == "class":
+                    self._details.entity_class = val
+                elif label == "method":
+                    self._details.method_name = val
+                elif label == "role":
+                    self._details.role = val
+                elif label == "run type":
+                    self._details.run_type = val
+
         if tag == "div":
+            if self._in_title_div:
+                self._in_title_div = False
+            if self._in_description_div:
+                self._in_description_div = False
+
             if self._in_message:
                 self._in_message = False
                 msg = self._current_text.strip()
+
+                # Build rich error components before collapsing
+                failure_t = self._current_failure_text.strip()
+                reason_t = self._current_reason_text.strip()
+
                 msg = re.sub(r'\s+', ' ', msg)  # collapse whitespace
 
                 is_error = self._current_type == "error"
@@ -142,6 +281,8 @@ class ScenarioReportParser(HTMLParser):
                     step_type=self._current_type,
                     message=msg,
                     is_error=is_error,
+                    failure_text=re.sub(r'\s+', ' ', failure_t) if failure_t else "",
+                    reason_text=re.sub(r'\s+', ' ', reason_t) if reason_t else "",
                 )
                 self._step_index += 1
                 self._steps.append(step)
@@ -154,6 +295,10 @@ class ScenarioReportParser(HTMLParser):
                     if m:
                         self._local_storage[m.group(1)] = m.group(2)
 
+                # Reset error tracking for next step
+                self._after_failure_tag = False
+                self._after_reason_tag = False
+
             elif self._in_time:
                 self._in_time = False
                 self._current_time = self._current_text.strip()
@@ -163,12 +308,41 @@ class ScenarioReportParser(HTMLParser):
                 self._current_stage = self._current_text.strip().replace(" ", "_").lower()
 
     def handle_data(self, data):
+        if self._in_bold:
+            self._bold_text += data
         if self._in_message or self._in_time or self._in_stage_header:
             self._current_text += data
+            # Track Failure/Reason text segments
+            if self._in_message and self._current_type == "error":
+                if self._after_failure_tag and not self._after_reason_tag:
+                    self._current_failure_text += data
+                elif self._after_reason_tag:
+                    self._current_reason_text += data
+        if self._in_detail_label:
+            self._current_label += data
+        if self._in_detail_value:
+            self._current_value += data
+        if self._in_title_div and not self._details.method_name:
+            # Title is typically the method name from short-info
+            pass  # Title is redundant with details section
 
     def get_parsed_report(self) -> ParsedReport:
         errors = [s for s in self._steps if s.is_error]
         api_calls = [s for s in self._steps if s.step_type == "rest_api"]
+
+        # Build combined error text from all error steps
+        all_error_parts = []
+        for err in errors:
+            all_error_parts.append(err.message)
+            if err.failure_text:
+                all_error_parts.append(f"FAILURE: {err.failure_text}")
+            if err.reason_text:
+                all_error_parts.append(f"REASON: {err.reason_text}")
+        all_error_text = "\n".join(all_error_parts)
+
+        # Separate FAIL screenshots
+        fail_screenshots = [s for s in self._screenshots if s.result == "FAIL"]
+
         return ParsedReport(
             steps=self._steps,
             errors=errors,
@@ -176,6 +350,10 @@ class ScenarioReportParser(HTMLParser):
             api_calls=api_calls,
             stages=self._stages,
             result=self._result,
+            screenshots=self._screenshots,
+            fail_screenshots=fail_screenshots,
+            details=self._details,
+            all_error_text=all_error_text,
         )
 
 
@@ -309,6 +487,21 @@ _ERROR_PATTERNS: List[Tuple[re.Pattern, RootCause, str, str]] = [
         RootCause.AUTOMATION_BUG, "HIGH",
         "NumberFormatException — test code tries to parse non-numeric string"
     ),
+    (
+        re.compile(r"IllegalArgumentException", re.I),
+        RootCause.AUTOMATION_BUG, "MEDIUM",
+        "IllegalArgumentException — test code passed invalid argument"
+    ),
+    (
+        re.compile(r"StackOverflowError", re.I),
+        RootCause.AUTOMATION_BUG, "HIGH",
+        "StackOverflowError — infinite recursion in test code"
+    ),
+    (
+        re.compile(r"AssertionError|AssertionException", re.I),
+        RootCause.AUTOMATION_BUG, "MEDIUM",
+        "Assertion failed — test assertion did not hold"
+    ),
 
     # ── ENVIRONMENT patterns ──
     (
@@ -336,6 +529,16 @@ _ERROR_PATTERNS: List[Tuple[re.Pattern, RootCause, str, str]] = [
         RootCause.ENVIRONMENT, "HIGH",
         "Out of memory — JVM ran out of heap space"
     ),
+    (
+        re.compile(r"Firefox\s+(?:crashed|is\s+already\s+running)|geckodriver\s+(?:error|failed|crash|not\s+found|timed?\s*out)", re.I),
+        RootCause.ENVIRONMENT, "HIGH",
+        "Firefox/geckodriver issue — browser infrastructure problem"
+    ),
+    (
+        re.compile(r"InsecureCertificateException|SSL_ERROR|certificate", re.I),
+        RootCause.ENVIRONMENT, "MEDIUM",
+        "SSL certificate error — environment configuration issue"
+    ),
 
     # ── PRODUCT_BUG patterns (need context to confirm) ──
     (
@@ -352,6 +555,31 @@ _ERROR_PATTERNS: List[Tuple[re.Pattern, RootCause, str, str]] = [
         re.compile(r"status_code.*4000|EXTRA_KEY_FOUND_IN_JSON|INVALID_INPUT", re.I),
         RootCause.PRODUCT_BUG, "MEDIUM",
         "API returned error — product rejected valid-looking input"
+    ),
+    (
+        re.compile(r"(?:given|expected)\b.*(?:value|text)\b.*(?:mismatched|mismatch|not match|differ)", re.I),
+        RootCause.PRODUCT_BUG, "MEDIUM",
+        "Value mismatch — product displayed a different value than expected"
+    ),
+    (
+        re.compile(r"Internal (?:Server )?Error|500\s+Internal|HTTP\s+500", re.I),
+        RootCause.PRODUCT_BUG, "MEDIUM",
+        "Internal server error — product returned 500"
+    ),
+    (
+        re.compile(r"feature\s+(?:not\s+)?(?:enabled|available|supported|disabled)", re.I),
+        RootCause.PRODUCT_BUG, "MEDIUM",
+        "Feature availability issue — product feature state unexpected"
+    ),
+    (
+        re.compile(r"permission\s+denied|access\s+denied|unauthorized|403\s+Forbidden", re.I),
+        RootCause.PRODUCT_BUG, "MEDIUM",
+        "Permission/access denied — product rejected valid user action"
+    ),
+    (
+        re.compile(r"(?:not\s+verified|verification\s+failed|failed\s+to\s+verify|is\s+not\s+working)", re.I),
+        RootCause.PRODUCT_BUG, "MEDIUM",
+        "Test verification failed — product behavior did not match expected result"
     ),
 
     # ── AMBIGUOUS patterns (NoSuchElement can be either) ──
@@ -374,6 +602,11 @@ _ERROR_PATTERNS: List[Tuple[re.Pattern, RootCause, str, str]] = [
         re.compile(r"ElementClickInterceptedException|element click intercepted", re.I),
         RootCause.UNDETERMINED, "LOW",
         "Click intercepted — overlay or popup blocking the target element"
+    ),
+    (
+        re.compile(r"ElementNotInteractableException|element not interactable", re.I),
+        RootCause.UNDETERMINED, "LOW",
+        "Element not interactable — element exists but cannot be clicked/typed into"
     ),
 ]
 
@@ -457,27 +690,35 @@ def _analyze_scenario_stage_error(report: ParsedReport, error_msg: str) -> Optio
     if not scenario_steps:
         return None
 
-    # Count successful steps before the error
+    # Count successful steps before the first error AND total action/step count
     success_count = 0
+    total_actions = 0
     last_action = ""
+    hit_error = False
     for step in scenario_steps:
         if step.is_error:
-            break
-        if step.step_type == "action":
-            success_count += 1
+            hit_error = True
+            continue
+        if step.step_type in ("action", "step"):
+            total_actions += 1
+            if not hit_error:
+                success_count += 1
             last_action = step.message
-        elif step.step_type == "step":
-            success_count += 1
 
     # If multiple UI actions succeeded before failure, more likely a product bug or
     # a specific locator issue at a particular point in the flow
-    if success_count >= 5 and "NoSuchElement" in error_msg:
+    element_not_found = re.search(
+        r"NoSuchElement|Unable to locate element|Element not found|TimeoutException|wait timed out",
+        error_msg, re.I,
+    )
+    if element_not_found and (success_count >= 5 or total_actions >= 10):
         return Diagnosis(
             root_cause=RootCause.PRODUCT_BUG.value,
             confidence="MEDIUM",
             summary=f"UI element missing after {success_count} successful steps — likely product change",
             details=(
-                f"The test successfully executed {success_count} UI steps before failing.\n"
+                f"The test successfully executed {success_count} UI steps before failing "
+                f"({total_actions} total actions in scenario).\n"
                 f"Last successful action: {last_action[:150]}\n\n"
                 f"Since the test navigated deep into the UI flow, the missing element "
                 f"is more likely a product change than a fundamentally wrong locator.\n"
@@ -485,12 +726,228 @@ def _analyze_scenario_stage_error(report: ParsedReport, error_msg: str) -> Optio
             ),
             evidence=[
                 f"Successful steps before error: {success_count}",
+                f"Total actions in scenario: {total_actions}",
                 f"Last action: {last_action[:150]}",
                 f"Error: {error_msg[:200]}",
             ],
         )
 
+    # Also check for generic failures with many successful steps
+    if (success_count >= 3 or total_actions >= 10) and report.errors:
+        first_error = report.errors[0]
+        err_text = first_error.reason_text or first_error.failure_text or first_error.message
+        if err_text:
+            # Check if the reason matches any product-bug patterns
+            for pattern, cause, confidence, summary in _ERROR_PATTERNS:
+                if cause == RootCause.PRODUCT_BUG and pattern.search(err_text):
+                    return Diagnosis(
+                        root_cause=cause.value,
+                        confidence=confidence,
+                        summary=f"{summary} (after {success_count} successful steps)",
+                        details=(
+                            f"Test executed {success_count} steps before failing "
+                            f"({total_actions} total actions).\n"
+                            f"Failure: {first_error.failure_text[:200]}\n"
+                            f"Reason: {first_error.reason_text[:200]}"
+                        ),
+                        evidence=[
+                            f"Successful steps: {success_count}",
+                            f"Total actions: {total_actions}",
+                            f"Failure: {first_error.failure_text[:150]}",
+                            f"Reason: {first_error.reason_text[:150]}",
+                        ],
+                    )
+
     return None
+
+
+def _analyze_error_steps_deeply(report: ParsedReport) -> Optional[Diagnosis]:
+    """
+    Analyze error steps from the report with Failure/Reason decomposition.
+    This catches cases where the runner stdout only had a generic wrapper like
+    "WARNING: FAILURE: X failed" but the report has the actual root cause details.
+    """
+    if not report.errors:
+        return None
+
+    for err_step in report.errors:
+        # Check the rich Failure/Reason text extracted from <b> tags
+        reason = err_step.reason_text
+        failure = err_step.failure_text
+
+        # First, try to match the reason_text against known patterns (most specific)
+        text_to_check = reason or failure or err_step.message
+        if text_to_check:
+            for pattern, cause, confidence, summary in _ERROR_PATTERNS:
+                if pattern.search(text_to_check):
+                    # For UNDETERMINED (e.g. NoSuchElement), try scenario stage refinement
+                    if cause == RootCause.UNDETERMINED:
+                        effective = report.all_error_text or text_to_check
+                        refined = _analyze_scenario_stage_error(report, effective)
+                        if refined:
+                            return refined
+                    return Diagnosis(
+                        root_cause=cause.value,
+                        confidence=confidence,
+                        summary=summary,
+                        details=(
+                            f"Extracted from ScenarioReport error step #{err_step.index}:\n"
+                            f"  Failure: {failure[:200]}\n"
+                            f"  Reason: {reason[:200]}\n"
+                            f"  Full message: {err_step.message[:300]}"
+                        ),
+                        evidence=[
+                            f"[Report Error] Failure: {failure[:150]}",
+                            f"[Report Error] Reason: {reason[:150]}",
+                        ],
+                    )
+
+    # Second pass: combine all error text and try patterns on the full corpus
+    combined = report.all_error_text
+    if combined:
+        for pattern, cause, confidence, summary in _ERROR_PATTERNS:
+            if pattern.search(combined):
+                # For UNDETERMINED, try scenario stage refinement first
+                if cause == RootCause.UNDETERMINED:
+                    refined = _analyze_scenario_stage_error(report, combined)
+                    if refined:
+                        return refined
+                return Diagnosis(
+                    root_cause=cause.value,
+                    confidence=confidence,
+                    summary=summary,
+                    details=(
+                        f"Pattern matched in combined report error text.\n"
+                        f"Errors from report:\n{combined[:500]}"
+                    ),
+                    evidence=[f"[Report Errors] {combined[:200]}"],
+                )
+
+    return None
+
+
+def _analyze_failure_stage(report: ParsedReport) -> Optional[Diagnosis]:
+    """
+    Determine which stage the failure occurred in and apply stage-specific heuristics.
+    - pre_process failures → often AUTOMATION_BUG (API setup went wrong)
+    - post_process/clean_up failures → ignore (test already completed)
+    - admin_session failures → ENVIRONMENT (login/cookie issues)
+    - scenario failures → analyze deeper
+    """
+    # Check if error only occurs in pre_process
+    pre_errors = [s for s in report.stages.get("pre_process", []) if s.is_error]
+    scenario_errors = [s for s in report.stages.get("scenario", []) if s.is_error]
+
+    if pre_errors and not scenario_errors:
+        err = pre_errors[0]
+        # preProcess error — likely automation bug (bad API call, wrong data setup)
+        # unless it's a status_code error (product API changed)
+        if re.search(r'status_code.*[45]\d{3}', err.message):
+            return Diagnosis(
+                root_cause=RootCause.PRODUCT_BUG.value,
+                confidence="MEDIUM",
+                summary="preProcess API call failed — product API may have changed",
+                details=(
+                    f"Error occurred in preProcess stage (API setup).\n"
+                    f"Error: {err.message[:300]}\n"
+                    f"This suggests the product API rejected a previously valid request."
+                ),
+                evidence=[
+                    f"[Stage: pre_process] {err.message[:200]}",
+                    f"[Stage: pre_process] Failure: {err.failure_text[:150]}" if err.failure_text else "",
+                ],
+            )
+        return Diagnosis(
+            root_cause=RootCause.AUTOMATION_BUG.value,
+            confidence="MEDIUM",
+            summary="preProcess failed — test data setup issue",
+            details=(
+                f"Error occurred in preProcess stage.\n"
+                f"Error: {err.message[:300]}\n"
+                f"Failure: {err.failure_text[:200]}\n"
+                f"Reason: {err.reason_text[:200]}"
+            ),
+            evidence=[
+                f"[Stage: pre_process] {err.message[:200]}",
+            ],
+        )
+
+    # Check if error is in admin_session stage (login issues)
+    admin_errors = [s for s in report.stages.get("admin_session", []) if s.is_error]
+    if admin_errors and not scenario_errors:
+        return Diagnosis(
+            root_cause=RootCause.ENVIRONMENT.value,
+            confidence="MEDIUM",
+            summary="Admin session setup failed — login or environment issue",
+            details=f"Error during admin session: {admin_errors[0].message[:300]}",
+            evidence=[f"[Stage: admin_session] {admin_errors[0].message[:200]}"],
+        )
+
+    return None
+
+
+def _analyze_screenshot_context(report: ParsedReport) -> List[str]:
+    """
+    Extract evidence from screenshot metadata.
+    Returns a list of evidence strings about what the screenshots reveal.
+    """
+    evidence = []
+
+    if report.fail_screenshots:
+        for ss in report.fail_screenshots:
+            evidence.append(
+                f"[FAIL Screenshot] '{ss.alt}' at {ss.time} — {ss.src}"
+            )
+
+    # Analyze screenshot sequence for context
+    if report.screenshots:
+        total = len(report.screenshots)
+        fail_count = len(report.fail_screenshots)
+        pass_count = total - fail_count
+        if total > 0:
+            evidence.append(
+                f"[Screenshots] {pass_count} PASS + {fail_count} FAIL out of {total} total"
+            )
+
+        # Find the last PASS screenshot before the first FAIL (indicates where things went wrong)
+        last_pass_before_fail = None
+        for ss in report.screenshots:
+            if ss.result == "FAIL":
+                break
+            last_pass_before_fail = ss
+        if last_pass_before_fail:
+            evidence.append(
+                f"[Last success before failure] '{last_pass_before_fail.alt}' at {last_pass_before_fail.time}"
+            )
+
+    return evidence
+
+
+def _build_effective_error_msg(error_msg: str, report: Optional[ParsedReport]) -> str:
+    """
+    Build the most comprehensive error text by combining:
+    1. The original error_msg from runner stdout
+    2. All error messages from the ScenarioReport
+    3. Failure/Reason text from error steps
+
+    This ensures pattern matching works even when the runner only captured
+    a generic wrapper like "WARNING: FAILURE: X failed".
+    """
+    parts = [error_msg] if error_msg else []
+
+    if report:
+        # Add the combined error text from the report
+        if report.all_error_text:
+            parts.append(report.all_error_text)
+
+        # Add individual failure/reason texts
+        for err in report.errors:
+            if err.failure_text and err.failure_text not in error_msg:
+                parts.append(err.failure_text)
+            if err.reason_text and err.reason_text not in error_msg:
+                parts.append(err.reason_text)
+
+    return "\n".join(parts)
 
 
 def _enrich_with_localstorage_context(
@@ -522,22 +979,42 @@ def classify_failure(
 ) -> Diagnosis:
     """
     Classify a test failure as AUTOMATION_BUG, PRODUCT_BUG, ENVIRONMENT, or UNDETERMINED.
-    Uses heuristic pattern matching on error message, report steps, and source code.
+
+    Enhanced pipeline:
+      1. LocalStorage key mismatch (highest priority — very clear signal)
+      2. API failures in preProcess
+      3. Stage-based analysis (which lifecycle stage failed?)
+      4. Pattern matching on runner error message
+      5. Deep report error parsing (Failure/Reason from <b> tags in error divs)
+      6. Pattern matching on combined error text (runner msg + all report errors)
+      7. Scenario stage heuristics (successful-steps-before-failure analysis)
+      8. Fallback: UNDETERMINED with evidence from report + screenshots
     """
+    # Build the effective error text (runner msg + report errors combined)
+    effective_error = _build_effective_error_msg(error_msg, report)
+
     # 1. Check LocalStorage mismatch (highest priority — very clear signal)
-    ls_diag = None
     if report and method_source:
-        ls_diag = _analyze_localstorage_mismatch(report, method_source, error_msg)
+        ls_diag = _analyze_localstorage_mismatch(report, method_source, effective_error)
         if ls_diag:
+            _add_screenshot_evidence(ls_diag, report)
             return ls_diag
 
     # 2. Check API failures in preProcess
     if report:
         api_diag = _analyze_api_failure_in_preprocess(report)
         if api_diag:
+            _add_screenshot_evidence(api_diag, report)
             return api_diag
 
-    # 3. Pattern matching on error message
+    # 3. Stage-based analysis (pre_process vs scenario vs admin_session)
+    if report:
+        stage_diag = _analyze_failure_stage(report)
+        if stage_diag:
+            _add_screenshot_evidence(stage_diag, report)
+            return stage_diag
+
+    # 4. Pattern matching on the original runner error message
     for pattern, cause, confidence, summary in _ERROR_PATTERNS:
         if pattern.search(error_msg):
             diag = Diagnosis(
@@ -554,20 +1031,102 @@ def classify_failure(
 
             # For UNDETERMINED, try to refine with report context
             if cause == RootCause.UNDETERMINED and report:
-                refined = _analyze_scenario_stage_error(report, error_msg)
+                refined = _analyze_scenario_stage_error(report, effective_error)
                 if refined:
+                    _add_screenshot_evidence(refined, report)
                     return refined
 
+            _add_screenshot_evidence(diag, report)
             return diag
 
-    # 4. Fallback
-    return Diagnosis(
+    # 5. Deep report error parsing — the runner error was too generic,
+    #    but the ScenarioReport may have the actual exception/reason
+    if report:
+        deep_diag = _analyze_error_steps_deeply(report)
+        if deep_diag:
+            _add_screenshot_evidence(deep_diag, report)
+            return deep_diag
+
+    # 6. Pattern matching on the combined (effective) error text
+    #    This catches cases where the actual exception is only in the report
+    if effective_error != error_msg:
+        for pattern, cause, confidence, summary in _ERROR_PATTERNS:
+            if pattern.search(effective_error):
+                # For UNDETERMINED, try scenario stage refinement first
+                if cause == RootCause.UNDETERMINED and report:
+                    refined = _analyze_scenario_stage_error(report, effective_error)
+                    if refined:
+                        _add_screenshot_evidence(refined, report)
+                        return refined
+                diag = Diagnosis(
+                    root_cause=cause.value,
+                    confidence=confidence,
+                    summary=summary + " (from report error details)",
+                    details=(
+                        f"Pattern matched in combined error text (runner + report).\n"
+                        f"Runner error: {error_msg[:200]}\n"
+                        f"Report errors: {report.all_error_text[:300] if report else 'N/A'}"
+                    ),
+                    evidence=[
+                        f"Runner error: {error_msg[:150]}",
+                        f"Report errors: {report.all_error_text[:150] if report else 'N/A'}",
+                    ],
+                )
+                _add_screenshot_evidence(diag, report)
+                return diag
+
+    # 7. Scenario stage heuristics for the combined error
+    if report:
+        refined = _analyze_scenario_stage_error(report, effective_error)
+        if refined:
+            _add_screenshot_evidence(refined, report)
+            return refined
+
+    # 8. Fallback: UNDETERMINED — but with rich evidence from report and screenshots
+    evidence = [f"Error: {error_msg[:200]}"]
+    details_parts = [f"No known error pattern matched.\nRunner error: {error_msg[:500]}"]
+
+    if report:
+        # Add report error details to help manual classification
+        if report.all_error_text:
+            details_parts.append(f"\nReport error text:\n{report.all_error_text[:500]}")
+            evidence.append(f"[Report Errors] {report.all_error_text[:200]}")
+
+        # Add stage information
+        for stage_name in ["pre_process", "scenario", "post_process"]:
+            stage_errors = [s for s in report.stages.get(stage_name, []) if s.is_error]
+            if stage_errors:
+                evidence.append(f"[{stage_name}] {len(stage_errors)} error(s)")
+                for se in stage_errors[:2]:
+                    if se.failure_text:
+                        evidence.append(f"  Failure: {se.failure_text[:150]}")
+                    if se.reason_text:
+                        evidence.append(f"  Reason: {se.reason_text[:150]}")
+
+        # Add screenshot evidence
+        ss_evidence = _analyze_screenshot_context(report)
+        evidence.extend(ss_evidence)
+
+        # Add report metadata
+        if report.details.scenario_id:
+            evidence.append(f"Scenario: {report.details.scenario_id}")
+
+    diag = Diagnosis(
         root_cause=RootCause.UNDETERMINED.value,
         confidence="LOW",
         summary="Could not automatically classify this failure",
-        details=f"No known error pattern matched.\nError: {error_msg[:500]}",
-        evidence=[f"Error: {error_msg[:200]}"],
+        details="\n".join(details_parts),
+        evidence=evidence,
     )
+    return diag
+
+
+def _add_screenshot_evidence(diag: Diagnosis, report: Optional[ParsedReport]) -> None:
+    """Add screenshot context evidence to an existing Diagnosis."""
+    if not report:
+        return
+    ss_evidence = _analyze_screenshot_context(report)
+    diag.evidence.extend(ss_evidence)
 
 
 # ── Playwright UI Verification ────────────────────────────────────────────────
@@ -825,6 +1384,14 @@ def diagnose_failure(
     # Step 1: Parse ScenarioReport
     report_path = find_latest_report(method_name, reports_dir)
     report = parse_scenario_report(report_path) if report_path else None
+
+    # Step 1b: If error_msg is empty or too generic, extract from report
+    if report and (not error_msg or len(error_msg.strip()) < 10):
+        if report.errors:
+            # Use the first error step's full message
+            error_msg = report.errors[0].message
+        elif report.all_error_text:
+            error_msg = report.all_error_text[:500]
 
     # Step 2: Read test source code
     java_path = find_test_source(entity_class, src_dir)
