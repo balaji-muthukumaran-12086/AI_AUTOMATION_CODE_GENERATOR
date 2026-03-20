@@ -54,10 +54,10 @@ SDP_EMAIL_ID = "jaya.kumar+org1user1t0@zohotest.com"
 SDP_PORTAL = "portal1"
 SDP_ADMIN_PASS = "Zoho@135"
 SDP_TEST_USER_EMAILS = (
-    "jaya.kumar+uorg1user2@zohotest.com,"
-    "jaya.kumar+uorg1user3@zohotest.com,"
-    "jaya.kumar+uorg1user4@zohotest.com,"
-    "jaya.kumar+uorg1user5@zohotest.com"
+    "jaya.kumar+org1user6t0@zohotest.com,"
+    "jaya.kumar+org1user7t0@zohotest.com,"
+    "jaya.kumar+org1user8t0@zohotest.com,"
+    "jaya.kumar+org1user9t0@zohotest.com"
 )
 
 # ── Paths ────────────────────────────────────────────────────────────────────
