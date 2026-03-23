@@ -55,13 +55,22 @@ def find_modules(src_root: Path) -> list:
             has_child_entities = True
 
         # Register this dir as an entity if it has a common/ folder (contains Locators/Constants)
-        if has_common and len(module_parts) >= 2:
-            # module = top-level dir, entity = rest joined by underscore
-            results.append({
-                'module': module_parts[0],
-                'entity': '_'.join(module_parts[1:]),
-                'path': current_dir,
-            })
+        if has_common:
+            if len(module_parts) >= 2:
+                # module = top-level dir, entity = rest joined by underscore
+                results.append({
+                    'module': module_parts[0],
+                    'entity': '_'.join(module_parts[1:]),
+                    'path': current_dir,
+                })
+            elif len(module_parts) == 1:
+                # Top-level module dirs with common/ (e.g. admin, maintenance)
+                # have shared Locators/ActionsUtil — register as module-level entity
+                results.append({
+                    'module': module_parts[0],
+                    'entity': module_parts[0],
+                    'path': current_dir,
+                })
 
     for module_dir in sorted(modules_dir.iterdir()):
         if not module_dir.is_dir() or module_dir.name.startswith('.'):

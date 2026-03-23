@@ -1,0 +1,586 @@
+module: admin
+entity: admin
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/utils/AdminActionsUtil.java
+  methods:
+  - name: goToSetupPageFromAdminMainPage
+    return_type: void
+    params: String sectionName, String configName
+    purpose: ''
+  - name: goToSetupPageFromLHS
+    return_type: void
+    params: String group, String subGroup
+    purpose: ''
+  - name: gotoentity
+    return_type: void
+    params: String module, int retry
+    purpose: ''
+  - name: gotoentity
+    return_type: void
+    params: String module
+    purpose: ''
+  - name: getTextArray
+    return_type: ArrayList<String>
+    params: Locator locator
+    purpose: ''
+  - name: getRowIdforTemplate
+    return_type: String
+    params: String name
+    purpose: ''
+  - name: dragAnddrop
+    return_type: void
+    params: ArrayList<String> fields, Locator destination
+    purpose: ''
+  - name: clickFromListViewActions
+    return_type: void
+    params: String entityId, String option
+    purpose: span[contains(text(),'" + name + "')]/parent::li"), "");
+  - name: clickFromListViewActionsChange
+    return_type: void
+    params: String entityId, String option
+    purpose: ''
+  - name: getCount
+    return_type: Integer
+    params: Locator locator
+    purpose: ''
+  - name: copyTempDropdown
+    return_type: void
+    params: String temp
+    purpose: ''
+  - name: addValueToEditor
+    return_type: void
+    params: String message
+    purpose: ''
+  - name: fillConversations
+    return_type: void
+    params: JSONObject inputData, HashMap<String, FieldDetails> fields
+    purpose: ''
+  - name: fillTaskTemplate
+    return_type: void
+    params: JSONObject inputData, String moduleName
+    purpose: ''
+  - name: selectCustomAction
+    return_type: void
+    params: String customAction
+    purpose: actions.formBuilder.fillInputForAnEntity(isClientFramework(), fields, inputData);
+  - name: fillNewEntityUsingAddedAdminEntity
+    return_type: Boolean[]
+    params: String methodName, String adminEntity, TestCaseData entityInputData
+    purpose: ''
+  - name: selectRequestType
+    return_type: void
+    params: String requestType
+    purpose: ''
+  - name: deleteUDF
+    return_type: Boolean
+    params: String id
+    purpose: ''
+  - name: udfAction
+    return_type: Boolean
+    params: String id, String name
+    purpose: ''
+  - name: storedName
+    return_type: String
+    params: (none)
+    purpose: actions.click(AdditionalFieldsLocators.CLOSE_COLUMN_SEARCH);
+  - name: addCustomTypeTask
+    return_type: Boolean[]
+    params: String methodName
+    purpose: actions.click(AdditionalFieldsLocators.CLOSE_COLUMN_SEARCH);
+  - name: templateViewSearch
+    return_type: void
+    params: String field, String value
+    purpose: ''
+  - name: selectModule
+    return_type: void
+    params: String moduleName
+    purpose: ''
+  - name: searchRequestUsingId
+    return_type: void
+    params: String entityID
+    purpose: ''
+  - name: isColumnSelected
+    return_type: boolean
+    params: String column
+    purpose: ''
+  - name: columnChooser
+    return_type: void
+    params: String column, boolean enable
+    purpose: ''
+  - name: enableEmailCmd
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: fetchingStartStop
+    return_type: void
+    params: String option
+    purpose: ''
+  - name: replyForRequest
+    return_type: void
+    params: String desc
+    purpose: ''
+  - name: getReqDisplayId
+    return_type: String
+    params: (none)
+    purpose: ''
+  - name: getReqRowId
+    return_type: String
+    params: (none)
+    purpose: ''
+  - name: checkforReq
+    return_type: boolean
+    params: (none)
+    purpose: ''
+  - name: enableZiaActions
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: getCurrentTime
+    return_type: String
+    params: (none)
+    purpose: ''
+  - name: typeAndSelectOption
+    return_type: void
+    params: String value
+    purpose: for searching servicetemplate in service category
+  - name: typeTemplateName
+    return_type: void
+    params: String value
+    purpose: to verify in the search input dropdown only
+  - name: getAllText
+    return_type: ArrayList<String>
+    params: Locator locator
+    purpose: ''
+  - name: addCopySite
+    return_type: void
+    params: String siteName
+    purpose: ''
+  - name: deleteAndCreate
+    return_type: String
+    params: String entityName, String apiPath, String filePath, String dataId
+    purpose: ''
+  - name: deleteAndCreate
+    return_type: String
+    params: String entityName, String apiPath, JSONObject inputData
+    purpose: ''
+  - name: addCopySiteUI
+    return_type: void
+    params: JSONObject inputData
+    purpose: ''
+  - name: createSiteAndGetDepartmentId
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: deleteAndCreateRequester
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: checkMailDataAndAddReport
+    return_type: Boolean
+    params: String apiPath
+    purpose: ''
+  - name: getModuleID
+    return_type: void
+    params: String moduleName
+    purpose: ''
+  - name: checkCriteria
+    return_type: Boolean
+    params: JSONArray criteria
+    purpose: ''
+  - name: checkWithoutCriteria
+    return_type: Boolean
+    params: (none)
+    purpose: ''
+  - name: clearTextField
+    return_type: void
+    params: Locator locator
+    purpose: clear textfield
+  - name: setupAction
+    return_type: void
+    params: String action
+    purpose: typeElement.sendKeys(value);
+  - name: createAndAddUDF
+    return_type: void
+    params: String moduleName, ArrayList<String> udfNames, String ciName
+    purpose: ''
+  - name: verifySystemLogs
+    return_type: boolean
+    params: String systemLogMsg
+    purpose: ''
+  - name: dragAnddropSingleUDF
+    return_type: void
+    params: String fields, Locator destination
+    purpose: ''
+  - name: closeAjaxMessage
+    return_type: void
+    params: (none)
+    purpose: span[contains(text(),'" + fields + "')]/parent::li"), "");
+  - name: customizeCatalog
+    return_type: void
+    params: (none)
+    purpose: service category and incident template
+  - name: templatePreferenceOrders
+    return_type: void
+    params: String description, String orders
+    purpose: template preferences orders / sorting
+  - name: fillHelpCardContent
+    return_type: void
+    params: String message
+    purpose: actions.pressEscapeKey();
+  - name: SelectActions
+    return_type: void
+    params: String actionname
+    purpose: ''
+  - name: deleteAndCreateRequesterUsingTestUser3
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: keyboardShortcut
+    return_type: void
+    params: (none)
+    purpose: Shortcuts
+  - name: shortcutWithAlt
+    return_type: void
+    params: String key, Locator locator, String content
+    purpose: ''
+  - name: shortcutWithCtrlAlt
+    return_type: void
+    params: String key, Locator locator, String content
+    purpose: ''
+  - name: activateInactiveGroup
+    return_type: void
+    params: (none)
+    purpose: Marking Inactive groups to active
+  - name: deleteUnusedGroup
+    return_type: void
+    params: (none)
+    purpose: Deleting Unused Group
+  - name: enableReleaseEngineerPermission
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: subTabNavigateInAdminPageResponseView
+    return_type: void
+    params: String subTab
+    purpose: ''
+  - name: enablePrivacySetting
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: timeZoneChangePersonalize
+    return_type: void
+    params: String timeZone
+    purpose: ''
+  - name: createCustomTemplateWithUdfUI
+    return_type: void
+    params: String entityName, String tempName, String templateEntity, ArrayList<String> fieldNames, boolean multiLookupudf
+    purpose: '}else {'
+  - name: navigateToLC
+    return_type: void
+    params: String moduleName, String lifecycleId
+    purpose: ''
+  - name: openRequestUsingShortCut
+    return_type: void
+    params: String displayId
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/utils/AdminAPIUtil.java
+  methods:
+  - name: createSLA
+    return_type: void
+    params: TestCaseData caseID
+    purpose: ''
+  - name: createOrgRoleAndAssociateUser
+    return_type: void
+    params: TestCaseData caseID, String userMail
+    purpose: ''
+  - name: selectCustomActions
+    return_type: void
+    params: String actionValue
+    purpose: ''
+  - name: createCustomNotification
+    return_type: void
+    params: TestCaseData caseId
+    purpose: ''
+  - name: associateSiteAndDepartmentToUsers
+    return_type: void
+    params: TestCaseData caseID, String userMail
+    purpose: under department details in users
+  - name: getEntityId
+    return_type: String
+    params: String input
+    purpose: ''
+  - name: createFGAInAPI
+    return_type: void
+    params: String fgaData, String ciType, String moduleName
+    purpose: ''
+  - name: getModuleId
+    return_type: void
+    params: String moduleName
+    purpose: get moduleId
+locators:
+  file: com/zoho/automater/selenium/modules/admin/common/AdminLocators.java
+  interfaces:
+    AdminLocators:
+    - ICN_MORE_TABS
+    - ADMIN_CONFIG
+    - SETUP_BREADCRUMB
+    - ADMIN_SUBTABS
+    - ADMIN_SUBTABS_INMORETABS
+    - SUBTABS_INMORETABS
+    - ADMIN_SUBTAB_NAME
+    - SEARCH_REQUESTER_WITH_EMAIL
+    - ADMIN_LHSGROUP
+    - ADMIN_LHSSUBGROUP
+    - ADMIN_CONTENT
+    - BACK_BTN
+    - ROW_BY_ID
+    - FORM_SAVE_BUTTON
+    - USER_DETAILS
+    - USER_DETAILS_NAME
+    - USER_DETAILS
+    - USER_UDF
+    - SAVE
+    - SELECT_FIRST_REQUESTER
+    - CHOOSE_ALLOWED_TYPE
+    - REQUESTER_ALLOWED_VIEW
+    - VIPUSER
+    - FORM_UPDATE_BUTTON
+    - REQUEST_ID_VERIFICATION
+    - REQUEST_PREFIX
+    - ACTIONS_ROW
+    - ADMIN_SUBTABS_EXACT_TEXT
+    - ESM_DIRECTORY_LHS
+    - TEST
+    - YES_BUTTON_POPUP
+    - CONFRIM_BUTTON_POPUP
+    - SITE_FILTER
+    - CLICK_RECORDS_PER_PAGE_DROPDOWN
+    - SELECT_NUMBER_OF_RECORDS_IN_TABLE_SETTINGS
+    - CLICK_ROW_WITH_SUBJECT
+    SetupPage:
+    - SUB_MODULE_SELECT
+    - SUB_MODULE_SELECT_EXACT_TEXT
+    - TITLE
+    Template:
+    - GET_TEMPLATE_ROW_ID
+    - ICON_ROWACTION
+    - ACTION_LIST_SELECT
+    - COPY_TEMPLATE_BTN
+    - LOCATE_ROW
+    - COPY_TEMPLATE_DROPDOWN_SELECT
+    - COPY_TEMPLATE_DROPDOWN_OPTION
+    - LOCATE_ROW_TASKLV
+    - LOCATE_ROW_TASKTV
+    - LOCATE_ROW_TASK
+    - EDITTEMPLATEREQVIEW
+    - LOCATE_ROW_SC
+    - CHANGE_ICON_ROWACTION
+    - CHANGE_ACTION_LIST_SELECT
+    - SEARCH_FIELD
+    - SEARCH_VALUE
+    - MODULE_SELECT_DROPDOW_CLICK
+    - MODULE_SELECT_DROPDOW_SELECT
+    - REMOVEFIELDS
+    - REQFIELDS
+    - SELECT_TEMPLATE_TYPE_RADIO_BTN
+    - SELECT_TEMPLATE_TYPE_IN_SERVICE_CATEGORY
+    - SELECT_LHS_MODULES
+    - TECHNICIAN_GROUP
+    - SELECT_TECH_GROUP
+    SGT:
+    - FILTER_BY_SITE
+    - CLICK_SITE
+    - SITE_FILTER
+    - SEARCH_SITE
+    - ADD_NEW_GROUP
+    - GROUP_NAME
+    - TECHNICIANS_LIST
+    - ASSIGN_TECHNICIAN
+    - FORM_SAVE_BUTTON
+    - SELECT_TECHNICIAN
+    - SITES_ASSOCIATION
+    - TABLE_SPOT_SEARCH
+    - CHECK_BOX
+    - DELETE_BUTTON
+    - DISPLAY_NAME
+    RequesterEdit:
+    - REQUESTER_EDIT_REQUEST_QUESTION
+    - ONBEHALF_USER_SELECT
+    - YES_OPTION_FOR_EDIT_REQUEST
+    - YES_OPTION_FOR_EDIT_REQUEST
+    - NO_OPTION_FOR_EDIT_REQUEST
+    - NO_OPTION_FOR_EDIT_REQUEST
+    - SELECT_REQUEST_TYPE_DROP_DOWN
+    - SELECTED_REQUEST_TYPE
+    - CHOOSE_REQUEST_TYPE
+    - ADD_ROLE_BUTTON
+    - FORM_SAVE_BUTTON_IN_REQUESTER_PORTAL
+    - ROLE_NAME_INPUT
+    - OPTION_CHECK
+    - ADD_REQUESTS_CHECK_BOX
+    - FIRST_REQUESTER_SETTINGS_ICON
+    - SELECT_REQUESTER_ACTION
+    - ASSIGNED_ROLES
+    - DE_ASSIGN_ROLE
+    - ASSIGN_ROLE
+    - ACTIONS_BUTTON
+    - CHOOSE_ACTIONS
+    - MODULE_DATA_OF_ASSOCIATED_SITES_CHECKBOX
+    - REQUESTER_ALLOWED_TO_VIEW_DROPDOWN
+    - SELECT_REQUESTER_VIEW
+    - REQUESTER_REOPEN_REQUEST_SELECTED_INPUT
+    - REQUESTER_REOPEN_REQUEST_CHECKBOX
+    - REQUESTER_CLOSE_THEIR_RESOLVED_REQUEST_SELECTED_INPUT
+    - REQUESTER_CLOSE_THEIR_RESOLVED_REQUEST_CHECKBOX
+    RequestFAFR:
+    - SELECT_TYPES_OF_FORM_RULES
+    - CHOOSE_FORM_RULES
+    - CREATE_RULE
+    - ACTIONS_BUTTON
+    - TITLE_IN_ADD_OR_EDIT_RULE_PAGE
+    - CHOOSE_ACTIONS
+    - OPERATION_IN_GEAR_ICON
+    - ENABLED_FAFR
+    - DISABLED_FAFR
+    - GEAR_ICON
+    - SELECT_ACTION_CRITERIA
+    - SELECT_ACTION_CRITERIA
+    - SELECT_RULE
+    - SELECT_CRITERIA
+    - NEXT_PAGE
+    - DISABLE_RULE_UNDER_GEAR_ICON
+    - ENABLE_RULE_UNDER_GEAR_ICON
+    - EDIT_RULE_UNDER_GEAR_ICON
+    - DELETE_RULE_UNDER_GEAR_ICON
+    - SHOW_TOTAL_COUNT_BUTTON
+    - PREVIOUS_NAVIGATION_BUTTON
+    - NEXT_NAVIGATION_BUTTON
+    - TABLE_SETTINGS_BUTTON
+    - TABLE_SETTINGS_DROP_DOWN
+    - HELP_ICON
+    - HELP_PAGE
+    - RULE_NAME_HEADER
+    - ASSOCIATE_TEMPLATES_HEADER
+    - EXECUTION_DETAILS_HEADER
+    - RULE_NAME_COLUMN
+    - DESCRIPTION_COLUMN
+    - ALERT_POPUP
+    - TEMPLATES_COLUMN
+    - EXECUTION_DETAILS_COLUMN
+    - SAVE_RULE
+    - ALERT_MESSAGE_FOR_RULE_NAME
+    - RULE_NAME_FIELD
+    - TABLE_SETTING_ICON
+    - DESCRIPTION_FIELD
+    - CRITERIA_INPUT
+    - SELECT_CRITERIA_VALUE
+    - APPROVER_CRITERIA_INPUT
+    - RULE_LIST_TABLE
+    - CREATED_CHECK_BOX
+    - EDITED_CHECK_BOX
+    - ALERT_MESSAGE_FOR_EXECUTE
+    - SELECT_CRITERIA_DROP_DOWN
+    - SELECT_FIELD_UNDER_CRITERIA
+    - DROP_DOWN_LIST_UNDER_ON_FIELD_CHANGE
+    - WARNING_MESSAGE_IN_ON_FORM_SUBMIT
+    - FIRST_SELECT_ACTION_DROP_DOWN
+    - SECOND_SELECT_ACTION_DROP_DOWN
+    - DROP_DOWN_ELEMENTS
+    - USER_TYPE_DROP_DOWN
+    - TEMPLATE_FORM_RADIO_BUTTONS
+    - SELECTED_TEMPLATES_RADIO_BUTTON
+    - ALL_TEMPLATES_RADIO_BUTTON
+    - SELECTED_TEMPLATES_INPUT_BOX
+    - MATCH_BELOW_RULES_CHECK_BOX
+    - FIRST_SELECT_COLUMN_UNDER_CONDITION
+    - FIRST_SELECT_VALUE_UNDER_CONDITION
+    - FIRST_SELECT_MULTILINE_VALUE_UNDER_CONDITION
+    - FIRST_VALUE_IN_NUMERIC
+    - SECOND_VALUE_IN_NUMERIC
+    - SECOND_SELECT_COLUMN_UNDER_CONDITION
+    - SECOND_SELECT_VALUE_UNDER_CONDITION
+    - THIRD_SELECT_COLUMN_UNDER_CONDITION
+    - THIRD_SELECT_VALUE_UNDER_CONDITION
+    - RED_BORDER_IN_UNFILLED_CONDITIONS_FIELD
+    - RED_BORDER_IN_UNFILLED_ACTIONS_FIELD
+    - ADD_ICON_IN_ACTIONS_FIELD
+    - DELETE_ICON_IN_ACTIONS_FIELD
+    - ADD_ICON_IN_CONDITIONS_FIELD
+    - DELETE_ICON_IN_CONDITIONS_FIELD
+    - AND_OR_OPERATION
+    - VALUES_OF_CONDITION_IN_FORM_RULES
+    - VALUES_OF_ACTION_IN_FORM_RULES
+    - SELECTED_FIELDS_OF_ACTIONS_IN_FIRST_ROW
+    - SELECT_FIELD_UNDER_ACTIONS_IN_FIRST_ROW
+    - SELECT_SUB_EDITOR
+    - SELECT_SUB_REQUESTER
+    - SELECT_SUB_LOGGED_IN_USER
+    - VIP_USER_CHECK_BOX
+    - VIP_USER_SELECTED_INPUT
+    - ON_BEHALF_OF_DROP_DOWN
+    - ALL_USERS_OPTION_UNDER_ON_BEHALF_OF
+    - CHECK_RULENAME
+    - FORM_SAVE_BUTTON_IN_REQUESTER_PORTAL
+    - JOB_TITLE_INPUT
+    - SEARCH_ORGANIZATION_ROLES
+    - SELECT_ORGANIZATION_ROLE
+    - SELECT_APPROVAL_USERS_TAB
+    - EMPTY_ORGANIZATION_ROLES
+    - EMPTY_APPROVAL_USERS
+    - CALENDAR_CRITERIA_INPUT
+    - FORMRULE_VERIFY
+    - NESTED_DRAG_FIRST
+    - NESTED_DRAG_SECOND
+    - ADD_ICON_IN_FIRST_CHILD
+    - TYPE_OPENED_INPUT_DROPDOWN_CRITERIA
+    BusinessRules:
+    - ALERT_MESSAGE_FOR_RULE_NAME
+    - CREATED_CHECK_BOX
+    RequestNotes:
+    - RESPONSE_TIME_ON_NOTES_CHECK_BOX
+    - RESPONSE_TIME_ON_NOTES_CHECK_BOX_VALUE
+    - FORM_SAVE_BUTTON
+    MailFields:
+    - INPUT_FIELD
+    Automation:
+    - SELECT_CUSTOM_ACTION
+    - SELECT_CUSTOM_ACTION_DROPDOWM
+    Sla:
+    - CLICK_DROPDOWN
+    - SELECT_REQUESTTYPE_DROPDOWM
+    triggers:
+    - GET_TRIGGER_ROW_ID
+    - GET_REQUEST_DATA_ROW_ID
+    technician:
+    - VIPUSER
+    columnChooser:
+    - CLICK_COLUMNCHOOOSER_IN_TEMPLATE
+    - TXT_SEARCHCOLUMN_IN_COLUMNCHOOSER
+    - TABLE_HEADING_NAME
+    mailSettings:
+    - ENABLE_MAIL_COMMAND
+    - SAVE_MAIL_SETTING
+    - SAVE_MAIL_COMMAND
+    - STOP_FETCHING
+    - START_FETCHING
+    usersAndPermissions:
+    - USERCATEGORY_FILTER
+    keyboardShortcut:
+    - CLOSE_ICON
+    ProbeAndDiscovery:
+    - ADMIN_GENERAL_SETTINGS
+    - IP_FIELDS_LOCATOR
+    - DROPDOWN
+    changeManagement:
+    - STAGE_EDIT
+    - EDIT_FROM_GEAR
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

@@ -1,0 +1,166 @@
+module: maintenance
+entity: maintenance
+actions_util:
+  file: com/zoho/automater/selenium/modules/maintenance/utils/MaintenanceActionsUtil.java
+  methods:
+  - name: searchMaintenance
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: navigateTo
+    return_type: void
+    params: String entityID, String subTab
+    purpose: ''
+  - name: getCount
+    return_type: Integer
+    params: Locator locator
+    purpose: ''
+  - name: selectModule
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: listViewactions
+    return_type: void
+    params: String entityId, String action
+    purpose: ''
+  - name: listViewCheckBox
+    return_type: void
+    params: String entityId
+    purpose: ''
+  - name: confirmationBoxTitleAndConfirmationText
+    return_type: void
+    params: String title, String confirmText
+    purpose: ''
+  - name: getModuleHeading
+    return_type: String
+    params: (none)
+    purpose: ''
+  - name: verifyForMaintenanceInListView
+    return_type: boolean
+    params: String module
+    purpose: ''
+  - name: setTableView
+    return_type: void
+    params: String viewName
+    purpose: ''
+  - name: verifyMaintenanceGenerateNow
+    return_type: boolean
+    params: (none)
+    purpose: ''
+  - name: verifyMaintenanceDelete
+    return_type: boolean
+    params: (none)
+    purpose: ''
+  - name: verifyMaintenanceStatusListView
+    return_type: boolean
+    params: String status
+    purpose: ''
+  - name: verifyMaintenanceResumeListView
+    return_type: boolean
+    params: (none)
+    purpose: ''
+  - name: filltime
+    return_type: void
+    params: String time, String type
+    purpose: ''
+  - name: maintenanceScheduler
+    return_type: void
+    params: JSONObject scheduleData
+    purpose: Filling the Schedule data in Maintenance
+  - name: fillDailySchedule
+    return_type: void
+    params: JSONObject scheduleData, String scheduleType
+    purpose: ''
+  - name: scheduleTime
+    return_type: LocalTime
+    params: (none)
+    purpose: ''
+  - name: calculateInitialDelay
+    return_type: long
+    params: LocalTime targetTime
+    purpose: ''
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/maintenance/common/MaintenanceLocators.java
+  interfaces:
+    MaintenanceLocators:
+    - LINK_COMMON
+    - MODULE_DROPDOWN
+    - MODULE_DROPDOWN_SELECT
+    - SETTING_LISTVIEW_ICON
+    - SETTING_LISTVIEW_DROPDOWN
+    - GENERATE_NOW_BTN
+    - MAINTENANCE_FILTER
+    - GET_STATUS_COUNT
+    - GET_STATUS
+    - SET_TABLE_VIEW
+    - BOTH_REQUEST_ICON
+    - NEW_MAINTENANCE_BTN
+    DetailsView:
+    - STATUS_COMMENTS
+    - ADD_TASK
+    - COMPLETE_STATE
+    - HISTORY_STATE_UPDATE
+    - HISTORY_STATUS_UPDATE
+    - HISTOR_TITLE_CHECK
+    - MINI_CALENDER_NEXT_BUTTON
+    - EVENT_IN_MINI_CALENDER
+    - GENERATED_MAINTENANCE
+    - FILTER_BY_STAGE
+    Scheduler:
+    - SCHEDULE_TYPE
+    - MAINTENANCE_SCHEDULER_DATE_DAILY
+    - HOUR_ELEMENT_LOCATOR
+    - HOUR_LOCATOR
+    - MINUTE_ELEMENT_LOCATOR
+    - MINUTE_LOCATOR
+    - MAINTENANCE_SCHEDULER_DATE_ONCE
+    - MAINTENANCE_SCHEDULER_FREQUENCY
+    - SCHEDULE_CALENDAR
+    - NEXT_SCHEDULE_USING_DATE
+    Form:
+    - MODULE_FORM_SUBMIT_BUTTON
+    - SCHEDULER_FORM_SUBMIT_BUTTON
+    - DAY_OF_MONTH
+    - DAY_OF_MONTH_SELECT
+    - PERIODIC_SCHEDULE_INPUT
+    - CI_FIELD_LOCATOR
+    - SLA_IN_FORM
+    AlertPopup:
+    - DIV_POPUP
+    - CONFIRM_POPUP_TITLE
+    - CONFIRM_POPUP_MESSAGE
+data_constants:
+  file: com/zoho/automater/selenium/modules/maintenance/common/MaintenanceDataConstants.java
+  classes:
+    MaintenanceDataConstants:
+    - DETAILS_SPOT_EDIT_CATEGORY_DEPENDENT_FIELDS_INPUT
+    - KEY_MAPPING
+    - VALID_INPUT
+    - SUSPENDED_INPUT
+    - COLUMN_CHOOSER_LISTVIEW
+    - ASSOCIATED_GROUP
+    - DETAILS_SPOT_EDIT_GROUP_DEPENDENT_FIELDS_INPUT
+    - ADDMAINTENANCE
+    - ASSOCIATED_CUSTOM_SITE
+    - SUSPEND_MAINTENANCE
+    - DETAILS_SPOT_EDIT_SITE_DEPENDENT_FIELDS_INPUT
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- Column_Chooser_Listview
+- Key_mapping
+- Suspend_Maintenance
+- Valid_Input
+- addMaintenance
+- associated_custom_site
+- associated_group
+- details_spot_edit_category_dependent_fields_input
+- details_spot_edit_group_dependent_fields_input
+- details_spot_edit_site_dependent_fields_input
+- suspended_input
