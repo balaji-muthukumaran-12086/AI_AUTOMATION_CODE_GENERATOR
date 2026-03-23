@@ -121,17 +121,27 @@ class DeepAnalyzer:
                 'purpose': purpose,
             }
 
-        # Find reuse groups: entries with identical field sets
-        field_sig_to_keys = {}
-        for key, info in entries.items():
-            sig = tuple(sorted(info['fields']))
-            field_sig_to_keys.setdefault(sig, []).append(key)
-
-        reuse_groups = {
-            ', '.join(keys): list(sig)
-            for sig, keys in field_sig_to_keys.items()
-            if len(keys) > 1
-        }
+        # Find reuse groups: entries with >=80% field overlap (Jaccard similarity)
+        reuse_groups = {}
+        entry_keys = list(entries.keys())
+        for i, key_a in enumerate(entry_keys):
+            fields_a = set(entries[key_a]['fields'])
+            if not fields_a:
+                continue
+            for key_b in entry_keys[i+1:]:
+                fields_b = set(entries[key_b]['fields'])
+                if not fields_b:
+                    continue
+                intersection = len(fields_a & fields_b)
+                union = len(fields_a | fields_b)
+                if union > 0 and (intersection / union) >= 0.8:
+                    group_key = f"{key_a} ↔ {key_b}"
+                    reuse_groups[group_key] = {
+                        'similarity': round(intersection / union, 2),
+                        'shared_fields': sorted(fields_a & fields_b),
+                        'diff_a_only': sorted(fields_a - fields_b),
+                        'diff_b_only': sorted(fields_b - fields_a),
+                    }
 
         return {
             'file': str(data_path),

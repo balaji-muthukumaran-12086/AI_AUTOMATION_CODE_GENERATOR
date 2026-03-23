@@ -88,7 +88,7 @@ class StaticAnalysisGate:
                 self._entity_inventories[key] = {}
         return self._entity_inventories[key]
 
-    def analyze(self, code: str, filename: str = "<input>") -> AnalysisResult:
+    def analyze(self, code: str, filename: str = "<input>", module: str = "", entity: str = "") -> AnalysisResult:
         """Run all checks on a Java source string."""
         result = AnalysisResult(file=filename)
         lines = code.split('\n')
@@ -102,6 +102,12 @@ class StaticAnalysisGate:
         self._check_redundant_ajax_wait(lines, result)
         self._check_need_braces(lines, result)
         self._check_inline_json_construction(lines, result)
+
+        # Context-aware checks (require module/entity to be specified)
+        if module and entity:
+            inv = self.load_inventory(module, entity)
+            if inv:
+                self._check_duplicate_util_methods(lines, inv, result)
 
         return result
 
@@ -346,6 +352,112 @@ class StaticAnalysisGate:
                         message="Inline JSONObject construction in test method — data should come from *_data.json",
                         fix_hint="Create entry in *_data.json and load via getTestCaseData()"
                     ))
+
+    # ====================== Duplication Checks ======================
+
+    def _check_duplicate_util_methods(self, lines: list, inv: dict, result: AnalysisResult):
+        """Check if generated code defines methods that already exist in ActionsUtil/APIUtil."""
+        # Collect new method names from the generated code
+        existing_actions = set()
+        existing_api = set()
+
+        for m in inv.get('actions_util_deep', []):
+            existing_actions.add(m['name'])
+        if not existing_actions:
+            for m in inv.get('actions_util', {}).get('methods', []):
+                existing_actions.add(m['name'])
+
+        for m in inv.get('api_util_deep', []):
+            existing_api.add(m['name'])
+        if not existing_api:
+            for m in inv.get('api_util', {}).get('methods', []):
+                existing_api.add(m['name'])
+
+        # Scan generated code for public static method declarations
+        for i, line in enumerate(lines):
+            match = re.match(r'\s*public\s+static\s+\w[\w<>\[\],\s]*?\s+(\w+)\s*\(', line)
+            if match:
+                method_name = match.group(1)
+                if method_name in existing_actions:
+                    result.violations.append(Violation(
+                        rule="DUPLICATE_UTIL_METHOD",
+                        severity="ERROR",
+                        line=i + 1,
+                        message=f"Method '{method_name}' already exists in ActionsUtil — do NOT redefine",
+                        fix_hint=f"Call the existing method instead of creating a new one"
+                    ))
+                elif method_name in existing_api:
+                    result.violations.append(Violation(
+                        rule="DUPLICATE_UTIL_METHOD",
+                        severity="ERROR",
+                        line=i + 1,
+                        message=f"Method '{method_name}' already exists in APIUtil — do NOT redefine",
+                        fix_hint=f"Call the existing method instead of creating a new one"
+                    ))
+
+    def analyze_data_json_additions(self, new_entries: dict, module: str, entity: str) -> AnalysisResult:
+        """
+        Check new data.json entries against existing inventory for duplicates.
+        new_entries: dict of {key: {data: {...}}} that will be added to *_data.json
+        Returns violations for entries that duplicate existing ones.
+        """
+        result = AnalysisResult(file=f"{entity}_data.json")
+        inv = self.load_inventory(module, entity)
+        data_deep = inv.get('data_json_deep', {})
+        existing_entries = data_deep.get('entries', {})
+
+        if not existing_entries:
+            return result  # No inventory to compare against
+
+        for new_key, new_value in new_entries.items():
+            # Check 1: Exact key name collision
+            if new_key in existing_entries:
+                result.violations.append(Violation(
+                    rule="DUPLICATE_DATA_KEY",
+                    severity="ERROR",
+                    line=0,
+                    message=f"Data key \"{new_key}\" already exists in {entity}_data.json",
+                    fix_hint=f"Reuse the existing entry instead of creating a new one"
+                ))
+                continue
+
+            # Check 2: Field-set similarity (>80% overlap)
+            new_data = new_value.get('data', new_value) if isinstance(new_value, dict) else {}
+            if not isinstance(new_data, dict):
+                continue
+            new_fields = set(new_data.keys())
+            if not new_fields:
+                continue
+
+            best_match_key = None
+            best_match_score = 0.0
+
+            for existing_key, existing_info in existing_entries.items():
+                existing_fields = set(existing_info.get('fields', []))
+                if not existing_fields:
+                    continue
+                # Jaccard similarity
+                intersection = len(new_fields & existing_fields)
+                union = len(new_fields | existing_fields)
+                if union == 0:
+                    continue
+                similarity = intersection / union
+                if similarity > best_match_score:
+                    best_match_score = similarity
+                    best_match_key = existing_key
+
+            if best_match_score >= 0.8:
+                result.violations.append(Violation(
+                    rule="SIMILAR_DATA_ENTRY",
+                    severity="WARNING",
+                    line=0,
+                    message=(f"New entry \"{new_key}\" has {best_match_score:.0%} field overlap "
+                             f"with existing \"{best_match_key}\""),
+                    fix_hint=(f"Consider reusing \"{best_match_key}\" with $(custom_*) placeholders "
+                              f"instead of creating a new entry")
+                ))
+
+        return result
 
 
 def format_report(results: list) -> str:

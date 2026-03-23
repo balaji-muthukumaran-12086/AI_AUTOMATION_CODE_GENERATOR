@@ -236,10 +236,30 @@ class OutputAgent:
                 from static_analysis_gate import StaticAnalysisGate, format_report
                 gate = StaticAnalysisGate(str(self.base))
                 gate_results = []
+
+                # Derive module/entity for context-aware checks
+                mod_parts = module_path.strip('/').split('/')
+                mod_name = mod_parts[0] if len(mod_parts) >= 1 else ''
+                ent_name = mod_parts[1] if len(mod_parts) >= 2 else ''
+
                 for snippet_path, _ in resolved:
                     if snippet_path.suffix == '.java' or 'ADD_TO_' in snippet_path.name:
                         code = snippet_path.read_text(encoding='utf-8')
-                        gate_results.append(gate.analyze(code, str(snippet_path.name)))
+                        gate_results.append(gate.analyze(code, str(snippet_path.name),
+                                                         module=mod_name, entity=ent_name))
+
+                    # Check data.json additions for duplicates
+                    if '_data.json' in snippet_path.name or snippet_path.suffix == '.json':
+                        try:
+                            import json
+                            new_entries = json.loads(snippet_path.read_text(encoding='utf-8'))
+                            if isinstance(new_entries, dict) and mod_name and ent_name:
+                                data_result = gate.analyze_data_json_additions(
+                                    new_entries, mod_name, ent_name)
+                                if data_result.violations:
+                                    gate_results.append(data_result)
+                        except (json.JSONDecodeError, Exception):
+                            pass  # Not valid JSON or parse error — skip data check
 
                 error_count = sum(len([v for v in r.violations if v.severity == 'ERROR'])
                                   for r in gate_results)
