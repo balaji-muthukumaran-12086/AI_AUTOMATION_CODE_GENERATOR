@@ -1,0 +1,35 @@
+module: admin
+entity: automation_customactions_task
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/customactions/task/common/TaskLocators.java
+  interfaces:
+    TaskLocators:
+    - VERIFY_TASK_IS_DISABLED
+    - VERIFY_TASK_IS_ENABLED
+    - CLICK_TOGGLE_SLIDER_IN_TASK
+    - SELECT_ACTIONS_OPTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/automation/customactions/task/common/TaskDataConstants.java
+  classes:
+    TaskDataConstants:
+    - ADD_PROBLEM_TASK_VIA_API_FOR_ABORT_TIMER
+    - ADD_PROBLEM_TASK_VIA_API_FOR_TIMER
+    - CREATE_TASK_FOR_PROBLEM_TEMPLATE
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createproblemtask
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys:
+- add_problem_task_via_api_for_abort_timer
+- add_problem_task_via_api_for_timer
+- create_task_for_problem_template

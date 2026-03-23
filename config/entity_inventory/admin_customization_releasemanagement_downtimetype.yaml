@@ -1,0 +1,21 @@
+module: admin
+entity: customization_releasemanagement_downtimetype
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/releasemanagement/downtimetype/common/DowntimeTypeLocators.java
+  interfaces:
+    DowntimeTypeLocators: []
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

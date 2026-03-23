@@ -1,0 +1,96 @@
+module: admin
+entity: instanceconfigurations_department
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/department/utils/DepartmentAPIUtil.java
+  methods:
+  - name: createDepartment
+    return_type: void
+    params: String inputData
+    purpose: ''
+  - name: associateDepartmentHead
+    return_type: void
+    params: String testData
+    purpose: ''
+  - name: dissociateDepartmentHead
+    return_type: void
+    params: String testData
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/department/common/DepartmentLocators.java
+  interfaces:
+    DepartmentLocators:
+    - NEW_DEPT
+    - SITE_DROPDOWN
+    - SITE_GLOBAL_FILTER
+    - ACTIONS_GEAR_ICON
+    - CLICK_VALUE_IN_ACTIONS_ICON
+    - EDIT_DEPT
+    - FIRST_VALUE_SITE_FILTER
+    - SEARCH_ICON
+    - CLICK_SETTINGS_ICON_USING_ENTITY_ID
+    - VERIFY_DEPARTMENT_NAME
+    Popup:
+    - HEAD_PICKER
+    - NEW_DEPT_POPUP
+    - USERS
+    - SITE_FILTER
+    - EDIT_DEPT_POPUP
+    - DEPT_HEAD_DROPDOWN
+    - USER_ID
+    - USER_NAME_POPUP
+    - USER_NAME
+    - DEPT_NAME
+    - SITE_DROPDOWN_USERS_POPUP
+    - DEPARTMENT_HEAD_DROPDOWN
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/department/common/DepartmentDataConstants.java
+  classes:
+    DepartmentDataConstants:
+    - CREATE_DEPARTMENT_WITHOUT_DEPARTMENT_HEAD
+    - CREATE_DEPARTMENT
+    - CREATE_DEPARTMENT_WITH_COPYSITE
+    - CREATE_DEPARTMENT_IN_BASE_SITE
+    - ASSOCIATED_DEPARTMENT
+    - ASSIGN_DEPARTMENT_HEAD
+    - EDIT_DEPARTMENT
+    - DEASSIGN_DEPARTMENT_HEAD
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: siteCheck
+  creates_count: 0
+  local_storage_keys:
+  - departmentName
+  - DeptID
+- name: userCheck
+  creates_count: 0
+  local_storage_keys:
+  - departmentName
+  - DeptID
+- name: createSite
+  creates_count: 0
+  local_storage_keys:
+  - siteId
+  - siteId
+- name: createSitesANDsiteadminHelpdeskConfig
+  creates_count: 0
+  local_storage_keys:
+  - siteId
+- name: createDepartmentWithCopySite
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys:
+- assign_department_head
+- associated_department
+- create_department
+- create_department_in_base_site
+- create_department_with_CopySite
+- create_department_without_department_head
+- deassign_department_head
+- department_head
+- edit_department

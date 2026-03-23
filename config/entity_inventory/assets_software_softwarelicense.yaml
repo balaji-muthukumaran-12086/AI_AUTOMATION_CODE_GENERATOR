@@ -1,0 +1,59 @@
+module: assets
+entity: software_softwarelicense
+actions_util:
+  file: com/zoho/automater/selenium/modules/assets/software/softwarelicense/utils/SoftwareLicenseActionsUtil.java
+  methods:
+  - name: isSoftwareLicensePresentInListView
+    return_type: boolean
+    params: String entityId
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/assets/software/softwarelicense/utils/SoftwareLicenseAPIUtil.java
+  methods:
+  - name: associateUserToLicense
+    return_type: void
+    params: String userId, String licenseId
+    purpose: Associate user to license
+  - name: allocateComputerToLicense
+    return_type: void
+    params: String installationId, String licenseId
+    purpose: Allocate workstation to license
+  - name: createSoftwareLicense
+    return_type: JSONObject
+    params: JSONObject inputData
+    purpose: create software license
+  - name: updateSoftwareLicense
+    return_type: JSONObject
+    params: String licenseId,JSONObject inputData
+    purpose: update software license
+locators:
+  file: com/zoho/automater/selenium/modules/assets/software/softwarelicense/common/SoftwareLicenseLocators.java
+  interfaces:
+    SoftwareLicenseLocators:
+    - COLUMN_VALUE_LINK
+    FormBuilder:
+    - MANUFACTURER_FIELD
+    - ADD_SM_ICN
+    DetailView:
+    - COLUMN_VALUE
+data_constants:
+  file: com/zoho/automater/selenium/modules/assets/software/softwarelicense/common/SoftwareLicenseDataConstants.java
+  classes:
+    SoftwareLicenseDataConstants:
+    - CREATE_USER_BASED_LICENSE
+    - CUSTOM_FILTER_WITH_CRITERIA_II
+    - CUSTOM_FILTER_WITH_CRITERIA_III
+    - ASSOCIATE_USER_TO_LICENSE
+    - ALLOCATE_COMPUTER_TO_LICENSE
+    - CREATE_COMPUTER_BASED_LICENSE
+    - CREATE_CUSTOM_FILTER_API
+    - UDF_FIELD_VALUES_API
+    - CUSTOM_FILTER_WITH_UDF_CRITERIA
+    - CUSTOM_FILTER_WITH_CRITERIA_I
+    - CREATE_CUSTOM_FILTER
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

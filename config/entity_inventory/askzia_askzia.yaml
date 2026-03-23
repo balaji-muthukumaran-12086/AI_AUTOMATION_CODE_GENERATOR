@@ -1,0 +1,35 @@
+module: askzia
+entity: askzia
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/askzia/askzia/common/AskziaLocators.java
+  interfaces:
+    AskziaLocators:
+    - ASK_ZIA_MODULE
+    - QUCIK_ACTION_BUTTON
+    - MORE_ACTION_OPTIONS
+    - ZIA_REPLY_MESSAGE
+    - MORE_ACTIONS_BUTTON
+    - ASK_YOUR_QUESTIONS
+    - SEND_ICON
+    - ZIA_SOLUTIONS_EXPLORE
+    - ZIA_SOLUTIONS_WINDOW
+    - CLOSE_BUTTON
+    - ZIA_MYOVERDUE_REQUESTS_WINDOW
+    - ZIA_OPEN_TASKS_WINDOW
+    - ZIA_MYPENDING_APPROVALS_WINDOW
+    - ZIA_ASSETS_WINDOW
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

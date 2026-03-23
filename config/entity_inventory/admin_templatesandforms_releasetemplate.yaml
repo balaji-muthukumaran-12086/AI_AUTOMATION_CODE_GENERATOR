@@ -1,0 +1,89 @@
+module: admin
+entity: templatesandforms_releasetemplate
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/releasetemplate/utils/ReleaseTemplateAPIUtil.java
+  methods:
+  - name: createReleaseTemplate
+    return_type: void
+    params: TestCaseData taskdata
+    purpose: ''
+  - name: createReleaseTask
+    return_type: void
+    params: String stage, TestCaseData taskdata
+    purpose: ''
+  - name: createReleaseTask
+    return_type: void
+    params: TestCaseData taskdata
+    purpose: ''
+  - name: createReleaseStage
+    return_type: void
+    params: TestCaseData taskdata
+    purpose: ''
+  - name: createReleaseTemplate
+    return_type: void
+    params: String templateData
+    purpose: ''
+  - name: updateTemplateWithCustomRole
+    return_type: void
+    params: String data
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/releasetemplate/common/ReleaseTemplateLocators.java
+  interfaces:
+    ReleaseTemplateLocators:
+    - VERIFY_TASK_TEMPLATE_USING_TITLE
+    - CLICK_COLUMN_SELECT_WITH_ENTITYID
+    - CLICK_ROW_ACTIONS_WITH_ENTITYID
+    - SELECT_ACTION_LIST_FROM_TEMP_SETTINGS_ICON
+    Detailview:
+    - TASKS_SUBTAB
+    - CLICK_RELEASE_STAGE
+    - CLICK_RELEASE_STAGE_IN_MODULE
+    - TARGET_LOCATION_PLANNING
+    - VERIFY_UDF
+    - LOCATE_UDF_FIELD
+    - VERIFY_UDF_IN_TEMPLATE
+    - MOVE_UDF
+    - MOVE_FIELD
+    - SELECT_STAGE_IN_MOVE
+    - CLICK_SAVE_IN_MOVE_TO_POPUP
+    - RELEASE_ROLE_NAME
+    - ALL_PERMISSIONS
+    Attachment:
+    - ADD_ATTACHMENT_PLUS_ICON
+    - ADD_ATTACHMENT
+    - ADD_COMMENTS_IN_ATTACHMENT
+    - VERIFY_ATTACHMENT
+    - DOWNLOAD_ATTACHMENT
+    - DELETE_ATTACHMENT
+    Editor:
+    - RELEASE_REQUESTER
+    - SAVE_BUTTON
+    - REPORTED_BY
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/releasetemplate/common/ReleaseTemplateDataConstants.java
+  classes:
+    ReleaseTemplateDataConstants:
+    - RELEASE_INPUT
+    - API_ADD_TASK
+    - API_ADD_TASK_WITH_CUSTOM_STAGE
+    - CUSTOM_ROLE_UPDATE_DATA
+    - RELEASE_TEMPLATE_WITH_MULTI_LOOKUP_DATE_UDF
+    - RELEASE_TEMPLATE_WITH_ALL_TYPE_OF_UDF
+    - SEARCH_RELEASE_STAGE
+    - GET_RELEASE_STAGE
+    - UPDATE_TASK
+    - TEMPLATE_UPDATE_WITH_CUSTOM_RELEASE_ROLE
+    - RELEASE_TEMPLATE_WITH_UDF
+    - CREATE_RELEASE_STAGE
+    - RELEASE_TEMPLATE
+    - RELEASE_INPUT_TITLE_ONLY
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

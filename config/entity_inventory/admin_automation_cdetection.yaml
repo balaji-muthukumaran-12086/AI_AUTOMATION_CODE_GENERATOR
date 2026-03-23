@@ -1,0 +1,62 @@
+module: admin
+entity: automation_cdetection
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/cdetection/common/CDetectionLocators.java
+  interfaces:
+    CDetectionLocators:
+    - CHECK_FREEZE_WINDOW_BY_NAME
+    - FREEZE_WINDOW_RUNNING_ICON
+    - SCHEDULING_CONFLICT
+    - SCHEDULING_CONFLICT_BY_NAME
+    - YELLOW_BANNER
+    - FREEZE_WINDOW_RUNNING_BY_NAME
+    - RED_BANNER_FREEZED
+    - FREEZE_ICON_RELEASELIST
+    - FROZEN_ICON_RELEASELIST
+    - RELEASE_CAUSED_SEARCH
+    - RELEASE_INITIATED_REQUEST
+    - YELLOW_BANNER_IN_ASSOCIATED_POPUP
+    - RED_BANNER_IN_ASSOCIATED_POPUP
+    - RELEASE_INITIATED_SEARCH
+    - REQUEST_INITIATED_RELEASE
+    - CONFLICT_ALERT_BUTTON
+    - FREEZE_ICON
+    - FROZEN_ICON
+    - SELECT_PENDING_APPROVAL
+    - APPROVAL_NOTIFICATION_COUNT
+    - SHEDULE_WINDOW
+    - SETTINGS_ICON_USING_NAME
+    - ASSOCIATE_OPTION
+    - ACKNOWLEDGEMENT_BUTTON
+    - ALL_CHANGES
+    - CHANGE_CREATION
+    - NO_CRITERIA
+    - ALL_DAY
+    - SDP_SCHEDULER_CONTAINER_LOCATOR
+    - CALENDAR_FUNCTION
+    - ADVANCED_LOCATOR
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/automation/cdetection/common/CDetectionDataConstants.java
+  classes:
+    CDetectionDataConstants:
+    - GET_ENTITYID
+    - ADD_APPROVAL_LEVEL_IN_RELEASE_DETAILVIEW
+    - CHANGE_FREEZEWINDOW_UI
+    - CHANGE_FREEZEWINDOW_2
+    - CHANGE_FREEZEWINDOW_1
+    - CHANGE_FREEZEWINDOW_3
+    - FREEZEWINDOW_EDIT_API
+    - CHANGE_MAINTENANCEWINDOW_2
+    - CHANGE_MAINTENANCEWINDOW_1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

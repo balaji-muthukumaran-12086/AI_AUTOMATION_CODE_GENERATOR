@@ -215,8 +215,268 @@ api_util:
     params: String data
     purpose: ''
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/general/dashboard/common/DashboardLocators.java
+  interfaces:
+    DashboardLocators:
+    - MODULE_SUBTAB
+    - CLICK_WIDGET_CHART_ICON
+    - WIDGET_CHART_OPTION
+    - URL_TITLE_OF_WIDGET_GROUP_CONTAINING_WIDGET
+    - DIV_CONFIRMDIALOGBOX
+    - TEXT_CONFIRMDIALOGBOXTITLE
+    - TEXT_CONFIRMDIALOGBOXCONTENT
+    - TEXT_AJAXMESSAGETEXT
+    - GLOBAL_SEARCH_ICON
+    - DIV_DROPDOWNVALUES
+    - MODULE_DROPDOWN
+    - PAGE_FOOTER
+    - CLICK_DASHBOARD_FILTER_DROPDOWN
+    - CHECK_DASHBOARD_FILTER_DROPDOWN
+    - DASHBOARD_ACTIONS
+    - DASHBOARD_DROPDOWN_ACTIONS
+    - DASHBOARD_GRID
+    - TYPE_DASHBOARD_FILTER_NAME_TO_SEARCH
+    - BTN_DASHBOARD_SUMMARY
+    - ICN_CLOSE_SUMMARY
+    - HELPDESK_DASHBOARD_TOTAL_OPEN_REQUEST
+    - FILTER_CATEGORY
+    - CHECK_IF_CANNED_DASHBOARD
+    - ALL_WIDGETS_CHECKBOX
+    - SITE_FILTER
+    - GROUP_FILTER
+    - MANUFACTURER_FILTER
+    - GROUP_INPUT
+    - GO_TO_LIST_VIEW
+    - FROM_DASHBOARD_TAG
+    - NEW_URL_WIDGET
+    - WIDGET_TITLE
+    - ADD_NEW_WIDGET
+    - ADD_NEW_WIDGET_TYPE
+    - GET_ALL_GROUPS_OF_ALL_SITES
+    - GET_NOT_IN_ANY_GROUP_OF_ALL_SITES
+    - FILTER_SEARCH_MESSAGE
+    - FIRST_OPTION
+    - INCLUDE_REFERRED_SITE
+    - INCLUDE_REFERRED_SITE_CHECKBOX
+    - INCLUDE_REFERRED_SITE_TOOLTIP
+    - INCLUDE_REFERRED_SITE_NOTE
+    - CLICK_DASHBOARD_IN_REQUESTER_LOGIN
+    - CLICK_WIDGET
+    - SELECT_CHARTLIST
+    - VERIFY_WIDGET_NAME_IN_LISTVIEW
+    - DASHBOARD_MODULE_TAB
+    - ASSET_SUMMARY_LISTS
+    - REQUESTS_LAST_WEEK_WIDGET_MAXIMUM_BUTTON
+    - LEGEND_LABEL
+    - SELECT_RELEASE_ROLE_DROPDOWN
+    - SELECT_RELEASE_ROLE_WIDGET
+    - VERIFY_USERIN_RELEASE_CHART
+    - SELECT_RELEASE_ENTITY_DROPDOWN
+    - RELEASE_WIDGET_SELECTOR
+    - SELECT_RELEASE_PIE_CHART
+    - VERIFY_RELEASE_PIE_CHART
+    - VERIFY_RELEASE_DISPLAYED
+    - SELECT_RELEASE_BYROLE
+    - SELECT_RELEASE_BYTYPE
+    - DASHBOARD_BUTTON
+    - GO_TO_LISTVIEW_FROM_SMARTVIEW
+    - SMART_LIST_VIEW_VALUE_FILTER
+    - MORE_TAB
+    - SELCT_TAB_FROM_MORE
+    CustomDashboardLocators:
+    - CLICK_ADD_DASHBOARD_FILTER
+    - TYPE_CUSTOM_DASHBOARD_FILTER_INPUT
+    - EXECUTIVE_DASHBOARD
+    - SELECT_WIDGETS
+    - CLICK_SAVE_CUSTOM_DASHBOARD_FILTER
+    - CLICK_CUSTOMIZE_CUSTOM_DASHBOARD
+    - CLICK_CANCEL_ADD_WIDGET
+    - CLICK_CLOSE_ICON_IN_ADD_WIDGET_SLIDER
+    - SET_AS_PUBLIC_DASHBOARD
+    - CLICK_LAYOUT_CUSTOMISATION
+    - SET_WIDGET_COLUMN
+    - SET_AS_PRIVATE_DASHBOARD
+    - TABLE_WIDGET_TEMPLATE_VIEW_TYPE
+    - TABLE_WIDGET_LIST_VIEW_TYPE
+    - TYPE_WIDGET_NAME_IN_INPUT
+    - CLICK_WIDGET_CHECKLIST
+    - GET_ALL_WIDGETS_IN_DASHBOARD
+    - CHECK_IF_MY_DASHBOARD
+    - CLICK_DASHBOARD_FILTER_FROM_DROPDOWN
+    - CURRENT_DASHBOARD_FILTER
+    - CHECK_IF_PUBLIC_DASHBOARD
+    - CLICK_FULLSCREEN_ICON_IN_DASHBOARD_SETTING
+    - CLICK_DASHBOARD_SETTINGS_ICON
+    - CLICK_DASHBOARD_SITE_FILTER_ICON
+    - CLICK_ADD_PARTICIAPNTS
+    - ADD_PARTICIAPNTS_MANDATORY
+    - CLICK_SHARED_DASHBAORD
+    - SELECT_USERS
+    - ADD_PARTICIAPNTS_USERS
+    - ADD_PARTICIAPNTS_USER_GROUPS
+    - WIDGETS
+    - WIDGET_MODULES
+    - CLICK_REFRESH_FREQUENCY_DROPDOWN
+    - CLICK_DROPDOWN
+    - SELECT_REFRESH_FREQUENCY_FROM_DROPDOWN
+    - CLICK_TOGGLE_ICON
+    - CHECK_HELP_ICON_WITH_TITLE
+    - SMARTVIEW_HELP_ICON_WITH_TITLE
+    - CLICK_CUSTOM_DASHBOARD
+    - VERIFY_WIDGET_PRESENT_BY_ID
+    - ADD_WIDGET_NAME_TO_GET_ID
+    - VERIFY_WIDGET_CHART_PRESENT_BY_ID_IN_DASHBOARD
+    - POP_UP_TITLE
+    - CLICK_MODULE_DROPDOWN_IN_WIDGET
+    - SEARCH_TEXT_IN_WIDGET
+    - DROPDOWN_OPTION
+    - CLICK_SELECTED_WIDGET_AFTER_SELECTED
+    FavoriteDashboardLocators:
+    - DIV_FAVORITE_DASHBOARD
+    - ICN_FAVORITE_STAR_SELECTED
+    - ICN_REMOVE_FAVORITE_FILTER
+    - ICN_FAVORITE_UNPIN
+    - ICN_FAVORITE_STAR_UNSELECTED
+    - ICN_FAVORITE_PIN
+    - ICN_PINNED_FILTER
+    DashboardWidgetLocators:
+    - MODULE_DROPDOWN
+    - OPTION_ELEMENT
+    - FILTER_DROPDOWN
+    - ADD_NEW_FILTER_ROW_ICON
+    - ADD_DATA_FILTER
+    - FIRST_ROW_SELECTION
+    - ADD_TABLE_WIDGET
+    - ADD_WIDGET
+    - NEW_CUSTOM_FILTER
+    - CUSTOM_VIEW_FORM
+    - EXISTING_FILTER_FORM_ADD_ICON
+    - SAVE_CUSTOM_FILTER
+    - LAST_SELECT_FILED_VALUE
+    - LAST_SELECT_FILED_EDIT_ICN
+    - DATA_FILTER_CRITERIA_VALUES
+    - MAXIMIZE_WIDGET
+    - CUSTOMIZE_WIDGET_SEARCH
+    - CUSTOMIZE_WIDGET_TYPE
+    - CUSTOMIZE_WIDGET_MODULE
+    - CUSTOMIZE_WIDGET_CHECKBOX
+    - TABLE_CONFIGURATIONS_CHECKBOX
+    - ROW_EDIT_CONFIGURATIONS_CHECKBOX
+    - ROW_CONFIGURATIONS_ICONS
+    - COLUMN_CONFIGURATIONS_CHECKBOX
+    - COLUMN_CONFIGURATIONS_SEARCHBOX
+    - COLUMN_CONFIGURATIONS_CLOSE
+    - COLUMN_CONFIGURATIONS_NAME
+    - COLUMN_CONFIGURATIONS_DISPLAY_NAME
+    - ACTION_CONFIGURATIONS_CHECKBOX
+    - TABLE_CONFIGURATIONS_CHECKBOX_DISP
+    - GRAPH_FIRST_SELECT_FIELD
+    - GRAPH_SECOND_SELECT_FIELD
+    - GRAPH_THIRD_SELECT_FIELD
+    - GRAPH_FOURTH_SELECT_FIELD
+    - GRAPH_TYPE
+    - WIDGETNAME_IN_DASHBOARD
+    - WIDGETFILTERS_LIST_IN_DASHBOARD
+    - WIDGET_MULTIPLE_FILTER_ICON
+    - WIDGET_TITLE
+    - PRESENT_WIDGET_FILTER
+    - DASH_ACTIONS_TRAY_HOVER
+    - SELECTED_WIDGETS_PANEL
+    - SELECTED_WIDGETS_PANEL_COUNTER
+    - SELECTED_WIDGETS_NEWLY_ADDED
+    - SELECTED_WIDGETS_NEWLY_ADDED_NAME
+    - SELECTED_WIDGETS_SEARCH_BOX
+    - SELECTED_WIDGETS_SEARCH_RESULT
+    - WIDGET_COUNT_DASHBOARD
+    - WIDGET_BACK_BUTTON
+    - ALREADY_CHECKED
+    - WIDGET_TEXTBOX_EMPTY_ERR
+    - WIDGET_NAME_DUPLICATION_ERR
+    - WIDGET_NAME_UPDATED
+    - NO_WIDGETS
+    - VERIFY_WIDGET_ACCESSIBITY_PUBLIC
+    - VERIFY_WIDGET_ACCESSIBITY_PRIVATE
+    - WIDGET_EDIT_IN_SEARCH_LIST
+    - WIDGET_DELETE_IN_SEARCH_LIST
+    - DELETE_POPUP_TEXT
+    - DELETE_WIDGET
+    - CANCEL_DELETING_WIDGET
+    - CANCEL_BTN
+    - NO_MATCH_FOUND_TXT
+    - MODULE_TXT
+    - WIDGET_ERROR
+    - TABLE_WIDGET_SUB_MODULE_DROPDOWN
+    - PENDING_WIDGET_MODULE_BUTTON
+    - WIDGET_COUNT
+    EDITOR:
+    - CRITERIA_FIELD
+    - CRITERIA_CONDITION
+    - CRITERIA_VALUE_INPUT
+    - OPTION_ELEMENT
+    - CUSTOM_FILTER_NAME
+    - CRITERIA_VALUE_INPUT_MULTI
+    TABLE_WIDGET_ACTIONS:
+    - WIDGET_ACTION_BTN
+    - DASH_ACTION_BTN
+    - WIDGET_MORE_BTN
+    - FIRST_REQUEST_ROW
+    - EDIT_ROW_ICON
+    - NOTES_ICON
+    - CONVERSATION_ICON
+    - COLUMN_CONFIGS
+    - TABLE_WIDGET_NAME
+    - TABLE_WIDGET_PREVIEW
+    - TABLE_WIDGET_PUBLIC
+    - TABLE_WIDGET_PRIVATE
+    - ERR_MSG_EMPTY_TXT_BOX
+    - TABLE_WIDGET_REFRESH
+    - TABLE_WIDGET_PREVIEW_CONTENT
+    - PREVIEW_WIDGET_NAME
+    - EDIT_TABLE_WIDGET_TXT
+    - WIDGET_MODULE_DROPDOWN
+    - GET_DISPLAYNAME
+    GRAPH_WIDGET_ACTIONS:
+    - DASH_ACTION_BTN
+    - GRAPH_ICON
+    - CHOOSE_OTHER_GRAPH_TYPES
+    - GRAPH_WIDGET_NAME
+    - GRAPH_WIDGET_PREVIEW
+    - GRAPH_WIDGET_PRIVATE
+    - GRAPH_WIDGET_PUBLIC
+    - ERR_MSG_EMPTY_TXT_BOX
+    - ERR_MSG_EMPTY_SELECT_BOX
+    - GRAPH_WIDGET_REFRESH
+    - GRAPH_WIDGET_EMPTY_PREVIEW
+    - GRAPH_WIDGET_PREVIEW_CONTENT
+    - EDIT_GRAPH_WIDGET_TXT
+    - PREVIEW_WIDGET_NAME
+    - SAVE_CUSTOM_FILTER_GRAPH
+    - WIDGET_MODULE_DROPDOWN
+    - IS_PIE_CHART
+    - IS_GRAPH_WIDGET_CONTAINER
+    - SAVE_CUSTOM_FILTER
+    - VERIFY_CHART
+    - TIME_FILTER_ICN
+    - TIME_FILTER_POPUP
+    - TIME_FILTER_POPUP_APPLY
+    - EXISTING_GRAPH_TYPE_IN_WIDGET
+    - GRAPH_WIDGET_SUB_MODULE
+    Dashboard_Roles_Locattors:
+    - CONTACT_ADMINISTRATOR_MSG
+    - INSUFFICIENT_PRIVILEGE
+    - NO_MATCH_DASHBOARD_FILTER
+    - VERIFY_TXT_WIDGET
+    - PRIVATE_WIDGET_TXT
+    - PRIVATE_WIDGET
+    - NO_WIDGETS_FOUND_LIST
+    - VERIFY_TXT_WIDGET_WITH_WIDGETNAME
+    - PRIVATE_WIDGET_TXT_WITH_WIDGETNAME
+    - PRIVATE_WIDGET_WITH_WIDGETNAME
+    - CONTACT_ADMINISTRATOR_MSG_WITH_WIDGETNAME
+    - INSUFFICIENT_PRIVILEGE_WITH_WIDGETNAME
+    Change_Peek_View_status_change:
+    - CONTACT_ADMINISTRATOR_MSG
+    - SELECTING_THE_CHANGE_FROM_THE_WIDGET
 data_constants:
   file: com/zoho/automater/selenium/modules/general/dashboard/common/DashboardDataConstants.java
   classes:
@@ -429,2184 +689,3 @@ data_json_keys:
 - refresh_frequency_never
 - table_widget_name
 - widget_id
-data_json_deep:
-  total_entries: 76
-  field_frequency:
-    name: 34
-    property_json: 21
-    access_type: 21
-    display_name: 20
-    custom_widget: 17
-    graph_type: 16
-    module_type: 16
-    entity: 16
-    description: 13
-    widget_accessibilities: 7
-    refresh_frequency: 7
-    settings: 6
-    search_criteria: 6
-    template: 5
-    subject: 5
-    group: 5
-    urgency: 5
-    priority: 5
-    widget_names: 4
-    shared_to: 4
-  all_placeholders:
-  - common_string
-  - current_user
-  - custom_changeapprover
-  - custom_col
-  - custom_cwViewId
-  - custom_default_filter_name
-  - custom_filter_module_plural
-  - custom_filter_name
-  - custom_graph_id
-  - custom_graph_name
-  - custom_module_id
-  - custom_module_name
-  - custom_referred_site
-  - custom_requesterId
-  - custom_requesterName
-  - custom_row
-  - custom_tech2email
-  - custom_technician
-  - custom_usergroupId
-  - custom_widget
-  - custom_widgetName
-  - custom_widget_id
-  - custom_widget_name0
-  - custom_widget_name1
-  - custom_widget_name2
-  - custom_widget_name3
-  - datetime, 2Y 10M 100D 10h 10m, false
-  - datetime, 2Y 10M 100D 10h 10m, true
-  - rest_api, get, graph_types, graph_types, get_widget_id, true
-  - rest_api, get, priorities, priorities, get_priority_id
-  - unique_string
-  - user_email_id
-  - user_name
-  reuse_groups_count: 13
-  entries:
-    associated_custom_site:
-      fields:
-      - name
-      - settings
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_custom_site:
-      fields:
-      - name
-      - settings
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    associated_group:
-      fields:
-      - name
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    api_multiple_widgets_name_count_4:
-      fields:
-      - widget_names
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    api_software_and_request_widget:
-      fields:
-      - widget_names
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_dash_name:
-      fields:
-      - description
-      - display_name
-      - name
-      placeholders:
-      - common_string
-      - common_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_dash_input:
-      fields:
-      - description
-      - property_json
-      - access_type
-      - shared_to
-      - display_name
-      - name
-      - dashboard_type
-      - widget_names
-      - success
-      - add_widget_alert
-      placeholders:
-      - common_string
-      - common_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_table_widget_template_api:
-      fields:
-      - name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - custom_widget
-      - display_name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    create_table_widget_list_api:
-      fields:
-      - name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - custom_widget
-      - display_name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    create_table_widget_template_view:
-      fields:
-      - name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - custom_widget
-      - table_widget_name
-      - entity
-      - widget_accessibilities
-      - success
-      placeholders:
-      - common_string
-      - common_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_table_widget_list_view:
-      fields:
-      - description
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - custom_widget
-      - table_widget_name
-      - entity
-      - widget_accessibilities
-      - success
-      placeholders:
-      - common_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_graph_widget:
-      fields:
-      - description
-      - display_name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - widget_accessibilities
-      - custom_widget
-      - graph_widget_name
-      - entity
-      placeholders:
-      - common_string
-      - common_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_pie_graph_widget_API:
-      fields:
-      - display_name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - widget_accessibilities
-      - custom_widget
-      - name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    create_widget_data_filter:
-      fields:
-      - name
-      - criteria
-      - filter_module
-      - filter_success
-      placeholders:
-      - current_user
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    api_widget_layout_structure:
-      fields:
-      - id
-      - position
-      placeholders:
-      - custom_widget
-      - custom_row
-      - custom_col
-      local_storage_keys_required:
-      - widget
-      - row
-      - col
-      purpose: api_preprocess
-    api_search_and_get_widget_id:
-      fields:
-      - search_criteria
-      placeholders:
-      - custom_widgetName
-      local_storage_keys_required:
-      - widgetName
-      purpose: api_preprocess
-    api_search_and_get_default_filter_id:
-      fields:
-      - search_criteria
-      placeholders:
-      - custom_default_filter_name
-      local_storage_keys_required:
-      - default_filter_name
-      purpose: api_preprocess
-    api_search_and_get_default_filters_meta:
-      fields:
-      - search_criteria
-      - start_index
-      - row_count
-      placeholders:
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - filter_module_plural
-      purpose: api_preprocess
-    api_create_public_dash_input:
-      fields:
-      - description
-      - property_json
-      - access_type
-      - shared_to
-      - display_name
-      - name
-      - dashboard_type
-      placeholders:
-      - custom_widget
-      - common_string
-      - common_string
-      local_storage_keys_required:
-      - widget
-      purpose: api_preprocess
-    api_create_private_dash_input:
-      fields:
-      - description
-      - property_json
-      - access_type
-      - shared_to
-      - display_name
-      - name
-      - dashboard_type
-      placeholders:
-      - custom_widget
-      - common_string
-      - common_string
-      local_storage_keys_required:
-      - widget
-      purpose: api_preprocess
-    api_url_widget:
-      fields:
-      - name
-      - display_name
-      - widget_url
-      - description
-      - access_type
-      - property_json
-      - custom_widget
-      placeholders:
-      - unique_string
-      - unique_string
-      - unique_string
-      - custom_widget_id
-      local_storage_keys_required:
-      - widget_id
-      purpose: api_preprocess
-    custom_filter_priority_high_API:
-      fields:
-      - widget_filter
-      placeholders:
-      - custom_filter_name
-      - unique_string
-      - rest_api, get, priorities, priorities, get_priority_id
-      - custom_module_name
-      local_storage_keys_required:
-      - filter_name
-      - module_name
-      purpose: ui_form
-    get_priority_id:
-      fields:
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    default_data_filter_name:
-      fields:
-      - names
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    custom_widget_filter_login_API:
-      fields:
-      - widget_filter
-      placeholders:
-      - unique_string
-      - current_user
-      local_storage_keys_required: []
-      purpose: ui_form
-    asset_summary_widget_name:
-      fields:
-      - name
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    approved_changes_widget_name:
-      fields:
-      - name
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    open_problems_by_category_widget_name:
-      fields:
-      - name
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    closure_actvity_widget_name:
-      fields:
-      - name
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    open_requests_by_category_widget_name:
-      fields:
-      - name
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    check_filter_input:
-      fields:
-      - dashboard_names
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    canned_filter_input:
-      fields:
-      - dashboard_names
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    referred_site_note_absent:
-      fields:
-      - dashboard_names
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_copy_site:
-      fields:
-      - name
-      - settings
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_refer_site:
-      fields:
-      - name
-      - settings
-      placeholders:
-      - unique_string
-      - custom_referred_site
-      - custom_referred_site
-      - custom_referred_site
-      - custom_referred_site
-      local_storage_keys_required:
-      - referred_site
-      - referred_site
-      - referred_site
-      - referred_site
-      purpose: api_preprocess
-    create_default_refer_site:
-      fields:
-      - name
-      - settings
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_IR_Valid_Input:
-      fields:
-      - template
-      - subject
-      - group
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - user_name
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_IR_Valid_Input_No_Group:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - user_name
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    edit_IR_Valid_Input:
-      fields:
-      - subject
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_IR_Valid_Input_count10:
-      fields:
-      - template
-      - subject
-      - group
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      - request_count
-      placeholders:
-      - unique_string
-      - user_name
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_IR_Valid_Input_group_printer_problem_count10:
-      fields:
-      - template
-      - subject
-      - group
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      - request_count
-      placeholders:
-      - unique_string
-      - user_name
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_copy_sites_count2:
-      fields:
-      - name
-      - settings
-      - site_count
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    favorite_filter:
-      fields:
-      - favorite_added_message
-      - favorite_removed_message
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    refresh_frequency_never:
-      fields:
-      - refresh_frequency
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    refresh_frequency_5mins:
-      fields:
-      - refresh_frequency
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    refresh_frequency_10mins:
-      fields:
-      - refresh_frequency
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    refresh_frequency_15mins:
-      fields:
-      - refresh_frequency
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    refresh_frequency_20mins:
-      fields:
-      - refresh_frequency
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    refresh_frequency_25mins:
-      fields:
-      - refresh_frequency
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    refresh_frequency_30mins:
-      fields:
-      - refresh_frequency
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    add_url_widget:
-      fields:
-      - url_widget_name
-      - widget_url_input
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    table_widget_name:
-      fields:
-      - table_widget_name
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    graph_widget_name:
-      fields:
-      - graph_widget_name
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    widget_id:
-      fields:
-      - name
-      - id
-      placeholders:
-      - custom_graph_name
-      - rest_api, get, graph_types, graph_types, get_widget_id, true
-      local_storage_keys_required:
-      - graph_name
-      purpose: ui_form
-    get_widget_id:
-      fields:
-      - search_criteria
-      placeholders:
-      - custom_graph_name
-      local_storage_keys_required:
-      - graph_name
-      purpose: ui_form
-    all_site_all_group_filter:
-      fields:
-      - site
-      - group
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    all_site_network_group_filter:
-      fields:
-      - site
-      - group
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_executive_dashboard_with_usergroups:
-      fields:
-      - dashboard
-      placeholders:
-      - custom_usergroupId
-      - custom_widget
-      - unique_string
-      - unique_string
-      local_storage_keys_required:
-      - usergroupId
-      - widget
-      purpose: api_preprocess
-    add_participants:
-      fields:
-      - share
-      placeholders:
-      - custom_requesterName
-      - custom_tech2email
-      local_storage_keys_required:
-      - requesterName
-      - tech2email
-      purpose: ui_form
-    create_executive_dash:
-      fields:
-      - dashboard
-      placeholders:
-      - custom_widget
-      - unique_string
-      - unique_string
-      local_storage_keys_required:
-      - widget
-      purpose: api_preprocess
-    CopySite:
-      fields:
-      - site
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    get_change_approver:
-      fields:
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    api_create_change_with_role:
-      fields:
-      - title
-      - template
-      - description
-      - risk
-      - change_type
-      - change_requester
-      - change_owner
-      - impact
-      - priority
-      - scheduled_start_time
-      - scheduled_end_time
-      - reason_for_change
-      - category
-      - subcategory
-      - roles
-      - item
-      - urgency
-      - services
-      - assets
-      placeholders:
-      - unique_string
-      - user_name
-      - user_email_id
-      - datetime, 2Y 10M 100D 10h 10m, false
-      - datetime, 2Y 10M 100D 10h 10m, true
-      - custom_changeapprover
-      - custom_technician
-      local_storage_keys_required:
-      - changeapprover
-      - technician
-      purpose: api_preprocess
-    create_table_widget_tasks_public:
-      fields:
-      - name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - custom_widget
-      - display_name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    create_table_widget_tasks_private:
-      fields:
-      - name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - custom_widget
-      - display_name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    create_pie_graph_task_priv_widget_API:
-      fields:
-      - display_name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - widget_accessibilities
-      - custom_widget
-      - name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    create_table_widget_common_public:
-      fields:
-      - name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - custom_widget
-      - display_name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    create_table_widget_common_private:
-      fields:
-      - name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - custom_widget
-      - display_name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    create_table_widget_soln_private:
-      fields:
-      - name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - custom_widget
-      - display_name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    create_table_widget_soln_public:
-      fields:
-      - name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - custom_widget
-      - display_name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    create_pie_graph_common_priv:
-      fields:
-      - display_name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - widget_accessibilities
-      - custom_widget
-      - name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    create_table_widget_cmdb_priv:
-      fields:
-      - name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - custom_widget
-      - display_name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    create_pie_graph_cmdb_public:
-      fields:
-      - display_name
-      - access_type
-      - graph_type
-      - module_type
-      - property_json
-      - widget_accessibilities
-      - custom_widget
-      - name
-      - entity
-      placeholders:
-      - common_string
-      - custom_graph_id
-      - custom_module_id
-      - custom_module_id
-      - custom_widget_id
-      - common_string
-      - custom_filter_module_plural
-      local_storage_keys_required:
-      - graph_id
-      - module_id
-      - module_id
-      - widget_id
-      - filter_module_plural
-      purpose: api_preprocess
-    api_multiple_cust_widgets_name_count_4:
-      fields:
-      - widget_names
-      placeholders:
-      - custom_widget_name0
-      - custom_widget_name1
-      - custom_widget_name2
-      - custom_widget_name3
-      local_storage_keys_required:
-      - widget_name0
-      - widget_name1
-      - widget_name2
-      - widget_name3
-      purpose: api_preprocess
-    custom_widget_dashboard:
-      fields:
-      - dashboard
-      placeholders:
-      - custom_cwViewId
-      - common_string
-      local_storage_keys_required:
-      - cwViewId
-      purpose: ui_form
-    create_executive_dash_with_user:
-      fields:
-      - shared_to
-      - property_json
-      - access_type
-      - display_name
-      - description
-      - name
-      - dashboard_type
-      placeholders:
-      - custom_requesterId
-      - custom_widget
-      - unique_string
-      - unique_string
-      local_storage_keys_required:
-      - requesterId
-      - widget
-      purpose: api_preprocess
-actions_util_deep:
-- name: toSubTabInModule
-  params: String subTabName, String tabName
-  locators_used:
-  - DashboardLocators.MODULE_SUBTAB.apply
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.navigate.to
-  - actions.refreshPage
-  line_count: 3
-- name: clickApplyButton
-  params: (none)
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.clickButton
-  line_count: 1
-- name: click
-  params: Locator locator
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.executeScript
-  line_count: 1
-- name: deleteDashboard
-  params: String dashboard
-  locators_used:
-  - DashboardLocators.DASHBOARD_ACTIONS.apply
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.hoverElement
-  - actions.click
-  - actions.clickByNameSpan
-  line_count: 4
-- name: selectWidgetType
-  params: String widgeType
-  locators_used:
-  - DashboardLocators.ADD_NEW_WIDGET_TYPE.apply
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  line_count: 2
-- name: checkEmptyDashboard
-  params: String dashboardName
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.refreshPage
-  - actions.click
-  - actions.type
-  - actions.waitForAjaxComplete
-  - actions.isElementPresent
-  line_count: 5
-- name: restoreDashboard
-  params: String dashboard
-  locators_used:
-  - DashboardLocators.CustomDashboardLocators.CLICK_LAYOUT_CUSTOMISATION
-  - DashboardLocators.DASHBOARD_ACTIONS.apply
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.hoverElement
-  - actions.click
-  - actions.clickByNameInput
-  - actions.clickByNameSpan
-  - actions.clickByNameInput
-  line_count: 9
-- name: findNumberOfColumnsInDashboard
-  params: (none)
-  locators_used:
-  - DashboardLocators.CustomDashboardLocators.GET_ALL_WIDGETS_IN_DASHBOARD
-  - HomeLocators.UI_WIDGET.apply
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.getAllElements
-  line_count: 8
-- name: clickRefreshFrequencyDropdown
-  params: (none)
-  locators_used:
-  - DashboardLocators.CustomDashboardLocators.CLICK_DROPDOWN
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  line_count: 1
-- name: clickSelectSiteDropdown
-  params: (none)
-  locators_used:
-  - DashboardLocators.CustomDashboardLocators.CLICK_DROPDOWN
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  line_count: 1
-- name: clickSiteGroupSettingsDropdown
-  params: (none)
-  locators_used:
-  - DashboardLocators.CustomDashboardLocators.CLICK_DASHBOARD_SITE_FILTER_ICON
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  - actions.waitForAjaxComplete
-  - actions.executeScript
-  line_count: 3
-- name: checkIfIncludeReferredSitesSelected
-  params: (none)
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.executeScriptAndFetchBooleanValue
-  line_count: 1
-- name: clearGroupInFilter
-  params: (none)
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.executeScript
-  line_count: 2
-- name: setSiteAndGroupInFilter
-  params: String site, String group
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.OPTION_ELEMENT
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.formBuilder.typeAndSelectOption
-  - actions.executeScript
-  - actions.type
-  - actions.click
-  - actions.clickByNameInput
-  line_count: 7
-- name: setSiteInFilter
-  params: String site
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.waitForAjaxComplete
-  - actions.formBuilder.typeAndSelectOption
-  - actions.clickByNameInput
-  line_count: 5
-- name: clearAndSetGroupInFilter
-  params: String group
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.OPTION_ELEMENT
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.executeScript
-  - actions.type
-  - actions.click
-  - actions.clickByNameInput
-  line_count: 5
-- name: setGroupInFilter
-  params: String group
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.OPTION_ELEMENT
-  - DashboardLocators.CustomDashboardLocators.CLICK_DASHBOARD_SITE_FILTER_ICON
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.executeScript
-  - actions.click
-  - actions.type
-  - actions.click
-  - actions.clickByNameInput
-  line_count: 5
-- name: checkIfHelpIconPresent
-  params: String title
-  locators_used:
-  - DashboardLocators.CustomDashboardLocators.CHECK_HELP_ICON_WITH_TITLE
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  line_count: 5
-- name: checkIfSmartViewHelpPresent
-  params: String title
-  locators_used:
-  - DashboardLocators.CustomDashboardLocators.SMARTVIEW_HELP_ICON_WITH_TITLE
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  line_count: 5
-- name: setDashboard
-  params: String dashboardName
-  locators_used:
-  - DashboardLocators.CustomDashboardLocators.CLICK_DASHBOARD_FILTER_FROM_DROPDOWN
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.refreshPage
-  - actions.click
-  - actions.type
-  - actions.click
-  - actions.waitForAjaxComplete
-  line_count: 5
-- name: clickCustomizeDashboard
-  params: (none)
-  locators_used:
-  - DashboardLocators.CustomDashboardLocators.CLICK_CUSTOMIZE_CUSTOM_DASHBOARD
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  line_count: 1
-- name: isToggleActivated
-  params: (none)
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.executeScriptAndFetchBooleanValue
-  line_count: 1
-- name: setDashboardLayout
-  params: String numberOfCols
-  locators_used:
-  - DashboardLocators.CustomDashboardLocators.CLICK_LAYOUT_CUSTOMISATION
-  - DashboardLocators.CustomDashboardLocators.SET_AS_PUBLIC_DASHBOARD
-  - DashboardLocators.CustomDashboardLocators.SET_WIDGET_COLUMN
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isDisplayed
-  - actions.click
-  - actions.clickByNameInput
-  line_count: 5
-- name: clickSaveCustomDashboard
-  params: (none)
-  locators_used:
-  - DashboardLocators.CustomDashboardLocators.CLICK_SAVE_CUSTOM_DASHBOARD_FILTER
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  line_count: 1
-- name: checkIfFavoriteDashboardFilter
-  params: String filter
-  locators_used:
-  - DashboardLocators.FavoriteDashboardLocators.DIV_FAVORITE_DASHBOARD
-  - DashboardLocators.FavoriteDashboardLocators.ICN_FAVORITE_STAR_SELECTED
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  line_count: 7
-- name: checkIfFavoriteDashboardPinned
-  params: (none)
-  locators_used:
-  - DashboardLocators.FavoriteDashboardLocators.ICN_FAVORITE_UNPIN
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  line_count: 5
-- name: checkIfFavoriteDashboardPinned
-  params: String filter
-  locators_used:
-  - DashboardLocators.FavoriteDashboardLocators.ICN_PINNED_FILTER
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  line_count: 5
-- name: generateRandomString
-  params: int n, String word
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain: []
-  line_count: 2
-- name: rowActionsInSite
-  params: String entityID, String action
-  locators_used:
-  - ChangeLocators.ChangeListview.ACTIONS_LIST
-  - ChangeLocators.ChangeListview.CLICK_ROW_ACTIONS_WITH_ENTITYID
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  line_count: 2
-- name: criteriaBuilder
-  params: String criteriaString, String valueType
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.OPTION_ELEMENT
-  - DashboardLocators.EDITOR.CRITERIA_FIELD
-  - DashboardLocators.EDITOR.CRITERIA_VALUE_INPUT
-  - DashboardLocators.EDITOR.CRITERIA_VALUE_INPUT_MULTI
-  - DashboardLocators.EDITOR.CUSTOM_FILTER_NAME
-  - DashboardLocators.EDITOR.OPTION_ELEMENT
-  local_storage_reads: []
-  local_storage_writes:
-  - filterNameUI
-  action_chain:
-  - actions.type
-  - actions.click
-  - actions.formBuilder.typeAndSelectOption
-  - actions.type
-  - actions.isElementPresent
-  - actions.click
-  - actions.type
-  - actions.click
-  - actions.executeScript
-  - actions.executeScriptAndFetchValue
-  line_count: 40
-- name: isColumnsChecked
-  params: String columnNames
-  locators_used:
-  - DashboardWidgetLocators.ACTION_CONFIGURATIONS_CHECKBOX.apply
-  - DashboardWidgetLocators.COLUMN_CONFIGURATIONS_DISPLAY_NAME.apply
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  - actions.getAttribute
-  - actions.isElementPresent
-  - actions.getAttribute
-  line_count: 19
-- name: verifyText
-  params: String name
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.getDriver
-  line_count: 2
-- name: verifyPublicWidgets
-  params: String dashboardName, String verificationData
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.validate.textContent
-  line_count: 2
-- name: verifyPrivateWidgets
-  params: String dashboardName
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  line_count: 5
-- name: verifyInsufficientPrivWidgets
-  params: String dashboardName
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  line_count: 7
-- name: verifyPublicWidgetsWithWidgetParams
-  params: String verificationData, String widgetName
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.validate.textContent
-  line_count: 1
-- name: verifyPublicWidgetsWithWidgetParams
-  params: String widgetTypeVerification, String widgetName, boolean dataVerify
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  line_count: 4
-- name: verifyPrivateWidgetsWithWidgetParams
-  params: String widgetName
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  line_count: 4
-- name: verifyInsufficientPrivWidgetsWithWidgetParams
-  params: String widgetName
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  line_count: 4
-- name: typeAndCheckModulesAvailable
-  params: List<String> moduleList
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.OPTION_ELEMENT
-  - ClientFrameworkLocators.FormBuilderLocators.TYPE_DROPDOWN_SEARCH_INPUT
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  - actions.click
-  - actions.type
-  - actions.waitForAjaxComplete
-  - actions.isElementPresent
-  - actions.executeScript
-  - actions.click
-  - actions.type
-  - actions.hoverElement
-  - actions.isElementPresent
-  line_count: 46
-- name: typeAndCheckModulesUnavailable
-  params: List<String> moduleList
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.OPTION_ELEMENT
-  - ClientFrameworkLocators.FormBuilderLocators.TYPE_DROPDOWN_SEARCH_INPUT
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  - actions.click
-  - actions.type
-  - actions.waitForAjaxComplete
-  - actions.isElementPresent
-  - actions.executeScript
-  line_count: 21
-- name: getData
-  params: String moduleName
-  locators_used: []
-  local_storage_reads:
-  - releaseName
-  - solutionSubject
-  - Asset_Name
-  - requestSubject
-  - ProblemName
-  - taskName
-  - projectName
-  - Name
-  - CmdbName
-  - changeName
-  local_storage_writes: []
-  action_chain: []
-  line_count: 43
-api_util_deep:
-- name: triggerEntityAPI
-  params: io.restassured.http.Method method, String entityName, String apiPath, JSONObject inputData
-  api_paths: []
-  rest_methods_used: []
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createEntityAndGetId
-  params: String entityName, String apiPath, JSONObject inputData
-  api_paths: []
-  rest_methods_used: []
-  local_storage_writes: []
-  local_storage_reads: []
-- name: deleteEntity
-  params: String apiPath
-  api_paths: []
-  rest_methods_used: []
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createUrlWidget
-  params: TestCaseData taskdata
-  api_paths:
-  - widgets
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - widget_id
-  - widget
-  - widgetName
-  local_storage_reads: []
-- name: createExecutiveDashbaord
-  params: String data
-  api_paths:
-  - dashboards
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - dashboard
-  - dashboardname
-  local_storage_reads: []
-- name: getCustomWidgetID
-  params: String widgetName
-  api_paths:
-  - widgets/custom_widget
-  rest_methods_used:
-  - get
-  local_storage_writes: []
-  local_storage_reads: []
-- name: getWidgetID
-  params: String widgetName
-  api_paths:
-  - widgets
-  rest_methods_used:
-  - getEntityIdUsingSearchCriteria
-  local_storage_writes:
-  - widget
-  - widgetName
-  local_storage_reads: []
-- name: deleteWidget
-  params: String widgetId
-  api_paths: []
-  rest_methods_used:
-  - delete
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createURLWidgetWithDashboard
-  params: (none)
-  api_paths:
-  - dashboards
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - dashboardName
-  - dashboard
-  local_storage_reads: []
-- name: createSite
-  params: String data
-  api_paths: []
-  rest_methods_used: []
-  local_storage_writes:
-  - siteName
-  - site
-  local_storage_reads: []
-preprocess_deep:
-- group: createDashboard
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createDashboardWithMultipleWidgets
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  - 4
-  dataids_count: 5
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  - getEntityIdUsingSearchCriteria
-  local_storage_stores:
-  - key: widgetName
-    source_type: computed
-  - key: widget
-    source_type: computed
-  - key: col
-    source_type: computed
-  - key: row
-    source_type: computed
-  - key: widgetNames
-    source_type: computed
-  - key: dashboardName
-    source_type: computed
-  - key: moduleNameForEntityDetails
-    source_type: computed
-  - key: widgetName
-    source_type: computed
-  - key: widget
-    source_type: computed
-  - key: dashboardName
-    source_type: computed
-  - key: moduleNameForEntityDetails
-    source_type: computed
-  - key: widgetName
-    source_type: computed
-  - key: widget
-    source_type: computed
-  - key: dashboardName
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - getName
-  - getName
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createSite
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - DashboardAPIUtil.createSite
-  - DashboardAPIUtil.createUrlWidget
-  - DashboardAPIUtil.createExecutiveDashbaord
-  - DashboardAPIUtil.createUrlWidget
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Dashboard.Site
-  - Dashboard.UrlWidget
-  - Dashboard.ExecutiveDashbaord
-  - Dashboard.UrlWidget
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createSitesAndRequests
-  source_file: DashboardBase.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createDifferentSitesWithRequests
-  source_file: DashboardBase.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: checkAllSite
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - DashboardAPIUtil.createEntityAndGetId
-  - DashboardAPIUtil.createEntityAndGetId
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: sites
-    source_type: computed
-  - key: siteNames
-    source_type: computed
-  - key: site_count
-    source_type: computed
-  - key: requests
-    source_type: computed
-  - key: requestSubjects
-    source_type: computed
-  - key: request_count
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - Dashboard.EntityAndGetId
-  - Dashboard.EntityAndGetId
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createGroup
-  source_file: DashboardBase.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: deleteExistingSites
-  source_file: DashboardBase.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls:
-  - delete
-  - get
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createReferSiteAndRequests
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - DashboardAPIUtil.createSite
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: referred_site
-    source_type: hardcoded
-  local_storage_reads:
-  - site
-  entities_created:
-  - Dashboard.Site
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: checkGroupFilter
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - DashboardAPIUtil.createEntityAndGetId
-  - DashboardAPIUtil.createEntityAndGetId
-  - DashboardAPIUtil.createEntityAndGetId
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: site
-    source_type: hardcoded
-  - key: siteName
-    source_type: hardcoded
-  - key: group1Count
-    source_type: computed
-  - key: group2Count
-    source_type: computed
-  local_storage_reads:
-  - siteName
-  entities_created:
-  - Dashboard.EntityAndGetId
-  - Dashboard.EntityAndGetId
-  - Dashboard.EntityAndGetId
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createCustomExecutiveDashboard
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  - 4
-  dataids_count: 5
-  api_util_calls:
-  - AdminAPIUtil.createOrgRoleAndAssociateUser
-  - UserGroupAPIUtil.updateUser
-  - UserGroupsAPIUtil.createUserGroup
-  - ChangeAPIUtil.createChangeForConflictDetection
-  - ChangeAPIUtil.releaseScheduleAPI
-  - ReleaseAPIUtil.createRelease
-  - ChangeAPIUtil.createChangeForConflictDetection
-  - ChangeAPIUtil.releaseScheduleAPI
-  - ReleaseAPIUtil.createRelease
-  - ChangeAPIUtil.createChangeForConflictDetection
-  - ChangeAPIUtil.createDowntime
-  - ReleaseAPIUtil.createRelease
-  - ChangeAPIUtil.createChangeForConflictDetection
-  - ChangeAPIUtil.createDowntime
-  - ReleaseAPIUtil.createRelease
-  rest_direct_calls:
-  - create
-  - getEntityIdUsingSearchCriteria
-  local_storage_stores:
-  - key: widgetName
-    source_type: computed
-  - key: widget
-    source_type: computed
-  - key: dashboardName
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - getName
-  - Admin.OrgRoleAndAssociateUser
-  - UserGroups.UserGroup
-  - Change.ChangeForConflictDetection
-  - Release.Release
-  - Change.ChangeForConflictDetection
-  - Release.Release
-  - Change.ChangeForConflictDetection
-  - Change.Downtime
-  - Release.Release
-  - Change.ChangeForConflictDetection
-  - Change.Downtime
-  - Release.Release
-  creates_user: true
-  user_role: Requester
-  calls_super: false
-- group: createChangeWithChangeApprover
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ChangeAPIUtil.createChange
-  - TaskAPIUtil.createTask
-  rest_direct_calls:
-  - create
-  - getEntityIdUsingSearchCriteria
-  local_storage_stores:
-  - key: techName
-    source_type: user_display_id
-  - key: changeapprover
-    source_type: computed
-  - key: tableWidgetNames
-    source_type: computed
-  - key: widgetName
-    source_type: computed
-  - key: widget
-    source_type: computed
-  - key: dashboardNames
-    source_type: computed
-  - key: openTaskName
-    source_type: computed
-  local_storage_reads:
-  - taskName
-  entities_created:
-  - getName
-  - Change.Change
-  - Task.Task
-  creates_user: true
-  user_role: sdadmin
-  calls_super: false
-- group: createDashboard_Requester
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: requesterId
-    source_type: computed
-  local_storage_reads: []
-  entities_created: []
-  creates_user: true
-  user_role: Requester
-  calls_super: false
-- group: fga_with_dashboard
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: TechDisplayId
-    source_type: user_display_id
-  local_storage_reads: []
-  entities_created: []
-  creates_user: true
-  user_role: CustomRole_With_AllModule
-  calls_super: false
-- group: executiveDashboard
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  dataids_count: 4
-  api_util_calls:
-  - DashboardAPIUtil.createSite
-  - AdminAPIUtil.createOrgRoleAndAssociateUser
-  - UserGroupsAPIUtil.createUserGroup
-  - DashboardAPIUtil.getWidgetID
-  - DashboardAPIUtil.createExecutiveDashbaord
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Dashboard.Site
-  - Admin.OrgRoleAndAssociateUser
-  - UserGroups.UserGroup
-  - Dashboard.ExecutiveDashbaord
-  creates_user: true
-  user_role: create_requester_with_viewall_requests_permission
-  calls_super: false
-- group: createRequest
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - RequestAPIUtil.createRequest
-  - ChangeAPIUtil.createChange
-  - ChangeAPIUtil.addStageAndStatus
-  - RequestAPIUtil.createIR
-  - ReleaseAPIUtil.createRelease
-  - ReleaseAPIUtil.updateCloseStatus
-  - ProblemAPIUtil.createProblemForTrigger
-  rest_direct_calls:
-  - update
-  local_storage_stores:
-  - key: requesterName
-    source_type: user_display_id
-  - key: ChangeName
-    source_type: hardcoded
-  - key: ReleaseName
-    source_type: hardcoded
-  - key: Title
-    source_type: computed
-  local_storage_reads:
-  - Title
-  - releaseName
-  - changeName
-  - problemId
-  entities_created:
-  - Request.Request
-  - Change.Change
-  - Request.IR
-  - Release.Release
-  - Problem.ProblemForTrigger
-  creates_user: true
-  user_role: Requester
-  calls_super: false
-- group: releaseManagement
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - ReleaseAPIUtil.createRelease
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Release.Release
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createChange
-  source_file: DashboardBase.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - ChangeAPIUtil.createChange
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Change.Change
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createDashboard
-  source_file: Dashboard.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  - getEntityIdUsingSearchCriteria
-  local_storage_stores:
-  - key: widgetName
-    source_type: computed
-  - key: widget
-    source_type: computed
-  - key: dashboardName
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createDashboardWithMultipleWidgets
-  source_file: Dashboard.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  - getEntityIdUsingSearchCriteria
-  local_storage_stores:
-  - key: widgetName
-    source_type: computed
-  - key: widget
-    source_type: computed
-  - key: col
-    source_type: computed
-  - key: row
-    source_type: computed
-  - key: widgetNames
-    source_type: computed
-  - key: dashboardName
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createSite
-  source_file: Dashboard.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createSitesAndRequests
-  source_file: Dashboard.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createDifferentSitesWithRequests
-  source_file: Dashboard.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: checkAllSite
-  source_file: Dashboard.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - DashboardAPIUtil.createEntityAndGetId
-  - DashboardAPIUtil.createEntityAndGetId
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: sites
-    source_type: computed
-  - key: siteNames
-    source_type: computed
-  - key: site_count
-    source_type: computed
-  - key: requests
-    source_type: computed
-  - key: requestSubjects
-    source_type: computed
-  - key: request_count
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - Dashboard.EntityAndGetId
-  - Dashboard.EntityAndGetId
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createGroup
-  source_file: Dashboard.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: deleteExistingSites
-  source_file: Dashboard.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls:
-  - delete
-  - get
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createReferSiteAndRequests
-  source_file: Dashboard.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: referred_site
-    source_type: hardcoded
-  local_storage_reads:
-  - site
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: checkGroupFilter
-  source_file: Dashboard.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - DashboardAPIUtil.createEntityAndGetId
-  - DashboardAPIUtil.createEntityAndGetId
-  - DashboardAPIUtil.createEntityAndGetId
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: site
-    source_type: hardcoded
-  - key: siteName
-    source_type: hardcoded
-  - key: group1Count
-    source_type: computed
-  - key: group2Count
-    source_type: computed
-  local_storage_reads:
-  - siteName
-  entities_created:
-  - Dashboard.EntityAndGetId
-  - Dashboard.EntityAndGetId
-  - Dashboard.EntityAndGetId
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createCustomExecutiveDashboard
-  source_file: Dashboard.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  dataids_count: 4
-  api_util_calls:
-  - AdminAPIUtil.createOrgRoleAndAssociateUser
-  - UserGroupAPIUtil.updateUser
-  - UserGroupsAPIUtil.createUserGroup
-  rest_direct_calls:
-  - create
-  - getEntityIdUsingSearchCriteria
-  local_storage_stores:
-  - key: widgetName
-    source_type: computed
-  - key: widget
-    source_type: computed
-  - key: dashboardName
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - getName
-  - Admin.OrgRoleAndAssociateUser
-  - UserGroups.UserGroup
-  creates_user: true
-  user_role: Requester
-  calls_super: false

@@ -1,0 +1,151 @@
+module: admin
+entity: developerspace_custommodule
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/custommodule/utils/CustomModuleActionsUtil.java
+  methods:
+  - name: navigetToCustomModule
+    return_type: void
+    params: String name
+    purpose: ''
+  - name: dragandDropudfFieldUnderFieldsTab
+    return_type: void
+    params: ArrayList<String> udfNames
+    purpose: ''
+  - name: setCustomFilterCriteria
+    return_type: void
+    params: JSONArray criteriaData
+    purpose: ''
+  - name: setCustomFilterCriteriainCondition
+    return_type: void
+    params: JSONArray criteriaData
+    purpose: ''
+  - name: fillFormRulesTabUnderCustomModule
+    return_type: void
+    params: JSONObject fillConditions, JSONObject fillActions, String eventName
+    purpose: ''
+  - name: fillFieldsTabUnderCustomModule
+    return_type: void
+    params: String[] udfNames
+    purpose: ''
+  - name: clickbyAnchorTag
+    return_type: void
+    params: String buttonName
+    purpose: ''
+  - name: enableFormRules
+    return_type: void
+    params: (none)
+    purpose: ''
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/custommodule/common/CustomModuleLocators.java
+  interfaces:
+    CustomModuleLocators:
+    - LATEST_HISTORY
+    - IN_EVENT_OF
+    - CLICK_FIELD_NAME
+    - SELECT_FIELD
+    - MODULE_TAB
+    - TABLE_DATA_BY_TEXT
+    - CRITERIA_LIST
+    - CRITERIA_LIST1
+    - CRITERIA_LIST2
+    - CUSTOM_VIEW_CRITERIA
+    - TXT_CRITERIA_VALUE
+    - FORM_RULES_OPTIONS
+    - VIOLATING_ERROR
+    - SELECT_CHECKBOX
+    - CUSTOM_FILTER
+    - BTN_SPAN
+    - CM_MODULE_NAME
+    - BUTTONS
+    - CM_MODULE_NAME2
+    - SPOT_EDIT
+    - POPUP_CLOSE
+    - VALUE_IN_FIELD
+    - TRASHED_CUSTOM_MODULE
+    Detailview:
+    - CHECK_ERROR_MESSAGE_IN_FIELD_NAME
+    - CHCEK_MANDATORY_FIELD
+    - CHECK_FIELDTYPE
+    - EMPTY_OPTIONS_ELEMENT
+    - SELECT_FIELD_VALUE
+    - GEAR_ICON_IN_FORMRULES_TAB
+    - CLICK_ANCHOR_TAG
+    - UDF_ACTION
+    - NEW_FIELD_POPUP
+    - LISTVIEW_SORT_ICON
+    - UDF_DEFAULT_VALUE
+    - CHECK_FIELD_VALUE
+    - CHECK_VALUE_TEMPLATE
+    - MAXIMUM_LIMIT_FIELD
+    - ATTACH_BUTTON
+    - ATTACHMENT_PREVIEW
+    - BACK_BTN
+    - DATA_FIELD_REF_NAME
+    - VERIFY_CM_INFO_NAME
+    Fields:
+    - SUBFORM_SECTION
+    - SUBFORM_SECTION_DROPDOWN_ARROW
+    - SUBFORM_TYPE
+    - UDF_DROP_AREA
+    - SUBFORM_TYPES_ADD_BUTTON
+    - SECTION_ACTION_ICON
+    - DELETE_SECTION
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/custommodule/common/CustomModuleDataConstants.java
+  classes:
+    CustomModuleDataConstants:
+    - SELECT_ACTIONS_IN_UI
+    - CHECK_BOX_API
+    - IP_ADDRESS_DESCRIPTION_UI
+    - LIST_INFO_CRITERIA_DISPLAY_NAME_SEARCH
+    - CUSTOM_VIEW_SINGLE_CRITERIA
+    - CM_API_ENTITY_DATA_CUSTOM_FILTER
+    - CREATE_CUSTOM_MODULE
+    - IP_ADDRESS_UI
+    - CM_SINGLE_LINE
+    - MULTI_SELECT_API
+    - API_SEARCH_CUSTOM_MODULE_2
+    - CM_MULTI_LINE
+    - CUSTOM_CONFIGURATION
+    - CUSTOM_MODULE_ENTITY_DATA
+    - MULTI_LOOKUP_API
+    - API_SEARCH_CUSTOM_MODULE_3
+    - WEB_URL_API
+    - ATTACHMENT_UDF_UI
+    - COLUM_CHOOSER
+    - API_SEARCH_CUSTOM_MODULE
+    - CURRENCY_API
+    - CUSTOM_MODULE_TEMPLATE
+    - CREATE_CUSTOM_MODULE_API_3
+    - AUTO_NUMBER_API
+    - CREATE_CUSTOM_MODULE_API_4
+    - DECIMAL_API
+    - EDIT_CUSTOM_MODULE
+    - CREATE_CUSTOM_MODULE_API_2
+    - PICK_LIST_API
+    - DATETIME_API
+    - CM_API_ENTITY_DATA
+    - NUMERIC_API
+    - CM_FIELD_DETAILS
+    - RADIO_BUTTON_API
+    - CUSTOM_MODULE_ENTITY_DATA_WITH_ALL_FIELDS
+    - PHONE_API
+    - DECISION_BOX_API
+    - SELECT_CRITERIA_IN_CUSTOMMODULE_FAFR_IN_API
+    - CREATE_CUSTOM_MODULE_API
+    - EMAIL_API
+    - CREATE_CUSTOM_MODULE_WITH_ADDITIONAL_CONFIGURATION
+    - IP_ADDRESS_DEFAULT_VALUE
+    - SELECT_CRITERIA_IN_CUSTOMMODULE_FAFR_IN_UI
+    - CUSTOM_MODULE_UI
+    - PERCENT_API
+    - NEW_SUBFORM_CM
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

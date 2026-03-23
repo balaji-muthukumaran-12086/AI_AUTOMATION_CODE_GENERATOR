@@ -1,0 +1,65 @@
+module: admin
+entity: automation_customactions_notification
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/customactions/notification/common/NotificationLocators.java
+  interfaces:
+    NotificationLocators:
+    - VERIFY_NOTIFICATION_NAME
+    - NOTIFICATION_NAME_WITH_ENTITY_ID
+    - VERIFY_NOTIFICATION_IS_DISABLED
+    - VERIFY_NOTIFICATION_IS_ENABLED
+    - CLICK_TOGGLE_SLIDER_IN_NOTIFICATION
+    - NOTIFICATION_NOTIFY_TO
+    Form:
+    - VERIFY_NOTIFY_LIST_VALUES
+    - IFRAME_EDITOR_VISIBLE
+    - EDITOR_BODY
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/automation/customactions/notification/common/NotificationDataConstants.java
+  classes:
+    NotificationDataConstants:
+    - CREATE_CHANGE_NOTIFICATION_WITH_CR_CA_VIA_UI
+    - PROBLEM_NOTIFICATION_WITH_NOTIFIY_TO_TECHNICIAN_API
+    - UPDATE_REQUEST_NOTIFICATION_WITH_NOTIFY_TO_TECHNICIAN
+    - CUSTOMNOTIFICATION_LASTUPDATEDBY
+    - CHANGE_NOTIFICATION_WITH_CHANGE_ROLES
+    - CREATE_CHANGE_NOTIFICATION_WITH_CU_DHCR_VIA_UI
+    - GET_CHANGE_APPROVER
+    - UPDATE_PROBLEM_NOTIFICATION_WITH_NOTIFY_TO_TECHNICIAN
+    - CREATE_REQUEST_NOTIFICATION_WITH_API
+    - REQUEST_NOTIFICATION_WITH_NOTIFIY_TO_TECHNICIAN
+    - PROBLEM_NOTIFICATION_WITH_NOTIFIY_TO_TECHNICIAN_UI
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createchangenotification
+  creates_count: 1
+  local_storage_keys:
+  - notificationId
+  - notificationName
+- name: createrequestnotification
+  creates_count: 0
+  local_storage_keys: []
+- name: createproblemnotification
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys:
+- change_notification_with_change_roles
+- create_change_notification_with_CR_CA_via_ui
+- create_change_notification_with_CU_DHCR_via_ui
+- create_request_notification_with_api
+- customNotification_lastupdatedby
+- get_change_approver
+- problem_notification_with_notifiy_to_technician_api
+- problem_notification_with_notifiy_to_technician_ui
+- request_notification_with_notifiy_to_technician
+- update_problem_notification_with_notify_to_Technician
+- update_request_notification_with_notify_to_Technician

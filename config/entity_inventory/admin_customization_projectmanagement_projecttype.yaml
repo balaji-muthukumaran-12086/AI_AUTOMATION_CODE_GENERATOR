@@ -1,0 +1,33 @@
+module: admin
+entity: customization_projectmanagement_projecttype
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/projectmanagement/projecttype/common/ProjectTypeLocators.java
+  interfaces:
+    ProjectTypeLocators:
+    - NEW_PROJECTTYPE
+    - ACTIONS_GEAR
+    - BTN_COLORPICKER
+    - COLOR
+    - TD_COLOR
+    - PROJECTTYPE_TITLE
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/projectmanagement/projecttype/common/ProjectTypeDataConstants.java
+  classes:
+    ProjectTypeDataConstants:
+    - UI_PROJECTTYPE1
+    - SORT_PROJECTTYPE1
+    - SORT_PROJECTTYPE3
+    - API_PROJECTTYPE1
+    - SORT_PROJECTTYPE2
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

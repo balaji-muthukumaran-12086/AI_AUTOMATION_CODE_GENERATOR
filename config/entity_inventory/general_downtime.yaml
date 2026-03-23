@@ -7,8 +7,9 @@ api_util:
   file: null
   methods: []
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/general/downtime/common/DowntimeLocators.java
+  interfaces:
+    DowntimeLocators: []
 data_constants:
   file: com/zoho/automater/selenium/modules/general/downtime/common/DowntimeDataConstants.java
   classes:
@@ -21,22 +22,3 @@ annotation_constants:
 preprocess_groups: []
 data_json_keys:
 - downtime_api
-data_json_deep:
-  total_entries: 1
-  field_frequency:
-    downtime: 1
-  all_placeholders:
-  - datetime, 0Y 0M 0D 0h 0m, true
-  - datetime, 0Y 0M 0D 0h 20m, true
-  - unique_string
-  reuse_groups_count: 0
-  entries:
-    downtime_api:
-      fields:
-      - downtime
-      placeholders:
-      - unique_string
-      - datetime, 0Y 0M 0D 0h 0m, true
-      - datetime, 0Y 0M 0D 0h 20m, true
-      local_storage_keys_required: []
-      purpose: ui_form

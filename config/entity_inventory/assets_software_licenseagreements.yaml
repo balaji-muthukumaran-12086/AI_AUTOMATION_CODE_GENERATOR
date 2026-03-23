@@ -1,0 +1,49 @@
+module: assets
+entity: software_licenseagreements
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/assets/software/licenseagreements/common/LicenseAgreementsLocators.java
+  interfaces:
+    LicenseAgreementsLocators:
+    - SAVEORCANCELBUTTON
+    - LISTVIEW_BUTTONS
+    - GO_BUTTON
+    - GO_TO_DETAIL_PAGE
+    - AGREEMENT_NUMBER_VALUE
+    Detailview:
+    - AGREEMENT_NUMBER
+    - ACTIVE_FROM
+    - GET_TEXT_IN_AGREEMENTNO_DETAILPAGE
+    - ADD_NEW_MANUFACTURER
+    - NAME
+    - LICENSE_AGREEMENT_TITLE
+    dateLocators: []
+    FormBuilder:
+    - MANUFACTURER_FIELD
+    - ADD_SM_ICN
+    - MANUFACTURER_FIELD_VALUE
+data_constants:
+  file: com/zoho/automater/selenium/modules/assets/software/licenseagreements/common/LicenseAgreementsDataConstants.java
+  classes:
+    LicenseAgreementsDataConstants:
+    - CREATE_LICENSE_AGREEMENT_API
+    - CREATE_LICENSE_AGREEMENT_API_II
+    - CREATE_LICENSE_AGREEMENT
+    - EDIT_LICENSE_AGREEMENT
+    - CREATE_CUSTOM_FILTER_API
+    - CREATE_LICENSE_AGREEMENT_II
+    - CREATE_MANUFACTURER
+    - CUSTOM_FILTER_WITH_CRITERIA
+    - CUSTOM_FILTER_WITH_CRITERIA_ALL_FIELDS
+    - CUSTOM_FILTER_WITH_UDF_CRITERIA
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

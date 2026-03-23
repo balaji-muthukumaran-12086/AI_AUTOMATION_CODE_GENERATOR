@@ -1,0 +1,83 @@
+module: general
+entity: feedback
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/general/feedback/common/FeedbackLocators.java
+  interfaces:
+    FeedbackLocators:
+    - BTN_A_SDPTITLES
+    - VIDEO_FEEDBACK
+    - START_RECORDING
+    - VIDEO_TIMESTAMP
+    - STOP_RECORDING
+    - DELETE_RECORDED_VIDEO
+    - EDIT_RECORDED_VIDEO
+    - VIEW_RECORDED_VIDEO
+    - SUBMIT_VIDEO
+    - BLOCK_CORNERS
+    - EDIT_TYPE
+    - BLOCK_EDIT
+    - COLOR_EDIT
+    - COLOR_DROPDOWN
+    - SHAPE_EDIT
+    - SHAPE_EDIT_BORDER
+    - WIDTH
+    - EDIT_ELEMENT_IN_VIDEO
+    - TEXT_EDIT_IN_VIDEO
+    - ARROW_ADDED_LOCATOR
+    - CLOSE_VIDEO
+    - WIDTH_DROPDOWN
+    - FONT_SIZE
+    - TEXT_SIZE_DROPDOWN
+    - TEXT_TYPE
+    - QUARTZ_VIDEO_TAB_TITLE
+    - QUARTZ_VIDEO_EDITOR
+    - DELETE_EDIT
+    - RECORDED_VIDEO_OPTIONS
+    - PLAY_PAUSE
+    - PLAY
+    - PAUSE
+    - SWITCH_FRAME
+    - EDIT_ACTIONS_REDO_BUTTONS
+    - VIDEO_DURATION_FEATURE_BUTTONS
+    - VIDEO_FEATURES
+    - MUTE
+    - FULL_SCREEN
+    - CLOSE_FULL_SCREEN
+    - AUDIO_START
+    - AUDIO_STOP
+    - VOICE_RECORDING
+    - END_ACTIONS
+    - TRIM_FUNCTIONS
+    - TIME_STAMP
+    - EDIT_DURATION
+    - NETWORK_CONSOLE
+    - TIME_STAMP_QUARTZPORTAL
+    - VIDEO_TITLE_IN_QUARTZ_PORTAL
+    - EDIT_WINDOW_CLOSE_BUTTON
+    - SAVE_AND_CLOSE_AFTER_EDIT
+    - USER_MAIL
+    - QUARTZ_MAIL
+    - QUARTZ_DECRIPTION
+    - FULLSCREEN_QUARTZ_PORTAL
+    - HELP_DESK_BUTTON_IN_QUARTZ_PORTAL
+    - TITLE_IN_QUARTZ_VIDEO_VIEW
+    - TIME_TAB_IN_QUARTZ_PORTAL
+    - PLAY_PAUSE_BUTTON
+    HelpDeskportalLocators:
+    - QUARTZ_LINK_IN_DESK
+    - USER_MAIL
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

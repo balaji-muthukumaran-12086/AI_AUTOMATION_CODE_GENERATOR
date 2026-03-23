@@ -1,0 +1,245 @@
+module: admin
+entity: customization_cmdbmanagement
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/utils/CmdbManagementActionsUtil.java
+  methods:
+  - name: editSyncRule
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: searchSyncRule
+    return_type: void
+    params: String name
+    purpose: ''
+  - name: actionButton
+    return_type: void
+    params: String action
+    purpose: ''
+  - name: disableSyncRule
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: fillSyncRuleActions
+    return_type: void
+    params: JSONObject details
+    purpose: ''
+  - name: syncruleInCmdbHistory
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: getAssetStateId
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: assetData
+    return_type: String
+    params: JSONObject assetInputData, String producttype
+    purpose: ''
+  - name: ciTypeName
+    return_type: void
+    params: String cIAPIName
+    purpose: ''
+  - name: convertToInternalName
+    return_type: String
+    params: String displayName
+    purpose: ''
+  - name: createAsset
+    return_type: void
+    params: String product, String assetDetail, String productType
+    purpose: ''
+  - name: createScannedSoftware
+    return_type: void
+    params: JSONObject softwareData
+    purpose: AssetAPIUtil.createAssetAPI(assetData, product);
+  - name: createSoftwareInstallation
+    return_type: void
+    params: String product, String assetDetail, String productType, JSONObject softwareData
+    purpose: ''
+  - name: criteriaAndRelationshipData
+    return_type: void
+    params: String relationshipName, String inverseRelationshipName, String ciTypeName, String ciType
+    purpose: ''
+  - name: createRelationshipData
+    return_type: void
+    params: String ciType, String ciTypeName, String relationshipName, String inverseRelationshipName
+    purpose: CmdbManagementActionsUtil.ciTypeName(ciTypeName);
+  - name: getVmVhId
+    return_type: String
+    params: String productName
+    purpose: ''
+  - name: sourceModuleId
+    return_type: String
+    params: String sourceModule
+    purpose: ''
+  - name: dataId
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: syncRuleDataId
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: assetDataId
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: getSiteId
+    return_type: String
+    params: String site
+    purpose: ''
+  - name: getSoftwareInstallationCiId
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: checkCriteria
+    return_type: Boolean
+    params: String action, JSONArray criteria
+    purpose: ''
+  - name: checkDefaultValue
+    return_type: Boolean
+    params: String action, JSONArray defaultValue
+    purpose: ''
+  - name: checkWithoutCriteria
+    return_type: Boolean
+    params: String action
+    purpose: ''
+  - name: checkWithoutDefaultValue
+    return_type: Boolean
+    params: String action
+    purpose: ''
+  - name: checkRelationship
+    return_type: Boolean
+    params: JSONArray relationshipdData
+    purpose: ''
+  - name: checkFieldMapping
+    return_type: Boolean
+    params: JSONArray fieldMappingData
+    purpose: ''
+  - name: deleteCMDB
+    return_type: void
+    params: String cmdbName, String cmdbId
+    purpose: ''
+  - name: searchAsset
+    return_type: void
+    params: String productType, String assetName
+    purpose: ''
+  - name: searchCmdb
+    return_type: void
+    params: String cmdbName
+    purpose: ''
+  - name: deleteAsset
+    return_type: void
+    params: String productType, String assetName
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/utils/RelationshipTypesAPIUtil.java
+  methods:
+  - name: createRelationshipTypeAPI
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: createRelationshipAPI
+    return_type: void
+    params: String inputData
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/common/CmdbManagementLocators.java
+  interfaces:
+    CmdbManagementLocators:
+    - SEARCH_IN_SETUP
+    - SELECT_SEARCHED_VALUE_IN_SETUP
+    - TITLE
+    - HELP
+    - HELPCARD_CONTENT
+    - NEW_SYNC_RULE
+    - SYNC_RULE_NAME
+    - CI_TYPE_DROPDOWN
+    - CI_TYPE_SEARCH_DROPDOWN
+    - SYNC_WITH_DROPDOWN
+    - SYNC_WITH_SEARCH_DROPDOWN
+    - ACTIONS
+    - SELECT_ACTIONS_DROPDOWN
+    - BASED_ON_CONDITION
+    - WITHOUT_CONDITION
+    - CONFIGURE_DEFAULT_VALUES_TO_CREATE_CI
+    - GO_TO_SYNCRULES
+    - CHECK_BOX
+    - ACTION_DROPDOWN
+    - ACTION_BUTTON
+    - CONFIRM_BUTTON
+    - SETUP_ACTIONS_BUTTON
+    - SETUP_ACTION
+    - ACKNOWLEDGE_BUTTON
+    - ORGANIZE
+    - SELECT_SYNCRULE
+    - ORGANIZE_POPUP
+    - MOVE_ORDER_BUTTON
+    - ORDERID
+    - ORDERID_ORIGINAL
+    - ENABLE_CHECKBOX
+    - DISABLED_CHECKBOX
+    - SAVE
+    - CANCEL
+    - SELECT_FIELDS
+    - SELECT_SOURCEFIELD_DROPDOWN
+    - SELECT_DESTINATION_DROPDOWN
+    - UPDATED_MESSAGE
+    - CREATED_MESSAGE
+    - DELETED_MESSAGE
+    - ENABLED_MESSAGE
+    - DISABLED_MESSAGE
+    - RELATIONSHIP_DROPDOWN
+    - CUSTOM_RELATIONSHIP_RADIOBUTTON
+    - DESTINATION_CITYPE_DROPDOWN
+    - SOURCE_FIELD_DROPDOWN
+    - CHECK_FOR_SYNCRULE_CREATION
+    - CHECK_FOR_SYNCRULE_DELETION
+    - ACTIONS_ENABLED_MESSAGE
+    - ACTIONS_DISABLED_MESSAGE
+    - SELECT_ASSET
+    - CMDB_LISTVIEW
+    - SEARCHED_DATA
+    - CMDB_HISTORY
+    - CMDB_HISTORY_CONTENT
+    - ASSET_DELETE_BUTTON
+    - CMDB_DELETE_BUTTON
+    - CMDB_DELETE_CONFORMATION
+    - CMDB_RELATIONSHIP_TAB
+    - RELATIONSHIP_DATA
+    - CMDB_FIELDS_VALUE
+    - SOFTWARE_DELETE_BUTTON
+    - CMDB_FIELDS
+    - BYNAME_BYVALUE
+    - SYNCRULE_DROPDOWN
+    - SYNCRULE_DROPDOWN_BY_NAME
+    - SPOT_EDIT
+    - VERIFICATION
+    - ALERT_POPUP
+    - SELECT_IN_ACTIONS
+    - VERIFY_DEFAULT_FIELDS
+    - CHECK_MAPPING_FIELDS
+    - PRODUCT_VERIFICATION
+    - ASSET_VIEW
+    ListViewDetails:
+    - CRITERIA_NAME
+    - CRITERIA_COND
+    - CRITERIA_VALUE
+    - NO_CRITERIA
+    - NO_DEFAULT_VALUES
+    - FIELD_SELECTOR
+    - FIELD_VALUE
+    - CRITERIA
+    - DEFAULT_VALUE
+    - DELETE_CI
+    - DELETE_SOURCE
+    SubModules:
+    - CMDB_MANAGEMENT_SUB_MODULE
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

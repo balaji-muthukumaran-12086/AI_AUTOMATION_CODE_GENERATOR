@@ -1,0 +1,33 @@
+module: admin
+entity: customization_projectmanagement_projectstatus
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/projectmanagement/projectstatus/common/ProjectStatusLocators.java
+  interfaces:
+    ProjectStatusLocators:
+    - NEW_PROJECTSTATUS
+    - ACTIONS_GEAR
+    - BTN_COLORPICKER
+    - COLOR
+    - TD_COLOR
+    - PROJECTSTATUS_TITLE
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/projectmanagement/projectstatus/common/ProjectStatusDataConstants.java
+  classes:
+    ProjectStatusDataConstants:
+    - SORT_PROJECTSTATUS1
+    - UI_PROJECTSTATUS1
+    - API_PROJECTSTATUS1
+    - SORT_PROJECTSTATUS2
+    - SORT_PROJECTSTATUS3
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

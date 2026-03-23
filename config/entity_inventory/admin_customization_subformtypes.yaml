@@ -1,0 +1,32 @@
+module: admin
+entity: customization_subformtypes
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/subformtypes/common/SubformTypesLocators.java
+  interfaces:
+    SubformTypesLocators: []
+    Popup:
+    - FIELDS_LISTS_ACKNOWLEDGEMENT
+    - CLICK_BY_SPAN
+    - CLICK_NEWUI_BUTTON
+    - SUBFORM_TYPE_FIELD
+    - UDF_REMOVE_ICON
+    - UDF_NAME
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/subformtypes/common/SubformTypesDataConstants.java
+  classes:
+    SubformTypesDataConstants:
+    - CREATE_SUB_FORM
+    - CREATE_SUB_FORM_UI
+    - CREATE_SUB_FORM_WITH_UDF
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

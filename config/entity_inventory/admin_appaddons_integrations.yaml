@@ -1,0 +1,40 @@
+module: admin
+entity: appaddons_integrations
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/appaddons/integrations/common/IntegrationsLocators.java
+  interfaces:
+    IntegrationsLocators:
+    - INTEGRATION_HEADER
+    - CONFIG_CHATGT
+    - INTEG_POPUP_TITLE
+    - INTEG_CONFIG_BTN
+    - INTEG_CONFIG_OPTIONS
+    - INTEG_CONFIG_CHECKBOX
+    - INTEG_OPTIONS_CHECKBOX
+    - INTEGRATIONS
+    - ZOHOFLOW_ENABLE
+    - ZOHOFLOW_DISABLE
+    - CREATE_ZOHO_FLOW
+    - CLOSE_ZOHO_FLOW
+    - CREATE_ACTION_SEQUENCE
+    - CLOSE_ACTION
+    - MANAGE_ENGINE_INTEGRATION
+    - PROFILE_ICON
+    - THEME_OPTION
+    - USER_PANEL_CLOSE
+    - VERIFY_ZAPIER_ICON
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

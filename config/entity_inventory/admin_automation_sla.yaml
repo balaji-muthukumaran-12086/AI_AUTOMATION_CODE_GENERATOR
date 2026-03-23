@@ -1,0 +1,203 @@
+module: admin
+entity: automation_sla
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/sla/common/SlaLocators.java
+  interfaces:
+    SlaLocators:
+    - NEW_SLA
+    - PARENT_ROW
+    - PARENT_ROW_ID
+    - EXPAND_ARROW
+    - CLICK_ROW_ACTIONS_WITH_ENTITYID
+    - CLICK_ON_MODULE_SELECT
+    FormBuilder:
+    - SLA_SELECT
+    - SLA_SELECT_VALUE
+    - SLA_RADIO_BTN
+    - SLA_MODULE_SELECTION
+    - SELECT_MINUTES
+    - CLICK_ESCALATE_TO_L
+    - ORG_ROLE
+    - CLICK_ON_SEARCHED_NOTIFICATION
+    Request:
+    - OVER_DUE_ICON
+    - FIRST_RSPN_VIOLATION
+    - SLA_VIOLATION
+    EXPAND_DETAILS:
+    - SLA_NAME
+    - SLA_COND
+    - SLA_VALUE
+    - FR_ESCALATION_CHECKBOX
+    - ESCALATIO_INFO_TEMPLATE_NAME
+    - RESPOND_DUE_BY_MINUTES
+    - RESOLUTION_DUE_BY_MINUTES
+    - ENABLE_RESPONSE_TIME_ELAPSED
+    - RESPOND_ESCALATION_MIN
+    - RESPOND_ESCALATE_TO
+    - CLICK_ON_TEXT
+    - CLICK_FIELD_UPDATE_RESPOND
+    - CLICK_NOTIFICATION_RESPOND
+    - SELECT_CUSTOM_ACTION_RESPOND
+    - NOTIFICATION_SEARCH
+    - CLICK_ON_ROW
+    - CLICK_ON_SAVE
+    - CLICK_ON_SELECT
+    - CLICK_ON_CONFIRM
+    Detailview:
+    - VERIFY_FIRST_RESPONSE_VIOLATED_ICON
+    - VERIFY_BOTH_FIRST_RESPONSE_AND_SLA_VIOLATED_ICON
+    - CLICK_CONFIGURE_FIELD_UPDATE
+    - VERIFY_FIELD_NAME
+    templateAssociation:
+    - SAVE_BUTTON_IN_TEMPLATE_ASSOCIATION
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/automation/sla/common/SlaDataConstants.java
+  classes:
+    SlaDataConstants:
+    - TEMPLATE_INPUT
+    - SLA_WITH_CRITERIA_AND_NO_ESCALATION
+    - CREATE_SLA_WITH_REQ_CMDB_LOOKUP_COPY
+    - SERVICE_SLA_INPUT_API
+    - SLA_WITHOUT_CONDITION
+    - ASSOCIATE_USER
+    - SLA_WITH_ESCLATION_FOR_OH
+    - GET_URGENCY_DATA
+    - GET_SUBCATEGORY_DATA
+    - ASSOCIATE_TECH_SITE
+    - SLA_INPUT_CRITERIA
+    - PRIORITY_INPUT_BOTH
+    - REQUEST_SLA_CUSTOM_RESOURCE_VALIDATION
+    - ORG_ROLE
+    - REQUESTER
+    - SERVICE_SLA_API
+    - SLA_WITH_CI_FIELD_UPDATE
+    - GET_ITEM_DATA
+    - GET_SERVICES_DATA
+    - ASSOCIATE_USER_ASSOCIATED_ENTITY
+    - LASTUPDATEDBY_SERVICESLA
+    - URGENCY_INPUT
+    - SEARCHLEVELTIER4
+    - CREATE_SLA_WITH_REQ_CMDB_LOOKUP
+    - LEVEL_INPUT_BOTH
+    - GET_BASESITE_DATA
+    - LEVEL_INPUT
+    - SLA_INPUT_ESCALATION
+    - ESCALATION_RESOLUTION
+    - MODE_INPUT_BOTH
+    - ASSOCIATE_USER_ASSOCIATED_ENTITY_GROUP
+    - IMPACT_INPUT
+    - ASSOCIATE_SLA
+    - GET_REQUEST_TYPE_DATA
+    - LASTUPDATEDBY_INCSLA
+    - GET_PRIORITYHIGH_ID
+    - ASSOCIATE_USER_ASSOCIATED_ENTITY_SITE
+    - ESCALATION_RESPONSE
+    - REQUEST_5MINS_AGO
+    - PRIORITY_INPUT
+    - MODE_INPUT
+    - NOTIFICATION
+    - SLA_INPUT_API
+    - CREATE_SLA_WITH_REQ_ASSET_LOOKUP
+    - GET_ORGROLE
+    - SLA_INPUT
+    - GET_COPYSITE_DATA
+    - SLA_INPUT_API_ESCALATION
+    - SLA_VIA_API_FOR_OH
+    - GET_CATEGORY_DATA
+    - GET_USERID
+    - URGENCY_INPUT_BOTH
+    - CREATE_SLA_VIA_API
+    - REQUEST_SLA_RESOURCE_VALIDATION
+    - IMPACT_INPUT_BOTH
+    - CREATE_SLA_WITH_REQ_ASSET_LOOKUP_COPYSITE
+    - ASSOCIATE_USER_ASSOCIATED_ENTITY_REGIONAL_ROLES
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: create
+  creates_count: 1
+  local_storage_keys:
+  - ciId
+  - mailId
+  - slaName
+- name: createSLAWithCIFieldUpdate
+  creates_count: 1
+  local_storage_keys:
+  - ciId
+  - mailId
+  - slaName
+- name: createLookupAndSla
+  creates_count: 1
+  local_storage_keys:
+  - moduleName
+  - udfEntityId
+- name: executeSLAWithLookupUDF
+  creates_count: 0
+  local_storage_keys:
+  - moduleName
+data_json_keys:
+- Get_UserId
+- Impact_Input
+- Impact_Input_Both
+- LastUpdatedBy_IncSLA
+- LastUpdatedBy_ServiceSLA
+- Level_Input
+- Level_Input_Both
+- Mode_Input
+- Mode_Input_Both
+- Notification
+- Org_Role
+- Priority_Input
+- Priority_Input_Both
+- Request_5mins_Ago
+- SLA_Input
+- SLA_Input_API
+- SLA_Input_API_Escalation
+- 'SLA_Input_Criteria '
+- SLA_Input_Escalation
+- SLA_With_Criteria_And_No_Escalation
+- Service_SLA_API
+- Service_SLA_Input_API
+- Template_Input
+- Urgency_Input
+- Urgency_Input_Both
+- associate_sla
+- associate_tech_site
+- associate_user
+- associate_user_associated_entity
+- associate_user_associated_entity_group
+- associate_user_associated_entity_regional_roles
+- associate_user_associated_entity_site
+- create_sla_via_api
+- create_sla_with_req_asset_lookup
+- create_sla_with_req_asset_lookup_copysite
+- create_sla_with_req_cmdb_lookup
+- create_sla_with_req_cmdb_lookup_copy
+- escalation_resolution
+- escalation_response
+- get_Orgrole
+- get_basesite_data
+- get_category_data
+- get_copysite_data
+- get_item_data
+- get_priorityHigh_id
+- get_request_type_data
+- get_services_data
+- get_subcategory_data
+- get_urgency_data
+- request_sla_custom_resource_validation
+- request_sla_resource_validation
+- requester
+- searchLevelTier4
+- sla_via_api_for_oh
+- sla_with_CI_field_update
+- sla_with_esclation_for_oh
+- sla_without_condition

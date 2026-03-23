@@ -1,0 +1,33 @@
+module: admin
+entity: customization_helpdesk_urgency
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/urgency/common/UrgencyLocators.java
+  interfaces:
+    UrgencyLocators:
+    - NEW_URGENCY
+    - EDIT_URGENCY
+    - DELETE_URGENCY
+    - URGENCY_TITLE
+    - ICN_URGENCYACTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/urgency/common/UrgencyDataConstants.java
+  classes:
+    UrgencyDataConstants:
+    - API_URGENCY1
+    - UI_URGENCY1
+    - SEARCH_URGENCY_AS_HIGH
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- API_Urgency1
+- UI_Urgency1
+- search_urgency_as_high

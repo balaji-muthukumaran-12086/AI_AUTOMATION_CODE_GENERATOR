@@ -1,0 +1,40 @@
+module: admin
+entity: usersandpermissions_group
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/group/utils/GroupAPIUtil.java
+  methods:
+  - name: createGroup
+    return_type: void
+    params: String data
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/group/common/GroupLocators.java
+  interfaces:
+    GroupLocators:
+    - TECHNICIAN_GROUPS_SUBTAB
+    - MARK_AS_ACTIVE
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/group/common/GroupDataConstants.java
+  classes:
+    GroupDataConstants:
+    - CUSTOM_SITE_GROUP_1
+    - REFER_SITE_GROUP_1
+    - COPYSITE_GROUP
+    - TECHNICIAN_GROUP_WITH_ALL_NOTIFICATION
+    - CUSTOMSITE_GROUP
+    - COPYSITE_GROUP_1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- CopySite_Group
+- CustomSite_Group
+- copysite_group_1
+- custom_site_group_1
+- refer_site_group_1
+- technician_group_with_all_notification

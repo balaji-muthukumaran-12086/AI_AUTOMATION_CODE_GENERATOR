@@ -1,0 +1,48 @@
+module: admin
+entity: dataAdministration_systemlog
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/dataAdministration/systemlog/common/SystemLogLocators.java
+  interfaces:
+    SystemLogLocators:
+    - CLICK_SYSTEM_LOG
+    - CLICK_PII_LOG
+    - PAGE_COUNT
+    - TIME_FILTER
+    - SHOWING_ALL_DATA
+    - SELECT_ALL_CHECKBOX
+    - SELECT_IN_DROPDOWN
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/dataAdministration/systemlog/common/SystemLogDataConstants.java
+  classes:
+    SystemLogDataConstants:
+    - CUSTOMIZATION_CATEGORY
+    - CUSTOMIZATION_LEVEL
+    - CUSTOMIZATION_STATUS
+    - CUSTOMIZATION_MODE
+    - CUSTOMIZATION_IMPACT
+    - CUSTOMIZATION_URGENCY
+    - CUSTOMIZATION_PRIORITY
+    - CUSTOMIZATION_REQUEST_TYPE
+    - CUSTOMIZATION_TASK_TYPE
+    - CUSTOMIZATION_WORKLOG_TYPE
+    - CUSTOMIZATION_DOWNTIME_TYPE
+    - CUSTOMIZATION_CHANGE_TYPE
+    - CUSTOMIZATION_CAB
+    - CUSTOMIZATION_CHANGE_RISK
+    - CUSTOMIZATION_STAGE_STATUS
+    - CUSTOMIZATION_CHANGE_ROLE
+    - CUSTOMIZATION_PROJECT_TYPE
+    - CUSTOMIZATION_PROJECT_STATUS
+    - CUSTOMIZATION_RELEASE_STAGE
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

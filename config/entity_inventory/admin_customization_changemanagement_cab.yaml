@@ -1,0 +1,21 @@
+module: admin
+entity: customization_changemanagement_cab
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/changemanagement/cab/common/CabLocators.java
+  interfaces:
+    CabLocators: []
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

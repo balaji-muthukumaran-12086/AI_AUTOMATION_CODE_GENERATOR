@@ -7,8 +7,19 @@ api_util:
   file: null
   methods: []
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/requests/task/common/TaskLocators.java
+  interfaces:
+    TaskLocators:
+    - LIST_VIEW
+    - SINGLE_TASK_TITTLE_LOCOTOR
+    DetailView:
+    - CREATED_BY
+    - REQUESTER_MOREDETAILS
+    - MOREDETAILS_POPUP
+    - WORKLOG_TIME_LOCATOR
+    - WORKLOG_TIME_INITIATED
+    - ADD_WORKLOG_TIME_LOCATOR
+    - TYPE_INPUT_TEXT
 data_constants:
   file: com/zoho/automater/selenium/modules/requests/task/common/TaskDataConstants.java
   classes:
@@ -27,58 +38,3 @@ data_json_keys:
 - API_RequestTask2
 - UI_RequestTask1
 - UI_RequestTask2
-data_json_deep:
-  total_entries: 4
-  field_frequency:
-    title: 4
-    description: 4
-    owner: 2
-    priority: 2
-    status: 2
-    template: 1
-  all_placeholders:
-  - unique_string
-  - user_email_id
-  reuse_groups_count: 1
-  entries:
-    API_RequestTask1:
-      fields:
-      - title
-      - description
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    API_RequestTask2:
-      fields:
-      - title
-      - description
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    UI_RequestTask1:
-      fields:
-      - title
-      - description
-      - template
-      - owner
-      - priority
-      - status
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    UI_RequestTask2:
-      fields:
-      - title
-      - description
-      - owner
-      - priority
-      - status
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form

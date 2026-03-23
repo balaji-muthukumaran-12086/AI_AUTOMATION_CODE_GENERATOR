@@ -1,0 +1,21 @@
+module: admin
+entity: customization_projectmanagement_projectrole
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/projectmanagement/projectrole/common/ProjectRoleLocators.java
+  interfaces:
+    ProjectRoleLocators: []
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

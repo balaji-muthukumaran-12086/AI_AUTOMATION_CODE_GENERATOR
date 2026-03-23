@@ -1,0 +1,24 @@
+module: admin
+entity: customization_helpdesk_subcategory
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/subcategory/common/SubCategoryLocators.java
+  interfaces:
+    SubCategoryLocators: []
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/subcategory/common/SubCategoryDataConstants.java
+  classes:
+    SubCategoryDataConstants:
+    - UI_SUBCATEGORY1
+    - CREATE_SUB_CATEGORY
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

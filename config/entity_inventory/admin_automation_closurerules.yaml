@@ -1,0 +1,103 @@
+module: admin
+entity: automation_closurerules
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/closurerules/common/ClosureRulesLocators.java
+  interfaces:
+    ClosureRulesLocators:
+    - CLICK_CHECKBOX_USING_FIELDNAME
+    - CLICK_PROMPT_MESSAGE_RADIOBUTTON
+    - SELECT_MANDATE_CLOSURE_CODE
+    - SELECT_MANDATE_CLOSURE_COMMENTS
+    - GET_REQUEST_ID
+    - ERROR_MSG_IN_POPUP
+    - FILL_BULK_EDIT_UDF_FIELD
+    - TEXT_AJAX_MESSAGE_TEXT
+    - FILL_BULK_EDIT_UDF_FIELD
+    - SELECT_CLOSURERULE_MODULE
+    - VERIFY_CLOSURERULE_FIELDS
+    - VERIFY_ALL_APPORVALS_APPROVED
+    - VERIFY_ALL_APPORVALS_COMPLETED
+    - ENABLE_STAGE_APPROVALS
+    Detailview:
+    - GET_TEXT_FROM_DETAILVIEW_SPOTEDIT
+    - BULK_EDIT_VALUE
+    - SELECT_UDF_CHECKBOX
+    - SELECT_UDF_RADIO
+    - CLOSED_SYMBOL_IN_RHS
+    - SAVE_BUTTON_1
+    - SELECT_TASK_CHECKBOX
+    - CLOSE_TASK_IN_DETAILVIEW
+    - DOWN_ARROW
+    - FILL_SINGLEFIELD_CHECKLIST
+    - CLOSURE_RULE_VIOLATION
+    - MANDATORY_FIELD_ERROR_MESSAGE
+    - CLOSE_ICON_IN_POPUP
+    - SAVE_BUTTON
+    - ERROR_MSG_FOR_MANDATORYFIELD
+    - CLOSURE_RULE_VIOLATION_POPUP
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/automation/closurerules/common/ClosureRulesDataConstants.java
+  classes:
+    ClosureRulesDataConstants:
+    - ADD_CHECKLIST_WITH_REQUEST
+    - API_CREATE_CHANGE_WITH_ROLE
+    - CHANGE_APPROVER
+    - API_VALID_INPUT_GENERAL_TEMPLATE
+    - ADDITIONAL_FIELDS_DATA_WITHOUT_PICK
+    - UPDATE_REQUESTTYPE
+    - GET_CHANGE_APPROVER
+    - UPDATE_CATEGORYDETAILS
+    - CREATE_CHECKLIST_ITEMS
+    - ADDITIONAL_FIELDS_EMPTY_DATA
+    - UPDATE_PRIORITY
+    - CREATE_IR_WITH_UDF_FIELD
+    - UPDATE_TECHNICIAN
+    - UPDATE_GROUP
+    - UPDATE_STATUS
+    - UPDATE_IMPACT
+    - UPDATE_LEVEL
+    - UPDATE_MODE
+    - IR_VALID_INPUT
+    - ADDITIONAL_FIELDS_DATA
+    - UPDATE_URGENCY
+    - LINKED_REQUESTS
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createRequest
+  creates_count: 0
+  local_storage_keys:
+  - ParentRequestId
+  - childRequestID
+- name: createMultipleRequest
+  creates_count: 0
+  local_storage_keys:
+  - ParentRequestId
+  - childRequestID
+- name: createRequestwithChecklist
+  creates_count: 0
+  local_storage_keys:
+  - Subject
+  - description
+  - RequesterName
+  - CheckListsEntityId
+  - checkListItemName
+- name: UDF_request_group1
+  creates_count: 0
+  local_storage_keys: []
+- name: UDF_request_group4
+  creates_count: 0
+  local_storage_keys: []
+- name: createChangeWithChangeApprover
+  creates_count: 0
+  local_storage_keys:
+  - changeapprover
+data_json_keys: []

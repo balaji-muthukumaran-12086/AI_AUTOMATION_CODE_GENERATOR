@@ -7,8 +7,16 @@ api_util:
   file: null
   methods: []
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/releases/releaseconversation/common/ReleaseConversationLocators.java
+  interfaces:
+    ReleaseConversationLocators:
+    - ADD_NOTE
+    - VERIFY_NOTES_IN_NOTES_SUBTAB_UI
+    - VERIFY_NOTES_IN_NOTES_SUBTAB
+    - EDIT_NOTE_ICON
+    - DELETE_NOTE_ICON
+    Popup:
+    - CLICK_STAGE_DROPDOWN_IN_ADD_NOTE_POPUP
 data_constants:
   file: com/zoho/automater/selenium/modules/releases/releaseconversation/common/ReleaseConversationDataConstants.java
   classes:
@@ -76,46 +84,3 @@ preprocess_groups:
   local_storage_keys:
   - release
 data_json_keys: []
-preprocess_deep:
-- group: createreleasewithconversationnotes
-  source_file: ReleaseConversation.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ReleaseAPIUtil.createNoteAndGetId
-  rest_direct_calls:
-  - create
-  local_storage_stores:
-  - key: releaseId
-    source_type: computed
-  - key: noteId
-    source_type: computed
-  local_storage_reads:
-  - releaseId
-  entities_created:
-  - release
-  - Release.NoteAndGetId
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: create
-  source_file: ReleaseConversation.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - ReleaseAPIUtil.createRelease
-  rest_direct_calls:
-  - create
-  local_storage_stores:
-  - key: release
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - release
-  - Release.Release
-  creates_user: false
-  user_role: null
-  calls_super: false

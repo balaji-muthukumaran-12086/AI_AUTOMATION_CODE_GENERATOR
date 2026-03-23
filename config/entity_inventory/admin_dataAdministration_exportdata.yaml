@@ -1,0 +1,32 @@
+module: admin
+entity: dataAdministration_exportdata
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/dataAdministration/exportdata/common/ExportDataLocators.java
+  interfaces:
+    ExportDataLocators:
+    - EXPORT_MODULE_DATA_STATUS
+    - EXPORT_BUTTON_LOCATOR
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createGlCode
+  creates_count: 0
+  local_storage_keys:
+  - glCodeName
+  - costCenterName
+- name: createCostCenter
+  creates_count: 0
+  local_storage_keys:
+  - costCenterName
+data_json_keys: []

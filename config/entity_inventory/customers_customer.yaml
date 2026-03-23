@@ -7,8 +7,21 @@ api_util:
   file: null
   methods: []
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/customers/customer/common/CustomerLocators.java
+  interfaces:
+    CustomerLocators:
+    - CUSTOM_VIEW_NAME_INPUT
+    - CUSTOM_VIEW_COLUMN_CHOOSE_LOCATOR
+    - CUSTOM_VIEW_CRITERIA_VALUE_INPUT
+    - CUSTOM_VIEW_SAVE_BUTTON
+    - CLICK_CUSTOMER_USING_NAME
+    - CUSTOMER_ICON
+    - CUSTOMER_SETTINGS_ICON
+    - CUSTOM_VIEW_NAME
+    - INACTIVE_CUSTOMER_NAME
+    - CUSTOMER_ANNOUNCEMENT_SETTING_ICON
+    Detailview:
+    - RHS_ASSOCIATIONCOUNT
 data_constants:
   file: com/zoho/automater/selenium/modules/customers/customer/common/CustomerDataConstants.java
   classes:
@@ -23,32 +36,3 @@ preprocess_groups: []
 data_json_keys:
 - create_customer
 - create_customer_using_other_customer_site_name
-data_json_deep:
-  total_entries: 2
-  field_frequency:
-    name: 2
-    default_site: 2
-  all_placeholders:
-  - custom_customerName
-  - unique_string
-  reuse_groups_count: 1
-  entries:
-    create_customer:
-      fields:
-      - name
-      - default_site
-      placeholders:
-      - unique_string
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_customer_using_other_customer_site_name:
-      fields:
-      - name
-      - default_site
-      placeholders:
-      - custom_customerName
-      - unique_string
-      local_storage_keys_required:
-      - customerName
-      purpose: api_preprocess

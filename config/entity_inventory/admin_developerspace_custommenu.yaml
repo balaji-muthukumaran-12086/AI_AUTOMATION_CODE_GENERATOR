@@ -1,0 +1,108 @@
+module: admin
+entity: developerspace_custommenu
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/custommenu/utils/CustomMenuActionsUtil.java
+  methods:
+  - name: selectModule
+    return_type: void
+    params: String moduleName
+    purpose: ''
+  - name: isCustomMenuPresent
+    return_type: boolean
+    params: String customMenuName
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/custommenu/utils/CustomMenuActionsAPIUtil.java
+  methods:
+  - name: createCustomMenu
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: createCustomMenu
+    return_type: void
+    params: TestCaseData caseId
+    purpose: ''
+  - name: createCustomMenuItem
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: createCustomMenuItem
+    return_type: void
+    params: JSONObject cmItemData
+    purpose: ''
+  - name: createCustomMenuItemProblem
+    return_type: void
+    params: (none)
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/custommenu/common/CustomMenuLocators.java
+  interfaces:
+    CustomMenuLocators:
+    - CUSTOM_MENU_MODULE_DROPDOWN
+    - CUSTOM_MENU_MODULE_SELECT_DROPDOWN
+    - CLICK_CUSTOM_MENU
+    - LHS_VERIFY_CUSTOM_MENU_ITEM
+    - CUSTOM_MENU_LEFT_PANEL
+    - DELETE_CUSTOM_MENU
+    - CLICK_CUSTOM_MENU_DROPDOWN_IN_MODULE
+    - CLICK_CUSTOM_MENU_ITEM_FROM_DROPDOWN_IN_DETAILVIEW
+    - VERIFY_ZOHO_LOGO
+    - ADD_BTN
+    - ADD_NEW_OPTION
+    - SELECT_ACTION
+    - SELECT_ACTION_DROPDOWN
+    - CM_BUTTON_INSIDE_THE_ENTITY
+    - CM_ITEM_BUTTON
+    - CUSTOM_MENU_ITEM_SAVE
+    - CUSTOMMENU_NAME_LOCATOR
+    - CUSTOMMENU_NAME_EDIT_LOCATOR
+    - ADDITIONAL_CRITERIA_ADD_ICN
+    - CLICK_ON_NEW_MENU_ITEM
+    - CLICK_ON_NEW_MENU_GROUP
+    - CLICK_ON_ACTIONS
+    - CLICK_ON_INVOKE_URL
+    - CLICK_ON_SELECTED_TEMPLATE_TEXT
+    - TYPE_CUSTOM_GROUP_NAME
+    - TYPE_CUSTOM_GROUP_DESCRIPTION
+    - NEW_MENU_ITEM
+    - CLICK_ON_TEXT_SELECTED_TEMPLATE_TEXT
+    - CLICK_ON_MENU_APPLIES_TO
+    - TEMPLATE_CLICK
+    DetailView:
+    - CUSTOM_MENU_NAME
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/custommenu/common/CustomMenuDataConstants.java
+  classes:
+    CustomMenuDataConstants:
+    - CREATE_CMDB_CUSTOM_MENU
+    - LIST_INFO_CRITERIA_NAME_SEARCH
+    - CREATE_PROBLEM_CUSTOM_MENU_ITEM_VIA_API
+    - CREATE_REQUEST_CUSTOM_MENU
+    - CREATE_CMDB_CUSTOM_MENU_ITEM
+    - CREATE_PROBLEM_CUSTOM_MENU
+    - CUSTOM_MENU_ITEM_DATA_FOR_REQUEST
+    - CREATE_PROBLEM_CUSTOM_MENU_ITEM_VIA_API_PROBLEM
+    - CREATE_REQUEST_RESOURCE_CUSTOM_MENU_ITEM_VIA_UI
+    - CREATE_REQUEST_CUSTOM_MENU_VIA_UI
+    - CREATE_REQUEST_CUSTOM_MENU_GROUP_VIA_UI
+    - CREATE_REQUEST_CUSTOM_RESOURCE_CUSTOM_MENU_ITEM_VIA_UI
+    - CREATE_REQUEST_CUSTOM_MENU_ITEM_WITH_TEMPLATE_SELECTED_VIA_UI
+    - CREATE_REQUEST_CUSTOM_MENU_ITEM_WITH_CUSTOM_TEMPLATE_SELECTED_VIA_UI
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createcustommenu
+  creates_count: 0
+  local_storage_keys:
+  - cmItemName
+- name: no_pre_process
+  creates_count: 0
+  local_storage_keys:
+  - cmItemName
+- name: createcustommenuandproblem
+  creates_count: 0
+  local_storage_keys:
+  - cmItemName
+data_json_keys: []

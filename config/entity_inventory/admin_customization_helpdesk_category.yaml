@@ -1,0 +1,61 @@
+module: admin
+entity: customization_helpdesk_category
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/category/common/CategoryLocators.java
+  interfaces:
+    CategoryLocators:
+    - NEW_CATEGORY
+    - SAVE_ADDSUBCATEGORY
+    - SAVE_ADDITEM
+    - EDIT_CATEGORY
+    - DELETE_CATEGORY
+    - CATEGORY_TITLE
+    - SUBCATEGORY_TITLE
+    - ITEM_TITLE
+    - ICN_CATEGORYEXPAND
+    - ICN_CATEGORYACTIONS
+    - CUSTOMER_LOCATOR
+    - CRITERIA_LOCATOR_FOR_DATA_ARCHIVE_FIELD
+    - CRITERIA_CONDITION_LOCATOR
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/category/common/CategoryDataConstants.java
+  classes:
+    CategoryDataConstants:
+    - ADDMAINTENANCE
+    - API_CATEGORY1
+    - UPDATE_CRMTEMPLATE
+    - ADDCONTRACT
+    - CREATE_CATEGORY_FOR_MSP
+    - UI_CATEGORY1
+    - ADDPROBLEM
+    - ADDINCIDENTREQUEST
+    - SEARCH_CATEGORY_AS_GENERAL
+    - ADDRELEASE
+    - ADDSERVICEREQUEST
+    - SEARCH_USING_NAME
+    - ADDCHANGE
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- API_Category1
+- Search_Using_Name
+- UI_Category1
+- Update_CRMTemplate
+- addChange
+- addContract
+- addIncidentRequest
+- addMaintenance
+- addProblem
+- addRelease
+- addServiceRequest
+- create_category_for_msp
+- search_category_as_general

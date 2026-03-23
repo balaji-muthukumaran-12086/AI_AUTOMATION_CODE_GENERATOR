@@ -1,0 +1,67 @@
+module: admin
+entity: customization_assetmanagement_softwarelicensetype
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/softwarelicensetype/utils/SoftwareLicenseTypeActionsUtil.java
+  methods:
+  - name: naviagateToSoftwareLicenseType
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: isLicenseTypeNamePresentInListView
+    return_type: boolean
+    params: String name
+    purpose: ''
+  - name: fillValuesForSoftwareLicenseTypeAndSubmit
+    return_type: void
+    params: JSONObject inputData
+    purpose: Fill values for Software license type fields and submit the form
+  - name: fillLicenseOptions
+    return_type: void
+    params: JSONArray licenseOptions
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/softwarelicensetype/utils/SoftwareLicenseTypeAPIUtil.java
+  methods:
+  - name: createSoftwareLicenseType
+    return_type: String
+    params: TestCaseData data
+    purpose: ''
+  - name: createSoftwareLicenseType
+    return_type: String
+    params: JSONObject inputData
+    purpose: ''
+  - name: getLicenseTypeIdUsingDisplayName
+    return_type: String
+    params: String manufacturer,String licenseTypeDisplayName
+    purpose: get license type id using display name and manufacturer
+  - name: getLicenseOptionIdUsingName
+    return_type: String
+    params: String licenseTypeId,String licenseOptionName
+    purpose: get license option id using Name and license type id
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/softwarelicensetype/common/SoftwareLicenseTypeLocators.java
+  interfaces:
+    SoftwareLicenseTypeLocators:
+    - SM_FILTER
+    - LICENSE_TYPE_NAME
+    FormBuilder:
+    - MANUFACTURER_FIELD
+    - ADD_SM_ICN
+    - LICENS_OPTION
+    - LICENS_OPTION_ADD_ICN
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/softwarelicensetype/common/SoftwareLicenseTypeDataConstants.java
+  classes:
+    SoftwareLicenseTypeDataConstants:
+    - CREATE_SOFTWARE_LICENSE_TYPE
+    - GET_LICENSE_OPTION_ID_USING_NAME
+    - GET_LICENSE_TYPE_ID_USING_DISPLAY_NAME
+    - CREATE_SOFTWARE_LICENSE_TYPE_API
+    - GETINSTALLATIONTYPEID_MULTIPLE
+    - GETTRACKBYID_COMPUTER
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

@@ -1,0 +1,23 @@
+module: admin
+entity: customization_purchasemanagement_costcenter
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/purchasemanagement/costcenter/common/CostCenterLocators.java
+  interfaces:
+    CostCenterLocators: []
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/purchasemanagement/costcenter/common/CostCenterDataConstants.java
+  classes:
+    CostCenterDataConstants:
+    - API_COST_CENTER
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

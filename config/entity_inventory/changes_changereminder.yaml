@@ -11,8 +11,23 @@ api_util:
     params: String change, String reminder
     purpose: ''
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/changes/changereminder/common/ChangeReminderLocators.java
+  interfaces:
+    ChangeReminderLocators: []
+    ChangeReminderDetailsview:
+    - TYPE_REMINDER_NAME
+    - VERIFY_REMINDER_NAME
+    - SELECT_REMINDER_CHECKBOX_USING_ENTITYID
+    - CLICK_ROW_ACTIONS_WITH_ENTITYID
+    - MODIFY_REMINDER_STATE_TO_FILTER_DROPDOWN
+    - SELECT_COMPLETED_STATE
+    - VERFIY_STRIKETHROUGH_COMPLETE_STATE_BY_ENTITYID
+    - SELECT_OPEN_STATE
+    - VERFIY_NO_STRIKETHROUGH_OPEN_STATE_BY_ENTITYID
+    ChangeReminderPopup:
+    - VERIFY_NEW_REMINDER_TEXT_IN_POPUP
+    - VERIFY_EDIT_REMINDER_TEXT_IN_POPUP
+    - CLICK_DATE_FIELD_IN_POPUP
 data_constants:
   file: com/zoho/automater/selenium/modules/changes/changereminder/common/ChangeReminderDataConstants.java
   classes:
@@ -50,51 +65,3 @@ preprocess_groups:
   - change
   - reminderName
 data_json_keys: []
-api_util_deep:
-- name: createChangeWithReminder
-  params: String change, String reminder
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes: []
-  local_storage_reads:
-  - changeId
-preprocess_deep:
-- group: createchange
-  source_file: ChangeReminder.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - ChangeAPIUtil.createChange
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: change
-    source_type: hardcoded
-  local_storage_reads:
-  - changeId
-  entities_created:
-  - Change.Change
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createchangewithreminder
-  source_file: ChangeReminder.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ChangeReminderAPIUtil.createChangeWithReminder
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: change
-    source_type: hardcoded
-  - key: reminderName
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - ChangeReminder.ChangeWithReminder
-  creates_user: false
-  user_role: null
-  calls_super: false

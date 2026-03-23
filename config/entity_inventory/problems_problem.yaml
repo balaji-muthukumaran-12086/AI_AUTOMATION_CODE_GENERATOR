@@ -243,8 +243,226 @@ api_util:
     params: String plcData
     purpose: ''
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/problems/problem/common/ProblemLocators.java
+  interfaces:
+    ProblemLocators:
+    - CLICK_SYSTEM_LOG
+    - GET_SYSTEM_LOG_MESSAGE
+    - INPUT_FIELDS_BY_ID
+    - ERRORLABEL_BYNAME
+    - INPUT_FIELDS_BY_NAME
+    - BYID_BYVALUE
+    - EDIT_BYNAME
+    - CONFIRM_BYSPAN
+    - YES_BYSPAN
+    - CANCEL_BYNAMEINCHILD
+    - SAVE_BYNAMEINCHILD
+    - SAVE_BYNAMEINPUTINCHILD
+    - TASK_IN_FORM
+    - TASK_SECTION
+    - CRITERIA_PIPED_LOCATORS
+    - CLICK_MULTI_LOOKUP_UDF
+    - UDF_FIELD_IN_PROBLEM_FORM
+    - UDF_FIELD_IN_PROBLEM_FORM
+    - UDF_VALUE_IN_PROBLEM_FIELD_IN_FORM
+    - UDF_VALUE_IN_PROBLEM_FIELD_IN_DETAIL_PAGE
+    - CHECKBOX_DATAROWID
+    - ACTIONGEAR_DATAROWID
+    - ACTIONGEAR_OPTIONS
+    - ICN_NOTES_DATAROWID
+    - ROWCONTENT_DATAROWID
+    - ROWCONTENT_BYSPAN_DATAROWID
+    - TITLE
+    - TITLE_INTABLEROW
+    - ICN_EDIT
+    - TRASH_PROBLEM
+    - EMPTY_TEXT
+    - NEW_PROBLEM_BTN
+    - ICN_LISTVIEW
+    - BTN_YES_POPUP
+    - BTN_ADD_POPUP
+    - BTN_ADDNOTES_POPUP
+    - DIV_NOTECONTENT_POPUP
+    - CLICK_VERIFY_PROBLEM_WITH_ENTITYID
+    - GO_TO_DETAILPAGE_USING_NAME
+    - NO_BUTTON_POPUP
+    - YES_BUTTON_POPUP
+    - CUSTOM_VIEW_SAVE
+    - CLICK_SPAN_DATA_REF_NAME
+    Detailview:
+    - MODULE_TITLE
+    - CUSTOM_MENU_ACTION_BTN
+    - CUSTOM_MENU_ITEM
+    - ICN_SPOTEDIT_SAVE
+    - ICN_DESP_EDIT
+    - BTN_SAVE
+    - BTN_SAVE_POPUP
+    - RADIOBTN_YES
+    - RADIOBTN_NO
+    - RHS_ASSOCIATEDINCIDENT
+    - RHS_ASSOCIATEDINCIDENT_COUNT
+    - RHS_ASSOCIATEDCHANGE
+    - RHS_ASSOCIATEDCHANGE_COUNT
+    - ICN_ATTACHMENT
+    - TXT_TITLEINROW
+    - TITLEINROW
+    - SELECT_CHECKBOX_ENTITYID
+    - CHECKBOX_DATAROWID
+    - DETAILVIEW_ACTIONGEAR_DATAROWID
+    - ACTIONGEAR_OPTIONS
+    - TITLE_DATAROWID
+    - CHECKBOX_PKCOLID
+    - UIDIALOG_TITLE
+    - ACTIONS_MENU
+    - PROBLEM_TITLE
+    - COPY_BUTTON
+    - DATE_ERR_MSG
+    - PROBLEM_ATTACHMENT
+    - APPLY_BUTTON
+    - PROBLEM_TEMPLATE
+    - ICN_ADDDETAILS
+    - ICN_EDITDETAILS
+    - ICN_ATTACHFILE
+    - ICN_SECTIONOPEN
+    - DIV_DETAILS
+    - REFFERED_SOLUTION
+    - REFFERED_SOLUTION_DETAILS
+    - TASKSTAB_BTN
+    - ADD_TASKS_BTN
+    - ENTITYINROW
+    - ROW_STATUS
+    - ROW_SCHEDULEEND
+    - ORGANIZE_ENTITY
+    - DEPENDENCY_NODE
+    - BTN_CLOSEDEPENDENCY
+    - BTN_MOVEUP
+    - BTN_MOVEDOWN
+    - DROPDWN_ADDTASK
+    - LINK
+    - LINK
+    - ICN_DELETELINK
+    - TASK_TEMPLATE
+    - NO_TASKS
+    - TASK_FIELD
+    - BACK_BUTTON
+    - ICN_EDITWL
+    - ICN_DELETEWL
+    - NO_WORKLOGS
+    - ICN_ADD_NOTE
+    - ICN_EDIT_NOTE
+    - ICN_DELETE_NOTE
+    - TXT_CONVERSATION_NOTES
+    - EMPTY_CONVERSATION
+    - TO_DROPDOWN_LOCATOR
+    - REPLY_ICON
+    - FORWARD_ICON
+    - EXPAND_NOTIFICATION
+    - TO_NOTIFICATION
+    - RESEND_ICON
+    - NEW_CHANGE
+    - CHANGE_SECTION
+    - CHANGE_TABLE
+    - POPOUT_CHANGE
+    - INCIDENT_SECTION
+    - INCIDENT_TABLE
+    - BTN_ATTACH_INCIDENT
+    - BTN_DETACH_INCIDENT
+    - BTN_ATTACH_CHANGE
+    - BTN_DETACH_CHANGE
+    - BTN_ASSOCIATE_INCIDENTS
+    - BTN_ASSOCIATE_POPUP
+    - NO_REQUESTS
+    - NO_CHANGES
+    - HISTORY_SORT
+    - HISTORY_FILTER
+    - HISTORY_DATEPICKER
+    - HISTORY_SELECTEDDATE
+    - HISTORY_DATE_OPTION
+    - HISTORY_COLUMN
+    - HISTORY_OPERATION
+    - RECENT_OPERATION
+    - LAST_OPERATION
+    - HISTORY_OPERATION_DESCRIPTION
+    - HISTORY_OPERATION_DESCRIPTIONDIV
+    - LAST_OPERATION_DESCRIPTIONDIV
+    - RECENT_OPERATION_DESCRIPTION
+    - RECENT_OPERATION_DESCRIPTIONDIV
+    - RECENT_OPERATION_DESCRIPTIONDIVTEXT
+    - RECENT_OPERATION_DESCRIPTIONDIVSPAN
+    - RECENT_OPERATION_DESCRIPTIONSPAN
+    - RECENT_CLICKHERE
+    - DESCRIPTION
+    - DESCRIPTION_AFTER
+    - DESCRIPTION_BEFORE
+    - RECENT_OPERATION_FIELDNAME
+    - RECENT_OPERATION_FROMVALUE
+    - RECENT_OPERATION_TOVALUE
+    - REMINDER_OPTION
+    - NO_REMINDERS
+    - DRPDWN_FILTER
+    - TXT_OPTION
+    - DIALOG_MESSAGE
+    - TXT_DIALOG_MESSAGE
+    - CHKBOX_STATUS
+    - SELECT_VALUES_IN_POPUP_FILTER
+    - INPUT_SERVICE_AFFECTED
+    - SOLUTION_SUBTAB_SECTIONS
+    - CLICK_VERIFY_ARCHIEVED_INCIDENTS
+    - CLICK_VERIFY_RECENT_INCIDENTS
+    - ASSOCIATED_REQUEST_IN_PROBLEM
+    - CLICK_NOTES_ICON_ASSOCIATIONS
+    - SOLUTIONS_FILTER
+    - SEARCH_SOLUTION
+    - SELECT_RADIO_WITH_SUBJECT
+    - SOLUTION_SEARCH_CANCEL
+    - REFERRED_SOLUTION_MORE_LOCATOR
+    - REFERED_SOLUTION_DETACH_ICON
+    - SOLUTION_TEXT
+    - REFERRED_SOLUTION_COUNT_UI
+    - REFERED_SOLUTION_HOVER
+    - REFERED_SOLUTION_HOVER_ELEMENT1
+    - REFERED_SOLUTION_HOVER_ELEMENT2
+    - REFERED_SOLUTION_HOVER_ELEMENT3
+    - REFERRED_SOLUTION_VIEW_DETAIL_POPUP
+    - REFERRED_SOLUTION_TITLE_POPUP
+    - REFERRED_SOLUTION_STATUS_POPUP
+    - REFERRED_SOLUTION_DESCRIPTION_POPUP
+    - REFERRED_SOLUTION_DETAILS_POPUP
+    - WATER_MARK_TITLE
+    - LASTEST_HISTORY_OPERATION
+    - LATEST_HISTORY
+    - DELETE_ATTACH
+    - ATTACHMENT_FILE_NAME
+    - REQUEST_HISTORY_MORE_LOCATOR
+    - PLC_TRANSITION_STATUS
+    - PLC_TRANSITION_STATUS_DETAILS_VIEW
+    - PLC_TRANSITION_NAME
+    - PLC_NO_TRANSITION
+    - PLC_NO_TRANSITION_DETAIL_VIEW
+    - PLC_TRANSITION_NAME_DETAILS_VIEW
+    - PROBLEM_CIS_INVOLVED_FIELD
+    - SYSTEM_NOTIFICATION_UNCHECK
+    - VERIFY_NOTE_DESCRIPTION
+    - FORM_FIELDS_LABEL
+    - DROPDOWN_OPTION
+    - DETAILSPAGE_SPOT_EDIT
+    Popup:
+    - POPUP_DATE
+    - VERIFY_NO_NOTES_PRESENT
+    - CLOSE_ICON_IN_POPUP
+    - ADD_NOTE_IN_POPUP
+    - ICN_HELP_CPYPB
+    - INPUT_TEMPLATE_CPYPB
+    - COPYPB_TITLE
+    - COPYFIELDS_GENERAL_INPUT
+    - COPYFIELDS_ANALYSIS_INPUT
+    - COPYFIELDS_SOLUTION_INPUT
+    - COPYFIELDS_GENERAL_CHKBOX
+    - COPYFIELDS_ANALYSIS_CHKBOX
+    - COPYFIELDS_SOLUTION_CHKBOX
+    - SWITCH_POPUP_IFRAME_IN_RECENT_POPUP
+    HistoryLocators:
+    - DESCRIPTION
 data_constants:
   file: com/zoho/automater/selenium/modules/problems/problem/common/ProblemDataConstants.java
   classes:
@@ -515,1956 +733,3 @@ data_json_keys:
 - transition_mandatory_fields
 - update_assets
 - update_udf
-data_json_deep:
-  total_entries: 130
-  field_frequency:
-    problem: 27
-    title: 15
-    impact: 13
-    category: 13
-    urgency: 12
-    priority: 12
-    item: 12
-    reported_by: 11
-    subcategory: 11
-    description: 11
-    services: 10
-    status: 10
-    row_count: 9
-    start_index: 9
-    search_criteria: 9
-    technician: 8
-    get_total_count: 8
-    template: 8
-    workaround_details: 4
-    note: 4
-  all_placeholders:
-  - custom_CategoryGeneralID
-  - custom_CmdbId
-  - custom_CmdbName
-  - custom_CreatedTemplate
-  - custom_CreatedTemplate, null
-  - custom_SolutionId
-  - custom_UDF_Name
-  - custom_UDFdateTime
-  - custom_UserId
-  - custom_WorkflowId
-  - custom_categoryNameGeneral
-  - custom_createdDate
-  - custom_criteriaCondition
-  - custom_criteriaField
-  - custom_criteriaValue
-  - custom_dateUdfvalue
-  - custom_duebydate
-  - custom_entitiesId
-  - custom_groupID
-  - custom_mailId
-  - custom_multiLookupUDFName0
-  - custom_multiLookupUDFName1
-  - custom_notificationName
-  - custom_problemTitle
-  - custom_problem_TempId
-  - custom_problem_Template_Name
-  - custom_siteID
-  - custom_siteId
-  - custom_siteName
-  - custom_techEmailId
-  - custom_techName
-  - custom_tempId
-  - custom_tempName
-  - custom_templateName
-  - custom_timerId
-  - custom_triggerCriteriaTitle
-  - custom_typeName
-  - custom_udfDateField
-  - custom_uniqueString
-  - custom_urgencyNameHigh
-  - custom_userId
-  - datetime, 0Y 0M 100D 0h 0m, false
-  - datetime, 0Y 0M 100D 10h 10m, false
-  - datetime, 1Y 0M 100D 0h 0m, false
-  - datetime, 1Y 0M 100D 0h 0m, true
-  - datetime, 1Y 0M 100D 10h 10m, false
-  - datetime, 1Y 0M 100D 10h 10m, true
-  - datetime, 1Y 10M 100D 10h 10m, true
-  - datetime, 2Y 10M 100D 10h 10m, false
-  - datetime, 2Y 10M 100D 10h 10m, true
-  - rest_api, post, customer, customers, createCustomer
-  - rest_api, post, problem_template, problem_templates, addTemplate
-  - rest_api, post, problem_template, problem_templates, problem_Custom_Template_workflow
-  - rest_api, search, priorities, name, Medium
-  - rest_api, search, sites, name, Base Site
-  - rest_api, search, sites, name, Site $(custom_uniqueString
-  - rest_api, search, solution_templates, name, General Solution Template
-  - rest_api, search, solutions/approval_status, name, Approved
-  - rest_api, search, solutions/topic, name, General
-  - rest_api, search, statuses, name, Closed
-  - rest_api, search, statuses, name, On Hold
-  - rest_api, search, statuses, name, Open
-  - unique_string
-  - user_email_id
-  - user_name
-  - yesterday
-  reuse_groups_count: 22
-  entries:
-    UI_ProblemData1:
-      fields:
-      - reported_by
-      - title
-      - impact
-      - urgency
-      - priority
-      - technician
-      - category
-      - subcategory
-      - item
-      - description
-      placeholders:
-      - user_name
-      - custom_uniqueString
-      - user_name
-      local_storage_keys_required:
-      - uniqueString
-      purpose: ui_form
-    API_ProblemData1:
-      fields:
-      - reported_by
-      - title
-      - impact
-      - urgency
-      - priority
-      - category
-      - subcategory
-      - item
-      - services
-      - description
-      placeholders:
-      - user_name
-      - custom_uniqueString
-      local_storage_keys_required:
-      - uniqueString
-      purpose: ui_form
-    API_ProblemData2:
-      fields:
-      - reported_by
-      - title
-      - impact
-      - urgency
-      - priority
-      - category
-      - subcategory
-      - item
-      - services
-      - description
-      - impact_details
-      - root_cause
-      - symptoms
-      - resolution_details
-      - workaround_details
-      placeholders:
-      - user_name
-      - custom_uniqueString
-      local_storage_keys_required:
-      - uniqueString
-      purpose: ui_form
-    add_Notes_From_ListView:
-      fields:
-      - note
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spotEdit:
-      fields:
-      - reported_by
-      - impact
-      - urgency
-      - priority
-      - status
-      - due_by_time
-      - closed_time
-      - services
-      - assets
-      - configuration_items
-      - reported_time
-      - description
-      placeholders:
-      - user_name
-      - datetime, 2Y 10M 100D 10h 10m, true
-      - datetime, 0Y 0M 100D 0h 0m, false
-      - datetime, 2Y 10M 100D 10h 10m, false
-      local_storage_keys_required: []
-      purpose: ui_form
-    spotEdit_sgt:
-      fields:
-      - site
-      - group
-      - technician
-      placeholders:
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    spotEdit_category:
-      fields:
-      - category
-      - subcategory
-      - item
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Workstation:
-      fields:
-      - workstation
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    VirtualHost:
-      fields:
-      - virtual_host
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    cmdb_people:
-      fields:
-      - ci_people
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    cmdb_team:
-      fields:
-      - ci_team
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    onHold:
-      fields:
-      - status
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Closed:
-      fields:
-      - status
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Resolved:
-      fields:
-      - status
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Canceled:
-      fields:
-      - status
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    MyOpen:
-      fields:
-      - technician
-      placeholders:
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    MyonHold:
-      fields:
-      - status
-      - technician
-      placeholders:
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    MyClosed:
-      fields:
-      - status
-      - technician
-      placeholders:
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    MyResolved:
-      fields:
-      - status
-      - technician
-      placeholders:
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    MyCanceled:
-      fields:
-      - status
-      - technician
-      placeholders:
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    Impact_Details:
-      fields:
-      - impact_details
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Root_Cause:
-      fields:
-      - root_cause
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Symptoms:
-      fields:
-      - symptoms
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Impact_DetailsEdit:
-      fields:
-      - impact_details
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Root_CauseEdit:
-      fields:
-      - root_cause
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SymptomsEdit:
-      fields:
-      - symptoms
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    TaskDependencies:
-      fields:
-      - task_dependencies
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Workaround:
-      fields:
-      - workaround_details
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Resolution:
-      fields:
-      - resolution_details
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    WorkaroundEdit:
-      fields:
-      - workaround_details
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    ResolutionEdit:
-      fields:
-      - resolution_details
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Remove_ReportedBy:
-      fields:
-      - reported_by
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    AssociateChange_API:
-      fields:
-      - changes
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    AssociateIncident_API:
-      fields:
-      - requests
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Update_Title:
-      fields:
-      - title
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Update_Impact:
-      fields:
-      - impact
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Update_Status:
-      fields:
-      - status
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Update_urgency:
-      fields:
-      - urgency
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Update_Priority:
-      fields:
-      - priority
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Update_reported_by:
-      fields:
-      - reported_by
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Update_technician:
-      fields:
-      - technician
-      placeholders:
-      - user_name
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    Update_Group:
-      fields:
-      - group
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Update_description:
-      fields:
-      - description
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Api_AddNotes:
-      fields:
-      - note
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Api_Update_notes:
-      fields:
-      - note
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    update_assets:
-      fields:
-      - assets
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    add_udf:
-      fields:
-      - udf_field
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    add_udfwithvalues:
-      fields:
-      - udf_field
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Search_UDF:
-      fields:
-      - row_count
-      - start_index
-      - get_total_count
-      - filter_by
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Search_workstation:
-      fields:
-      - row_count
-      - start_index
-      - get_total_count
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    search_VH:
-      fields:
-      - row_count
-      - start_index
-      - get_total_count
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Search_CMDB_People:
-      fields:
-      - row_count
-      - start_index
-      - get_total_count
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Search_CMDB_Team:
-      fields:
-      - row_count
-      - start_index
-      - get_total_count
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    search_ProblemsSite:
-      fields:
-      - row_count
-      - start_index
-      - get_total_count
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    search_ProbTemplate:
-      fields:
-      - row_count
-      - start_index
-      - get_total_count
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    addUDFTemplate:
-      fields:
-      - problem_template
-      placeholders:
-      - rest_api, search, sites, name, Base Site
-      - rest_api, search, statuses, name, Open
-      local_storage_keys_required: []
-      purpose: ui_form
-    update_udf:
-      fields: []
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    API_ProblemWithUDFTemplate:
-      fields:
-      - template
-      - reported_by
-      - title
-      - impact
-      - urgency
-      - priority
-      - category
-      - subcategory
-      - item
-      - services
-      - udf_fields
-      placeholders:
-      - custom_CreatedTemplate, null
-      - user_name
-      - custom_uniqueString
-      - custom_UDFdateTime
-      local_storage_keys_required:
-      - CreatedTemplate, null
-      - uniqueString
-      - UDFdateTime
-      purpose: ui_form
-    searchChange_Name:
-      fields:
-      - row_count
-      - start_index
-      - get_total_count
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    getProblemModuleInfo:
-      fields:
-      - row_count
-      - start_index
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_problem_via_api:
-      fields:
-      - problem
-      placeholders:
-      - custom_categoryNameGeneral
-      local_storage_keys_required:
-      - categoryNameGeneral
-      purpose: api_preprocess
-    create_problem_via_api_trigger:
-      fields:
-      - problem
-      placeholders:
-      - custom_CategoryGeneralID
-      - custom_triggerCriteriaTitle
-      local_storage_keys_required:
-      - CategoryGeneralID
-      - triggerCriteriaTitle
-      purpose: api_preprocess
-    create_problem_via_api_with_urgency:
-      fields:
-      - problem
-      placeholders:
-      - custom_urgencyNameHigh
-      - custom_triggerCriteriaTitle
-      local_storage_keys_required:
-      - urgencyNameHigh
-      - triggerCriteriaTitle
-      purpose: api_preprocess
-    create_problem_via_api_with_description:
-      fields:
-      - problem
-      placeholders:
-      - custom_triggerCriteriaTitle
-      local_storage_keys_required:
-      - triggerCriteriaTitle
-      purpose: api_preprocess
-    create_problem_via_api_with_due_by_date:
-      fields:
-      - problem
-      placeholders:
-      - custom_triggerCriteriaTitle
-      - custom_duebydate
-      local_storage_keys_required:
-      - triggerCriteriaTitle
-      - duebydate
-      purpose: api_preprocess
-    create_problem_with_site_via_api:
-      fields:
-      - problem
-      placeholders:
-      - custom_uniqueString
-      - custom_siteId
-      local_storage_keys_required:
-      - uniqueString
-      - siteId
-      purpose: api_preprocess
-    create_problem_for_custom_menu:
-      fields:
-      - problem
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_workaround:
-      fields:
-      - workaround_details
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_problem_for_workflow:
-      fields:
-      - template
-      - title
-      - category
-      placeholders:
-      - custom_templateName
-      - custom_uniqueString
-      local_storage_keys_required:
-      - templateName
-      - uniqueString
-      purpose: api_preprocess
-    create_request:
-      fields:
-      - request
-      placeholders:
-      - custom_uniqueString
-      - user_name
-      local_storage_keys_required:
-      - uniqueString
-      purpose: api_preprocess
-    add_problem_via_api:
-      fields:
-      - problem
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_customer:
-      fields:
-      - name
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    resolution_template_workaround:
-      fields:
-      - resolution_template
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    CopyProblem_Fafr:
-      fields:
-      - problem_fafr
-      placeholders:
-      - unique_string
-      - custom_uniqueString
-      - rest_api, search, priorities, name, Medium
-      local_storage_keys_required:
-      - uniqueString
-      purpose: ui_form
-    problem_data_for_trigger:
-      fields:
-      - title
-      - impact
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Workaround_attach:
-      fields:
-      - workarounds
-      placeholders:
-      - custom_SolutionId
-      local_storage_keys_required:
-      - SolutionId
-      purpose: ui_form
-    add_problem_via_api_for_unique_string:
-      fields:
-      - problem
-      placeholders:
-      - custom_uniqueString
-      local_storage_keys_required:
-      - uniqueString
-      purpose: ui_form
-    DefaultColumns:
-      fields:
-      - id
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    chooseDefaultColumns:
-      fields:
-      - id
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    addTemplate:
-      fields:
-      - problem_template
-      placeholders:
-      - custom_uniqueString
-      - rest_api, search, sites, name, Base Site
-      - rest_api, search, statuses, name, Open
-      local_storage_keys_required:
-      - uniqueString
-      purpose: ui_form
-    copyProblem:
-      fields:
-      - copy
-      placeholders:
-      - custom_uniqueString
-      local_storage_keys_required:
-      - uniqueString
-      purpose: ui_form
-    API_ProblemData_customTemplate:
-      fields:
-      - template
-      - reported_by
-      - title
-      - impact
-      - urgency
-      - priority
-      - category
-      - subcategory
-      - item
-      - services
-      - description
-      placeholders:
-      - custom_CreatedTemplate
-      - user_name
-      - custom_uniqueString
-      local_storage_keys_required:
-      - CreatedTemplate
-      - uniqueString
-      purpose: ui_form
-    solutionForProblem:
-      fields:
-      - solution
-      placeholders:
-      - rest_api, search, solution_templates, name, General Solution Template
-      - rest_api, search, solutions/topic, name, General
-      - rest_api, search, solutions/approval_status, name, Approved
-      local_storage_keys_required: []
-      purpose: ui_form
-    plcForProblem:
-      fields:
-      - problem_lifecycle
-      placeholders:
-      - rest_api, post, problem_template, problem_templates, addTemplate
-      - custom_uniqueString
-      - rest_api, search, statuses, name, Open
-      - rest_api, search, statuses, name, On Hold
-      - rest_api, search, statuses, name, Closed
-      local_storage_keys_required:
-      - uniqueString
-      purpose: ui_form
-    createCustomer:
-      fields:
-      - customer
-      placeholders:
-      - custom_uniqueString
-      - custom_uniqueString
-      local_storage_keys_required:
-      - uniqueString
-      - uniqueString
-      purpose: ui_form
-    API_ProblemData_withCustomer:
-      fields:
-      - title
-      - impact
-      - urgency
-      - priority
-      - category
-      - subcategory
-      - item
-      - services
-      - description
-      - customer
-      placeholders:
-      - custom_uniqueString
-      - rest_api, post, customer, customers, createCustomer
-      local_storage_keys_required:
-      - uniqueString
-      purpose: ui_form
-    API_ProblemData_count_10:
-      fields:
-      - reported_by
-      - title
-      - impact
-      - urgency
-      - priority
-      - category
-      - subcategory
-      - item
-      - services
-      - problem_count
-      placeholders:
-      - user_name
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Column_Chooser_Listview:
-      fields:
-      - columns
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    problem_workflow_approval:
-      fields:
-      - problem
-      placeholders:
-      - custom_userId
-      - custom_templateName
-      - custom_userId
-      - unique_string
-      local_storage_keys_required:
-      - userId
-      - templateName
-      - userId
-      purpose: ui_form
-    problem_workflow_request_association:
-      fields:
-      - problem
-      placeholders:
-      - user_name
-      - custom_templateName
-      - unique_string
-      - custom_techName
-      local_storage_keys_required:
-      - templateName
-      - techName
-      purpose: ui_form
-    API_ProblemData_Approval:
-      fields:
-      - template
-      - title
-      - category
-      - item
-      - description
-      placeholders:
-      - custom_templateName
-      - unique_string
-      local_storage_keys_required:
-      - templateName
-      purpose: ui_form
-    problem_workflow_Orgroles:
-      fields:
-      - problem
-      placeholders:
-      - user_name
-      - custom_templateName
-      - unique_string
-      - custom_techName
-      local_storage_keys_required:
-      - templateName
-      - techName
-      purpose: ui_form
-    problem_workflow_regional_roles:
-      fields:
-      - problem
-      placeholders:
-      - custom_templateName
-      - unique_string
-      - custom_siteID
-      - custom_groupID
-      local_storage_keys_required:
-      - templateName
-      - siteID
-      - groupID
-      purpose: ui_form
-    problem_workflow_Closure_rules:
-      fields:
-      - problem
-      placeholders:
-      - user_name
-      - unique_string
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    problem_workflow_Associateroles:
-      fields:
-      - problem
-      placeholders:
-      - custom_userId
-      - custom_templateName
-      - unique_string
-      local_storage_keys_required:
-      - userId
-      - templateName
-      purpose: ui_form
-    problem_Data_workflow_Techgroups:
-      fields:
-      - problem
-      placeholders:
-      - custom_templateName
-      - unique_string
-      - custom_siteID
-      - custom_groupID
-      - custom_userId
-      local_storage_keys_required:
-      - templateName
-      - siteID
-      - groupID
-      - userId
-      purpose: ui_form
-    problem_criteria_condition_across_modules:
-      fields:
-      - problem
-      placeholders:
-      - custom_criteriaField
-      - custom_criteriaCondition
-      - custom_criteriaValue
-      local_storage_keys_required:
-      - criteriaField
-      - criteriaCondition
-      - criteriaValue
-      purpose: ui_form
-    API_ProblemData_CustMenu:
-      fields:
-      - reported_by
-      - title
-      - impact
-      - urgency
-      - priority
-      - category
-      - subcategory
-      - item
-      - services
-      - description
-      placeholders:
-      - user_name
-      - custom_uniqueString
-      local_storage_keys_required:
-      - uniqueString
-      purpose: ui_form
-    add_problem_UI:
-      fields:
-      - template
-      - title
-      placeholders:
-      - custom_problemTitle
-      local_storage_keys_required:
-      - problemTitle
-      purpose: ui_form
-    criteria_condition_is_created_date:
-      fields:
-      - Criteria_InputName
-      - criteria
-      placeholders:
-      - unique_string
-      - custom_criteriaCondition
-      - custom_createdDate
-      local_storage_keys_required:
-      - criteriaCondition
-      - createdDate
-      purpose: ui_form
-    table_Settings:
-      fields:
-      - count
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_problem_trigger_created_date_via_api:
-      fields:
-      - wftrigger
-      placeholders:
-      - unique_string
-      - yesterday
-      - custom_timerId
-      local_storage_keys_required:
-      - timerId
-      purpose: api_preprocess
-    single_node_notification:
-      fields:
-      - value
-      - notify
-      - subject
-      - message
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_problem_workflow_notifications:
-      fields:
-      - module_name
-      - state
-      - name
-      - type
-      - Description
-      - create_node
-      - node_connection
-      placeholders:
-      - unique_string
-      - custom_typeName
-      - custom_notificationName
-      - user_name
-      - custom_notificationName
-      - custom_notificationName
-      local_storage_keys_required:
-      - typeName
-      - notificationName
-      - notificationName
-      - notificationName
-      purpose: api_preprocess
-    spotedit_valid_dates:
-      fields:
-      - due_by_time
-      - closed_time
-      - reported_time
-      placeholders:
-      - datetime, 1Y 0M 100D 10h 10m, true
-      - datetime, 1Y 0M 100D 0h 0m, true
-      - datetime, 0Y 0M 100D 10h 10m, false
-      local_storage_keys_required: []
-      purpose: ui_form
-    spotedit_invalid_dates:
-      fields:
-      - due_by_time
-      - closed_time
-      - reported_time
-      placeholders:
-      - datetime, 1Y 0M 100D 10h 10m, false
-      - datetime, 1Y 0M 100D 0h 0m, false
-      - datetime, 1Y 10M 100D 10h 10m, true
-      local_storage_keys_required: []
-      purpose: ui_form
-    spotedit_invalid_dates_addpage:
-      fields:
-      - due_by_time
-      - closed_time
-      placeholders:
-      - datetime, 1Y 0M 100D 10h 10m, false
-      - datetime, 1Y 0M 100D 0h 0m, false
-      local_storage_keys_required: []
-      purpose: ui_form
-    criteria_condition_createddate:
-      fields:
-      - criteria
-      placeholders:
-      - custom_criteriaCondition
-      - custom_createdDate
-      local_storage_keys_required:
-      - criteriaCondition
-      - createdDate
-      purpose: ui_form
-    criteria_condition_udfdate:
-      fields:
-      - criteria
-      placeholders:
-      - custom_udfDateField
-      - custom_criteriaCondition
-      - custom_createdDate
-      local_storage_keys_required:
-      - udfDateField
-      - criteriaCondition
-      - createdDate
-      purpose: ui_form
-    custom_data_for_problem_fafr:
-      fields:
-      - problem
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    problem_data_with_custom_template:
-      fields:
-      - problem
-      placeholders:
-      - unique_string
-      - custom_problem_Template_Name
-      local_storage_keys_required:
-      - problem_Template_Name
-      purpose: ui_form
-    problem_API_Base_Site_Default_Temp:
-      fields:
-      - problem
-      placeholders:
-      - custom_uniqueString
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - uniqueString
-      - UserId
-      - UserId
-      purpose: ui_form
-    problem_API_Custom_Site_Default_Temp:
-      fields:
-      - problem
-      placeholders:
-      - custom_uniqueString
-      - custom_UserId
-      - custom_UserId
-      - custom_entitiesId
-      local_storage_keys_required:
-      - uniqueString
-      - UserId
-      - UserId
-      - entitiesId
-      purpose: ui_form
-    problem_API_Site_with_Region_Default_Temp:
-      fields:
-      - problem
-      placeholders:
-      - custom_uniqueString
-      - custom_UserId
-      - custom_UserId
-      - rest_api, search, sites, name, Site $(custom_uniqueString
-      local_storage_keys_required:
-      - uniqueString
-      - UserId
-      - UserId
-      purpose: ui_form
-    problem_Api_Group_Default_Temp:
-      fields:
-      - problem
-      placeholders:
-      - custom_uniqueString
-      - custom_UserId
-      - custom_UserId
-      - custom_entitiesId
-      local_storage_keys_required:
-      - uniqueString
-      - UserId
-      - UserId
-      - entitiesId
-      purpose: ui_form
-    problem_Create_API:
-      fields:
-      - problem
-      placeholders:
-      - custom_uniqueString
-      local_storage_keys_required:
-      - uniqueString
-      purpose: ui_form
-    problem_Custom_Template_workflow:
-      fields:
-      - problem_template
-      placeholders:
-      - unique_string
-      - custom_WorkflowId
-      local_storage_keys_required:
-      - WorkflowId
-      purpose: ui_form
-    problem_Api_Group_Custom_Temp_workflow:
-      fields:
-      - problem
-      placeholders:
-      - rest_api, post, problem_template, problem_templates, problem_Custom_Template_workflow
-      - custom_uniqueString
-      - custom_UserId
-      - custom_UserId
-      - custom_entitiesId
-      local_storage_keys_required:
-      - uniqueString
-      - UserId
-      - UserId
-      - entitiesId
-      purpose: ui_form
-    transition_mandatory_fields:
-      fields:
-      - urgency
-      - priority
-      - group
-      - impact
-      - category
-      - subcategory
-      - item
-      - services
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    send_notification_conversation:
-      fields:
-      - notify
-      placeholders:
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_technicianGroup:
-      fields:
-      - group
-      placeholders:
-      - custom_techEmailId
-      - unique_string
-      local_storage_keys_required:
-      - techEmailId
-      purpose: api_preprocess
-    API_Problem_with_Custom_Template:
-      fields:
-      - reported_by
-      - title
-      - template
-      - impact
-      - urgency
-      - priority
-      - category
-      - subcategory
-      - item
-      - services
-      - description
-      placeholders:
-      - user_name
-      - custom_uniqueString
-      - custom_problem_TempId
-      local_storage_keys_required:
-      - uniqueString
-      - problem_TempId
-      purpose: ui_form
-    create_problem_in_custom_template_with_udf_api:
-      fields:
-      - problem
-      placeholders:
-      - custom_problem_Template_Name
-      - custom_siteId
-      - custom_CmdbId
-      - custom_dateUdfvalue
-      - unique_string
-      local_storage_keys_required:
-      - problem_Template_Name
-      - siteId
-      - CmdbId
-      - dateUdfvalue
-      purpose: api_preprocess
-    edit_problem_ui:
-      fields:
-      - description
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    problem_data_for_fafr_field_change:
-      fields:
-      - template
-      - $(custom_multiLookupUDFName0)
-      placeholders:
-      - custom_templateName
-      - custom_siteName
-      local_storage_keys_required:
-      - templateName
-      - siteName
-      purpose: ui_form
-    add_problem_in_custom_template_with_udf_ui:
-      fields:
-      - template
-      - title
-      - udf_fields
-      placeholders:
-      - custom_tempName
-      - unique_string
-      - custom_CmdbName
-      - custom_dateUdfvalue
-      local_storage_keys_required:
-      - tempName
-      - CmdbName
-      - dateUdfvalue
-      purpose: ui_form
-    plcForProblemWithUdf:
-      fields:
-      - problem_lifecycle
-      placeholders:
-      - custom_problem_TempId
-      - custom_uniqueString
-      - rest_api, search, statuses, name, Open
-      - rest_api, search, statuses, name, Closed
-      local_storage_keys_required:
-      - problem_TempId
-      - uniqueString
-      purpose: ui_form
-    edit_problem_lc_with_udf:
-      fields:
-      - rule_set_criteria
-      - field_update
-      placeholders:
-      - custom_UDF_Name
-      - custom_multiLookupUDFName1
-      - custom_CmdbName
-      - unique_string
-      - custom_multiLookupUDFName0
-      local_storage_keys_required:
-      - UDF_Name
-      - multiLookupUDFName1
-      - CmdbName
-      - multiLookupUDFName0
-      purpose: ui_form
-    create_problem_for_workflow_with_udf_api:
-      fields:
-      - problem
-      placeholders:
-      - custom_tempId
-      - custom_dateUdfvalue
-      - unique_string
-      local_storage_keys_required:
-      - tempId
-      - dateUdfvalue
-      purpose: api_preprocess
-    AddNotes_With_User:
-      fields:
-      - note
-      placeholders:
-      - custom_mailId
-      local_storage_keys_required:
-      - mailId
-      purpose: ui_form
-actions_util_deep:
-- name: addContentToEditor
-  params: String content
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.FRAME_ZE
-  - ClientFrameworkLocators.FormBuilderLocators.TXT_EDITOR
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.switchFrame
-  - actions.type
-  - actions.switchToDefaultFrame
-  line_count: 3
-- name: navigateTo
-  params: String listviewFilter, String tableViewName, Boolean searchProblem, String entityID, String subTab
-  locators_used:
-  - ClientFrameworkLocators.ListViewLocators.BTN_ALL_FILTER
-  - ProblemLocators.Listview.ICN_LISTVIEW
-  local_storage_reads:
-  - ProblemName
-  local_storage_writes: []
-  action_chain:
-  - actions.waitForAjaxComplete
-  - actions.navigate.toModule
-  - actions.validate.textContent
-  - actions.listView.selectFilter
-  - actions.click
-  - actions.listView.columnSearch
-  - actions.navigate.toDetailsPageUsingRecordId
-  - actions.navigate.toSubTabInDetailsPage
-  line_count: 23
-- name: verifyDialogWindowTitle
-  params: String title
-  locators_used:
-  - ProblemLocators.Detailview.UIDIALOG_TITLE
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  line_count: 4
-- name: attachIncident
-  params: String incidentId
-  locators_used:
-  - ProblemLocators.Detailview.BTN_ASSOCIATE_INCIDENTS
-  - ProblemLocators.Detailview.BTN_ATTACH_INCIDENT
-  - ProblemLocators.Detailview.CHECKBOX_DATAROWID
-  - ProblemLocators.Detailview.DRPDWN_FILTER
-  - ProblemLocators.Detailview.SELECT_VALUES_IN_POPUP_FILTER
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  - actions.waitForAjaxComplete
-  - actions.click
-  line_count: 6
-- name: detachIncident
-  params: String incidentId
-  locators_used:
-  - ProblemLocators.Detailview.BTN_DETACH_INCIDENT
-  - ProblemLocators.Detailview.CHECKBOX_DATAROWID
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  line_count: 3
-- name: attachChange
-  params: String changeId
-  locators_used:
-  - ProblemLocators.Detailview.BTN_ASSOCIATE_POPUP
-  - ProblemLocators.Detailview.BTN_ATTACH_CHANGE
-  - ProblemLocators.Detailview.SELECT_CHECKBOX_ENTITYID
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  line_count: 3
-- name: detachChange
-  params: String changeId
-  locators_used:
-  - ProblemLocators.Detailview.BTN_DETACH_CHANGE
-  - ProblemLocators.Detailview.SELECT_CHECKBOX_ENTITYID
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  line_count: 3
-- name: clickFromActions
-  params: String action
-  locators_used:
-  - ProblemLocators.Detailview.ACTIONS_MENU
-  - SDPCommonLocators.ButtonLocators.QUICK_ACTION
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  line_count: 2
-- name: selectTaskTemplateInPopup
-  params: String templateName, String templateId
-  locators_used:
-  - ProblemLocators.Detailview.CHECKBOX_DATAROWID
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.popUp.columnSearch
-  - actions.click
-  line_count: 2
-- name: verifyInHistory
-  params: String operationName, String description, String fieldName, String fromValue, String toValue
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.isElementPresent
-  line_count: 28
-- name: copyProblem
-  params: String moduleName, String entityId
-  locators_used:
-  - ProblemLocators.Listview.ICN_LISTVIEW
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.navigate.toModule
-  - actions.click
-  - actions.listView.columnSearch
-  - actions.navigate.toDetailsPageUsingRecordId
-  line_count: 4
-- name: validateUDFFieldValuesInForm
-  params: JSONObject inputData, String dateFormat
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.FIELD_VALUE
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.validate.textContent
-  line_count: 31
-- name: SearchSolution
-  params: String title, boolean isApproveSolList
-  locators_used:
-  - ProblemLocators.Detailview.SEARCH_SOLUTION
-  - ProblemLocators.Detailview.SELECT_RADIO_WITH_SUBJECT
-  - ProblemLocators.Detailview.SOLUTIONS_FILTER
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.clickByNameInput
-  - actions.click
-  - actions.isElementPresent
-  - actions.type
-  - actions.getElement
-  line_count: 8
-- name: SelectSolutionAction
-  params: ArrayList<String> title, String action, boolean isApproveSolList
-  locators_used:
-  - ProblemLocators.Detailview.SELECT_RADIO_WITH_SUBJECT
-  - ProblemLocators.Detailview.SOLUTION_SEARCH_CANCEL
-  - RequestLocators.DetailView.POP_YES_NO_BTN
-  - RequestLocators.Home.POP_UP_TITLE
-  - ResolutionTemplateLocators.DetailsPage.SELECT_RESOLUTION_TEMP_DROPDOWN
-  - ResolutionTemplateLocators.DetailsPage.SELECT_RESOLUTION_TEMP_VALUE
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  - actions.clickByName
-  - actions.click
-  - actions.clickByName
-  - actions.click
-  - actions.clickByName
-  - actions.click
-  - actions.clickByName
-  - actions.click
-  - actions.isElementPresent
-  line_count: 53
-- name: SolutionAttachActions
-  params: ArrayList<String> id, ArrayList<String> title, String action, boolean isApproveSolList
-  locators_used:
-  - ProblemLocators.Detailview.SOLUTION_SEARCH_CANCEL
-  - SDPCommonLocators.ButtonLocators.BTN_BYNAME
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  - actions.clickByName
-  - actions.click
-  - actions.clickByName
-  - actions.click
-  - actions.clickByName
-  - actions.click
-  - actions.clickByName
-  - actions.click
-  line_count: 44
-- name: SolutionDetachActions
-  params: String title
-  locators_used:
-  - ProblemLocators.Detailview.REFERED_SOLUTION_DETACH_ICON
-  - ProblemLocators.Detailview.REFERRED_SOLUTION_MORE_LOCATOR
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  - actions.click
-  - actions.waitForAjaxComplete
-  - actions.click
-  line_count: 9
-- name: switchGraph
-  params: String widgetTitle, String switchToGraph
-  locators_used:
-  - DashboardLocators.CLICK_WIDGET_CHART_ICON.apply
-  - DashboardWidgetLocators.DASH_ACTIONS_TRAY_HOVER.apply
-  - DashboardWidgetLocators.WIDGETNAME_IN_DASHBOARD.apply
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.hoverElement
-  - actions.click
-  line_count: 4
-- name: maximizeWidget
-  params: String widgetTitle
-  locators_used:
-  - DashboardWidgetLocators.DASH_ACTIONS_TRAY_HOVER.apply
-  - DashboardWidgetLocators.MAXIMIZE_WIDGET.apply
-  - DashboardWidgetLocators.WIDGETNAME_IN_DASHBOARD.apply
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.hoverElement
-  - actions.click
-  line_count: 3
-- name: criteriaBuilderForDate
-  params: String criteriaString, Long dateLongVal
-  locators_used:
-  - AssetAcknowledgementLocators.AcknowledgementForm.CRITERIA_FIELD_LAST_VALUE
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  - actions.formBuilder.typeAndSelectOption
-  - actions.click
-  line_count: 10
-- name: createProblem
-  params: JSONObject inputData
-  locators_used:
-  - ProblemLocators.Listview.NEW_PROBLEM_BTN
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  - actions.waitForAjaxComplete
-  - actions.click
-  line_count: 8
-- name: verifyTooTipTxt
-  params: String containsValue
-  locators_used:
-  - ProblemLocators.Listview.NEW_PROBLEM_BTN
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  - actions.waitForAjaxComplete
-  - actions.click
-  line_count: 8
-- name: setCustomFilterCriteria
-  params: JSONArray criteriaData, boolean isAdditionalField
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.CLICK_SUB_FIELD_ARROW
-  - ClientFrameworkLocators.FormBuilderLocators.CRITERIA_LIST
-  - ClientFrameworkLocators.FormBuilderLocators.CUSTOM_VIEW_CRITERIA
-  - ClientFrameworkLocators.FormBuilderLocators.DIV_CRITERIA_VALUE
-  - ClientFrameworkLocators.FormBuilderLocators.ICN_ADD
-  - ClientFrameworkLocators.FormBuilderLocators.OPTION_ELEMENT
-  - ClientFrameworkLocators.FormBuilderLocators.TXT_CRITERIA_VALUE
-  - ClientFrameworkLocators.FormBuilderLocators.TYPE_DROPDOWN_SEARCH_INPUT
-  - ProblemLocators.CRITERIA_PIPED_LOCATORS.apply
-  - TriggersLocators.Listview.DATE_CRITERIA_LOCATOR
-  - TriggersLocators.Listview.DECISION_BOX
-  - TriggersLocators.Listview.LOGICAL_OPERATOR
-  - TriggersLocators.Listview.LOOKUP_DYNAMIC_DROPDOWN
-  - TriggersLocators.Listview.LOOKUP_DYNAMIC_VALUE
-  - TriggersLocators.Listview.NUMERIC_CRITETRIA_LOCATOR
-  - TriggersLocators.Listview.OPTION_ELEMENT
-  - TriggersLocators.Listview.TEXTAREA_CRITERIA_LOCATOR
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.waitForAjaxComplete
-  - actions.click
-  - actions.getAllElements
-  - actions.justClick
-  - actions.waitForAnElementToAppear
-  - actions.type
-  - actions.click
-  - actions.waitForAnElementToAppear
-  - actions.type
-  - actions.click
-  line_count: 93
-- name: jsonToMap
-  params: JSONObject jsonObject
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain: []
-  line_count: 8
-- name: jsonArrayToList
-  params: JSONArray jsonArray
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain: []
-  line_count: 5
-- name: fillDateTimeField
-  params: Long value
-  locators_used:
-  - DatePickerLocators.HOUR_LOCATOR.apply
-  - DatePickerLocators.MINUTE_LOCATOR.apply
-  - TriggersLocators.Listview.APPLY_LOCATOR
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  - actions.click
-  - actions.isElementPresent
-  - actions.click
-  - actions.isElementPresent
-  - actions.click
-  line_count: 25
-- name: fillHTMLFieldCustomActions
-  params: String name, String value
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.TXT_EDITOR
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.waitForAjaxComplete
-  - actions.switchFrame
-  - actions.type
-  - actions.switchToDefaultFrame
-  line_count: 4
-- name: fillCreatedByCriteriaFieldUI
-  params: (none)
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain: []
-  line_count: 3
-- name: fillCreatedByCriteriaFieldUI
-  params: Long dateInMillis, String condition
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain: []
-  line_count: 2
-- name: createProblemAndFillInputData
-  params: JSONObject inputData
-  locators_used: []
-  local_storage_reads:
-  - Template_Name
-  local_storage_writes: []
-  action_chain:
-  - actions.navigate.toModule
-  - actions.navigate.toGlobalActionInListview
-  - actions.formBuilder.fillSelectField
-  - actions.formBuilder.fillInputForAnEntity
-  line_count: 5
-- name: editProblemUI
-  params: String entityId,JSONObject inputData
-  locators_used:
-  - ProblemLocators.Listview.ACTIONGEAR_OPTIONS
-  - ProjectLocators.ProjectListview.CLICK_ROW_ACTIONS_WITH_ENTITYID
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  - actions.formBuilder.fillInputForAnEntity
-  line_count: 4
-- name: clearUdfValue
-  params: String fieldName
-  locators_used:
-  - AdditionalFieldsLocators.Fields.CLEAR_FIELD_VALUE
-  - ClientFrameworkLocators.FormBuilderLocators.SELECT_ELEMENT
-  - ProblemLocators.Detailview.ICN_SPOTEDIT_SAVE
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  - actions.hoverElement
-  - actions.click
-  line_count: 4
-api_util_deep:
-- name: storeProblemModuleId
-  params: (none)
-  api_paths: []
-  rest_methods_used:
-  - getDataUsingSearchCriteria
-  local_storage_writes:
-  - ProblemModuleID
-  local_storage_reads: []
-- name: addNotestoProblem
-  params: String entityId, JSONObject noteInputData
-  api_paths: []
-  rest_methods_used:
-  - create
-  local_storage_writes: []
-  local_storage_reads: []
-- name: addWorklogtoProblem
-  params: String entityId
-  api_paths: []
-  rest_methods_used:
-  - create
-  local_storage_writes: []
-  local_storage_reads: []
-- name: addRemindertoProblem
-  params: String entityId
-  api_paths: []
-  rest_methods_used:
-  - create
-  local_storage_writes: []
-  local_storage_reads: []
-- name: assignSiteGrouptoTechnician
-  params: (none)
-  api_paths: []
-  rest_methods_used:
-  - create
-  - delete
-  - get
-  - getDataUsingSearchCriteria
-  - update
-  local_storage_writes: []
-  local_storage_reads: []
-- name: addSite
-  params: (none)
-  api_paths: []
-  rest_methods_used:
-  - create
-  - getDataUsingSearchCriteria
-  - update
-  local_storage_writes: []
-  local_storage_reads: []
-- name: addAssets
-  params: (none)
-  api_paths: []
-  rest_methods_used:
-  - create
-  - getDataUsingSearchCriteria
-  - update
-  local_storage_writes: []
-  local_storage_reads: []
-- name: addCiItems
-  params: (none)
-  api_paths: []
-  rest_methods_used:
-  - create
-  - getDataUsingSearchCriteria
-  local_storage_writes: []
-  local_storage_reads: []
-- name: addAndAssociateIncident
-  params: (none)
-  api_paths: []
-  rest_methods_used:
-  - create
-  local_storage_writes: []
-  local_storage_reads: []
-- name: associateIncidentAPI
-  params: String problemId
-  api_paths: []
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - reqSubject
-  local_storage_reads: []
-- name: searchChange
-  params: String name, String description
-  api_paths: []
-  rest_methods_used:
-  - getDataUsingSearchCriteria
-  local_storage_writes: []
-  local_storage_reads: []
-- name: associateChange
-  params: (none)
-  api_paths: []
-  rest_methods_used:
-  - create
-  local_storage_writes: []
-  local_storage_reads: []
-- name: associateChangeAPI
-  params: String problemId, TestCaseData changedata
-  api_paths: []
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - changeName
-  local_storage_reads: []
-- name: searchProblemUDF
-  params: String fieldName, String fieldType
-  api_paths: []
-  rest_methods_used:
-  - getDataUsingSearchCriteria
-  local_storage_writes: []
-  local_storage_reads: []
-- name: addProblemUDF
-  params: String fieldName, String fieldType
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes: []
-  local_storage_reads: []
-- name: deleteProblemUDF
-  params: String fieldName, String fieldType
-  api_paths: []
-  rest_methods_used:
-  - delete
-  local_storage_writes: []
-  local_storage_reads: []
-- name: searchProblemTemplate
-  params: String name
-  api_paths: []
-  rest_methods_used:
-  - getDataUsingSearchCriteria
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createProblemTemplate
-  params: String dataId
-  api_paths: []
-  rest_methods_used: []
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createProblemTemplate
-  params: JSONObject inputData
-  api_paths: []
-  rest_methods_used:
-  - create
-  local_storage_writes: []
-  local_storage_reads: []
-- name: addUDFTemplate
-  params: String name
-  api_paths: []
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - UDFdateTime
-  local_storage_reads: []
-- name: addProblem
-  params: TestCaseData data
-  api_paths: []
-  rest_methods_used:
-  - create
-  - update
-  local_storage_writes: []
-  local_storage_reads: []
-- name: addProblemForFilters
-  params: String filter
-  api_paths: []
-  rest_methods_used: []
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createProblemAddTaskandTemplate
-  params: String entityName, String apiPath, JSONObject problemInputData, String requirement
-  api_paths: []
-  rest_methods_used:
-  - create
-  - createAndGetResponse
-  - get
-  local_storage_writes: []
-  local_storage_reads:
-  - ProblemModuleID
-- name: createProblemForTrigger
-  params: String testCase
-  api_paths:
-  - problems
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - ProblemName
-  - problemId
-  - ProblemId
-  local_storage_reads: []
-- name: createProblemTriggerViaAPICreatedDate
-  params: (none)
-  api_paths:
-  - categories
-  rest_methods_used:
-  - createAndGetFullResponse
-  - getEntityIdUsingSearchCriteria
-  local_storage_writes:
-  - categoryNameGeneral
-  - triggerCriteriaTitle
-  - triggerId
-  - CategoryGeneralID
-  - triggerName
-  local_storage_reads: []
-- name: createTaskInProblem
-  params: TestCaseData taskdata
-  api_paths:
-  - problems/
-  - problems/*/tasks
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - taskName
-  - task
-  local_storage_reads:
-  - problemId
-- name: createProblemTemplateWithCIInvolved
-  params: (none)
-  api_paths: []
-  rest_methods_used:
-  - createAndGetFullResponse
-  local_storage_writes:
-  - Template_Name
-  - tempId
-  local_storage_reads: []
-- name: addLCInProblem
-  params: String plcData
-  api_paths:
-  - problem_lifecycles
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - lifecycleName
-  - lifecycleId
-  local_storage_reads: []

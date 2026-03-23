@@ -1,0 +1,223 @@
+module: admin
+entity: automation_businessrules
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/automation/businessrules/utils/BusinessRulesActionsUtil.java
+  methods:
+  - name: selectModule
+    return_type: void
+    params: String moduleName, String site
+    purpose: ''
+  - name: enableAllBrNdGetId
+    return_type: String
+    params: String name
+    purpose: ''
+  - name: enableBR
+    return_type: void
+    params: String id
+    purpose: ''
+  - name: criteriaBuilder
+    return_type: void
+    params: String criteriaString, String valueType
+    purpose: ''
+  - name: searchBR
+    return_type: void
+    params: String brmoduleName, String entityId
+    purpose: ''
+  - name: searchAndEdit
+    return_type: void
+    params: String brmoduleName, String entityId, String action
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/automation/businessrules/utils/BusinessRulesAPIUtil.java
+  methods:
+  - name: getChangeBRSubModuleID
+    return_type: void
+    params: String ruleAppliesTo
+    purpose: ''
+  - name: createBR
+    return_type: void
+    params: TestCaseData testCaseData
+    purpose: Check the main object
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/businessrules/common/BusinessRulesLocators.java
+  interfaces:
+    BusinessRulesLocators:
+    - SAVE_REQ
+    - PARENT_ROW
+    - PARENT_ROW_ID
+    - AJAX_CLOSE
+    - EXECUTE_CUSTOM_ACTIONS
+    - BR_SELECT_CUSTOM_ACTIONS
+    - FIELD_UPDATE
+    - TEXT_FIELD1
+    - TEXT_FIELD2
+    - CLICK_ON_ADD_ICON
+    - CLICK_ON_OVERRIDE
+    - INCIDENT_SERVICE_BR
+    - ADD_NEW_BR
+    - FILTER_BY_SITE
+    - GEAR_BUTTON_ACTIONS
+    - CLICK_DROPDOWN
+    - CLICK_SERVICE_REQUEST
+    - GET_SYSTEM_LOG_DETAILS
+    - VERIFY_BR_NAME
+    - ASSOCIATED_SITES
+    Editor:
+    - INPUT_LOCATOR
+    - TEXTAREA_LOCATOR
+    - RADIO_BUTTON
+    - CHECK_BOX
+    - TEXT_AREA
+    - CRITERIA_FIELD
+    - CRITERIA_FIELD
+    - CRITERIA_CONDITION
+    - CRITERIA_VALUE_INPUT
+    - CRITERIA_WITH_INVALID_INPUT
+    - ADMIN_SITE_FILTER
+    - OPTION_ELEMENT
+    - SELECT_CUSTOM_FUNCTION
+    - NODATA_ADDNEW_CF
+    - RULE_APPLIES
+    CustomerIssue:
+    - CLICK_SYSTEM_LOG
+    - GET_SYSTEM_LOG_MESSAGE
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/automation/businessrules/common/BusinessRulesDataConstants.java
+  classes:
+    BusinessRulesDataConstants:
+    - CBR_ORGIN_CASE
+    - SERVICEREQUEST_BR_URGENCY
+    - REQUEST_BR_EDIT_ASSET
+    - SERVICEREQUEST_BR_GROUP
+    - REQUEST_BR_CATEGORY
+    - CHANGE_BR_EDIT_CATEGORY
+    - BR_MODULE
+    - CHANGE_BR_CREATE_SUBMODULE_FU
+    - CHANGE_BR_EDIT_CHANGE_OWNER
+    - CHANGE_BR_EDIT_PRIORITY
+    - REQUEST_BR_ASSET
+    - CHANGE_BR_EDIT_STATUS
+    - BR_1
+    - REQUEST_BR_EDIT_URGENCY
+    - SERVICEREQUEST_BR_EDIT_STATUS
+    - REQUEST_BR_EDIT_LEVEL
+    - REQUEST_BR_HARDWARE_DISPATCH
+    - CHANGE_BR_EDIT_URGENCY
+    - CBR_UDF_BR_CRITERIA
+    - BR_WITH_CI_CRITERIA
+    - REQUEST_BR_EDIT_MODE
+    - REQUEST_BR_EDIT_STATUS
+    - CBR_UDF_BR_CASCADE_ON_EDIT
+    - GET_BASESITE_DATA
+    - CHANGE_BR_EDIT_ASSET
+    - REQUEST_BR_LEVEL
+    - REQUEST_BR_NETWORK
+    - CRITERIA_CONDITION_WITH_NOTIFICATION_STATUS_INVALID_NAME
+    - SEARCH_VALUEID
+    - CBR_WORKLOGS_CREATE
+    - CBR_WORKLOGS_EDIT
+    - CHANGE_BR_SUBJECT_EDIT
+    - ADDBR_ABORT
+    - SERVICEREQUEST_BR_ASSET
+    - GET_BR
+    - SEARCH_CRITERIA
+    - REQUEST_BR_PRIORITY
+    - CREATE_DEPARTMENT
+    - GET_PRINTER_CATEGORY
+    - GET_IMPACT_DATA
+    - REQUEST_BR_EDIT_GROUP
+    - CBR_UDF_BR_EDIT
+    - INCIDENT_BUSINESSRULE_WITHCONDITIONSUBJECT
+    - SERVICE_BUSINESS_RULE_INPUT
+    - SERVICEREQUEST_BR_EDIT_GROUP
+    - INCIDENT_BUSINESSRULE_NOCONDITION
+    - REQUEST_BR_EDIT_IMPACT
+    - REQUEST_BR_PRINTER
+    - SERVICEREQUEST_BR_EDIT_URGENCY
+    - CHANGE_BR_EDIT_IMPACT
+    - CHANGE_BR_EDIT_CHANGETYPE
+    - CHANGE_BR_EDIT_SUBMODULE_FU
+    - GET_PRIORITY_DATA
+    - BUSINESS_RULE_INPUT
+    - GET_ROUTER_CATEGORY
+    - CHANGE_BR_URGENCY
+    - CBR_UDF_BR_CASCADE_ON_ORGANIZE
+    - SERVICEREQUEST_BR_PRIORITY
+    - CHANGE_BR_ASSET
+    - BR_FOR_OH
+    - SERVICEREQUEST_BR_EDIT_PRIORITY
+    - BR_FOR_OOH
+    - CHANGE_BR_CATEGORY
+    - CHANGE_BR_EDIT_GROUP
+    - SET_CRITERIA_FOR_SITE_LOOKUP
+    - API_CREATE_CHANGE_WITH_ROLE
+    - CBR_UDF_BR_CASCADE_ON
+    - CHANGE_BR_SUBJECT
+    - GET_CHANGE_APPROVER
+    - CBR_UDF_BR_CRITERIA_EDIT
+    - CREATE_CIS
+    - SERVICE_REQUEST_BR_EDIT_ASSET
+    - BR_WITH_CRITERIA
+    - GET_BRNAME
+    - GET_NETWORK_CATEGORY
+    - CHANGE_BR_EDIT_RISK
+    - CBR_UDF_BR
+    - REQUEST_BR_MODE
+    - REQUEST_BR_EDIT_PRIORITY
+    - INCIDENT_BUSINESSRULE
+    - CHANGE_BR_EDIT_CHANGE_MANAGER
+    - ADDBR_CMDBLOOKUP
+    - CHANGE_BR_CHANGETYPE
+    - CHANGE_BR_PRIORITY
+    - INCIDENT_BUSINESSRULE_WITHCONDITIONNOVALUE
+    - CHANGE_BR_IMPACT
+    - REQUEST_BR_URGENCY
+    - GETREQUESTMODULEINFO
+    - GET_COPYSITE_DATA
+    - REQUEST_BR_EDIT_CATEGORY
+    - SERVICEREQUEST_BR_SUBJECT
+    - REQUEST_BR_STATUS
+    - REQUEST_BR_IMPACT
+    - CHANGE_BR_GROUP
+    - REQUEST_BR_DEPARTMENT
+    - SERVICEREQUEST_BR_STATUS
+    - REQUEST_BR_SUBJECT
+    - CHANGE_BR_EDIT_CHANGE_REASON
+    - CRITERIA_CONDITION_WITH_NOTIFICATION_STATUS
+    - INCIDENT_BUSINESSRULE_WITHCONDITION
+    - BR_FOR_ASSOCIATE_CHECK
+    - ASSOCIATED_CUSTOM_SITE
+    - SITE_LOOKUP
+    - CHANGE_BR_EDIT_CHANGE_GROUP
+    - REQUEST_BR_GROUP
+    - REQUEST_BUSINESSRULE_WITH_EXISTING_RESOURCE_CONDITION
+    - REQUEST_BUSINESSRULE_WITH_CUSTOM_RESOURCE_CONDITION
+    - TASK_BUSINESSRULE_WITH_EXISTING_RESOURCE_CONDITION
+    - TASK_BUSINESSRULE_WITH_CUSTOM_RESOURCE_CONDITION
+    - REQUEST_BUSINESSRULE_WITH_EXISTING_RESOURCE_CONDITION_FIELD_UPDATE
+    - REQUEST_BUSINESSRULE_WITH_CUSTOM_RESOURCE_CONDITION_FIELD_UPDATE
+    - TASK_BUSINESSRULE_WITH_EXISTING_RESOURCE_CONDITION_FIELD_UPDATE
+    - TASK_BUSINESSRULE_WITH_CUSTOM_RESOURCE_CONDITION_FIELD_UPDATE
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createLookupAndBR
+  creates_count: 1
+  local_storage_keys:
+  - udfEntityId
+- name: createBRWithCIs
+  creates_count: 2
+  local_storage_keys:
+  - key
+  - id
+  - name
+  - brEntityId
+  - brName
+- name: createChangeWithChangeApprover
+  creates_count: 0
+  local_storage_keys:
+  - changeapprover
+  - isChangeCreated
+data_json_keys: []

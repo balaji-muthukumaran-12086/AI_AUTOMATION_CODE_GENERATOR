@@ -1,0 +1,160 @@
+module: admin
+entity: customization_cmdbmanagement_cistates
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/cistates/utils/CIStateActionsUtil.java
+  methods:
+  - name: storeCIStateDetails
+    return_type: void
+    params: JSONObject inputData
+    purpose: ''
+  - name: storeValueInLocalStorage
+    return_type: void
+    params: String key,String value
+    purpose: ''
+  - name: getValueFromStorage
+    return_type: String
+    params: String key
+    purpose: ''
+  - name: getfieldValueInJson
+    return_type: String
+    params: JSONObject inputData , FieldDetails ciFields
+    purpose: ''
+  - name: verifyEntityIdValuesForCIStates
+    return_type: boolean
+    params: String entityId,String stateType
+    purpose: ''
+  - name: goToCMDBsubModule
+    return_type: void
+    params: String cmdbSubModule
+    purpose: ''
+  - name: rowActionOptionPresent
+    return_type: boolean
+    params: String entityID, String action
+    purpose: ''
+  - name: clearText
+    return_type: void
+    params: Locator locator
+    purpose: ''
+  - name: deleteCIState
+    return_type: void
+    params: String storedCIStateName, String ciStateID
+    purpose: ''
+  - name: createCIviaUI
+    return_type: void
+    params: String ciType
+    purpose: ''
+  - name: validateCIFieldValues
+    return_type: boolean
+    params: String ciStateValue, String ciNameValue
+    purpose: ''
+  - name: deleteCIinUI
+    return_type: void
+    params: String storedCIStateName, String ciName
+    purpose: ''
+  - name: searchAndNavigateCIinUI
+    return_type: void
+    params: String storedCIName, String ciID
+    purpose: ''
+  - name: checkCMDBEntities
+    return_type: boolean
+    params: String cmdbsubTab, String buttonName
+    purpose: ''
+  - name: checkCIActionDropdownDV
+    return_type: boolean
+    params: String actionType
+    purpose: ''
+  - name: checkAddRelationBtnINRelationshipMap
+    return_type: boolean
+    params: String ciID
+    purpose: ''
+  - name: editCIStateinCIEditForm
+    return_type: void
+    params: String ciName, String ciID, String storedCIStateName
+    purpose: ''
+  - name: checkEOLCIinAddRelationshipPopUp
+    return_type: boolean
+    params: String ciNameEOL
+    purpose: ''
+  - name: createCustomRelinAddRelPopUp
+    return_type: void
+    params: String relationshipType, String ciNameEOL
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/cistates/utils/CIStateAPIUtil.java
+  methods:
+  - name: getCIStateIDUsingName
+    return_type: String
+    params: String ciStateName
+    purpose: ''
+  - name: createCIState
+    return_type: void
+    params: JSONObject input
+    purpose: ''
+  - name: updateCIState
+    return_type: void
+    params: JSONObject input, String ciStateID
+    purpose: ''
+  - name: getDefaultCIState
+    return_type: String
+    params: (none)
+    purpose: ''
+  - name: getAllActiveCIState
+    return_type: ArrayList<String>
+    params: (none)
+    purpose: ''
+  - name: getAllEOLCIState
+    return_type: ArrayList<String>
+    params: (none)
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/cistates/common/CiStatesLocators.java
+  interfaces:
+    CiStatesLocators:
+    - ENTITY_ID_ROW_NAME
+    - ENTITY_ID_ROW_DESC
+    - ENTITY_ID_ROW_CISTATE_TYPE
+    - CI_STATE_TYPE
+    - ENTITY_ID_ROW_EDIT
+    - ENTITY_ID_ROW_DEFAULT_TYPE
+    - CI_STATE_NAME
+    - CI_STATE_CONFIGURATION_TEXT
+    - SELECTED_DROPDOWN_VALUE_WITH_TITLE
+    - CI_STATE_DROPDOWN
+    - CI_FIELDS_VALUES_IN_DETAILS
+    - CI_FIELDS_VALUES_IN_RHS
+    - FORM_CANCEL
+    - CI_STATE_NOT_FOR_FURTHER_USAGE
+    CMDBListView:
+    - SELECT_MODIFY_STATE_DROPDOWN
+    - SELECT_CI_STATE
+    - MODIFY_CI_STATE
+    - CI_STATE_RHS
+    CMDBDetailsPage:
+    - CMDB_EDIT_BTN
+    - ADD_RELATIONSHIP_POPUP_ADD
+    - ADD_RELATIONSHIP_POPUP_CANCEL
+    CMDBRelationshipMapCanvasPage:
+    - PARENT_CI_IN_CANVAS
+    - PARENT_CI_ADD_REL_BTN_IN_CANVAS
+    - EOL_LABEL_IN_RELATIONSHIP_TAB
+    CommonLocators:
+    - MULTI_SELECT_SEARCH_INPUT
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/cistates/common/CiStatesDataConstants.java
+  classes:
+    CiStatesDataConstants:
+    - CREATE_ACTIVE_CI_STATE
+    - CREATE_EOL_CI_STATE
+    - MARK_CI_STATE_AS_DEFAULT
+    - SEARCH_DEFAULT_CI_STATE
+    - GET_ALL_ACTIVE_CI_STATE
+    - GET_ALL_EOL_CI_STATE
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: edit_ci_state
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []

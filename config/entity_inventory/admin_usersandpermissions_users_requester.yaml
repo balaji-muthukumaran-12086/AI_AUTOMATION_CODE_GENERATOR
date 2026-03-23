@@ -1,0 +1,39 @@
+module: admin
+entity: usersandpermissions_users_requester
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/users/requester/common/RequesterLocators.java
+  interfaces:
+    RequesterLocators:
+    - REQR_ACTIONSGEAR
+    - REQUESTER_SETTING_ICON
+    - REQUESTER_QUICKACTION
+    - FIELD_VALUE_IN_LISTVIEW
+    - USER_GEAR_ICON
+    - REQUESTER_TO_TECH
+    Detailview:
+    - MANDATORY_FIELD
+    - REQUESTER_INPUT_FIELDS
+    - REQUESTER_DUPLICATE_MAIL_ALERT
+    RequesterPortalCustomisation:
+    - CLICKING_ISSUE_ICON_FROM_REQUESTER_LOGIN
+    - CLICKING_ON_DEFAULT_REQUEST_TEMPLATE
+    - CLICKING_ON_VIEW_DETAILS_BUTTON
+    - CLICKING_ON_VIEW_DETAILS_POPUP
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createrequest
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []

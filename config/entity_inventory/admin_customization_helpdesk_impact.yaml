@@ -1,0 +1,35 @@
+module: admin
+entity: customization_helpdesk_impact
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/impact/common/ImpactLocators.java
+  interfaces:
+    ImpactLocators:
+    - NEW_IMPACT
+    - EDIT_IMPACT
+    - DELETE_IMPACT
+    - IMPACT_TITLE
+    - ICN_IMPACTACTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/impact/common/ImpactDataConstants.java
+  classes:
+    ImpactDataConstants:
+    - API_IMPACT1
+    - UI_IMPACT1
+    - CUSTOM_MODULE_IMPACT
+    - DEFAULT_IMPACT
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- API_Impact1
+- UI_Impact1
+- custom_module_impact
+- default_impact

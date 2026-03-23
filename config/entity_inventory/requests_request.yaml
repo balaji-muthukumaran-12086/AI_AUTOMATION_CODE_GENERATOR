@@ -163,8 +163,1238 @@ api_util:
     params: String templateId, String technicianId
     purpose: ''
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/requests/request/common/RequestLocators.java
+  interfaces:
+    RequestLocators:
+    - NEW_REQUEST_GLOBAL_ICON
+    - SERVICE_CATALOG
+    - SELECT_REQUEST_CATALOG
+    - SELECT_REQUEST
+    - SELECT_TEMPLATE
+    - REQUESTER_NAME
+    - PLACEHOLDER
+    - APPROVALUSER_XPATH
+    - DROPDOWN_VALUE
+    - AJAX_MESSAGE
+    - SEARCH_NAME
+    - VIEW_MENU
+    - PROFILE
+    - SAVE_LANGUAGE
+    - PERSONALIZE
+    - REQUEST_UDF
+    - SAVE_CANCEL_UDF_TEMPLATE
+    - UDFDESC_TEMPLATE
+    - SELECT_NO_OF_ELEMENT
+    - SELECT_ELEMENT
+    - GENERAL_OPERATION
+    - GENERAL_OPERATION_USING_NAME
+    - CLICK_TEMPLATE_SERVICECATLOG
+    - TABLE_SETTINGS
+    - PERSONALIZATION
+    - NEW_INCIDENT
+    - QUICK_REQUEST
+    - SELECT_CONDITION_BASEDFIELD
+    - SAVE_PROFILE
+    - CHECKLIST_PROFILE
+    - EXISTING_CHECKLISTITEM
+    - EXISTING_ASSOCIATE_CHECKLISTITEM
+    - REQUEST
+    - CHECKLIST_NAME
+    - CHECKLIST_ITEM_NAME
+    - CHECKLIST_TEMPLATE_SAVE
+    - APPROVAL_LINK
+    - SUB_APPROVAL_LINK
+    - FIELDCHECK_APPROVAL_LINK
+    - FIELDCHECK_APPROVAL_LINK
+    - CHECKLIST_DESC
+    - CHECKLIST_NEW_ITEM
+    - CHECKLIST_RADIO
+    - CHECKLIST_RADIO_MAXIMUM
+    - SEARCH_CHECKLIST_NAME
+    - NEW_OPERATION_FROMREQ
+    - CHECKLIST_DROP_DRAG
+    - CHECKLIST_NEWITEM_DROP_DRAG
+    - CHECKLISTITEM_DROP_DRAG
+    - DELETE_DROP_DRAG
+    - CHECKLIST_DROP_LOCATION
+    - CHECKLIST_MAX_LENGTH
+    - CHECKLIST_BACKBTN
+    - SAVE_CHECKLISTITEM
+    - INPUT_CHECKLISTITEM_TEMP
+    - HOVERING_CHECKLISTITEM
+    - SAVE_CHECKLIST
+    - CHECKLIST_MAX_COUNT
+    - HOVER_CHECKLIST
+    - SAVE_CHECKLIST_TEMP
+    - DISPLAY_AJAX
+    - INCIDENT_REQUEST
+    - SAVE_BUTTON
+    - CHECK_TEMPLATE
+    - CHECK_SERVICETEMPLATE
+    - CHECK_TEMPLATE
+    - CHECK_SERVICETEMPLATE
+    - CLICK_ADD_MORE_DETAILS_QUICK_CREATE_POPUP
+    - SEARCH_INPUT_IN_REQUESTER_PORTAL
+    - SEARCH_INPUT_IN_REQUESTER_PORTAL_POPUP
+    - BACK_BUTTON
+    - INNER_LINK_SUB_TAB
+    - QUICK_INCIDENT
+    - ACTION_DROPDOWN
+    - UNFOLLOW_ACTION
+    - CLICK_CHECKLIST_ITEMS
+    - CLICK_NEW_CHECKLIST_ITEMS
+    - CLICKING_RADIO_BUTTON_TYPE
+    - CLICKING_SAVE_BUTTON
+    - CLICKING_CHECKLIST_ITEMS_BY_NAME
+    Template:
+    - NEW_UDF_FIELD
+    - TEMPLATE_SEARCH
+    - CLICK_TEMPLATE_SEARCH_RESULT
+    - TEMP_SUBTAB
+    - RESOURCE_ACTIONS
+    - CHOOSING_QUESTION_OPTION
+    - CHOOSE_QUESTIONS_CHECKBOX
+    - SAVE_RESOURCE
+    AssociateRequest:
+    - CHECK_PROBLEM_INREQUEST
+    - CLICK_CHECKBOX
+    - CLICK_ASSOCIATION_MODULE
+    - CLICK_ASSOCIATED_BUTTON
+    - VERIFY_COLUMN_IN_ASSOCIATION
+    Helpdesk:
+    - CLICK_HELPDESK_FIELD_TAB
+    - FIELD_VALUE
+    - ACTION_HELPDESK
+    - ACTION_OPERATION
+    udf:
+    - CLOSE_FIELD
+    - CHECK_EDITABLE
+    - FIELD_KEYID
+    - CHECK_RESTRICTED_DAYS
+    - CHECK_ERROR
+    - CLICK_TABLE_SETTINGS_ARROW
+    - CHECK_MANDATE_IN_TEMP
+    - MANDATE_ICON_IN_TEMP
+    - UDF_OPERATION_TEMP
+    - EXPAND_COMPRESS
+    - HOVERING_UDF
+    Form:
+    - DISPLAY_NAME
+    - FIELDS_OPTIONCHECK
+    - CANCEL_REQUEST_OPTION
+    - CHECK_MANDATE_FIELD
+    - REQUESTERPAGE_CLOCE_POPUP
+    - CHANGE_TEMP_POPUP
+    - CHANGE_TEMP_REQUEST
+    - CHECK_POPUP
+    - EDIT_FORM
+    - HOVER_ATTACH
+    - DELETE_ATTACH
+    - SAVE_DELETE_ATTACH
+    - SEARCH_CHECKLIST
+    - OTHER_CANCELL_REASON
+    - AVAILABLE_CHECKLIST_DROPDOWN
+    - CHECKLIST_INFORM
+    - CHECKBOX_CHECKLIST
+    - CHECKBOX_ASSOCIATE_CHECKLIST
+    - FIELDS_CHECK_DROPDOWN
+    - FIELDS_CHECK_DROPDOWN_DISABLED
+    - CREATED_DATE_DISABLED
+    - STATUS_CHECK_DRPDN
+    - EDIT_BUTTON
+    - APPLY_STATUS_CLOSED
+    - CANCEL_BUTTON
+    - CANCEL_REQUEST
+    - CHECKLIST_POPUP
+    - FLAG_CLOSE_COMMENT
+    - FLAG_CLOSE_COMMENT_TECH
+    - ERROR_MSG_COMMENT
+    - CANCEL_OPERATION_TECH
+    - SINGLELINE_DESC
+    - CANCEL_FLAG_CHECK
+    - REVERT_CANCEL_TECH
+    - CANCEL_FLAG_REASON
+    - SAVE_ASSET
+    - EMPTYFIELD_CHECKBOX
+    - ALLFIELD_CHECKBOX
+    - OVERWRITE_CHECKBOX
+    - TECHNICIAN_DISABLED
+    - ON_HOLD_COMMENTS
+    - ON_HOLD_COMMENTS_SUBMIT
+    - CHECKLIST_ITEM_DISABLED
+    - ON_CLOSE_COMMENTS
+    - POPUP_REASON
+    - BEHALF_HARDWARE1
+    - BEHALF_HARDWARE
+    - CIS_LIST
+    - SEARCH_REQ_NAME_IN_SDADMIN
+    - SEARCH_REQ_NAME_IN_OTHER
+    - FIRST_REQUESTER_IN_REQUEST_FORM_PAGE
+    - FIELD_DETAILS
+    - FIELD_INPUT
+    - FIELD_SUB
+    - EMAIL_FIELD_INPUT
+    - CHECK_SOLUTION
+    - STATUS_POP_UP
+    - EDITOR_FIELD_DETAILS
+    - PROGRESS_STATUS
+    - CHOOSE_EDITOR
+    - FIELD_TEXT_AREA
+    - DROP_DOWN_ELEMENTS
+    - SEARCH_REQUESTER
+    - CLICK_UPLOAD
+    - CLICK_BROWSE
+    - TEMPLATE_SEARCH
+    - TEMPLATE_CHANGE_POPUP
+    - DISABLED_EDITOR_FIELD
+    - REQUESTER_HEAD_PICKER
+    - REQUESTER_HEAD_PICKER_QUICKINC
+    - NEW_REQUESTER
+    - DEPTS_SITE
+    - NO_MATCH_FOUND_VALUE
+    - SEARCH_ICON
+    - REQ_EDIT_PAGE
+    - FIELDLOCATOR
+    - RESOLUTIONCHECK
+    - RESOLUTIONUPDATE
+    - CLICKINGREQUEST
+    - RESOLDETAILSNAVIGATE
+    - TEMPLATE_HOME
+    - RESOLUTION_CANCEL
+    - NEW_CHANGE
+    CheckList:
+    - CHECKLIST_FILTER
+    - CHECKLIST_OPERATION
+    - EXISTING_CHECKLIST
+    - AVAILABLE_CHECKLIST_DROPDOWN
+    - CHECKLIST_IN_FORM
+    - CHECKLIST_IN_FORM
+    - CHECKLIST_UPDATED_PROFILE
+    - INPUT_CHECKLIST
+    - CHECKLIST_PROFILE_ICON
+    - VERIFIED_CHECKLIST
+    - CHECKLIST_ITEM_TYPE
+    - CHECKLIST_NAME
+    Listview:
+    - ERRORLABEL_CLOSURECODE
+    - ERRORLABEL_CLOSURECOMMENTS
+    - SELECT_NOTES_MENTIONS
+    - SELECT_SITE_INCHARGE_OF_REQUEST_IN_NOTES
+    - SELECT_SITE_MANAGER_OF_REQUEST_IN_NOTES
+    - LINKED_REQUEST_POPUP
+    - VIEW_DETAILS
+    - UPDATE
+    - ADD_NOTES
+    - PUBLIC_NOTES
+    - REQUEST_ID_IN_NOTES
+    - REQUEST_ID_WITH_PREFIX_IN_NOTES
+    - MANDATORY_FIELDS_IN_CLOSURE_POPUP
+    - CLICK_USERS_IN_NOTES_MENTIONS_POPUP
+    - SELECT_NOTE_MENTIONS_HEADER
+    Customview:
+    - CUSTOM_VIEW_FIELDS
+    - CUSTOM_FIELDS
+    - OPERATOR
+    - CHECK_ADD_FILTER
+    - ADD_CRITERIA
+    - CHECK_COLUMN_OPERATOR
+    - COLUMN_ERROR
+    - CONFIRM_POPUP
+    - FILED_NAME
+    - LOGICAL_OPE
+    - FIELD_TEXT
+    - TEXT_NAME
+    - REQ_ID
+    - ID_ADD_CRITERIA
+    - TEXT_CRITERIA
+    - SUBCATEGORYFILED
+    - FILED
+    - GROUP_FILED
+    - DUMMY_CICK
+    - DEPARTMENT_NAME
+    - ALERT_POPUP
+    - SELECT_COLUMN
+    - CONFIRM_BUTTON
+    - OK
+    RequestFAFR:
+    - MANAGE_APPROVALS_ICON
+    - VERIFY_PREVIOUS_REQUEST_ICON_FOUND_IN_FORM
+    - SUBMIT_FOR_APPROVAL
+    - SELECT_STAGE1_APPROVARS
+    - SELECT_APPROVAR_IN_INCIDENT
+    - SAVE_AND_SEND_BUTTON
+    - STAGE1_LABEL
+    - REJECT_REQUEST
+    - ADD_RESOLUTION_BUTTON
+    - SELECT_HIDDEN_FIELD
+    - SELECT_SHOWN_FIELD
+    - SELECT_SHOWN_UPDATE_REASON_FIELD
+    - SELECT_DISABLED_APPROVER_FIELD
+    - SELECT_APPROVER_FIELD
+    - APPROVER_TEXT_VALUE
+    DetailView:
+    - NEW_ENTITY
+    - SEARCH_ENTITY
+    - REQUEST_ID_IN_EDIT_FORM_RHS
+    - COPY_ICON
+    - COPY_ICON_OPTION
+    - META_DATA
+    - LOCATOR_FOR_FIND_REQUEST_ID
+    - SLAFLAG_RHS
+    - LOCATOR_FOR_FIND_STATUS
+    - LOCATOR_FOR_FIND_STATUS1
+    - LOCATOR_FOR_FIND_DUE_BY
+    - LOCATOR_FOR_TECH
+    - APPROVAL_STATUS
+    - ICN_ATTACH
+    - ASSOCIATE_REQUEST
+    - GET_TEMP
+    - GET_TIME
+    - GET_IMPACT_DETAILS
+    - GET_PRIORITY
+    - ATTACHMENTS
+    - CHECKLIST_COUNT
+    - LASTUPDATED_BY
+    - VERIFY_REQUEST_IMAGE_ICON
+    - TECHNICIAN_VALUE
+    - CLICK_ASSETS_OWNED_RHS
+    - VERIFY_ASSETS_BELONGINT_TO_USER_TEXT_IN_POPUP
+    - REPLY_ATTACHMENT_ICON
+    - REPLY_CONVERSATIONS_BOX
+    - SLA_VIOLATED_ICON
+    - VERIFY_SCHEDULED_START_IN_TASK
+    SHARE:
+    - COMMENTS
+    - EDIT
+    - SEARCH_USER
+    - SELECT_USERS_TAB
+    - SELECT_USERS_TAB2
+    - SELECT_USER
+    - SELECT_ROLE
+    - SAVE_SHARE
+    - REMOVE_USER
+    - SHARED_USER
+    - CHECK_SHARED_REQUEST
+    - UPDATE_SHARED_REQUEST
+    - SELECT_USER_AFTERADD
+    - SELECT_USER_TOOLTIP
+    - SELECT_OPTION_DROPDOWN
+    - ERROR_MSG
+    - CLICK_TECH_OPTION
+    - SELECT_GROUP
+    - ALL_USERS
+    - CONFIRM_POPUP
+    - CONVERSATION_THREAD_ATTACHMENT_ICON
+    - SECOND_CONVERSATION_ATTACHMENT_ICON
+    - SELECT_USERS_FIELD
+    - TECHNICIAN_SELECT_IN_CONTAINER
+    APPROVAL:
+    - CLICK_STAGE2
+    - CHECK_TRIGGER_APPROVAL
+    - CLICK_APPROVAL_TAB
+    - CLICK_APPROVER_TAB
+    - CLICK_MANAGEAPPROVAL
+    - APPROVER_ERROR
+    - CHOOSE_MODULE
+    - SAVE_2ND_STAGEAPPROVAL
+    - TYPENAME_APPROVAL
+    - DUMMY_CICK
+    - SEND_APPROVAL_2ND_STAGE
+    - SAVE_APPROVAL
+    - CLICK_APPROVALSTAGE1
+    - REJ_APPROVAL
+    - APPROVED
+    - SAVE_APRVL
+    - ADDSTAGE
+    - TYPENAME_STAGE2
+    - CLICK_APPROVALSTAGE2
+    - CLICK_SUBMIT_APPROVAL_INCIDENT
+    - SAVE_APPROVAL_INCIDENT
+    - APPROVAL_EMAILID
+    - CLICK_STAGE1_INCIDENT
+    - FIELD_APPROVAL
+    - SAVE_APPROVAL_SETTINGS
+    - INCIDENT_APPROVAL_DROPDOWN_LOCATOR
+    - INCIDENT_APPROVAL_DELETE_LOCATOR
+    - APPROVER_REMOVE_USING_NAME
+    - COMMENTS
+    - SENT_BY
+    - SUBMIT_FOR_APPRVOVAL_BTN
+    - INPUT_TO_FIELDS_BY_ID
+    - TAKE_ON_ACTION
+    RequesterDetails:
+    - REQR_TITLE_LOC
+    - VIP_BADGE
+    - OBO_REQR_LOCATOR
+    - OBO_VIP_BADGE
+    - ASSET_ICON
+    - ICN_RHS_DETAILS
+    - ASSET_DETAILS_PAGE
+    - ASSET_POP_UP
+    - HEADER_ELEMENT
+    - ASSET_NAME
+    - ASSET_SEARCH
+    - CLICK_ASSET
+    - CLICK_ASSET_LIST
+    - TOGGLE_ASSET
+    - ASSET_TABLE_SETTINGS
+    - ASSET_COLUMN_CHOOSER
+    - TYPE_DROPDOWN_SEARCH_INPUT
+    - OPTION_ELEMENT
+    - VIEW_REQUESTER_DETAILS
+    - CONTACT_NUMBER
+    - MOBILE_NUMBER
+    - DEPARTMENT
+    - CONTACT_NUMBER_EDIT
+    - MOBILE_NUMBER_EDIT
+    - UDF_EDIT
+    - LOOKUP_TECH_CLICK
+    - UDF_SINGLE
+    - UDF_NUMERIC
+    - FILTER_BY_SITE
+    - FILTER_BY_SITE_TECH
+    - SELECT_SITE
+    - CHECK_BEHALF_USER
+    - ADD_DEPARTMENT
+    - DEPARTMENT_NAME
+    - DEPARTMENT_DESC
+    - DELETE_DEPT
+    - OPTION_ELEMENT2
+    - REQUESTER_UDF
+    - ICON_SPOTEDIT_SAVE_RHS
+    - ICON_SPOTEDIT_SAVE
+    - ICON_SPOTEDIT_CLOSE_RHS
+    - ICON_SAVE_DEPARTMENT_RHS
+    - ICON_CLOSE_DEPARTMENT_RHS
+    - OPTIONS_IN_PICKLIST_UDF
+    - ALERT_MESSAGE_IN_UDF
+    - CALENDER_ICON_IN_DATE_UDF
+    RequestNotes:
+    - ADD_NOTES_POPUP
+    - IS_PUBLIC_CHECK_BOX
+    - IS_PUBLIC_CHECK_BOX
+    - IS_NOTIFY_TECH_CHECK_BOX
+    - MARK_FIRST_RESPONSE_CHECK_BOX
+    - NOTES_SAVE_BUTTON
+    - NOTES_CANCEL_BUTTON
+    - NOTES_EDIT_ICON
+    - NOTES_EDIT_ICON
+    - NOTES_DELETE_ICON
+    - TEXT_LOCATOR_IN_NOTES
+    - TEXT_LOCATOR_IN_NOTES_WITHOUT_ID
+    - CLICK_VERIFY_PRIVATE_ICON_IN_NOTES
+    - CLICK_VERIFY_PUBLIC_ICON_IN_NOTES
+    - ADD_NOTES_TO_LINKED_REQUEST_CHECKBOX
+    - ENABLE_ADD_NOTES_TO_ALL_LINKED_REQ
+    - IS_PUBLIC_CHECK_BOX_DETAIL_VIEW
+    - EDIT_NOTE_DETAILVIEW
+    - SELECT_NOTE_MENTIONS_IN_DETAIL_VIEW
+    Resource:
+    - SELECT_ITEM
+    - RESOURCE_DETAIL
+    - NO_RESOURCE_PRESENT
+    - COST_DETAILS
+    - EDIT
+    - CANCEL
+    - SERVICE_CATALOG_CHECK
+    - RESTART_APPROVAL
+    - CHECK_RESTART_APPROVAL
+    - RESOURCE_IS_PRESENT
+    - RESOURCE_DROPDOWN
+    - RESOURCE_QUANTITY_FORM
+    - ADD_TITLE
+    - CLICK_QUESTION_FORM
+    - CLICK_FORM_TEXTBOX
+    - QUESTION_SAVE
+    - TOTAL_COST
+    - TOTAL_COST_FORM
+    - COUNT_CHECK
+    - QUANTITY_CHECK
+    - COUNT_CHECK_CHECK_BOX
+    - ADD_FIELD_OPTION
+    - COST_QUANTITY
+    - CLICK_CHECKBOX
+    - CLICK_CHECKBOX_RESOURCE
+    - RESOURCE_CHECK_INDETAIL
+    - RESOURCE_ANS
+    - COST_DETAILS_FORM
+    - EDIT_DETAIL_PAGE
+    - QUANTITY_IN_DETAIL
+    - QUANTITY_IN_FORM
+    - QUESTION
+    - SERVICE_TEMP_SEARCH
+    - RESOURCE_TAB
+    - ADD_RESOURCE
+    - MAX_QUANTITY
+    - ADDED_QUANTITY
+    - SERVICE_CATEGORY
+    - CHECK_SERVICETEMPLATE
+    - QUESTION_TYPE
+    - ADD_QUESTION
+    - QUESTION_ROW_DATA
+    - SELECT_TEXT_BOX
+    - CHECK_BOX_OPTION
+    - SELECT_CHECK_BOX_RESOURCE
+    - RESOURCE_CHECK
+    - RESOURCE_QUANTITY_TOOLTIP
+    - RESOURCE_COST_IN_REQUEST_EDIT_RHS
+    - RESOURCE_OPTIONS
+    Asset:
+    - SAVE_BUTTON
+    - FILTER_BY_ASSET
+    - FIRST_ROW_ASSET
+    - SITE_ID
+    - ALERT_MESSAGE
+    - CHECK_STATUS
+    - CANCEL_BUTTON
+    - ASSET_LIST
+    - ASSET_TYPE
+    - FILTER_BY_SITE
+    - SITE_TYPE
+    - SAVE_ASSET
+    - CANCEL_ASSET
+    - NO_ASSET_FOUND
+    - MORE_ASSET_ICON
+    - MORE_ASSET_ICON
+    - ASSET_IS_PRESENT
+    - NUMBER_OF_ASSETS
+    - NAVIGATION_NEXT_BUTTON
+    - NAVIGATION_PREVIOUS_BUTTON
+    - DISABLE_NEXT_BUTTON
+    - DISABLE_PREVIOUS_BUTTON
+    - ASSET_COUNT
+    - ASSET_SEARCH
+    - FILL_ASSET_IN_SEARCH_FIELD
+    - SEARCH_FIELD
+    - GO_BUTTON
+    - GO
+    - NO_ASSET_MATCHES
+    - ASSET_IN_ASCENDING_ORDER
+    - ASSET_IN_DESCENDING_ORDER
+    - SELECT_ASSET
+    - LIST_OF_ASSET_ELEMENTS
+    - ASSET_ELEMENTS
+    - ASSET_NAME
+    - ASSET_USER_DEPARTMENT
+    - ASSET_ICON
+    - ASSET_POP_UP
+    - ASSET_COUNT_TABLE
+    - ASSET_RECORDS_PER_PAGE
+    - ASSETS_PER_PAGE
+    - CHANGES_POP_UP
+    - ASSET_CLEAR
+    Site:
+    - SITE_POP_UP
+    - SITE_ICON
+    - SITE_DETAILS
+    - MORE_ASSET_ICON
+    Tasks:
+    - NO_TASKS_FOUND
+    - ADD_TASK
+    - ADD_TASK
+    - ADD_TASK_FROM_TEMPLATE
+    - SELECT_TEMPLATE
+    - SELECT_GROUP
+    - SELECT_TASK
+    - CLICK_HISTORY_TAB
+    - QUICK_ADD
+    - TASK_DETAILS_VERIFIED
+    - OWNER_IN_TASK_PAGE
+    - AJAX_MESSAGE
+    - CLICK_SEARCHED_RESULTS
+    - SAVE_BUTTON
+    - APPLY_STATUS_CLOSED
+    - SEARCH_FIELDS_HOME
+    - CANCEL_BUTTON
+    - SELECT_EXIST_TASK
+    - TASK_TITLE
+    - TASK_OWNER
+    - TITLE_TASK
+    - STATUS_TASK_TAB
+    - TIME_OF_TASK
+    - DATE
+    - ERROR_TIME
+    - TASK_DETAILS_TASKTAB
+    - TASK_ORDER
+    - TASK_ORDER
+    - TASK_OPERATION
+    - ASCENDING_DESCENDING
+    - TABLE_SETTINGS
+    - TASK_ORDER_ARROW
+    - TASKTAB_HOME
+    History:
+    - HISTORY_TAB
+    - FIELDS_CHECK_BEFORE
+    - CHECK_HISTORY_OPERATION
+    - OPERATION
+    - SAVE_TASK
+    - FIELDS_CHECK_AFTER
+    - PERFORMED_BY
+    - REASON_CHECK_HISTORY
+    - CHECK_OPERATION
+    - UPDATE_CHECK
+    - TIME_CHECK
+    - TAG_CHECK
+    - TAGS_HISTORY
+    - SELECT_DROPDOWN_OPTION_IN__HISTORY
+    - CHECK_TITLE
+    - CLICK_HERE
+    - VIEW_NOTE_TEXT_IN_HISTORY
+    Popup:
+    - CLICK_CLOSURE_CODE_DROPDOWN
+    - VERIFY_POPUP_INFO_TEXT
+    - CLOSE_POPUP
+    - DATE_POPUP
+    - POPUP_ROW
+    - VERIFY_ASSOCIATE_CHANGE_DETAILVIEW_IN_POPUP
+    - VERIFY_CHANGE_TITLE_IN_ASSOCIATE_CHANGES_DETAILVIEW_POPUP
+    - CLICK_CHANGE_IN_POPUP
+    - VERIFY_PREVIOUS_REQUEST_POPUP_INFO_TEXT
+    - CLICK_DETAILS_ICON_IN_POPUP
+    - CLICK_NOTES_ICON_IN_POPUP
+    - VERIFY_NOTES_TEXT_IN_POPUP
+    - CLICK_REQUEST_WITH_ENTITY_ID_IN_POUPUP
+    - VERIFY_INLINE_SECTION_NAME
+    - VERIFY_INLINE_SECTION_NAME_WITH_TITLE
+    - VERIFY_COST_DETAILS_SECTION_NAME
+    - VERIFY_TABLE_HEADER
+    - RECENT_ACTIVE_POPUP
+    - ADD_NOTE_IN_RECENT_POPUP
+    - SWITCH_POPUP_IFRAME_IN_RECENT_POPUP
+    - TEXT_EDITOR_IN_RECENT_POPUP
+    - LINK_REQUEST_BTN
+    - POPUP_SAVE_BUTTON
+    - EDIT_FOLLOWERS
+    - CLEAR
+    - ATTACH_IN_NOTES_POPUP
+    - VERIFY_ATTACHMENT_NAME
+    - CONFIRM_BUTTON
+    - REQ_ID_IN_BULKEDIT_FORM
+    - REQUEST_ID_IN_SUITVIEW
+    - SELECT_ENTITY
+    - SELECT_PROJECT
+    - ASSOCIATE
+    - VIEW_DETAILS
+    - VIEW_DETAILS_IN_POPUP
+    - ASSOCIATED_REQUSET
+    - VIEW_DETAILS_RELEASE
+    - VERIFY_POPUP_OPENED
+    - POPUP_SUBMIT_CANCEL_BUTTONS
+    - BUTTON
+    - CLICK_SAVE_NOTE_WHILE_EDIT_IN_REQ_CONVERSATION
+    - PRODUCT_TYPE_FIELD_IN_ASSET
+    Home:
+    - ZIA_BUTTON
+    - QUICK_ACTIONS
+    - MSG_TEXTARE
+    - ADMIN_BTN
+    - POP_UP_TITLE
+    - ADMIN_SLA_TOGGLER
+    - DASHBOARD_TAB
+    - DASHBOARD_TAB
+    - ASSIGNED_TASK
+    - PARENT_REQUEST
+    - PARENT_REQUEST_DETAILS
+    - PARENT_ID_IN_LIST_VIEW
+    RequesterHome:
+    - REPORT_AN_ISSUE_REQUESTER
+    - SELECT_REQUEST_TEMPLATE
+    - REQUEST_ADDED
+    - REQ_REPLY
+    - REQ_REPLAY
+    - DROPDOWN_TEMP_CHANGE
+    - SET_STATUS
+    - EXIST_TEMP_CHECK
+    - REQ_ONHOLD_STATUS
+    - REMINDER
+    - CHECK_REMINDER
+    - REOPEN_REQUESTS
+    - CHECK_REOPEN_REQUESTS
+    - RESOLVED_REQUESTS
+    - CHECK_RESOLVED_REQUESTS
+    - DEFAULT_REQ_TEMP
+    - CHECK_DEFAULT_REQ_TEMP
+    - INCIDENT_APPROVALS
+    - CHECK_INCIDENT_APPROVALS
+    - ASSOCIATED_ASSETS
+    - CHECK_ASSOCIATED_ASSETS
+    - AUTO_ASSIGN_ASSET
+    - CHECK_AUTO_ASSIGN_ASSET
+    - EDIT_PROFILE
+    - CHECK_EDIT_PROFILE
+    - ON_BEHALF_OF
+    - EDITOR
+    - SERVICE_CATALOG_REQ_LOCATOR
+    - CHECK_SERVICE_CATALOG_REQ
+    - CHECK_BOTH_REQ
+    - DROPDOWN_CLOSEREQ
+    - SAVE_TEMPFROMSEARCH
+    - CANCELED
+    - FORM_CANCELED
+    - CLOSE_TABLESEARCHBUTTON
+    - EDIT_SAVE_TEMP
+    - REQ_HEADER_TAB
+    - CANCEL_POPUP
+    - CLICK_ASS_TEMP
+    - CLICK_TEMPNAME_IN_POPUP
+    - VERIFY_REQUEST_ADDED_MSG
+    - CLICK_VIEW_REQEUST
+    SelectBoxes:
+    - CHECKBOX_ROWID
+    - CHECKBOX_CURRID
+    - CHECKBOX_PKCOLID
+    - CHECKBOX_DATAROWID
+    - CHECKBOX_ROWID_POPUP
+    - CHECKBOX_CURRID_POPUP
+    - CHECKBOX_PKCOLID_POPUP
+    - CHECKBOX_DATAROWID_POPUP
+    - RADIO_CURRID
+    - RADIO_DATAROWID
+    - RADIO_CURRID_POPUP
+    - RADIO_DATAROWID_POPUP
+    ErrorPage:
+    - ERROR_PAGE
+    PrintPreview:
+    - PRINT_PREVIEW_H1_TAG
+    - PRINT_PREVIEW_HISTORY_TAG
+    - PRINT_PREVIEW_CHECKLIST
+    KanbanView:
+    - INACTIVE_CUSTOMER_DIABLE_WORKLOG_LOCATOR
+    - REQUEST_NOTES_LOCATOR_USING_REQ_ID
+    - CHECK_KEY_VALUE
+    - REQUESTS
+    - SORT_BY_DESC
+    - SORT_BY_ASC
+    - SORT_DROPDOWN
+    - OPEN_STATUS
+    - MANAGE_STATUS
+    - SEARCH_BOX
+    - OPEN_SOURCE
+    - TARGET_SOURCE
+    - PUSHPIN_ICON
+    - REQUESTS_TITLE
+    Admin:
+    - FILL_NAME_IN_NAME_BOX
+    - REPORTING
+    - REPORTING_USER
+    - ADD_TECH_GROUP
+    - TECH_GROUP_NAME
+    - ASSIGN_TECH_GROUP
+    - ASSIGNROLE
+    - TECH_IN_LIST
+    - CLICK_TECH
+    - ASSIGN_TECH_FORM_SAVE
+    - ASSIGN_TECH
+    - TECH_GROUP
+    - SELECT_GEAR_BOX
+    - GEAR_BOX
+    - CLICK_GO_BUTTON
+    - SELECT_EDIT
+    - TECHNICIAN_DEPARTMENT
+    - TECH
+    - UPDATE_TECHNICIAN_DETAILS
+    - TECHNICIAN_OPTION
+    - ICON_SEARCH
+    - GO_BUTTON
+    - CHECK_ORG_ADMIN
+    - NEW_TECHNICIAN
+    - FILL_FIRST_NAME
+    - FILL_EMAIL
+    - ALERT_BOX_TECHNICIAN_CREATED
+    - ASSIGN_SITE
+    - ASSIGN
+    - ROLE
+    - SAVE_TECH_GROUP
+    - LIST_TECH_GROUP
+    - EDIT_NOTIFY_GROUP
+    - MANAGE_SITES_AND_GROUPS
+    - SITE_DETAILS
+    - CLICK_ROLE
+    - ASSIGN_ROLE
+    - ASSIGN_POP_UP
+    - CHECK_ASSIGNED_ROLES
+    - CHECK_ASSIGNED_ROLES
+    - FILL_JOB_TITLE
+    - ALERT_BOX_TECHNICIAN_UPDATED
+    - ENABLE_LOGIN
+    - CHECK_SITE_ASSOCIATION
+    - FILL_EMAIL_IN_SEARCH_BOX
+    - ADD_GROUP
+    - SELECT_GROUP
+    - GROUP_ASSOCIATION
+    - TECHNICIAN_DISPLAY_NAME
+    - SITE_DISASSOCIATE
+    - SEARCH_TECHNICIAN
+    - DEASSIGN_ROLE
+    - ENABLE_AUTOASSIGN
+    - SAVE_AUTOASSIGN
+    - CHECK_ENABLE_AUTOASSIGN
+    - CHECK_AUTOASSIGN_BOTHREQ
+    - CHECK_AUTOASSIGN_EDIT
+    - ENABLE_AUTOASSIGN_EDIT
+    - ENABLE_AUTOASSIGN_BOTHREQ
+    Requester:
+    - SELECT_REQUESTER
+    - CLICK_ACTION
+    - ASSIGN_DEP
+    - CLICK_DRPDOWN
+    - CLICK_DRPDOWN_SITE
+    - FIELD_OPERATOR
+    - ASSOCIATE_DEPARTMENT
+    - CLICK_DEPARTMENT
+    - REQUESTER_ID
+    - CHANGE_TECH
+    - UPDATE_REQUESTER
+    - EDIT_TECH
+    Priority:
+    - SELECT_PRIORITY_MATRIX
+    - OVERRIDE_PRIORITY
+    - SELECT_PRIORITY
+    - SHOW_OPTIONS_IN_PRIORITY
+    - OPTION_UPDATED_IN_PRIORITY_MATRIX
+    - CHANGE_PRIORITY
+    - CLICK_IMPACT_PRIORITY
+    - HIGH_PRIORITY
+    RLC:
+    - REQ_LIFE_CYCLE
+    - PUBLISH
+    - SLC_CLOSE
+    - CLICK_TRANSITION
+    - CLICK_DURING
+    - CLICK_RULESET
+    - TRANS_POPUP_RLC
+    - LINEAR_VIEW_RLC
+    Survey:
+    - PROCEED_ENABLED_SURVEY
+    - SURVEY_IN_TEMP
+    - TYPE_QUESTION_INPUT
+    - DEFAULT_TEMP
+    - PREVIEW_TEMP
+    - SAVE_QUESTION
+    - CREATE_TEMP
+    - CREATE_TEMP_BTN
+    - PASTE_QUESTION
+    - CLICK_LINK_QUESTION
+    - CONFIG_SETTINGS
+    - TYPE_QUESTION
+    - SCORING_OPTION
+    - SAVE_SCORING
+    - SURVEY_TEMP
+    - ACTION_BUTTON
+    - ENABLED_DISABLED
+    - SURVEY_SCHEDULE_VALUE
+    - SURVEY_REMINDER_VALUE
+    - SURVEY_CHECKBOX
+    - CLICK_CATEGORY
+    - ENABLED_DISABLED_SURVEY
+    - SAVE_SURVEY_RULE
+    - USERTYPE_FIELD
+    - USERTYPE_ALL_USERS
+    - USERTYPE_USER_GROUPS
+    - USER_GROUPS_MAPPING
+    - SURVEY_ACTION_GEAR
+    - EDIT_ADHOC_SURVEY
+    - CREATE_SURVEY_LOCATOR
+    - SURVEY_SCHEDULING_REQUEST
+    - SURVEY_SCHEDULING_REQUEST_VALUE
+    - SURVEY_SCHEDULING_REQUESTER
+    - SURVEY_SCHEDULING_REQUESTER_VALUE
+    - SETTINGS_SUBTAB
+    - SCORING_SUBTAB
+    - SCORING_CONFIGURE_BTN
+    - INSERT_QUESTIONS
+    - INSERT_BTN
+    - SAVE_BTN
+    Roles:
+    - SD_SITE_ADMIN
+    - ROLE_NAME
+    - EDIT_ROLE
+    - ACCESS_PERMISSION
+    - ROLE_PERMISSION
+    - ADV_PERMISSION
+    - SHARE_REQUESTS
+    - SELECT_OPERATION_ROLE
+    - SHARE_REQUESTS
+    - ROLE_OPERATION
+    - ROLE_UPDATED
+    - ADVANCED_PERMISSION
+    - ALLOW_TECHNICIAN_CHECK_BOX
+    - TECHNICIAN_ALLOWED_TO_VIEW
+    - ALERT_BOX_ROLES_UPDATED
+    - CHECK_IN_ALLOW_TECHNICIAN_APPROVE_SOLUTION
+    - NEW_ROLE
+    - FILL_ROLE_NAME
+    - CHECKIN_REQUEST_CHECKBOX
+    - ADD_REQUEST_CHECKBOX
+    - ROLE_ELEMENTS
+    - ALL_IN_ASSOCIATED_SITES_CHECKBOX
+    - ALL_IN_ASSOCIATED_SITES_CHECKBOX
+    - ALL_IN_ASSOCIATED_SITES
+    - ALL_IN_ASSOCIATED_SITES
+    - ASSOCIATED_SITES
+    - CHECKIN_SHAREREQUEST_CHECKBOX
+    - CHECKIN_SHAREREQUEST_CHECKBOX
+    - REQUEST_TASK_FGA_VIEW_CHECKBOX
+    - REQUEST_TASK_FGA_VIEW
+    - ALL_REQUEST_GROUP_ASSIGNED_TO_TECHNICIAN
+    - ALL_REQUEST_GROUP_ASSIGNED_TO_TECHNICIAN
+    - ALL_REQUEST_GROUP_ASSIGNED_TO_TECHNICIAN_CHECKBOX
+    - ALL_REQUEST_GROUP_ASSIGNED_TO_TECHNICIAN_CHECKBOX
+    - MODULE_LEVEL_PERMISSION
+    - ALL_REQUEST_GROUP_ASSIGNED_TO_TECH
+    - TECHNICIAN_TO_ACCESS_REQUEST
+    - TECHNICIAN_TO_ACCESS_REQUEST_CHECKBOX
+    - TECHNICIAN_IN_TASK_GROUP_ACCESS_REQUEST
+    - TECHNICIAN_IN_TASK_GROUP_ACCESS_REQUEST_CHECKBOX
+    - ONLY_REQUEST_ASSIGNED_TO_TECHNICIAN
+    - ONLY_REQUEST_ASSIGNED_TO_TECHNICIAN_CHECKBOX
+    - ONLY_REQUEST_ASSIGNED_TO_TECHNICIAN_CHECKBOX
+    - CHECKIN_REQUEST_VIEW
+    - CHECKIN_ADD_REQUEST_CHECKBOX
+    - CHECKIN_EDIT_REQUEST_CHECKBOX
+    - DELETE_ROLE
+    - DELETE_ROLETECH
+    - EDIT_ROLETECH
+    - DELETE_POPUP
+    TaskTemplate:
+    - TASK_TEMPLATE
+    - NEW_TASK_TEMPLATE
+    - TASK_NAME
+    - TASK_TITLE
+    - SAVE_BUTTON
+    - ADD_TASK_FORM
+    - SEARCH_TASK_TEMP
+    - ADD_TASK
+    - STATUS_TASKTEMPLATE
+    - GROUP_TASKTEMPLATE
+    - CHECKBOX_TASKLIST
+    - SAVE_OPERATION
+    - TASK_TAB_TEMP
+    - TASK_SUBTAB_TEMP
+    - GROUP_IN_TASK_FORM
+    BusinessRule:
+    - RULE_NAME
+    - SELECT_CHECK_BOX
+    - ACTION_BUTTON
+    - TEXT_TYPE1
+    - TEXT_TYPE2
+    - ORGONIZE
+    - MOVE_ORGONIZE
+    - MOVE_ORGANIZE_UP
+    - CHOOSE_BUSINESS_RULES
+    - CHECK_VALUE_EXPANDBR
+    - TYPE_VALUE
+    - FIELD_UPDATE
+    - SELECT_FIELD
+    - FIELD_VIEW
+    - FIELD_UDF
+    - CLICK_CRITERIA
+    - CLICK_CHECKBOX
+    - NO_CONDITION
+    - OVERRIDE_BUSINESS_RULE
+    - SEARCH_BR_NAME
+    - SAVE_BUTTON
+    - NEW_BUSINESS_RULE
+    - EDITED
+    - BR_OPERATION
+    - SELECT_CRITERIA
+    - FILED
+    - SELECT_FIELD_VALUE
+    - SELECT_FIELD1
+    Trigger:
+    - TRIGGER_NAME
+    - SAVE_TRIGGER
+    - CLICK_DATE_FILETR
+    - EDITED
+    - EXECUTE_DURING
+    - CHECK_SELECT_EDITED
+    - CHECK_SELECT_CREATED
+    - CREATED
+    - SELECT_COLUMN
+    - APPLY_CRITERIA
+    - DROPDOWN_SEARCH
+    - NEW_TASK_BUTTON
+    - SEARCH_TRIGGER_NAME
+    - SEARCH_FIELD
+    - SELECT_FIELD
+    - NEW_TASK
+    - SELECT_CRITERIA
+    - TASK_ACTION
+    - CLICK_CHECKBOX
+    - NO_CONDITION
+    - SELECT_TASK
+    - NOTIFICATION_ACTION
+    - TRIGGER_BUTTON
+    - TASK_NAME
+    - TASK_TITLE
+    - SAVE_BUTTON
+    - NEW_TRIGGERS
+    - SELECT_BUTTON
+    - TYPE_INPUT_TRIGGER
+    - URGENCY
+    - LEVEL
+    - APPLY_DATE_LOCATOR
+    - MULTIPLE_CRITERIA
+    - ASSET
+    - ASSET_NAME
+    - TIER1
+    - PRIORITY
+    - IS_EMPTY
+    - IS_NOTEMPTY
+    - CUSTOM_ACTION
+    - CHECK_VALUE_EXPAND
+    - TAGS_ACTION
+    Notification:
+    - EMAIL_NOTIFICATION
+    - SUBMIT_BUTTON
+    - HTML
+    - SAVE_NOTIFICATION
+    - NOTI_NAME
+    - SUBMIT_IN_TRIGGER
+    - SELECT_NOTIFY
+    - CLICK_DROPDOWN
+    - SELECT_ROLE
+    - SELECT_USER
+    - SELECT_USER_FROM_APPROVAL
+    - SUBJECT
+    - SMILEY_DROPDOWN
+    - SMILEY
+    - SMILE
+    ADVANCE_PORTAL:
+    - SELECT_CHECK_BOX
+    - CHECK_SELECT_BOX
+    - SELECT_CHECK_BOXID
+    - CLICK_CHILD_TAG
+    - CHECK_SELECT_BOXID
+    - SELECT_REOPENREQ
+    CLOSURE_RULES:
+    - SELECT_MODE
+    - SELECT_CHECKLIST
+    - CHECK_CHECKLIST
+    - RESOLVED
+    - MOVED_STATUS
+    - POPUP_CHECKUP
+    - SAVE
+    - AJAX_TXT
+    - MANDATE
+    - MANDATE_FILED
+    - CHECKLIST_ADARROW
+    CUSTOM_MENU:
+    - NEW_CUSTOM_MENU
+    - NEW_MENU_ITEM
+    - CUSTOM_MENU_FIELD
+    - ADD_GROUP_ITEM
+    SLA:
+    - SLA_NAME
+    - SLA_FIELD
+    - SLA_SAVE
+    - NEW_SLA
+    - SELECT_SLA
+    - SLA_CHECKBOX
+    - REMOVE_SLA
+    FAFR:
+    - NEW_FORM_RULE
+    - FAFR_FIELD
+    - FAFR_FIELD_ACTION
+    - RULE_NAME
+    - SELECTED_TEMP
+    - SEARCH_TEMP
+    - MODE_SELECT
+    - IS
+    - MANDATE_FIELDS
+    - CATEGORY
+    - MAIL
+    - CREATED
+    - GEAR_BUTTON
+    - ACTIONS
+    RequestRHS:
+    - ADD_TAGS
+    - TAGS_IN_RHS
+    - RHS_TOGGLE_BUTTON
+    - TAG_POP_UP
+    - ADD_TAGS_PLACEHOLDER
+    - TAG_ADD_BUTTON
+    - TAG_IS_PRESENT
+    - CREATE_NEW_TAG
+    - ADD_BUTTON_IN_TAG_FORM
+    - BULK_TAG
+    - TAG_POPUP
+    - CHECK_TAG_ADDED
+    - CANCEL_BUTTON_IN_TAG_FORM
+    - TAG_COUNT_IS_PRESENT
+    - DISASSOCIATE_TAG
+    - TAG_DETACHED
+    - DROPDOWN_TAG_FORM
+    - CANCEL_TAG
+    - CONVERT_REQ
+    - CHECK_TAG_IS_PRESENT
+    - VALUE_FOR_TAG_IS_NOT_VALID
+    - VALUE_FOR_NAME_IS_NOT_VALID
+    - TAGS_UPDATED
+    - TAG_NAME_IS_TOO_LONG
+    - MAXIMUM_TAGS_ALERT
+    - MORE_OPTION_IN_TAG
+    - SHOW_LESS_OPTION_IN_TAG
+    - DISASSOCIATE_TAG_NAME_IN_POPUP
+    - REQUEST_TAG_PRESENT
+    - TAGGED_REQUEST
+    - TAGGED_REQUEST_POP_UP
+    - TAG_NAME_IN_POP_UP
+    - ALL_REQUEST_IN_TAG_POP_UP
+    - ALL_REQ
+    - REQUEST_FILTER_IN_TAGGED_REQUEST
+    - REQUEST_FILTER_IN_ALL
+    - REQUEST_DISPLAY_ID
+    - ROW_COUNT_IN_TAG_POP_UP
+    - SEARCH_BUTTON_IN_TAG_POP_UP
+    - TABLE_SETTINGS_IN_TAG_POP_UP
+    - PREVIOUS_BTN_IN_TAG_POP_UP
+    - NEXT_BTN_IN_TAG_POP_UP
+    - RECORDS_PER_PAGE_IN_TAG_POP_UP
+    - SELECT_DROPDOWN_OPTION_IN_TAG_POP_UP
+    - SORT_COLUMN_IN_TAG_POP_UP
+    - REQUEST_SORTED
+    - REQUEST_SORTED_COLUMN
+    - COLUMN_CHOOSER
+    - VIEW_DETAILS_BUTTON
+    - DETAILS_PAGE
+    - CLOSE_BTN_IN_REQUEST_POP_UP
+    - CLOSE_TAG
+    - CLOSURE_RULE_MANDATORY
+    - HISTORY_FILTER
+    - VERIFY_TAGS_IN_HISTORY_FILTER
+    - HISTORY_TITLE_BAR
+    - TAG_STATUS
+    - TAG_STATUS
+    - DATE_FILTER
+    - TODAY_FILTER
+    - MAXIMUM_TAGS_REACHED
+    - CHECK_REQUEST_TYPE
+    - ASSOCIATED_PROBLEM
+    - ASSOCIATE_USING_SEARCH_OR_ATTACH
+    - ASSOCIATED_ENTITY
+    - IFRAME_LOCATOR
+    - ASSOCIATE_USING_SEARCH_OR_ATTACH
+    - NO_TAGS_ASSOCAITED
+    Reports:
+    - NEW_CUSTOM_REPORT
+    - PROCEED_TO_REPORT_WIZARD_BTN
+    - TAGS_OPTION
+    - FIELD_OPTION
+    - RUN_REPORT_BUTTON
+    - PRINT_VIEW
+    - CHECK_REQUEST_REPORT
+    - CHECK_REQUEST_REPORT
+    - FRAME_ZE
+    - REPORT_OPTION
+    Maintenance:
+    - HOVERING_MORE_ICON
+    - NEXT_IN_PM
+    - CLICK_DATE
+    - CLICK_PM
+    - EDIT_PM
+    - ADD_REQ
+    - GENERATE_REQ
+    - CURRENT_DATE
+    - SAVE_PM
+    - EDIT_BUTTON
+    - ACTIVE_DATE
+    - SELECT_CHECK_BOX
+    CustomerIssues:
+    - NOTIFICAITON_POPUP
+    - CLICK_UNOPENED_NOTIFICATION
+    - REQUEST_TITLE_IN_NOTIFICATION
+    - FRAME_ZE
+    - FRAME_ZE1
+    - PRINT_PREVIEW
+    - APPROVAL_LINK_PAGE
+    - SUBJECT_NAME_LOCATOR
+    - REQUEST_NAME
+    - REQUEST_NAME_IN_KANBAN_VIEW
+    - TEMPLATE_VIEW
+    - HISOTRY_STATUS
+    - HISOTRY_STATUS
+    - SELECT_CHANGE_TEMPLATE
+    - REQUEST_FILTERS
+    - ARCHIVE_FILTER
+    - GO_TO_ARCHIVED_REQUEST_DETAIL_PAGE
+    - VIEW_FULL_REQUESTER_DETAILS_IN_RHS
+    - REQUESTER_FULL_DETAILS
+    - GO_TO_FIRST_ROW_SUBJECT
+    - CONVERSATION_HEAD
+    - GET_TEXT_FROM_CONVERSATION_TAB
+    - EDIT_OPTION_IN_REQUESTER_PAGE
+    - REASON_FOR_UPDATING_REQUEST
+    - SUBMIT_FOR_APPROVAL
+    - TO_EMAIL
+    - BULK_EDIT_UDF_FIELDS_IN_POPUP
+    - SELECT_FIELD_IN_POPUP
+    - SELECT_ADDITIONAL_FIELD_IN_POPUP
+    - POPUP_SEARCH_BOX
+    - NO_EMAILID
+    - EMAIL_NAME_IN_DROPDOWN
+    - SELECT_REQUESTER_PORTAL_CHECKBOXES
+    - APPROVALS_STAGE
+    - APPROVAL_DETAILS
+    - APPROVE_BUTTON_IN_APPROVALS_SUBTAB
+    - APPROVE_BUTTON_IN_APPROVALS_SUBTAB
+    - SELECT_ALL_CHECKBOX
+    - ADROP_BUTTON_IN_TASK
+    - ADD_TASK_FROM_TEMPLATE_IN_TASKS_SUBTAB
+    - CLICK_GRID_VIEW
+    - GO_TO_FIRST_ROW_INCIDENT_TEMPLATE
+    - SELECT_CHECKBOX_IN_TASK_POPUP
+    - FILL_CUSTOM_FUNCTION_FOR_REQEUSTS
+    - CLICK_CUSTOM_FUNCTON
+    - USE_CUSTOM_FUNCTION
+    - CUSTOM_ACTIONS_SUBTAB
+    - EXECUTE_SCRIPT_IN_CUSTOM_FUNCTION
+    - INPUT_TAG_WITH_NAME_ATTRIBUTE
+    - TABLE_LOADING
+    MailFields:
+    - TO_FIELD
+    HistoryLocators:
+    - DESCRIPTION
+    - TASK_ADDED_BY_SYSTEM
+    - OPERATOR
+    lookup:
+    - NEW_UDF_FIELD
+    - MAXIMIZE_BOX
+    - FIELD_OPERATOR
+    - TIME_ZONE
+    - UDF_LISTVIEW
+    - TYPE_FIELD
+    - ADDED_FIELD
+    - ALERT_MESSAGE
+    - FIELD_VIEW
+    - TYPE_TEXT
+    - FIELD_GENERIC
+    - MANDATE_ERROR
+    - ON_DELETE
+    - UDF_LOOKUP_FIELD
+    - CHECK_UDF_FIELD_VALUE
+    - SAVE_UDF
+    - DEFAULT_REPLY_TEMP
+    - TITLE
+    - SUBJECT
+    - DATA_TYPE_DROPDOWN
+    - UDF_NAME
+    - CHECK_UDF
+    - CRITERIA
+    - STATIC_DYNAMIC
+    - DEPARTMENT
+    - STATIC_VALUE
+    - UDF_KEY
+    - ADD_DELETE_ICON
+    - UDF_DROPDOWN
+    - NEW_REGION_FIELD
+    ValidationMessage:
+    - VERIFY_VALIDATION_MESSAGE_BY_ERROR
+    - VERIFY_VALIDATION_MESSAGE
+    - REPLY_ALL_RESOLVED_STATUS
+    RequestApprovalSettings:
+    - REQ_AUTO_APPROVE_CONFIG_CHECKBOX
+    - CLICK_MANAGE_APPROVAL_SERVICE_TEMPLATE
 data_constants:
   file: com/zoho/automater/selenium/modules/requests/request/common/RequestDataConstants.java
   classes:
@@ -1709,7021 +2939,3 @@ data_json_keys:
 - worklog_edition
 - worklog_timer_creation
 - worklog_timer_edition
-data_json_deep:
-  total_entries: 422
-  field_frequency:
-    subject: 226
-    requester: 189
-    template: 177
-    description: 121
-    priority: 83
-    status: 80
-    technician: 58
-    mode: 49
-    urgency: 48
-    group: 42
-    request: 39
-    site: 38
-    level: 38
-    category: 23
-    impact: 18
-    subcategory: 13
-    item: 12
-    request_type: 10
-    request_template: 10
-    comments: 10
-  all_placeholders:
-  - custom_Asset_Name
-  - custom_Asset_Tag
-  - custom_Asset_id
-  - custom_Barcode
-  - custom_CCName
-  - custom_CIsname
-  - custom_Closed_Status_Id
-  - custom_CmdbId0
-  - custom_CmdbId1
-  - custom_CmdbId2
-  - custom_CmdbId3
-  - custom_CmdbName
-  - custom_Impact_Trigger
-  - custom_Mac_Address
-  - custom_Name
-  - custom_Open_Status_Id
-  - custom_OrgroleName
-  - custom_REQ_TEMP_ID
-  - custom_RTName
-  - custom_ReqId
-  - custom_ReqSub
-  - custom_Resolved_Status_Id
-  - custom_RtemplateName
-  - custom_SolutionId
-  - custom_Subject_string
-  - custom_TemplateName
-  - custom_Template_Name
-  - custom_UserId
-  - custom_WorkflowId
-  - custom_assetId0
-  - custom_assetId1
-  - custom_assetId2
-  - custom_assetId3
-  - custom_assetName
-  - custom_associated_group_name
-  - custom_associated_site_name
-  - custom_categoryName
-  - custom_categoryValue
-  - custom_column
-  - custom_createdDate
-  - custom_dataName
-  - custom_dcName
-  - custom_departmentId
-  - custom_displayid2
-  - custom_email_id
-  - custom_entitiesId
-  - custom_entityId
-  - custom_field
-  - custom_fieldKey
-  - custom_general_topic
-  - custom_groupName
-  - custom_itemName
-  - custom_levelName
-  - custom_levelValue
-  - custom_mailid
-  - custom_modeName
-  - custom_modeValue
-  - custom_module
-  - custom_nologin_ReqName
-  - custom_nologin_TechName
-  - custom_orgRolexpath
-  - custom_priorityName
-  - custom_question1Answer2Id
-  - custom_question2Answer1Id
-  - custom_question2Answer2Id
-  - custom_question3Answer1Id
-  - custom_question3Answer2Id
-  - custom_questionAnswer1
-  - custom_questionAnswer2
-  - custom_request
-  - custom_requestTypeValue
-  - custom_requesterId
-  - custom_requesterId3
-  - custom_requesterIdUser2
-  - custom_requesterMailId
-  - custom_requesterMailId3
-  - custom_requesterName
-  - custom_requesterName1
-  - custom_requesterName3
-  - custom_requesterid
-  - custom_serTempId
-  - custom_serTempName
-  - custom_serviceCategoryName
-  - custom_set2_Date
-  - custom_siteId
-  - custom_siteLookupName
-  - custom_siteName
-  - custom_slValue
-  - custom_solutionSubject
-  - custom_sst2_Date
-  - custom_status
-  - custom_statusName
-  - custom_subCategoryName
-  - custom_subName
-  - custom_subjectName
-  - custom_taskId
-  - custom_taskId0
-  - custom_taskId1
-  - custom_taskId2
-  - custom_tech2Name
-  - custom_tech2email
-  - custom_techId
-  - custom_techMail
-  - custom_techName
-  - custom_tech_name
-  - custom_techmail
-  - custom_technicianName
-  - custom_tempId
-  - custom_templateId
-  - custom_templateName
-  - custom_template_Name
-  - custom_uniqueString
-  - custom_uniquevalue
-  - custom_urgencyName
-  - custom_urgencyValue
-  - custom_user1
-  - custom_userMail
-  - custom_userMailId1
-  - date, 0Y 1M 1D 0h 0m, true
-  - date, 0Y 1M 2D 0h 0m, true
-  - date, 0Y 1M 3D 0h 0m, true
-  - date, 0Y 1M 4D 0h 0m, true
-  - date, 0Y 1M 5D 0h 0m, true
-  - datetime
-  - datetime, 0Y 0M 1D 8h 10m, false
-  - datetime, 0Y 0M 2D 8h 10m, false
-  - datetime, 2Y 10M 100D 10h 10m, false
-  - datetime, 2Y 10M 100D 10h 10m, true
-  - datetime, 2Y 20M 2D 10h 10m, true
-  - rest_api, get, sites, sites, get_copysite_data
-  - rest_api, post, department, departments, create_department_with_site
-  - rest_api, post, department, departments, create_department_with_site_entities
-  - rest_api, post, request_template, request_templates, IR_Template_Additional_fields
-  - rest_api, post, request_template, request_templates, Sr_Custom_Template_Create
-  - rest_api, post, request_template, request_templates, Sr_Custom_Template_Create2
-  - rest_api, post, site, sites, create_site_with_custom_region
-  - rest_api, post,product, products, Product
-  - rest_api, search, request_templates, name, Default Request
-  - rest_api, search, request_templates, name, additional_fields_$(custom_uniqueString
-  - rest_api, search, service_categories, name, Corporate Website
-  - rest_api, search, sites, name, Site $(custom_uniqueString
-  - rest_api, search, statuses, name, Open
-  - rest_api, search, statuses, name, Resolved
-  - unique_string
-  - user_email_id
-  - user_id
-  - user_name
-  reuse_groups_count: 70
-  entries:
-    SR_Valid_Input:
-      fields:
-      - template
-      - subject
-      - priority
-      - group
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Create_IR_Request:
-      fields:
-      - template
-      - subject
-      - requester
-      - technician
-      - description
-      placeholders:
-      - unique_string
-      - user_email_id
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    Create_IR_custom:
-      fields:
-      - template
-      - subject
-      - requester
-      - mode
-      - priority
-      - technician
-      - description
-      placeholders:
-      - unique_string
-      - user_email_id
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    Create_IR_custom2:
-      fields:
-      - template
-      - subject
-      - requester
-      - mode
-      - priority
-      - impact
-      - technician
-      - description
-      placeholders:
-      - unique_string
-      - user_email_id
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    Create_IR_custom3:
-      fields:
-      - template
-      - subject
-      - requester
-      - mode
-      - priority
-      - impact
-      - category
-      - technician
-      - description
-      placeholders:
-      - unique_string
-      - user_email_id
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    Create_IR_custom4:
-      fields:
-      - template
-      - subject
-      - requester
-      - urgency
-      - mode
-      - priority
-      - impact
-      - category
-      - technician
-      - description
-      placeholders:
-      - unique_string
-      - user_email_id
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    Create_IR_custom_statusA:
-      fields:
-      - template
-      - subject
-      - requester
-      - urgency
-      - status
-      - mode
-      - priority
-      - impact
-      - category
-      - description
-      placeholders:
-      - unique_string
-      - user_email_id
-      - custom_status
-      local_storage_keys_required:
-      - status
-      purpose: ui_form
-    Create_IR_custom_statusB:
-      fields:
-      - template
-      - subject
-      - requester
-      - urgency
-      - status
-      - mode
-      - priority
-      - impact
-      - category
-      - description
-      placeholders:
-      - unique_string
-      - user_email_id
-      - custom_status
-      local_storage_keys_required:
-      - status
-      purpose: ui_form
-    Create_IR_custom_statusC:
-      fields:
-      - template
-      - subject
-      - requester
-      - urgency
-      - status
-      - mode
-      - priority
-      - impact
-      - category
-      - description
-      placeholders:
-      - unique_string
-      - user_email_id
-      - custom_status
-      local_storage_keys_required:
-      - status
-      purpose: ui_form
-    Create_IR_custom_statusD:
-      fields:
-      - template
-      - subject
-      - requester
-      - urgency
-      - status
-      - description
-      placeholders:
-      - unique_string
-      - user_email_id
-      - custom_status
-      local_storage_keys_required:
-      - status
-      purpose: ui_form
-    Create_IR_custom_statusE:
-      fields:
-      - template
-      - subject
-      - requester
-      - urgency
-      - status
-      - mode
-      - priority
-      - impact
-      - category
-      - description
-      placeholders:
-      - unique_string
-      - user_email_id
-      - custom_status
-      local_storage_keys_required:
-      - status
-      purpose: ui_form
-    Create_IR_Request_Group:
-      fields:
-      - template
-      - subject
-      - requester
-      - site
-      - group
-      - technician
-      - description
-      placeholders:
-      - custom_uniquevalue
-      - user_email_id
-      - custom_associated_site_name
-      - custom_associated_group_name
-      - user_email_id
-      local_storage_keys_required:
-      - uniquevalue
-      - associated_site_name
-      - associated_group_name
-      purpose: ui_form
-    SR_technician_SpotEdit_ListView:
-      fields:
-      - group
-      - technician
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_group_SpotEdit_ListView:
-      fields:
-      - group
-      - technician
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_listview_search_and_tablesettings:
-      fields:
-      - personalization
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_valid_AddNotes:
-      fields:
-      - template
-      - subject
-      - group
-      - description
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_valid_StartTimer:
-      fields:
-      - template
-      - subject
-      - group
-      - description
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_valid_StopTimer:
-      fields:
-      - template
-      - subject
-      - group
-      - description
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_valid_AddTask:
-      fields:
-      - template
-      - subject
-      - group
-      - description
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_valid_Duplicate:
-      fields:
-      - template
-      - subject
-      - group
-      - description
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Assign_Request:
-      fields:
-      - TechName
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    add_Notes_From_ListView:
-      fields:
-      - Note
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Recent_Items:
-      fields:
-      - template
-      - subject
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    incidentrequest_detailview:
-      fields:
-      - template
-      - request_template_task_ids
-      - request_type
-      - impact
-      - status
-      - impact_details
-      - mode
-      - urgency
-      - level
-      - priority
-      - requester
-      - assets
-      - site
-      - category
-      - subcategory
-      - item
-      - subject
-      - description
-      - email_ids_to_notify
-      - created_time
-      - due_by_time
-      - first_response_due_by_time
-      - attachments
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    update_input_dv_TCAAA001:
-      fields:
-      - subject
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    cancel_reason_dv_TCAAA005:
-      fields:
-      - reason
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Request_Custom_Temp:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - custom_Template_Name
-      - unique_string
-      - user_name
-      local_storage_keys_required:
-      - Template_Name
-      purpose: ui_form
-    Request_Last_UpdatedBy:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - technician
-      - urgency
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - custom_serTempName
-      - unique_string
-      - user_name
-      - custom_requesterName
-      local_storage_keys_required:
-      - serTempName
-      - requesterName
-      purpose: ui_form
-    Request_LastUpdatedByEdit:
-      fields:
-      - fields
-      - values
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Request_Last_UpdatedBy_Customtech:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - technician
-      - urgency
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - custom_serTempName
-      - unique_string
-      - custom_techmail
-      - custom_requesterName
-      local_storage_keys_required:
-      - serTempName
-      - techmail
-      - requesterName
-      purpose: ui_form
-    IR_Bulk_Delete:
-      fields:
-      - template
-      - subject
-      - group
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_CustomView_Input:
-      fields:
-      - group
-      - mode
-      - level
-      - urgency
-      - priority
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    CustomView_Input_Verification:
-      fields:
-      - template
-      - subject
-      - group
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    CustomView_Filter_Header:
-      fields:
-      - headers
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Custom_View_With_OneCriteria:
-      fields:
-      - Criteria_InputName
-      - criteria
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Custom_View_With_OneCriteria_Edit:
-      fields:
-      - Criteria_InputName
-      - criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Custom_View_With_TwoCriteria:
-      fields:
-      - Criteria_InputName
-      - criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    RequestType_Header:
-      fields:
-      - headers
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    list_view_filters:
-      fields:
-      - name
-      - criteria
-      - filter_module
-      - is_public
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    list_view_timer:
-      fields:
-      - columns
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    closing_comments_TCAAA002:
-      fields:
-      - description
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    mail_fields:
-      fields:
-      - to
-      - cc
-      - bcc
-      placeholders:
-      - user_email_id
-      - user_email_id
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_product:
-      fields:
-      - product
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    Assets:
-      fields:
-      - asset
-      placeholders:
-      - unique_string
-      - unique_string
-      - unique_string
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Table_Settings:
-      fields:
-      - count
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Request_Template:
-      fields:
-      - request_template
-      placeholders:
-      - user_name
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_OnHold:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - status
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Closed:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - status
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Resolved:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - status
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Canceled:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - status
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_DueBy:
-      fields:
-      - template
-      - subject
-      - mode
-      - due_by_time
-      - level
-      - urgency
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - datetime
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Open:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Unassigned:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_Subject:
-      fields:
-      - subject
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_RequestType:
-      fields:
-      - request_type
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Requester_Edit_Input:
-      fields:
-      - request
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_Impact:
-      fields:
-      - impact
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_Status:
-      fields:
-      - status
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_ImpactDetails:
-      fields:
-      - impact_details
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_Mode:
-      fields:
-      - mode
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_Urgency:
-      fields:
-      - urgency
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_Level:
-      fields:
-      - level
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_Priority:
-      fields:
-      - priority
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_Group:
-      fields:
-      - group
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_Resolved_Request:
-      fields:
-      - status
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_Technician:
-      fields:
-      - technician
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    WorkLog:
-      fields:
-      - status
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Resoltuion_Text:
-      fields:
-      - resolution
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Reminder_Text:
-      fields:
-      - reminder
-      placeholders:
-      - unique_string
-      - datetime, 2Y 20M 2D 10h 10m, true
-      local_storage_keys_required: []
-      purpose: ui_form
-    Reminder_EditText:
-      fields:
-      - reminder
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Reminder_Error_Message:
-      fields:
-      - summary
-      - date
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Default_Filters:
-      fields:
-      - filters
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Notes:
-      fields:
-      - AddNotes
-      - EditNotes
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spotEdit:
-      fields:
-      - request_type
-      - impact
-      - urgency
-      - priority
-      - site
-      - group
-      - technician
-      - status
-      - category
-      - subcategory
-      - item
-      - due_by_time
-      - reported_time
-      - description
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    TimePicker:
-      fields:
-      - filters
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Change_Input:
-      fields:
-      - title
-      - template
-      - description
-      - risk
-      - change_type
-      - change_requester
-      - change_owner
-      - impact
-      - priority
-      - scheduled_start_time
-      - scheduled_end_time
-      - reason_for_change
-      - category
-      - subcategory
-      - item
-      - urgency
-      - services
-      - assets
-      placeholders:
-      - user_name
-      - user_email_id
-      - datetime, 2Y 10M 100D 10h 10m, false
-      - datetime, 2Y 10M 100D 10h 10m, true
-      local_storage_keys_required: []
-      purpose: ui_form
-    details_spot_edit_category_dependent_fields_input:
-      fields:
-      - data_array
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    History_Tab_Headers:
-      fields:
-      - headers
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Requester_Valid_Input:
-      fields:
-      - template
-      - subject
-      - priority
-      - description
-      - site
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Today_Date:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      placeholders:
-      - datetime
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Edited_Input:
-      fields:
-      - fields
-      - values
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Archived_Table_Settings:
-      fields:
-      - count
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_Today_Date:
-      fields:
-      - template
-      - subject
-      - priority
-      - group
-      - description
-      - site
-      - requester
-      placeholders:
-      - datetime
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Popup_Text:
-      fields:
-      - info_txt
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Edit_Input:
-      fields:
-      - subject
-      - description
-      - site
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Bulk_Delete:
-      fields:
-      - subject
-      - description
-      - site
-      - requester
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Assign_Request:
-      fields:
-      - Tech
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Group1_Hardware_Problems:
-      fields:
-      - template
-      - subject
-      - description
-      - group
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Group2_Printer_Problems:
-      fields:
-      - template
-      - subject
-      - group
-      - requester
-      - technician
-      placeholders:
-      - user_name
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Group3_Network:
-      fields:
-      - template
-      - subject
-      - group
-      - requester
-      - technician
-      placeholders:
-      - user_name
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Canceled_Request_Filters:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_OnHold_Request_Filters:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Completed_Request_Filters_For_Closed:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Completed_Request_Filters_For_Rejected:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Completed_Request_Filters_For_Resolved:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_MY_Completed_Request_Filters_For_Resolved:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      - technician
-      placeholders:
-      - user_name
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_sdp_default_user_2_TechnicianUserName:
-      fields:
-      - TechicianUserName
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Completed_Request_Filters_For_Canceled:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_MyPending_Request_Filters_For_Open:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      - technician
-      placeholders:
-      - user_name
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_MyCompleted_Request_Filters_For_Closed:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      - technician
-      placeholders:
-      - user_name
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Unassigned_Request_Filters:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      - technician
-      - technician_unassigned
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_ColumnChooser_WorklogTimer:
-      fields:
-      - column
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_No_Group:
-      fields:
-      - template
-      - subject
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_No_Group:
-      fields:
-      - template
-      - subject
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Valid_Input_Edit:
-      fields:
-      - subject
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    sol_unapproved_public_general_template:
-      fields:
-      - solution
-      placeholders:
-      - unique_string
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Request_Br:
-      fields:
-      - template
-      - subject
-      - description
-      - requester
-      - site
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    Request_Br_Edit:
-      fields:
-      - template
-      - site
-      - subject
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    Service_Request_Br:
-      fields:
-      - template
-      - subject
-      - description
-      - requester
-      - site
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    Service_Request_Br_Edit:
-      fields:
-      - template
-      - site
-      - subject
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    BR_Request:
-      fields:
-      - template
-      - subject
-      - description
-      - requester
-      - site
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_pub_sol_API:
-      fields:
-      - solution
-      placeholders:
-      - custom_general_topic
-      - custom_ReqId
-      - unique_string
-      local_storage_keys_required:
-      - general_topic
-      - ReqId
-      purpose: api_preprocess
-    BR_Request_Subject:
-      fields:
-      - template
-      - site
-      - subject
-      - description
-      - requester
-      placeholders:
-      - rest_api, get, sites, sites, get_copysite_data
-      - custom_Subject_string
-      - user_email_id
-      local_storage_keys_required:
-      - Subject_string
-      purpose: ui_form
-    list_info_id:
-      fields:
-      - row_count
-      - start_index
-      - fields_required
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    requester_create_request:
-      fields:
-      - subject
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    requester_request:
-      fields:
-      - subject
-      - requester
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Merge:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_Merge:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Link:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_Link:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Split:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_Split:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_PickUp:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_PickUp:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Close:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_Close:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_MultiEdit:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_MultiEdit:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Request_1Day_Ago:
-      fields:
-      - template
-      - subject
-      - request_template_task_ids
-      - status
-      - requester
-      - created_time
-      - due_by_time
-      placeholders:
-      - user_name
-      - datetime, 2Y 10M 100D 10h 10m, false
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_No_Priority:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_UI:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_UI:
-      fields:
-      - template
-      - subject
-      - priority
-      - group
-      - description
-      - site
-      - requester
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_custom1:
-      fields:
-      - template
-      - subject
-      - priority
-      - technician
-      - description
-      - requester
-      placeholders:
-      - custom_uniquevalue
-      - user_email_id
-      - user_email_id
-      local_storage_keys_required:
-      - uniquevalue
-      purpose: ui_form
-    SR_Valid_Input_custom2:
-      fields:
-      - template
-      - subject
-      - priority
-      - technician
-      - description
-      - requester
-      placeholders:
-      - custom_uniquevalue
-      - user_email_id
-      - user_email_id
-      local_storage_keys_required:
-      - uniquevalue
-      purpose: ui_form
-    SR_Valid_Input_custom3:
-      fields:
-      - template
-      - subject
-      - priority
-      - technician
-      - description
-      - requester
-      placeholders:
-      - custom_uniquevalue
-      - user_email_id
-      - user_email_id
-      local_storage_keys_required:
-      - uniquevalue
-      purpose: ui_form
-    SR_Valid_Input_custom4:
-      fields:
-      - template
-      - subject
-      - priority
-      - technician
-      - description
-      - requester
-      placeholders:
-      - custom_uniquevalue
-      - user_email_id
-      - user_email_id
-      local_storage_keys_required:
-      - uniquevalue
-      purpose: ui_form
-    SR_Valid_Input_custom5:
-      fields:
-      - template
-      - subject
-      - priority
-      - technician
-      - description
-      - requester
-      placeholders:
-      - custom_uniquevalue
-      - user_email_id
-      - user_email_id
-      local_storage_keys_required:
-      - uniquevalue
-      purpose: ui_form
-    SR_Valid_Input_Export_Group:
-      fields:
-      - template
-      - subject
-      - priority
-      - site
-      - group
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - custom_associated_site_name
-      - custom_associated_group_name
-      - user_email_id
-      - user_email_id
-      local_storage_keys_required:
-      - associated_site_name
-      - associated_group_name
-      purpose: ui_form
-    BR_Request_Subject_Service:
-      fields:
-      - template
-      - site
-      - subject
-      - description
-      - requester
-      placeholders:
-      - rest_api, get, sites, sites, get_copysite_data
-      - custom_Subject_string
-      - user_email_id
-      local_storage_keys_required:
-      - Subject_string
-      purpose: ui_form
-    BR_Request_Service:
-      fields:
-      - template
-      - subject
-      - description
-      - requester
-      - site
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_OnHold:
-      fields:
-      - template
-      - subject
-      - status
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_Closed:
-      fields:
-      - template
-      - subject
-      - status
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_Resolved:
-      fields:
-      - template
-      - subject
-      - status
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_Canceled:
-      fields:
-      - template
-      - subject
-      - status
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_CustomstatusA:
-      fields:
-      - template
-      - subject
-      - status
-      - site
-      - group
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - custom_status
-      - custom_associated_site_name
-      - custom_associated_group_name
-      - user_email_id
-      local_storage_keys_required:
-      - status
-      - associated_site_name
-      - associated_group_name
-      purpose: ui_form
-    SR_Valid_Input_CustomstatusB:
-      fields:
-      - template
-      - subject
-      - priority
-      - site
-      - group
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - custom_associated_site_name
-      - custom_associated_group_name
-      - custom_status
-      - user_email_id
-      local_storage_keys_required:
-      - associated_site_name
-      - associated_group_name
-      - status
-      purpose: ui_form
-    SR_Valid_Input_CustomstatusC:
-      fields:
-      - template
-      - subject
-      - priority
-      - site
-      - group
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - custom_associated_site_name
-      - custom_associated_group_name
-      - custom_status
-      - user_email_id
-      local_storage_keys_required:
-      - associated_site_name
-      - associated_group_name
-      - status
-      purpose: ui_form
-    SR_Valid_Input_CustomstatusD:
-      fields:
-      - template
-      - subject
-      - priority
-      - site
-      - group
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - custom_associated_site_name
-      - custom_associated_group_name
-      - custom_status
-      - user_email_id
-      local_storage_keys_required:
-      - associated_site_name
-      - associated_group_name
-      - status
-      purpose: ui_form
-    SR_Valid_Input_CustomstatusE:
-      fields:
-      - template
-      - subject
-      - status
-      - site
-      - group
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - custom_status
-      - custom_associated_site_name
-      - custom_associated_group_name
-      - user_email_id
-      local_storage_keys_required:
-      - status
-      - associated_site_name
-      - associated_group_name
-      purpose: ui_form
-    SR_Valid_Input_DueBy:
-      fields:
-      - template
-      - subject
-      - due_by_time
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - datetime
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_Open:
-      fields:
-      - template
-      - subject
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_Unassigned:
-      fields:
-      - template
-      - subject
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Request_Nmins_Ago:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      - created_time
-      placeholders:
-      - custom_createdDate
-      local_storage_keys_required:
-      - createdDate
-      purpose: ui_form
-    UDF:
-      fields:
-      - name
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    fill_requests_fields:
-      fields:
-      - requester
-      - subject
-      - impact
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_Impact_Trigger
-      local_storage_keys_required:
-      - Impact_Trigger
-      purpose: ui_form
-    fill_request_fields_for_trigger_checking_with_edited_condition:
-      fields:
-      - requester
-      - subject
-      placeholders:
-      - user_name
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    fill_impact_field_only:
-      fields:
-      - impact
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    fill_request_fields_for_trigger_checking_with_criteria_condition:
-      fields:
-      - requester
-      - subject
-      - request_type
-      - mode
-      - level
-      - category
-      - urgency
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_requestTypeValue
-      - custom_modeValue
-      - custom_levelValue
-      - custom_categoryValue
-      - custom_urgencyValue
-      local_storage_keys_required:
-      - requestTypeValue
-      - modeValue
-      - levelValue
-      - categoryValue
-      - urgencyValue
-      purpose: ui_form
-    criteria_condition_with_OR:
-      fields:
-      - requester
-      - subject
-      - mode
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_modeValue
-      local_storage_keys_required:
-      - modeValue
-      purpose: ui_form
-    ServiceRequest_Nmins_Ago:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      - created_time
-      placeholders:
-      - user_name
-      - custom_createdDate
-      local_storage_keys_required:
-      - createdDate
-      purpose: ui_form
-    single_criteria_condition:
-      fields:
-      - requester
-      - subject
-      - assets
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_assetName
-      local_storage_keys_required:
-      - assetName
-      purpose: ui_form
-    single_criteria_condition_with_category:
-      fields:
-      - requester
-      - subject
-      - category
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_categoryName
-      local_storage_keys_required:
-      - categoryName
-      purpose: ui_form
-    single_criteria_condition_with_CIs:
-      fields:
-      - requester
-      - subject
-      - CIs
-      - template
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_CIsname
-      - custom_template_Name
-      local_storage_keys_required:
-      - CIsname
-      - template_Name
-      purpose: ui_form
-    single_criteria_condition_with_CC:
-      fields:
-      - requester
-      - subject
-      - cc_email
-      - template
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_CCName
-      - custom_template_Name
-      local_storage_keys_required:
-      - CCName
-      - template_Name
-      purpose: ui_form
-    single_criteria_condition_with_description:
-      fields:
-      - requester
-      - subject
-      - description
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_dcName
-      local_storage_keys_required:
-      - dcName
-      purpose: ui_form
-    single_criteria_condition_with_group:
-      fields:
-      - requester
-      - subject
-      - group
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_groupName
-      local_storage_keys_required:
-      - groupName
-      purpose: ui_form
-    single_criteria_condition_with_item:
-      fields:
-      - requester
-      - subject
-      - category
-      - subcategory
-      - item
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_itemName
-      local_storage_keys_required:
-      - itemName
-      purpose: ui_form
-    single_criteria_condition_with_level:
-      fields:
-      - requester
-      - subject
-      - level
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_levelName
-      local_storage_keys_required:
-      - levelName
-      purpose: ui_form
-    single_criteria_condition_with_mode:
-      fields:
-      - requester
-      - subject
-      - mode
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_modeName
-      local_storage_keys_required:
-      - modeName
-      purpose: ui_form
-    single_criteria_condition_with_priority:
-      fields:
-      - requester
-      - subject
-      - priority
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_priorityName
-      local_storage_keys_required:
-      - priorityName
-      purpose: ui_form
-    single_criteria_condition_with_requestType:
-      fields:
-      - requester
-      - subject
-      - request_type
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_RTName
-      local_storage_keys_required:
-      - RTName
-      purpose: ui_form
-    single_criteria_condition_with_requester:
-      fields:
-      - requester
-      - subject
-      placeholders:
-      - custom_requesterName
-      - unique_string
-      local_storage_keys_required:
-      - requesterName
-      purpose: ui_form
-    single_criteria_condition_with_subcategory:
-      fields:
-      - requester
-      - subject
-      - category
-      - subcategory
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_subCategoryName
-      local_storage_keys_required:
-      - subCategoryName
-      purpose: ui_form
-    single_criteria_condition_with_subject:
-      fields:
-      - requester
-      - subject
-      placeholders:
-      - user_name
-      - custom_subjectName
-      local_storage_keys_required:
-      - subjectName
-      purpose: ui_form
-    single_criteria_condition_with_urgency:
-      fields:
-      - requester
-      - subject
-      - urgency
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_urgencyName
-      local_storage_keys_required:
-      - urgencyName
-      purpose: ui_form
-    single_criteria_condition_with_status:
-      fields:
-      - requester
-      - subject
-      - status
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_statusName
-      local_storage_keys_required:
-      - statusName
-      purpose: ui_form
-    single_criteria_condition_with_site:
-      fields:
-      - requester
-      - subject
-      - site
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_siteName
-      local_storage_keys_required:
-      - siteName
-      purpose: ui_form
-    single_criteria_condition_with_technician:
-      fields:
-      - requester
-      - subject
-      - technician
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_techName
-      local_storage_keys_required:
-      - techName
-      purpose: ui_form
-    single_criteria_condition_with_department:
-      fields:
-      - requester
-      - subject
-      placeholders:
-      - custom_requesterName
-      - unique_string
-      local_storage_keys_required:
-      - requesterName
-      purpose: ui_form
-    single_criteria_condition_with_service_category:
-      fields:
-      - requester
-      - subject
-      - service_category
-      - template
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_serviceCategoryName
-      - custom_template_Name
-      local_storage_keys_required:
-      - serviceCategoryName
-      - template_Name
-      purpose: ui_form
-    single_criteria_condition_with_scheduled_start_time:
-      fields:
-      - requester
-      - subject
-      - scheduled_start_time
-      - template
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_sst2_Date
-      - custom_template_Name
-      local_storage_keys_required:
-      - sst2_Date
-      - template_Name
-      purpose: ui_form
-    single_criteria_condition_with_scheduled_end_time:
-      fields:
-      - requester
-      - subject
-      - scheduled_end_time
-      - template
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_set2_Date
-      - custom_template_Name
-      local_storage_keys_required:
-      - set2_Date
-      - template_Name
-      purpose: ui_form
-    single_criteria_condition_with_template:
-      fields:
-      - requester
-      - subject
-      - template
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_template_Name
-      local_storage_keys_required:
-      - template_Name
-      purpose: ui_form
-    single_criteria_condition_with_assigned_time:
-      fields:
-      - requester
-      - subject
-      - technician
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_techName
-      local_storage_keys_required:
-      - techName
-      purpose: ui_form
-    single_criteria_condition_with_afsl:
-      fields:
-      - requester
-      - subject
-      - template
-      - af
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_template_Name
-      - custom_slValue
-      local_storage_keys_required:
-      - template_Name
-      - slValue
-      purpose: ui_form
-    approval_levels:
-      fields:
-      - approval_level
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    set_approvar:
-      fields:
-      - approval
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_request_for_trigger_via_api:
-      fields:
-      - request
-      placeholders:
-      - custom_template_Name
-      - user_name
-      - unique_string
-      local_storage_keys_required:
-      - template_Name
-      purpose: api_preprocess
-    create_request_for_trigger_via_api_with_all_input:
-      fields:
-      - request
-      placeholders:
-      - user_name
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    SearchRequest_BySubject:
-      fields:
-      - search_criteria
-      placeholders:
-      - custom_ReqSub
-      local_storage_keys_required:
-      - ReqSub
-      purpose: ui_form
-    IR_Valid_Input_Closed_Zia:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Opened_Zia:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Create_IR_Input_in_Requester_UI:
-      fields:
-      - template
-      - subject
-      - priority
-      - description
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Create_Request_with_Custom_Template:
-      fields:
-      - template
-      - subject
-      - priority
-      - description
-      placeholders:
-      - custom_TemplateName
-      - unique_string
-      local_storage_keys_required:
-      - TemplateName
-      purpose: ui_form
-    IR_Valid_Input_for_customized_Template:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - custom_templateName
-      - unique_string
-      local_storage_keys_required:
-      - templateName
-      purpose: ui_form
-    create_task_template:
-      fields:
-      - task_template
-      placeholders:
-      - unique_string
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    SR_Valid_Input_for_customized_Template:
-      fields:
-      - template
-      - subject
-      - priority
-      - group
-      - description
-      - requester
-      placeholders:
-      - custom_serTempName
-      - unique_string
-      local_storage_keys_required:
-      - serTempName
-      purpose: ui_form
-    lookup_input:
-      fields:
-      - template
-      - subject
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    requester:
-      fields:
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    lookup_data_in_form:
-      fields:
-      - subject
-      - impact
-      - impact_details
-      placeholders:
-      - custom_siteName
-      local_storage_keys_required:
-      - siteName
-      purpose: ui_form
-    lookup_data_for_description_site_email_in_form:
-      fields:
-      - site
-      - subject
-      placeholders:
-      - custom_siteName
-      local_storage_keys_required:
-      - siteName
-      purpose: ui_form
-    fill_subject_alone_in_service_request_form:
-      fields:
-      - subject
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    incident_request_site_lookup:
-      fields:
-      - request
-      placeholders:
-      - custom_Template_Name
-      - custom_siteId
-      - user_name
-      - unique_string
-      local_storage_keys_required:
-      - Template_Name
-      - siteId
-      purpose: ui_form
-    listview_search_by_column_input:
-      fields:
-      - data_array
-      placeholders:
-      - custom_siteLookupName
-      - custom_siteName
-      local_storage_keys_required:
-      - siteLookupName
-      - siteName
-      purpose: ui_form
-    create_request_for_workflow:
-      fields:
-      - template
-      - requester
-      - category
-      - subject
-      placeholders:
-      - custom_templateName
-      - user_name
-      - unique_string
-      local_storage_keys_required:
-      - templateName
-      purpose: api_preprocess
-    create_incident_request_for_workflow:
-      fields:
-      - request
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    mandatory_field_only:
-      fields:
-      - requester
-      - subject
-      placeholders:
-      - user_name
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    add_notes_api:
-      fields:
-      - request_note
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_sr_with_template:
-      fields:
-      - template
-      - requester
-      - subject
-      placeholders:
-      - custom_serTempId
-      - user_name
-      - unique_string
-      local_storage_keys_required:
-      - serTempId
-      purpose: api_preprocess
-    create_resource_info_questions:
-      fields:
-      - resource
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    Request_Maintenance_Only_Subject:
-      fields:
-      - subject
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    assigned_request:
-      fields:
-      - template
-      - subject
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - user_email_id
-      - custom_user1
-      local_storage_keys_required:
-      - user1
-      purpose: ui_form
-    assign_request:
-      fields:
-      - technician
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    Print_Preview_Sections:
-      fields:
-      - sections
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    mail:
-      fields:
-      - from
-      - to
-      - subject
-      - description
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    request_mobile_application_mode:
-      fields:
-      - template
-      - subject
-      - mode
-      - status
-      - requester
-      placeholders:
-      - unique_string
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    request_mobile_application_mode_requester:
-      fields:
-      - template
-      - subject
-      - mode
-      - requester
-      placeholders:
-      - unique_string
-      - custom_mailid
-      local_storage_keys_required:
-      - mailid
-      purpose: ui_form
-    fill_requests_fields_for_trigger:
-      fields:
-      - requester
-      - subject
-      - mode
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    request_data:
-      fields:
-      - template
-      - subject
-      - priority
-      - group
-      - requester
-      placeholders:
-      - custom_subName
-      - user_name
-      local_storage_keys_required:
-      - subName
-      purpose: ui_form
-    select_users_for_manage_followers:
-      fields:
-      - follows
-      - comments
-      placeholders:
-      - user_name
-      - custom_requesterName
-      local_storage_keys_required:
-      - requesterName
-      purpose: ui_form
-    select_users_for_manage_share:
-      fields:
-      - share
-      - comments
-      placeholders:
-      - custom_tech2email
-      - custom_requesterName
-      local_storage_keys_required:
-      - tech2email
-      - requesterName
-      purpose: ui_form
-    select_users_for_all_technician:
-      fields:
-      - follows
-      - comments
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    share_for_all_technician:
-      fields:
-      - share
-      - comments
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    select_users_for_nologin_technician:
-      fields:
-      - share
-      - comments
-      placeholders:
-      - custom_nologin_TechName
-      local_storage_keys_required:
-      - nologin_TechName
-      purpose: ui_form
-    select_users_for_nologin_requester:
-      fields:
-      - follows
-      - comments
-      placeholders:
-      - custom_nologin_ReqName
-      local_storage_keys_required:
-      - nologin_ReqName
-      purpose: ui_form
-    edit_users_for_manage_followers:
-      fields:
-      - follows
-      - comments
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    edit_users_for_manage_share:
-      fields:
-      - share
-      - comments
-      placeholders:
-      - custom_tech2Name
-      local_storage_keys_required:
-      - tech2Name
-      purpose: ui_form
-    sdsiteadmin_with_manage_followers:
-      fields:
-      - role
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    assign_sdsiteadmin:
-      fields:
-      - role
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    request_data_for_br_oh:
-      fields:
-      - template
-      - subject
-      - impact
-      - site
-      - requester
-      placeholders:
-      - custom_subName
-      - custom_siteName
-      - user_name
-      local_storage_keys_required:
-      - subName
-      - siteName
-      purpose: ui_form
-    request_data_for_trigger_oh:
-      fields:
-      - template
-      - subject
-      - priority
-      - site
-      - group
-      - requester
-      placeholders:
-      - custom_subName
-      - custom_siteName
-      - user_name
-      local_storage_keys_required:
-      - subName
-      - siteName
-      purpose: ui_form
-    request_data_for_sla_oh:
-      fields:
-      - template
-      - subject
-      - category
-      - urgency
-      - request_type
-      - site
-      - group
-      - requester
-      placeholders:
-      - unique_string
-      - custom_siteName
-      - custom_associated_group_name
-      - user_name
-      local_storage_keys_required:
-      - siteName
-      - associated_group_name
-      purpose: ui_form
-    request_data_for_sla_fieldupdate_oh:
-      fields:
-      - template
-      - subject
-      - category
-      - subcategory
-      - item
-      - site
-      - group
-      - requester
-      placeholders:
-      - unique_string
-      - custom_siteName
-      - custom_associated_group_name
-      - user_name
-      local_storage_keys_required:
-      - siteName
-      - associated_group_name
-      purpose: ui_form
-    request_data_for_sla_esclation_oh:
-      fields:
-      - template
-      - subject
-      - category
-      - subcategory
-      - item
-      - site
-      - group
-      - requester
-      - technician
-      placeholders:
-      - unique_string
-      - custom_siteName
-      - custom_associated_group_name
-      - user_name
-      - user_email_id
-      local_storage_keys_required:
-      - siteName
-      - associated_group_name
-      purpose: ui_form
-    add_mentions_in_Notes_From_ListView:
-      fields:
-      - Note
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    add_requester_and_technician:
-      fields:
-      - template
-      - subject
-      - description
-      - requester
-      - technician
-      placeholders:
-      - unique_string
-      - custom_requesterName
-      - user_email_id
-      local_storage_keys_required:
-      - requesterName
-      purpose: ui_form
-    update_requester_reporting_manager:
-      fields:
-      - requester
-      placeholders:
-      - custom_techId
-      local_storage_keys_required:
-      - techId
-      purpose: ui_form
-    update_technician_reporting_manager:
-      fields:
-      - technician
-      placeholders:
-      - custom_techId
-      local_storage_keys_required:
-      - techId
-      purpose: ui_form
-    add_requester_and_technician_tech_reporting_to:
-      fields:
-      - template
-      - subject
-      - description
-      - requester
-      - technician
-      placeholders:
-      - unique_string
-      - custom_technicianName
-      - custom_technicianName
-      local_storage_keys_required:
-      - technicianName
-      - technicianName
-      purpose: ui_form
-    update_role_in_group:
-      fields:
-      - group
-      placeholders:
-      - user_id
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    update_role_in_group2:
-      fields:
-      - group
-      placeholders:
-      - user_id
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    list_info_criteria_name_search:
-      fields:
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    request_data_for_group_head:
-      fields:
-      - template
-      - subject
-      - site
-      - group
-      - requester
-      placeholders:
-      - unique_string
-      - custom_associated_site_name
-      - custom_associated_group_name
-      - user_name
-      local_storage_keys_required:
-      - associated_site_name
-      - associated_group_name
-      purpose: ui_form
-    request_with_site:
-      fields:
-      - requester
-      - subject
-      - site
-      placeholders:
-      - user_name
-      - unique_string
-      - custom_siteId
-      local_storage_keys_required:
-      - siteId
-      purpose: ui_form
-    associate_dept_and_site_to_users:
-      fields:
-      - technician
-      placeholders:
-      - custom_siteId
-      - custom_departmentId
-      local_storage_keys_required:
-      - siteId
-      - departmentId
-      purpose: ui_form
-    request_with_tech:
-      fields:
-      - template
-      - subject
-      - requester
-      - site
-      - technician
-      placeholders:
-      - unique_string
-      - custom_siteId
-      - user_email_id
-      local_storage_keys_required:
-      - siteId
-      purpose: ui_form
-    diassociate_dept_and_site_to_users:
-      fields:
-      - technician
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    list_view_linkedrequest:
-      fields:
-      - columns
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    list_view_filters_for_reqprefix:
-      fields:
-      - list_view_filter
-      placeholders:
-      - unique_string
-      - custom_displayid2
-      local_storage_keys_required:
-      - displayid2
-      purpose: ui_form
-    API_ProblemData1:
-      fields:
-      - reported_by
-      - title
-      - impact
-      - urgency
-      - priority
-      - category
-      - subcategory
-      - item
-      - services
-      - description
-      - impact_details
-      - root_cause
-      - symptoms
-      - resolution_details
-      - workaround_details
-      placeholders:
-      - user_name
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Project_Input:
-      fields:
-      - template
-      - title
-      - priority
-      - status
-      - project_code
-      - project_type
-      - project_requester
-      - owner
-      - estimated_hours
-      - actual_hours
-      - estimated_cost
-      - actual_cost
-      - percentage_completion
-      - scheduled_start_time
-      - scheduled_end_time
-      - actual_start_time
-      - actual_end_time
-      - projected_end
-      - description
-      placeholders:
-      - unique_string
-      - unique_string
-      - user_name
-      - user_name
-      - date, 0Y 1M 1D 0h 0m, true
-      - date, 0Y 1M 2D 0h 0m, true
-      - date, 0Y 1M 3D 0h 0m, true
-      - date, 0Y 1M 4D 0h 0m, true
-      - date, 0Y 1M 5D 0h 0m, true
-      local_storage_keys_required: []
-      purpose: ui_form
-    Release_Input:
-      fields:
-      - title
-      - template
-      - description
-      - risk
-      - release_type
-      - release_requester
-      - impact
-      - priority
-      - reason_for_release
-      - scheduled_start_time
-      - scheduled_end_time
-      - category
-      - subcategory
-      - item
-      - urgency
-      - services
-      - assets
-      placeholders:
-      - unique_string
-      - user_name
-      - datetime, 2Y 10M 100D 10h 10m, false
-      - datetime, 2Y 10M 100D 10h 10m, true
-      local_storage_keys_required: []
-      purpose: ui_form
-    API_RequestTask1:
-      fields:
-      - task
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Without_Priority:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    lastupdatedby_triggerreq:
-      fields:
-      - requester
-      - subject
-      placeholders:
-      - user_email_id
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Custom_View_With_OneCriteria_lstupdatedby:
-      fields:
-      - Criteria_InputName
-      - criteria
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    list_view_lastupdatedby:
-      fields:
-      - columns
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Resolution_Attach:
-      fields:
-      - resolutions
-      placeholders:
-      - custom_SolutionId
-      local_storage_keys_required:
-      - SolutionId
-      purpose: ui_form
-    IR_For_Suggest_Solution:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - custom_solutionSubject
-      - custom_tech_name
-      local_storage_keys_required:
-      - solutionSubject
-      - tech_name
-      purpose: ui_form
-    Multiple_status_Name:
-      fields:
-      - MultiStatus
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    life_cyle_for_resolution_api:
-      fields:
-      - lifecycle
-      placeholders:
-      - unique_string
-      - custom_REQ_TEMP_ID
-      - custom_Open_Status_Id
-      - custom_Resolved_Status_Id
-      - custom_Closed_Status_Id
-      local_storage_keys_required:
-      - REQ_TEMP_ID
-      - Open_Status_Id
-      - Resolved_Status_Id
-      - Closed_Status_Id
-      purpose: ui_form
-    create_Ir_with_template_UI:
-      fields:
-      - template
-      - requester
-      - subject
-      placeholders:
-      - custom_tempId
-      - user_name
-      - unique_string
-      local_storage_keys_required:
-      - tempId
-      purpose: api_preprocess
-    Resolution_configuration:
-      fields:
-      - solution_configuration
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_requesttemplate_for_zia:
-      fields:
-      - template
-      - subject
-      - category
-      - subcategory
-      - item
-      - priority
-      - technician
-      placeholders:
-      - custom_Template_Name
-      - unique_string
-      - user_email_id
-      local_storage_keys_required:
-      - Template_Name
-      purpose: api_preprocess
-    create_request_for_zia:
-      fields:
-      - template
-      - subject
-      - category
-      - subcategory
-      - item
-      - priority
-      - technician
-      placeholders:
-      - unique_string
-      - custom_categoryName
-      - custom_subCategoryName
-      - custom_itemName
-      - custom_priorityName
-      - user_email_id
-      local_storage_keys_required:
-      - categoryName
-      - subCategoryName
-      - itemName
-      - priorityName
-      purpose: api_preprocess
-    lookup_data_for_asset_refentity_1:
-      fields:
-      - subject
-      - assets
-      placeholders:
-      - custom_Asset_Name
-      - custom_Asset_Name
-      local_storage_keys_required:
-      - Asset_Name
-      - Asset_Name
-      purpose: ui_form
-    lookup_data_for_asset_entity_name_subject:
-      fields:
-      - subject
-      placeholders:
-      - custom_Asset_Name
-      local_storage_keys_required:
-      - Asset_Name
-      purpose: ui_form
-    lookup_data_for_asset_entity_name_impactdetails:
-      fields:
-      - impact_details
-      placeholders:
-      - custom_Asset_Name
-      local_storage_keys_required:
-      - Asset_Name
-      purpose: ui_form
-    lookup_data_for_asset_entity_name_charoneemailid:
-      fields:
-      - subject
-      placeholders:
-      - custom_Asset_Name
-      local_storage_keys_required:
-      - Asset_Name
-      purpose: ui_form
-    lookup_data_for_asset_entity_asset_tag_subject:
-      fields:
-      - subject
-      placeholders:
-      - custom_Asset_Tag
-      local_storage_keys_required:
-      - Asset_Tag
-      purpose: ui_form
-    lookup_data_for_asset_entity_barcode_subject:
-      fields:
-      - subject
-      placeholders:
-      - custom_Barcode
-      local_storage_keys_required:
-      - Barcode
-      purpose: ui_form
-    lookup_data_for_asset_entity_barcode_impactdetails:
-      fields:
-      - impact_details
-      placeholders:
-      - custom_Barcode
-      local_storage_keys_required:
-      - Barcode
-      purpose: ui_form
-    lookup_data_for_asset_entity_asset_tag_impactdetails:
-      fields:
-      - impact_details
-      placeholders:
-      - custom_Asset_Tag
-      local_storage_keys_required:
-      - Asset_Tag
-      purpose: ui_form
-    lookup_data_for_asset_entity_mac_address_subject:
-      fields:
-      - subject
-      placeholders:
-      - custom_Mac_Address
-      local_storage_keys_required:
-      - Mac_Address
-      purpose: ui_form
-    lookup_data_for_asset_entity_purchasecost_subject:
-      fields:
-      - subject
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    lookup_data_for_asset_entity_operationalcost_subject:
-      fields:
-      - subject
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    lookup_data_for_asset_entity_servicecost_subject:
-      fields:
-      - subject
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    lookup_data_for_cmdb_accesspoint_entity_description_subject:
-      fields:
-      - subject
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    lookup_data_for_cmdb_accesspoint_entity_name_subject:
-      fields:
-      - subject
-      placeholders:
-      - custom_CmdbName
-      local_storage_keys_required:
-      - CmdbName
-      purpose: ui_form
-    request_data_for_sla:
-      fields:
-      - template
-      - subject
-      - request_type
-      - requester
-      placeholders:
-      - custom_tempId
-      - unique_string
-      - user_name
-      local_storage_keys_required:
-      - tempId
-      purpose: ui_form
-    request_data_for_sla_site:
-      fields:
-      - template
-      - subject
-      - request_type
-      - requester
-      - site
-      placeholders:
-      - custom_tempId
-      - unique_string
-      - user_name
-      local_storage_keys_required:
-      - tempId
-      purpose: ui_form
-    fill_request_data_for_req_cmdb_lookup:
-      fields:
-      - request
-      placeholders:
-      - custom_tempId
-      - custom_requesterMailId
-      local_storage_keys_required:
-      - tempId
-      - requesterMailId
-      purpose: ui_form
-    fill_request_data_for_req_asset_lookup:
-      fields:
-      - request
-      placeholders:
-      - custom_tempId
-      - custom_requesterMailId
-      - custom_Mac_Address
-      local_storage_keys_required:
-      - tempId
-      - requesterMailId
-      - Mac_Address
-      purpose: ui_form
-    fill_request_data_for_req_lookup_for_trigger:
-      fields:
-      - template
-      - udf_fields
-      - requester
-      - subject
-      placeholders:
-      - custom_Template_Name
-      - user_name
-      local_storage_keys_required:
-      - Template_Name
-      purpose: ui_form
-    IR_Valid_Input_Without_Requester:
-      fields:
-      - template
-      - subject
-      - description
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_Without_Requester:
-      fields:
-      - template
-      - subject
-      - description
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Auto_Send_Approval_Notification:
-      fields:
-      - request_template
-      placeholders:
-      - custom_userMail
-      - custom_userMail
-      local_storage_keys_required:
-      - userMail
-      - userMail
-      purpose: ui_form
-    SR_Valid_Input_With_Approval:
-      fields:
-      - template
-      - subject
-      - priority
-      - technician
-      - description
-      placeholders:
-      - custom_serTempName
-      - unique_string
-      - user_email_id
-      local_storage_keys_required:
-      - serTempName
-      purpose: ui_form
-    Assign_Technician:
-      fields:
-      - request
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_technicianGroup:
-      fields:
-      - group
-      placeholders:
-      - custom_techMail
-      - unique_string
-      local_storage_keys_required:
-      - techMail
-      purpose: api_preprocess
-    associate_supportGroup_In_Template:
-      fields:
-      - request_template
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    closure_rule_fields:
-      fields:
-      - fields
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    closure_rule_fields2:
-      fields:
-      - fields
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Valid_Input_Without_Description:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_Without_Description:
-      fields:
-      - template
-      - subject
-      - priority
-      - group
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Requester_Closed:
-      fields:
-      - template
-      - subject
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Requester_Closed:
-      fields:
-      - template
-      - subject
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    SearchRequest_ByDisplayId:
-      fields:
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    helpcard_temp:
-      fields:
-      - request
-      placeholders:
-      - unique_string
-      - custom_Template_Name
-      local_storage_keys_required:
-      - Template_Name
-      purpose: ui_form
-    helpcard_temp_requester:
-      fields:
-      - request
-      placeholders:
-      - unique_string
-      - custom_Template_Name
-      - custom_requesterid
-      local_storage_keys_required:
-      - Template_Name
-      - requesterid
-      purpose: ui_form
-    helpcard_temp_UI:
-      fields:
-      - subject
-      - template
-      - requester
-      placeholders:
-      - unique_string
-      - custom_Template_Name
-      local_storage_keys_required:
-      - Template_Name
-      purpose: ui_form
-    Request_Maintenance_Helpcard:
-      fields:
-      - template
-      - subject
-      - requester
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    duplicate_IR:
-      fields:
-      - duplicate_request
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Request_problem_association:
-      fields:
-      - request
-      placeholders:
-      - unique_string
-      - custom_requesterName
-      local_storage_keys_required:
-      - requesterName
-      purpose: ui_form
-    SR_Valid_Input_API:
-      fields:
-      - template
-      - subject
-      - priority
-      - group
-      - description
-      - site
-      - requester
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    get_copysite_data:
-      fields:
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    get_module_Id:
-      fields:
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    associate_multiple_asset_in_asset_spot_edit_field:
-      fields:
-      - request
-      placeholders:
-      - custom_assetId0
-      - custom_assetId1
-      - custom_assetId2
-      - custom_assetId3
-      local_storage_keys_required:
-      - assetId0
-      - assetId1
-      - assetId2
-      - assetId3
-      purpose: ui_form
-    associate_single_asset_in_asset_spot_edit_field:
-      fields:
-      - request
-      placeholders:
-      - custom_Asset_id
-      local_storage_keys_required:
-      - Asset_id
-      purpose: ui_form
-    associate_multiple_CI_in_CI_spot_edit_field:
-      fields:
-      - request
-      placeholders:
-      - custom_CmdbId0
-      - custom_CmdbId1
-      - custom_CmdbId2
-      - custom_CmdbId3
-      local_storage_keys_required:
-      - CmdbId0
-      - CmdbId1
-      - CmdbId2
-      - CmdbId3
-      purpose: ui_form
-    Request_cmdb_association:
-      fields:
-      - request
-      placeholders:
-      - custom_Template_Name
-      - unique_string
-      - user_email_id
-      local_storage_keys_required:
-      - Template_Name
-      purpose: ui_form
-    IR_Valid_Input_With_CustomRequester:
-      fields:
-      - template
-      - subject
-      - status
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - custom_requesterName
-      local_storage_keys_required:
-      - requesterName
-      purpose: ui_form
-    mandatory_field_only_for_requester:
-      fields:
-      - subject
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    mandatory_field_only_custom_requester:
-      fields:
-      - requester
-      - subject
-      placeholders:
-      - custom_requesterName
-      - unique_string
-      local_storage_keys_required:
-      - requesterName
-      purpose: ui_form
-    conversation_mail_to_cc_bcc:
-      fields:
-      - to
-      - cc
-      - bcc
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Form_Rule_with_Mandate_Description:
-      fields:
-      - template
-      - subject
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    Search_Row_Count:
-      fields:
-      - list_info
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_Valid_Input_With_Custom_Template:
-      fields:
-      - template
-      - subject
-      - priority
-      - description
-      placeholders:
-      - custom_serTempName
-      - unique_string
-      local_storage_keys_required:
-      - serTempName
-      purpose: ui_form
-    list_view_columnchooser:
-      fields:
-      - columns
-      placeholders:
-      - custom_column
-      local_storage_keys_required:
-      - column
-      purpose: ui_form
-    request_with_projects:
-      fields:
-      - request_project_association
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Valid_Project_data:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Asset_In_Use:
-      fields:
-      - asset_access_point
-      placeholders:
-      - rest_api, post,product, products, Product
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Product:
-      fields:
-      - product
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Template_With_OBO:
-      fields:
-      - request_template
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Request_With_Asset:
-      fields:
-      - requester
-      - assets
-      - site
-      - subject
-      placeholders:
-      - custom_assetName
-      local_storage_keys_required:
-      - assetName
-      purpose: ui_form
-    Nested_Form_Rule:
-      fields:
-      - template
-      - subject
-      - priority
-      - status
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    Nested_Positive_Requests:
-      fields:
-      - template
-      - subject
-      - priority
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    Nested_Negative_Requests:
-      fields:
-      - template
-      - subject
-      - priority
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    request_custom_resource_and_question_validation:
-      fields:
-      - request
-      placeholders:
-      - custom_RtemplateName
-      local_storage_keys_required:
-      - RtemplateName
-      purpose: ui_form
-    request_custom_resource_and_question_validation_trigger:
-      fields:
-      - template
-      - subject
-      - status
-      - description
-      - resources
-      placeholders:
-      - custom_templateName
-      local_storage_keys_required:
-      - templateName
-      purpose: ui_form
-    request_custom_resource_and_question_validation_workflow:
-      fields:
-      - template
-      - subject
-      - status
-      - level
-      - description
-      - resources
-      placeholders:
-      - custom_templateName
-      local_storage_keys_required:
-      - templateName
-      purpose: ui_form
-    REQ_DUE_BY_TIME_ONHOLD:
-      fields:
-      - template
-      - subject
-      - requester
-      - status
-      - description
-      - created_time
-      - due_by_time
-      placeholders:
-      - unique_string
-      - datetime, 0Y 0M 1D 8h 10m, false
-      - datetime
-      local_storage_keys_required: []
-      purpose: ui_form
-    SR_With_Editor:
-      fields:
-      - template
-      - requester
-      - editor
-      - subject
-      placeholders:
-      - custom_serTempName
-      - custom_requesterName
-      - custom_requesterName1
-      local_storage_keys_required:
-      - serTempName
-      - requesterName
-      - requesterName1
-      purpose: ui_form
-    Manage_Approvals_In_ServiceTemplate:
-      fields:
-      - request_template
-      placeholders:
-      - custom_OrgroleName
-      local_storage_keys_required:
-      - OrgroleName
-      purpose: ui_form
-    SR_With_Requester:
-      fields:
-      - template
-      - requester
-      - subject
-      placeholders:
-      - custom_Template_Name
-      - custom_requesterName
-      local_storage_keys_required:
-      - Template_Name
-      - requesterName
-      purpose: ui_form
-    Auto_Send_Notification_In_Approval:
-      fields:
-      - request_template
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    request_with_editor:
-      fields:
-      - template
-      - request_template_task_ids
-      - request_type
-      - editor
-      - status
-      - requester
-      - subject
-      placeholders:
-      - custom_tempId
-      - custom_taskId
-      - custom_requesterId3
-      - custom_requesterIdUser2
-      - unique_string
-      local_storage_keys_required:
-      - tempId
-      - taskId
-      - requesterId3
-      - requesterIdUser2
-      purpose: ui_form
-    request_with_requester:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders:
-      - unique_string
-      - custom_requesterId
-      local_storage_keys_required:
-      - requesterId
-      purpose: ui_form
-    request_with_requester3:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders:
-      - unique_string
-      - custom_requesterName3
-      local_storage_keys_required:
-      - requesterName3
-      purpose: ui_form
-    details_spot_edit_by_typing_fields_input1:
-      fields:
-      - data_array
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    transition_mandatory_fields:
-      fields:
-      - mode
-      - level
-      - urgency
-      - priority
-      - group
-      - impact
-      - category
-      - subcategory
-      - item
-      - request_type
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    workflow_criteria:
-      fields:
-      - category
-      - subcategory
-      - item
-      - group
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    list_info_criteria_template_search:
-      fields:
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    request_custom_resource_and_question:
-      fields:
-      - template
-      - subject
-      - status
-      - description
-      - resources
-      placeholders:
-      - custom_serTempName
-      - custom_question1Answer2Id
-      - custom_question2Answer1Id
-      - custom_question3Answer2Id
-      local_storage_keys_required:
-      - serTempName
-      - question1Answer2Id
-      - question2Answer1Id
-      - question3Answer2Id
-      purpose: ui_form
-    checklist_creation:
-      fields:
-      - checklist
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    checklist_edition:
-      fields:
-      - checklist_item
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    resource_question_validation_trigger_subentity:
-      fields:
-      - template
-      - subject
-      - status
-      - priority
-      - description
-      - resources
-      placeholders:
-      - custom_entityId
-      - custom_questionAnswer1
-      local_storage_keys_required:
-      - entityId
-      - questionAnswer1
-      purpose: ui_form
-    resource_question_validation_workflow:
-      fields:
-      - template
-      - subject
-      - status
-      - priority
-      - description
-      - resources
-      placeholders:
-      - custom_entityId
-      - custom_questionAnswer2
-      local_storage_keys_required:
-      - entityId
-      - questionAnswer2
-      purpose: ui_form
-    resource_custom_question_validation_trigger_subentity_br:
-      fields:
-      - template
-      - subject
-      - status
-      - priority
-      - description
-      - resources
-      placeholders:
-      - custom_serTempId
-      - custom_question1Answer2Id
-      - custom_question2Answer1Id
-      - custom_question3Answer2Id
-      local_storage_keys_required:
-      - serTempId
-      - question1Answer2Id
-      - question2Answer1Id
-      - question3Answer2Id
-      purpose: ui_form
-    resource_custom_question_validation_trigger_subentity_br_abort:
-      fields:
-      - request
-      placeholders:
-      - custom_serTempId
-      - custom_question1Answer2Id
-      - custom_question2Answer1Id
-      - custom_question3Answer2Id
-      local_storage_keys_required:
-      - serTempId
-      - question1Answer2Id
-      - question2Answer1Id
-      - question3Answer2Id
-      purpose: ui_form
-    resource_existing_question_validation_trigger_subentity_br:
-      fields:
-      - template
-      - subject
-      - status
-      - priority
-      - description
-      - resources
-      placeholders:
-      - custom_entityId
-      - custom_questionAnswer1
-      local_storage_keys_required:
-      - entityId
-      - questionAnswer1
-      purpose: ui_form
-    resource_existing_question_validation_trigger_subentity_br_abort:
-      fields:
-      - request
-      placeholders:
-      - custom_entityId
-      - custom_questionAnswer1
-      local_storage_keys_required:
-      - entityId
-      - questionAnswer1
-      purpose: ui_form
-    request_existing_resource_question:
-      fields:
-      - template
-      - subject
-      - status
-      - priority
-      - description
-      - resources
-      placeholders:
-      - custom_entityId
-      - custom_questionAnswer1
-      local_storage_keys_required:
-      - entityId
-      - questionAnswer1
-      purpose: ui_form
-    worklog_timer_creation:
-      fields:
-      - worklog_timer
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    worklog_timer_edition:
-      fields:
-      - worklog_timer
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    worklog_creation:
-      fields:
-      - worklog
-      placeholders:
-      - custom_techId
-      local_storage_keys_required:
-      - techId
-      purpose: ui_form
-    worklog_edition:
-      fields:
-      - worklog
-      placeholders:
-      - custom_techId
-      local_storage_keys_required:
-      - techId
-      purpose: ui_form
-    task_creation:
-      fields:
-      - task
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    task_edition:
-      fields:
-      - task
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    notification_creation:
-      fields:
-      - notification
-      placeholders:
-      - custom_userMailId1
-      local_storage_keys_required:
-      - userMailId1
-      purpose: ui_form
-    notification_edition:
-      fields:
-      - notification
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    note_creation:
-      fields:
-      - request_note
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    note_edition:
-      fields:
-      - request_note
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    task_status_updated:
-      fields:
-      - task
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    request_description_updated:
-      fields:
-      - request
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    service_request_approval_add:
-      fields:
-      - approval_levels
-      - send
-      placeholders:
-      - custom_techId
-      local_storage_keys_required:
-      - techId
-      purpose: ui_form
-    service_request_approval_edit:
-      fields:
-      - approval_levels
-      - send
-      placeholders:
-      - custom_techId
-      local_storage_keys_required:
-      - techId
-      purpose: ui_form
-    service_request_approval_delete:
-      fields:
-      - approval_levels
-      - send
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    request_custom_resource_and_question_notification_validation:
-      fields:
-      - template
-      - subject
-      - status
-      - description
-      - resources
-      placeholders:
-      - custom_serTempId
-      - custom_question1Answer2Id
-      - custom_question2Answer1Id
-      - custom_question2Answer2Id
-      - custom_question3Answer1Id
-      local_storage_keys_required:
-      - serTempId
-      - question1Answer2Id
-      - question2Answer1Id
-      - question2Answer2Id
-      - question3Answer1Id
-      purpose: ui_form
-    request_custom_resource_and_question_timer_validation:
-      fields:
-      - template
-      - subject
-      - status
-      - description
-      - resources
-      placeholders:
-      - custom_serTempId
-      - custom_question1Answer2Id
-      - custom_question2Answer1Id
-      - custom_question2Answer2Id
-      - custom_question3Answer1Id
-      local_storage_keys_required:
-      - serTempId
-      - question1Answer2Id
-      - question2Answer1Id
-      - question2Answer2Id
-      - question3Answer1Id
-      purpose: ui_form
-    request_for_approval:
-      fields:
-      - request
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    associate_site_with_region_Department_to_users:
-      fields:
-      - technician
-      placeholders:
-      - rest_api, post, site, sites, create_site_with_custom_region
-      - rest_api, search, sites, name, Site $(custom_uniqueString
-      - rest_api, post, department, departments, create_department_with_site
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_site_with_custom_region:
-      fields:
-      - site
-      placeholders:
-      - custom_uniqueString
-      - custom_entitiesId
-      local_storage_keys_required:
-      - uniqueString
-      - entitiesId
-      purpose: api_preprocess
-    create_department_with_site_entities:
-      fields:
-      - department
-      placeholders:
-      - unique_string
-      - custom_entitiesId
-      local_storage_keys_required:
-      - entitiesId
-      purpose: api_preprocess
-    create_department_with_site:
-      fields:
-      - department
-      placeholders:
-      - unique_string
-      - custom_uniqueString
-      local_storage_keys_required:
-      - uniqueString
-      purpose: api_preprocess
-    associate_site_with_Department_to_users:
-      fields:
-      - technician
-      placeholders:
-      - custom_entitiesId
-      - custom_entitiesId
-      - rest_api, post, department, departments, create_department_with_site_entities
-      local_storage_keys_required:
-      - entitiesId
-      - entitiesId
-      purpose: ui_form
-    associate_department_to_users:
-      fields:
-      - technician
-      placeholders:
-      - custom_entitiesId
-      local_storage_keys_required:
-      - entitiesId
-      purpose: ui_form
-    Sr_Custom_Template_Create:
-      fields:
-      - request_template
-      placeholders:
-      - rest_api, search, service_categories, name, Corporate Website
-      - custom_uniqueString
-      local_storage_keys_required:
-      - uniqueString
-      purpose: ui_form
-    SR_VALID_API_Custom_Site_Custom_Template:
-      fields:
-      - request
-      placeholders:
-      - rest_api, post, request_template, request_templates, Sr_Custom_Template_Create
-      - unique_string
-      - custom_entitiesId
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - entitiesId
-      - UserId
-      - UserId
-      purpose: ui_form
-    SR_VALID_API_Site_with_region_Custom_Template:
-      fields:
-      - request
-      placeholders:
-      - rest_api, post, request_template, request_templates, Sr_Custom_Template_Create
-      - unique_string
-      - rest_api, search, sites, name, Site $(custom_uniqueString
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - UserId
-      - UserId
-      purpose: ui_form
-    SR_VALID_API_Base_Site_Custom_Template:
-      fields:
-      - request
-      placeholders:
-      - rest_api, post, request_template, request_templates, Sr_Custom_Template_Create
-      - unique_string
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - UserId
-      - UserId
-      purpose: ui_form
-    SR_VALID_API_Group_Custom_Template:
-      fields:
-      - request
-      placeholders:
-      - rest_api, post, request_template, request_templates, Sr_Custom_Template_Create
-      - unique_string
-      - custom_entitiesId
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - entitiesId
-      - UserId
-      - UserId
-      purpose: ui_form
-    SR_VALID_API:
-      fields:
-      - request
-      placeholders:
-      - rest_api, post, request_template, request_templates, Sr_Custom_Template_Create
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    Sr_Custom_Template_Create2:
-      fields:
-      - request_template
-      placeholders:
-      - rest_api, search, service_categories, name, Corporate Website
-      - custom_uniqueString
-      - custom_WorkflowId
-      local_storage_keys_required:
-      - uniqueString
-      - WorkflowId
-      purpose: ui_form
-    SR_VALID_API_Custom_Site_Custom_Template2:
-      fields:
-      - request
-      placeholders:
-      - rest_api, post, request_template, request_templates, Sr_Custom_Template_Create2
-      - unique_string
-      - custom_entitiesId
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - entitiesId
-      - UserId
-      - UserId
-      purpose: ui_form
-    SR_VALID_API_Site_with_region_Custom_Template2:
-      fields:
-      - request
-      placeholders:
-      - rest_api, post, request_template, request_templates, Sr_Custom_Template_Create2
-      - unique_string
-      - rest_api, search, sites, name, Site $(custom_uniqueString
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - UserId
-      - UserId
-      purpose: ui_form
-    SR_VALID_API_Base_Site_Custom_Template2:
-      fields:
-      - request
-      placeholders:
-      - rest_api, post, request_template, request_templates, Sr_Custom_Template_Create2
-      - unique_string
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - UserId
-      - UserId
-      purpose: ui_form
-    SR_VALID_API_Group_Custom_Template2:
-      fields:
-      - request
-      placeholders:
-      - rest_api, post, request_template, request_templates, Sr_Custom_Template_Create2
-      - unique_string
-      - custom_entitiesId
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - entitiesId
-      - UserId
-      - UserId
-      purpose: ui_form
-    SR_VALID_API2:
-      fields:
-      - request
-      placeholders:
-      - rest_api, post, request_template, request_templates, Sr_Custom_Template_Create2
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Template_Additional_fields:
-      fields:
-      - request_template
-      placeholders:
-      - custom_uniqueString
-      - custom_fieldKey
-      - custom_fieldKey
-      local_storage_keys_required:
-      - uniqueString
-      - fieldKey
-      - fieldKey
-      purpose: ui_form
-    IR_VALID_API_with_Custom_Template_Additional_fields:
-      fields:
-      - request
-      placeholders:
-      - rest_api, post, request_template, request_templates, IR_Template_Additional_fields
-      - unique_string
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_VALID_API_Custom_Site_Default_Template:
-      fields:
-      - request
-      placeholders:
-      - rest_api, search, request_templates, name, Default Request
-      - unique_string
-      - custom_entitiesId
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - entitiesId
-      - UserId
-      - UserId
-      purpose: ui_form
-    IR_VALID_API_Site_with_region_Default_Template:
-      fields:
-      - request
-      placeholders:
-      - rest_api, search, request_templates, name, Default Request
-      - unique_string
-      - rest_api, search, sites, name, Site $(custom_uniqueString
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - UserId
-      - UserId
-      purpose: ui_form
-    IR_VALID_API_Base_Site_Default_Template:
-      fields:
-      - request
-      placeholders:
-      - rest_api, search, request_templates, name, Default Request
-      - unique_string
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - UserId
-      - UserId
-      purpose: ui_form
-    IR_VALID_API_Group_Default_Template:
-      fields:
-      - request
-      placeholders:
-      - rest_api, search, request_templates, name, Default Request
-      - unique_string
-      - custom_entitiesId
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - entitiesId
-      - UserId
-      - UserId
-      purpose: ui_form
-    IR_VALID_API:
-      fields:
-      - request
-      placeholders:
-      - rest_api, search, request_templates, name, Default Request
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_VALID_API_with_User:
-      fields:
-      - request
-      placeholders:
-      - rest_api, search, request_templates, name, additional_fields_$(custom_uniqueString
-      - unique_string
-      - custom_UserId
-      - custom_UserId
-      local_storage_keys_required:
-      - UserId
-      - UserId
-      purpose: ui_form
-    life_org_role_transition_field_update:
-      fields:
-      - lifecycle
-      placeholders:
-      - unique_string
-      - rest_api, post, request_template, request_templates, IR_Template_Additional_fields
-      - rest_api, search, statuses, name, Open
-      - rest_api, search, statuses, name, Resolved
-      - custom_orgRolexpath
-      - custom_fieldKey
-      - custom_module
-      local_storage_keys_required:
-      - orgRolexpath
-      - fieldKey
-      - module
-      purpose: ui_form
-    asset_report_criteria:
-      fields:
-      - criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Create_Request_With_Requester_Technician:
-      fields:
-      - template
-      - subject
-      - requester
-      - technician
-      - description
-      placeholders:
-      - unique_string
-      - custom_requesterName
-      - custom_technicianName
-      local_storage_keys_required:
-      - requesterName
-      - technicianName
-      purpose: ui_form
-    Create_Request_with_Resolution:
-      fields:
-      - template
-      - subject
-      - priority
-      - requester
-      - resolution
-      placeholders:
-      - unique_string
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    Requester_Login_mail_fields:
-      fields:
-      - to
-      placeholders:
-      - custom_requesterMailId3
-      local_storage_keys_required:
-      - requesterMailId3
-      purpose: ui_form
-    Reply_attachment_with_10000_char_in_Description:
-      fields:
-      - template
-      - subject
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - custom_requesterName3
-      local_storage_keys_required:
-      - requesterName3
-      purpose: ui_form
-    request_data_for_group_tech:
-      fields:
-      - template
-      - subject
-      - priority
-      - site
-      - group
-      - technician
-      - requester
-      placeholders:
-      - unique_string
-      - custom_groupName
-      - custom_techMail
-      - user_name
-      local_storage_keys_required:
-      - groupName
-      - techMail
-      purpose: ui_form
-    request_template_cost_enable:
-      fields:
-      - request_template
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    select_org_role_for_manage_share:
-      fields:
-      - share
-      - comments
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Create_request_with_group_created_from_preprocess:
-      fields:
-      - template
-      - subject
-      - priority
-      - group
-      - description
-      - site
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    get_entity_id_using_subject:
-      fields:
-      - search_criteria
-      placeholders:
-      - custom_field
-      - custom_dataName
-      local_storage_keys_required:
-      - field
-      - dataName
-      purpose: ui_form
-    SR_WITH_CUSTOM_TEMPLATE:
-      fields:
-      - request
-      placeholders:
-      - custom_templateId
-      - custom_taskId0
-      - custom_taskId1
-      - custom_taskId2
-      local_storage_keys_required:
-      - templateId
-      - taskId0
-      - taskId1
-      - taskId2
-      purpose: ui_form
-    create_checklist_items_radio_button_type:
-      fields:
-      - item_detail
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    criteria_condition_group_is_Hardware_is_not_empty:
-      fields:
-      - criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    select_custom_org_role_for_manage_share:
-      fields:
-      - share
-      - comments
-      placeholders:
-      - custom_Name
-      local_storage_keys_required:
-      - Name
-      purpose: ui_form
-    add_public_notes:
-      fields:
-      - request_note
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_sr_with_technician:
-      fields:
-      - template
-      - requester
-      - subject
-      - technician
-      placeholders:
-      - custom_serTempId
-      - user_name
-      - unique_string
-      - user_email_id
-      local_storage_keys_required:
-      - serTempId
-      purpose: api_preprocess
-    IR_Valid_Input_Resolved_With_Technician:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - urgency
-      - priority
-      - status
-      - technician
-      - description
-      - requester
-      placeholders:
-      - unique_string
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    request_with_project:
-      fields:
-      - request_project_association
-      placeholders:
-      - custom_request
-      local_storage_keys_required:
-      - request
-      purpose: ui_form
-    Request_Last_UpdatedBy_IR:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - technician
-      - urgency
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - custom_Template_Name
-      - unique_string
-      - user_name
-      - custom_requesterName
-      local_storage_keys_required:
-      - Template_Name
-      - requesterName
-      purpose: ui_form
-    Request_Last_UpdatedBy_Customtech_IR:
-      fields:
-      - template
-      - subject
-      - mode
-      - level
-      - technician
-      - urgency
-      - priority
-      - status
-      - description
-      - requester
-      placeholders:
-      - custom_Template_Name
-      - unique_string
-      - custom_techmail
-      - custom_requesterName
-      local_storage_keys_required:
-      - Template_Name
-      - techmail
-      - requesterName
-      purpose: ui_form
-    AskZia_My_OverDue_Requests:
-      fields:
-      - template
-      - subject
-      - requester
-      - technician
-      - description
-      - created_time
-      - due_by_time
-      placeholders:
-      - unique_string
-      - user_email_id
-      - datetime, 0Y 0M 2D 8h 10m, false
-      - datetime, 0Y 0M 1D 8h 10m, false
-      local_storage_keys_required: []
-      purpose: ui_form
-    IR_Input_For_zia:
-      fields:
-      - template
-      - subject
-      - status
-      - requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    add_request_withrequester:
-      fields:
-      - request
-      placeholders:
-      - custom_tempId
-      - custom_email_id
-      - unique_string
-      local_storage_keys_required:
-      - tempId
-      - email_id
-      purpose: ui_form
-api_util_deep:
-- name: createRequestAddTaskandTemplate
-  params: String entityName, String apiPath, JSONObject requestInputData, String requirement
-  api_paths:
-  - task_templates
-  rest_methods_used:
-  - create
-  - createAndGetResponse
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createChange
-  params: String apiPath, JSONObject inputData
-  api_paths: []
-  rest_methods_used:
-  - triggerRestAPIUsingInputData
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createIncidentRequest
-  params: String key, String value
-  api_paths:
-  - requests
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - request
-  - Subject_string
-  local_storage_reads: []
-- name: createServiceRequest
-  params: String key, String value
-  api_paths:
-  - requests
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - request
-  - Subject_string
-  local_storage_reads: []
-- name: createIncidentRequestWithSite
-  params: String key, String value
-  api_paths:
-  - requests
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - request
-  - Subject_string
-  local_storage_reads: []
-- name: createServiceRequestSite
-  params: String key, String value
-  api_paths:
-  - requests
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - request
-  - Subject_string
-  local_storage_reads: []
-- name: createIncidentRequest
-  params: (none)
-  api_paths:
-  - requests
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - request
-  - requestSubject
-  local_storage_reads: []
-- name: createNumberOfIncidentRequest
-  params: int num
-  api_paths: []
-  rest_methods_used: []
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createIncidentRequest
-  params: String caseId
-  api_paths:
-  - requests
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - request
-  - requestSubject
-  local_storage_reads: []
-- name: createServiceRequest
-  params: (none)
-  api_paths:
-  - requests
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - request
-  local_storage_reads: []
-- name: createAsset
-  params: (none)
-  api_paths: []
-  rest_methods_used:
-  - createAndGetFullResponse
-  local_storage_writes:
-  - Asset_Name
-  - Mac_Address
-  - Asset_id
-  - Product_Id
-  - Barcode
-  - Asset_Tag
-  local_storage_reads: []
-- name: deleteAllSites
-  params: (none)
-  api_paths:
-  - sites/
-  rest_methods_used:
-  - delete
-  - getDataUsingSearchCriteria
-  local_storage_writes: []
-  local_storage_reads: []
-- name: deleteSiteAndCreateRequest
-  params: (none)
-  api_paths: []
-  rest_methods_used: []
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createRequestUsingRequesterEmail
-  params: (none)
-  api_paths:
-  - requests
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - request
-  local_storage_reads: []
-- name: createRequest
-  params: String caseId
-  api_paths:
-  - requests
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - request
-  - requestSubject
-  local_storage_reads: []
-- name: createResolution
-  params: String reqIdString
-  api_paths: []
-  rest_methods_used:
-  - update
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createReqWithTask
-  params: (none)
-  api_paths:
-  - requests
-  rest_methods_used:
-  - create
-  - createAndGetResponse
-  local_storage_writes:
-  - taskId
-  - ReqId
-  - taskEntityId
-  local_storage_reads: []
-- name: getRequestApiDataUsingId
-  params: String requestID
-  api_paths: []
-  rest_methods_used:
-  - getDataUsingSearchCriteria
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createIR
-  params: String inputData
-  api_paths:
-  - requests
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - requestSubject
-  - displayId
-  - ct
-  - requestId
-  local_storage_reads: []
-- name: createEntity
-  params: String apiPath, JSONObject inputData, String entityName
-  api_paths: []
-  rest_methods_used:
-  - triggerRestAPIUsingInputData
-  local_storage_writes: []
-  local_storage_reads: []
-- name: CreateRLC
-  params: String testcaseId, String tempId, JSONObject multiStatusName
-  api_paths:
-  - /
-  rest_methods_used:
-  - create
-  - update
-  local_storage_writes:
-  - Life_Cycle_Id
-  - REQ_TEMP_ID
-  - RLCName
-  local_storage_reads:
-  - Life_Cycle_Id
-- name: createNumberOfIR
-  params: int num, String testcaseId
-  api_paths:
-  - requests
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - request
-  - requestSubject
-  local_storage_reads: []
-- name: createIncidentReqForHelpCard
-  params: TestCaseData testCaseData
-  api_paths: []
-  rest_methods_used:
-  - createAndGetFullResponse
-  local_storage_writes:
-  - req_subject
-  - reqid
-  local_storage_reads: []
-- name: createHelpIR
-  params: TestCaseData testCaseData
-  api_paths:
-  - requests
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - req_subject
-  - reqid
-  local_storage_reads: []
-- name: createDuplicateIR
-  params: TestCaseData testCaseData
-  api_paths: []
-  rest_methods_used:
-  - createAndGetAPIResponse
-  local_storage_writes:
-  - dup_req_subject
-  - dup_req_id
-  local_storage_reads:
-  - reqid
-- name: createDuplicateSR
-  params: TestCaseData testCaseData
-  api_paths: []
-  rest_methods_used:
-  - createAndGetAPIResponse
-  local_storage_writes:
-  - dup_req_subject
-  - dup_req_id
-  local_storage_reads:
-  - reqid
-- name: associateAssetsInAssetField
-  params: String inputData
-  api_paths:
-  - requests/
-  rest_methods_used:
-  - update
-  local_storage_writes: []
-  local_storage_reads:
-  - request
-- name: associateCIInCIField
-  params: String inputData
-  api_paths:
-  - requests/
-  rest_methods_used:
-  - update
-  local_storage_writes: []
-  local_storage_reads:
-  - request
-- name: getSiteIdFromSiteName
-  params: String site
-  api_paths: []
-  rest_methods_used:
-  - getEntityIdUsingSearchCriteria
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createTaskInRequest
-  params: TestCaseData taskdata
-  api_paths:
-  - requests/
-  - requests/*/tasks
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - taskName
-  - task
-  local_storage_reads:
-  - reqid
-- name: createLinkedRequest
-  params: TestCaseData testCaseData
-  api_paths:
-  - requests
-  - requests/
-  - requests/*/_link_requests
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - childRequestSubject
-  - childRequestID
-  local_storage_reads:
-  - reqid
-- name: createCheckListInRequest
-  params: (none)
-  api_paths:
-  - item_details
-  - requests/
-  - requests/*/checklists
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - checklistName
-  - checkListItemName
-  - CheckListsEntityId
-  - checklistId
-  local_storage_reads:
-  - reqid
-- name: getRequestTemplateId
-  params: String entityName
-  api_paths:
-  - request_templates
-  rest_methods_used:
-  - getEntityIdUsingSearchCriteria
-  local_storage_writes:
-  - entityId
-  local_storage_reads: []
-- name: getEntityIdUsingCustomData
-  params: String field, String dataName, String apiPath
-  api_paths: []
-  rest_methods_used:
-  - getEntityIdUsingSearchCriteria
-  local_storage_writes:
-  - dataName
-  - field
-  - reqEntityId
-  local_storage_reads: []
-- name: createMultipleChecklists
-  params: int count
-  api_paths:
-  - item_details
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - checkListItemName
-  - Checklist
-  local_storage_reads: []
-- name: createMultipleRequests
-  params: int count, TestCaseData testCaseData
-  api_paths:
-  - requests
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - Subject
-  - reqID
-  local_storage_reads: []
-- name: createNote
-  params: String requestId
-  api_paths: []
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - noteId
-  - noteName
-  local_storage_reads: []
-- name: createPublicNote
-  params: String requestId
-  api_paths: []
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - noteId
-  - noteName
-  local_storage_reads:
-  - requestId
-- name: createRequestWithTechnicianField
-  params: String templateId, String technicianId
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - technician_id
-  - template_id
-  local_storage_reads: []
-preprocess_deep:
-- group: create
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: requestid
-    source_type: hardcoded
-  - key: displayIdWithPrefix
-    source_type: hardcoded
-  - key: displayId
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: listview
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  local_storage_stores:
-  - key: status
-    source_type: computed
-  - key: Subject
-    source_type: hardcoded
-  - key: Group
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - request
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: customtemplate
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  - createAndGetFullResponse
-  local_storage_stores:
-  - key: Template_Name
-    source_type: computed
-  - key: requestid
-    source_type: computed
-  - key: Subject
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - request_templates
-  - request
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: customtemplate_udf
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  rest_direct_calls:
-  - create
-  - createAndGetFullResponse
-  local_storage_stores:
-  - key: UDFfieldKey
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - udf_fields
-  - request
-  - IncidentTemplate.IncidentTemplate
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: ListviewExport
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  - createAndGetResponse
-  local_storage_stores:
-  - key: customViewName
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - request
-  - list_view_filter
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: multipleCreate
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: multipleCreatedisplay
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - RequestAPIUtil.createNumberOfIncidentRequest
-  rest_direct_calls:
-  - createAndGetAPIResponse
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Request.NumberOfIncidentRequest
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: detailView
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: addTask
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - RequestAPIUtil.createRequestAddTaskandTemplate
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Request.RequestAddTaskandTemplate
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: BulkCreate
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: assetRequest
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  - createAndGetFullResponse
-  local_storage_stores:
-  - key: Asset_id
-    source_type: computed
-  - key: Asset_Name
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - products
-  - assets
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: mixedCreate
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: differentRequest
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - RequestAPIUtil.createIncidentRequest
-  - RequestAPIUtil.createChange
-  - RequestAPIUtil.deleteSiteAndCreateRequest
-  - RequestAPIUtil.createRequest
-  - RequestAPIUtil.createRequestUsingRequesterEmail
-  rest_direct_calls:
-  - create
-  - createAndGetResponse
-  - get
-  - getEntityIdUsingSearchCriteria
-  - update
-  local_storage_stores:
-  - key: ReqId
-    source_type: computed
-  - key: reqNote
-    source_type: computed
-  - key: ReqId
-    source_type: computed
-  - key: Req_DisplayId
-    source_type: computed
-  - key: Summary
-    source_type: computed
-  - key: ReqId
-    source_type: computed
-  - key: taskId
-    source_type: computed
-  - key: taskEntityId
-    source_type: computed
-  - key: reqId
-    source_type: computed
-  - key: changeTitle
-    source_type: hardcoded
-  - key: ChangeId
-    source_type: computed
-  - key: RequestId
-    source_type: computed
-  - key: reqSubject
-    source_type: hardcoded
-  - key: ReqId
-    source_type: computed
-  - key: general_topic
-    source_type: computed
-  - key: solutionSubject
-    source_type: computed
-  - key: solutionDesc
-    source_type: computed
-  - key: SolutionId
-    source_type: computed
-  - key: Subject
-    source_type: hardcoded
-  - key: request_id
-    source_type: computed
-  - key: request_subject
-    source_type: hardcoded
-  local_storage_reads:
-  - request
-  entities_created:
-  - getName
-  - getName
-  - getName
-  - note
-  - getName
-  - getName
-  - getName
-  - task
-  - getName
-  - task
-  - getName
-  - getName
-  - solution
-  - getName
-  - request
-  - Request.IncidentRequest
-  - Request.Change
-  - Request.Request
-  - Request.RequestUsingRequesterEmail
-  creates_user: true
-  user_role: Requester
-  calls_super: false
-- group: notes_for_previousrequest
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - RequestAPIUtil.createIncidentRequest
-  - SiteAPIUtil.createCopySite
-  - AdditionalFieldsAPIUtil.createSiteLookUpUDF
-  - ServiceCategoryAPIUtil.createServicecategoryAndServicetemplate
-  - RequestAPIUtil.createIncidentRequest
-  - RequestAPIUtil.createIncidentRequest
-  - SiteAPIUtil.createCopySite
-  - RequestAPIUtil.createIncidentRequest
-  - SiteAPIUtil.createCopySite
-  rest_direct_calls:
-  - create
-  - createAndGetFullResponse
-  - createAndGetResponse
-  local_storage_stores:
-  - key: reqNote
-    source_type: computed
-  - key: tempId
-    source_type: computed
-  - key: Template_Name
-    source_type: computed
-  - key: request_id
-    source_type: computed
-  - key: request_subject
-    source_type: hardcoded
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: requesterName
-    source_type: computed
-  - key: request_id
-    source_type: computed
-  - key: request_subject
-    source_type: hardcoded
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: requesterName
-    source_type: computed
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: requestGroup
-    source_type: computed
-  - key: user1
-    source_type: computed
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: requestGroup
-    source_type: computed
-  - key: tech2email
-    source_type: computed
-  - key: tech2Name
-    source_type: computed
-  - key: tech2email
-    source_type: computed
-  - key: tech2Name
-    source_type: computed
-  - key: nologin_TechName
-    source_type: computed
-  - key: nologin_ReqName
-    source_type: hardcoded
-  local_storage_reads:
-  - request
-  - serTempId
-  - requestGroup
-  entities_created:
-  - note
-  - request_templates
-  - request
-  - getName
-  - resource
-  - getName
-  - request
-  - request
-  - getName
-  - getName
-  - Request.IncidentRequest
-  - Site.CopySite
-  - AdditionalFields.SiteLookUpUDF
-  - ServiceCategory.ServicecategoryAndServicetemplate
-  - Request.IncidentRequest
-  - Request.IncidentRequest
-  - Site.CopySite
-  - Request.IncidentRequest
-  - Site.CopySite
-  creates_user: true
-  user_role: Requester
-  calls_super: false
-- group: LastUpdatedBy
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  rest_direct_calls:
-  - create
-  local_storage_stores:
-  - key: techmail
-    source_type: computed
-  - key: Subject
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - getName
-  - getName
-  - getName
-  - IncidentTemplate.IncidentTemplate
-  creates_user: true
-  user_role: sdsite_admin
-  calls_super: false
-- group: LastUpdatedByService
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - ServiceCategoryAPIUtil.createServiceCategoryAPI
-  - ServiceCategoryAPIUtil.createServiceTemplate
-  rest_direct_calls:
-  - create
-  local_storage_stores:
-  - key: requestid
-    source_type: computed
-  - key: serTempId
-    source_type: hardcoded
-  - key: Subject
-    source_type: hardcoded
-  local_storage_reads:
-  - serTempId
-  entities_created:
-  - getName
-  - getName
-  - getName
-  - ServiceCategory.ServiceCategoryAPI
-  - ServiceCategory.ServiceTemplate
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createincidentprefixandrequest
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: Subject
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createserviceprefixandrequest
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: prefixchange
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  - get
-  local_storage_stores:
-  - key: createprefix
-    source_type: computed
-  - key: editprefix
-    source_type: api_response_field
-  - key: createprefix
-    source_type: computed
-  - key: editprefix
-    source_type: api_response_field
-  - key: displayId
-    source_type: computed
-  - key: displayId
-    source_type: computed
-  - key: parentId
-    source_type: computed
-  - key: entityid
-    source_type: computed
-  - key: childId
-    source_type: computed
-  - key: entityid2
-    source_type: computed
-  - key: subject
-    source_type: hardcoded
-  - key: parentId
-    source_type: computed
-  - key: entityid
-    source_type: computed
-  - key: childId
-    source_type: computed
-  - key: entityid2
-    source_type: computed
-  - key: subject
-    source_type: hardcoded
-  - key: parentId
-    source_type: computed
-  - key: entityid
-    source_type: computed
-  - key: childId
-    source_type: computed
-  - key: entityid2
-    source_type: computed
-  - key: subject
-    source_type: hardcoded
-  - key: parentId
-    source_type: computed
-  - key: entityid
-    source_type: computed
-  - key: childId
-    source_type: computed
-  - key: entityid2
-    source_type: computed
-  - key: subject
-    source_type: hardcoded
-  - key: displayid2
-    source_type: computed
-  - key: customViewName
-    source_type: computed
-  - key: displayid2
-    source_type: computed
-  - key: customViewName
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - getName
-  - getName
-  - getName
-  - getName
-  - getName
-  - getName
-  - getName
-  - getName
-  - getName
-  - getName
-  - getName
-  - getName
-  - getName
-  - list_view_filter
-  - getName
-  - list_view_filter
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: requestidwithprefixlistviewonhover
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: displayvalue
-    source_type: computed
-  - key: displayid
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: servicerequestidwithprefixlistviewonhover
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: displayvalue
-    source_type: computed
-  - key: displayid
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: multiCreateWithDisplayValue
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: servicePrefix
-    source_type: hardcoded
-  - key: incidentPrefix
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createWithClosureRule
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: displayValue
-    source_type: api_response_field
-  - key: displayId
-    source_type: display_id
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createAndTrashReq
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: displayValue
-    source_type: api_response_field
-  - key: displayId
-    source_type: display_id
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: requestSequenceGenerator
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: displayValue
-    source_type: api_response_field
-  - key: displayId
-    source_type: display_id
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createRequestWithTags
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: displayValue
-    source_type: api_response_field
-  - key: displayId
-    source_type: display_id
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createRequestandProblem
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - RequestAPIUtil.createEntity
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: problemId
-    source_type: hardcoded
-  - key: displayValue
-    source_type: api_response_field
-  - key: displayId
-    source_type: display_id
-  local_storage_reads: []
-  entities_created:
-  - getName
-  - Request.Entity
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createRequestandTrashProblem
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - RequestAPIUtil.createEntity
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: problemId
-    source_type: hardcoded
-  - key: displayValue
-    source_type: api_response_field
-  - key: displayId
-    source_type: display_id
-  local_storage_reads: []
-  entities_created:
-  - getName
-  - Request.Entity
-  creates_user: true
-  user_role: sdadmin
-  calls_super: false
-- group: createRequestandChange
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - RequestAPIUtil.createEntity
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: changeId
-    source_type: hardcoded
-  - key: displayValue
-    source_type: api_response_field
-  - key: displayId
-    source_type: display_id
-  local_storage_reads: []
-  entities_created:
-  - getName
-  - Request.Entity
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createRequestandProjects
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - RequestAPIUtil.createEntity
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: projectId
-    source_type: hardcoded
-  - key: displayValue
-    source_type: api_response_field
-  - key: displayId
-    source_type: display_id
-  local_storage_reads: []
-  entities_created:
-  - getName
-  - Request.Entity
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createRequestandRelease
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - RequestAPIUtil.createEntity
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: releaseId
-    source_type: hardcoded
-  - key: displayValue
-    source_type: api_response_field
-  - key: displayId
-    source_type: display_id
-  local_storage_reads: []
-  entities_created:
-  - getName
-  - Request.Entity
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: requestAndTask
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - SolutionAPIUtil.createSolutionwithGT
-  - SolutionAPIUtil.createSolutionwithCT
-  - SolutionAPIUtil.createSolutionwithGT
-  - SolutionAPIUtil.createSolutionwithCT
-  - SolutionAPIUtil.createSolutionwithGT
-  - SolutionAPIUtil.createSolutionwithGT
-  - SolutionAPIUtil.createSolutionwithGT
-  - SolutionAPIUtil.createSolutionwithGT
-  - ResolutionTemplateAPIUtil.createResolution
-  - SolutionAPIUtil.createSolutionwithGT
-  - SolutionAPIUtil.createSolutionwithCT
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - RequestAPIUtil.CreateRLC
-  rest_direct_calls:
-  - create
-  - createAndGetResponse
-  - get
-  - getEntityIdUsingSearchCriteria
-  - update
-  local_storage_stores:
-  - key: displayValue
-    source_type: api_response_field
-  - key: displayId
-    source_type: display_id
-  - key: taskId
-    source_type: api_response_field
-  - key: taskSubject
-    source_type: api_response_field
-  - key: tech_name
-    source_type: computed
-  - key: SolKeyId
-    source_type: computed
-  - key: SolPrefixName
-    source_type: hardcoded
-  - key: SolKeyId
-    source_type: computed
-  - key: SolPrefixName
-    source_type: hardcoded
-  - key: requesterName
-    source_type: user_display_id
-  - key: requester
-    source_type: user_display_id
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: requesterName
-    source_type: user_display_id
-  - key: techId
-    source_type: computed
-  - key: requesterName
-    source_type: user_display_id
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: technicianName
-    source_type: user_display_id
-  - key: techId
-    source_type: computed
-  - key: requesterName
-    source_type: user_display_id
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: groupId
-    source_type: computed
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  local_storage_reads:
-  - groupId
-  - solutionSubject
-  - technicianid
-  - tempId
-  - SolutionDisplayId
-  - Template_Name
-  - requesterid
-  - SolutionId
-  - associated_group_name
-  entities_created:
-  - getName
-  - task
-  - getName
-  - getName
-  - getName
-  - getName
-  - Solution.SolutionwithGT
-  - Solution.SolutionwithCT
-  - Solution.SolutionwithGT
-  - Solution.SolutionwithCT
-  - Solution.SolutionwithGT
-  - Solution.SolutionwithGT
-  - Solution.SolutionwithGT
-  - Solution.SolutionwithGT
-  - ResolutionTemplate.Resolution
-  - Solution.SolutionwithGT
-  - Solution.SolutionwithCT
-  - IncidentTemplate.IncidentTemplate
-  creates_user: true
-  user_role: Requester
-  calls_super: false
-- group: multiplerequestfornotementions
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - OrgRolesAPIUtil.associateUsersToOrgRoles
-  - OrgRolesAPIUtil.associateUsersToOrgRoles
-  - UserGroupsAPIUtil.departmentIdForCopySite
-  - AdminAPIUtil.associateSiteAndDepartmentToUsers
-  - SiteAPIUtil.createCopySite
-  - UserGroupsAPIUtil.departmentIdForCopySite
-  - OrgRolesAPIUtil.associateUsersToOrgRoles
-  - AdminAPIUtil.associateSiteAndDepartmentToUsers
-  - DepartmentAPIUtil.associateDepartmentHead
-  - SiteAPIUtil.createCopySite
-  - UserGroupsAPIUtil.departmentIdForCopySite
-  - OrgRolesAPIUtil.associateUsersToOrgRoles
-  - AdminAPIUtil.associateSiteAndDepartmentToUsers
-  - DepartmentAPIUtil.associateDepartmentHead
-  - SiteAPIUtil.createCopySite
-  - UserGroupsAPIUtil.departmentIdForCopySite
-  - OrgRolesAPIUtil.associateUsersToOrgRoles
-  - AdminAPIUtil.associateSiteAndDepartmentToUsers
-  rest_direct_calls:
-  - create
-  - update
-  local_storage_stores:
-  - key: requesterName
-    source_type: user_display_id
-  - key: techId
-    source_type: computed
-  - key: requesterName
-    source_type: user_display_id
-  - key: requesterName
-    source_type: user_display_id
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: requesterName
-    source_type: user_display_id
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: requesterName
-    source_type: user_display_id
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: requesterName
-    source_type: user_display_id
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  - key: requesterName
-    source_type: user_display_id
-  - key: Subject
-    source_type: hardcoded
-  - key: description
-    source_type: hardcoded
-  - key: RequesterName
-    source_type: hardcoded
-  local_storage_reads:
-  - siteId
-  - requesterid
-  entities_created:
-  - getName
-  - getName
-  - getName
-  - getName
-  - getName
-  - getName
-  - Site.CopySite
-  - Site.CopySite
-  - Site.CopySite
-  creates_user: true
-  user_role: Requester
-  calls_super: false
-- group: createRequestAndServiceTemplateWithEditor
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ServiceCategoryAPIUtil.createServicecategoryAndServicetemplate
-  rest_direct_calls:
-  - create
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - getName
-  - ServiceCategory.ServicecategoryAndServicetemplate
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createRequestAndServiceTemplateWithEditorDefaultValue
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - ServiceCategoryAPIUtil.createServicecategoryAndServicetemplate
-  rest_direct_calls:
-  - create
-  - createAndGetFullResponse
-  local_storage_stores:
-  - key: requesterMail
-    source_type: computed
-  - key: tempId
-    source_type: computed
-  - key: Template_Name
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - getName
-  - request_templates
-  - ServiceCategory.ServicecategoryAndServicetemplate
-  creates_user: true
-  user_role: Requester
-  calls_super: false
-- group: IncidentTemplateWithServiceCategory
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetFullResponse
-  local_storage_stores:
-  - key: tempId
-    source_type: computed
-  - key: Template_Name
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - request_templates
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createTemplateAndConfigureApproval
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ServiceCategoryAPIUtil.createServicecategoryAndServicetemplate
-  rest_direct_calls:
-  - create
-  - update
-  local_storage_stores:
-  - key: userMail
-    source_type: computed
-  local_storage_reads:
-  - serTempId
-  entities_created:
-  - getName
-  - ServiceCategory.ServicecategoryAndServicetemplate
-  creates_user: true
-  user_role: technician_With_Approval_Permission
-  calls_super: false
-- group: approvalAndTechAutoAssign
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ServiceCategoryAPIUtil.createServicecategoryAndServicetemplate
-  rest_direct_calls:
-  - create
-  - update
-  local_storage_stores:
-  - key: userMail
-    source_type: computed
-  local_storage_reads:
-  - serTempId
-  entities_created:
-  - getName
-  - ServiceCategory.ServicecategoryAndServicetemplate
-  creates_user: true
-  user_role: technician_With_Approval_Permission
-  calls_super: false
-- group: serviceTemplateWithResource
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ServiceCategoryAPIUtil.createServicecategoryAndServicetemplate
-  rest_direct_calls:
-  - create
-  - createAndGetResponse
-  local_storage_stores:
-  - key: questId
-    source_type: hardcoded
-  - key: fieldKey
-    source_type: hardcoded
-  - key: resCost
-    source_type: hardcoded
-  - key: questId2
-    source_type: hardcoded
-  - key: fieldKey2
-    source_type: hardcoded
-  - key: resCost2
-    source_type: hardcoded
-  - key: resourceFieldKey
-    source_type: hardcoded
-  local_storage_reads:
-  - serTempId
-  entities_created:
-  - question
-  - question
-  - resource
-  - getName
-  - ServiceCategory.ServicecategoryAndServicetemplate
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createTechAndTemplateWithTechGroup
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - ServiceCategoryAPIUtil.createServiceCategoryAPI
-  rest_direct_calls:
-  - create
-  - createAndGetResponse
-  - update
-  local_storage_stores:
-  - key: techMail
-    source_type: computed
-  - key: groupName
-    source_type: hardcoded
-  - key: serTempName
-    source_type: computed
-  local_storage_reads:
-  - techMail
-  entities_created:
-  - group
-  - request_template
-  - request_template
-  - getName
-  - ServiceCategory.ServiceCategoryAPI
-  creates_user: true
-  user_role: assignedToTech
-  calls_super: false
-- group: createRequestandAsset
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - RequestAPIUtil.createIncidentRequest
-  - RequestAPIUtil.createAsset
-  - AdminAPIUtil.associateSiteAndDepartmentToUsers
-  - AssetAPIUtil.assignAsset
-  - ServiceCategoryAPIUtil.createServiceCategoryAPI
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - RequestAPIUtil.createHelpIR
-  - ServiceCategoryAPIUtil.createServiceCategoryAPI
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - ServiceCategoryAPIUtil.createServiceCategoryAPI
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - RequestAPIUtil.createHelpIR
-  - ServiceCategoryAPIUtil.createServiceCategoryAPI
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - RequestAPIUtil.createHelpIR
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: requesterid
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - Request.IncidentRequest
-  - Request.Asset
-  - ServiceCategory.ServiceCategoryAPI
-  - IncidentTemplate.IncidentTemplate
-  - Request.HelpIR
-  - ServiceCategory.ServiceCategoryAPI
-  - IncidentTemplate.IncidentTemplate
-  - ServiceCategory.ServiceCategoryAPI
-  - IncidentTemplate.IncidentTemplate
-  - Request.HelpIR
-  - ServiceCategory.ServiceCategoryAPI
-  - IncidentTemplate.IncidentTemplate
-  - Request.HelpIR
-  creates_user: true
-  user_role: null
-  calls_super: false
-- group: createRequestWithoutRequester
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: requestci
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  dataids_count: 4
-  api_util_calls:
-  - CmdbAPIUtil.createCmdb
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: TechDisplayId
-    source_type: user_display_id
-  local_storage_reads: []
-  entities_created:
-  - Cmdb.Cmdb
-  - IncidentTemplate.IncidentTemplate
-  creates_user: true
-  user_role: Request_FullControl_With_CMDB
-  calls_super: false
-- group: createRequestandMultipleAsset
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - RequestAPIUtil.createIncidentRequest
-  - AssetAPIUtil.createMultipleAssets
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Request.IncidentRequest
-  - Asset.MultipleAssets
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createRequestandAssignMultipleAsset
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - RequestAPIUtil.createIncidentRequest
-  - AssetAPIUtil.createMultipleAssets
-  - RequestAPIUtil.associateAssetsInAssetField
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Request.IncidentRequest
-  - Asset.MultipleAssets
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: associateAssetInRequestDetails
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - RequestAPIUtil.createIncidentRequest
-  - AssetAPIUtil.assignAsset
-  - RequestAPIUtil.associateAssetsInAssetField
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Request.IncidentRequest
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createCIandAssociateCIinRequest
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - CmdbAPIUtil.createMultipleCmdbWithDefault
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - RequestAPIUtil.createRequest
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Cmdb.MultipleCmdbWithDefault
-  - IncidentTemplate.IncidentTemplate
-  - Request.Request
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createCIandAssociateCIinRequestAPI
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  dataids_count: 4
-  api_util_calls:
-  - CmdbAPIUtil.createMultipleCmdbWithDefault
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - RequestAPIUtil.createRequest
-  - RequestAPIUtil.associateCIInCIField
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Cmdb.MultipleCmdbWithDefault
-  - IncidentTemplate.IncidentTemplate
-  - Request.Request
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createIncidentRequest
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - RequestAPIUtil.createIncidentRequest
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Request.IncidentRequest
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createServiceRequest
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls:
-  - RequestAPIUtil.createServiceRequest
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Request.ServiceRequest
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createRequestwithRequesterMerge
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: true
-  user_role: null
-  calls_super: false
-- group: checkMergeTagOtherUser
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: true
-  user_role: null
-  calls_super: false
-- group: createSite
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - RequestAPIUtil.getSiteIdFromSiteName
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: siteId
-    source_type: computed
-  - key: site1
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - site
-  creates_user: true
-  user_role: SDSiteAdminWithModuleLevelPermission
-  calls_super: false
-- group: createMultipleAsset
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls:
-  - AssetAPIUtil.createMultipleAssets
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: requesterName
-    source_type: user_display_id
-  local_storage_reads: []
-  entities_created:
-  - Asset.MultipleAssets
-  creates_user: true
-  user_role: Requester
-  calls_super: false
-- group: multipleQuestions
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - ServiceCategoryAPIUtil.createServicecategoryAndServicetemplate
-  rest_direct_calls:
-  - createAndGetResponse
-  - get
-  local_storage_stores:
-  - key: questId
-    source_type: computed
-  - key: resourceFieldKey
-    source_type: hardcoded
-  local_storage_reads:
-  - serTempId
-  entities_created:
-  - question
-  - resource
-  - ServiceCategory.ServicecategoryAndServicetemplate
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: RequestWithProjestAssociationAndRequesterRoleEdit
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  - createAndGetAPIResponse
-  local_storage_stores:
-  - key: displayID
-    source_type: hardcoded
-  - key: requestId
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - request
-  - requests
-  creates_user: true
-  user_role: create_requester_with_project_admin_permission
-  calls_super: false
-- group: RequesterAndOBOUserWithAsset
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  - createAndGetResponse
-  local_storage_stores:
-  - key: requesterAsset
-    source_type: hardcoded
-  - key: tempName
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - asset_access_point
-  - asset_access_point
-  - asset_access_point
-  - request_template
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: RequestWithAsset
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: assetName
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - asset_access_point
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: RequestTempWithMandatoryFieldAndLC
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls:
-  - IncidentTemplateAPIUtil.setFieldActionsTrue
-  rest_direct_calls:
-  - create
-  - createAndGetResponse
-  - update
-  local_storage_stores:
-  - key: templateId
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - request_template
-  - lifecycle
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createServiceRequestWithEditor
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ServiceCategoryAPIUtil.createServiceCategoryAPI
-  - ServiceCategoryAPIUtil.createServicecategoryAndServicetemplate
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - RequestAPIUtil.createRequest
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: requesterName
-    source_type: computed
-  - key: requesterName1
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - ServiceCategory.ServiceCategoryAPI
-  - ServiceCategory.ServicecategoryAndServicetemplate
-  - IncidentTemplate.IncidentTemplate
-  - Request.Request
-  creates_user: true
-  user_role: Requester
-  calls_super: false
-- group: enableReqApprovalSettingAndCreateServiceTemplate
-  source_file: Request.java
-  dataids_consumed:
-  - 4
-  dataids_count: 1
-  api_util_calls:
-  - AdminAPIUtil.createOrgRoleAndAssociateUser
-  - IncidentTemplateAPIUtil.selectApprovalSettings
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - RequestAPIUtil.createRequest
-  rest_direct_calls:
-  - update
-  local_storage_stores:
-  - key: requesterName
-    source_type: computed
-  local_storage_reads:
-  - tempId
-  entities_created:
-  - Admin.OrgRoleAndAssociateUser
-  - IncidentTemplate.IncidentTemplate
-  - Request.Request
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createrequestwithrequester
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - RequestAPIUtil.createIncidentRequest
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Request.IncidentRequest
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: TwoDifferentRequester
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - RequestAPIUtil.createRequest
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Request.Request
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: fga_with_request
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  dataids_count: 4
-  api_util_calls:
-  - RequestAPIUtil.createRequest
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: TechDisplayId
-    source_type: user_display_id
-  local_storage_reads: []
-  entities_created:
-  - Request.Request
-  creates_user: true
-  user_role: CustomRole_With_AllModule
-  calls_super: false
-- group: techGroupWithNotification
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - GroupAPIUtil.createGroup
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Group.Group
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createtechniciangroupsandassociateuser
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  - createAndGetResponse
-  local_storage_stores:
-  - key: techMail
-    source_type: computed
-  - key: technicianName
-    source_type: user_display_id
-  - key: groupName
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - group
-  - getName
-  creates_user: true
-  user_role: sdadmin
-  calls_super: false
-- group: createTaskInServiceTemp
-  source_file: Request.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  - 4
-  dataids_count: 5
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetFullResponse
-  - createAndGetResponse
-  local_storage_stores:
-  - key: templateId
-    source_type: computed
-  - key: templateName
-    source_type: computed
-  - key: reqId
-    source_type: computed
-  - key: dupSrId
-    source_type: computed
-  - key: createdDate
-    source_type: computed
-  local_storage_reads:
-  - taskId
-  - reqId
-  - templateId
-  entities_created:
-  - request_templates
-  - request_templates
-  - request_templates
-  - getName
-  - requests
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createmultiplechecklist
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls:
-  - RequestAPIUtil.createMultipleChecklists
-  - RequestAPIUtil.createMultipleRequests
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Request.MultipleChecklists
-  - Request.MultipleRequests
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: requestAssociationWithProject
-  source_file: Request.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls:
-  - RequestAPIUtil.createIncidentRequest
-  - ProjectAPIUtil.createProject
-  rest_direct_calls:
-  - create
-  local_storage_stores: []
-  local_storage_reads:
-  - projectId
-  - request
-  entities_created:
-  - requests
-  - Request.IncidentRequest
-  - Project.Project
-  creates_user: false
-  user_role: null
-  calls_super: false

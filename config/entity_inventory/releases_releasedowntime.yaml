@@ -15,8 +15,30 @@ api_util:
     params: String downtimetype, String downtime
     purpose: below lines for the getentityid
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/releases/releasedowntime/common/ReleaseDowntimeLocators.java
+  interfaces:
+    ReleaseDowntimeLocators: []
+    ReleaseDowntimeDetailsview:
+    - VERIFY_DOWNTIME_SCHEDULE
+    - CLICK_SETTINGS_ACTIONS_ICON
+    - CLICK_EDIT_IN_ACTIONS_ICON
+    - CLICK_DELETE_IN_ACTIONS_ICON
+    - CHECK_FIELD_NAME
+    - VERIFY_NO_DATA_AVAILABLE_TEXT
+    - VERIFY_ADDED_DOWNTIME_NAME_IN_DEPLOYMENT
+    ReleaseDowntimePopup:
+    - TYPE_DESCRIPTION_TEXTAREA
+    - CLCIK_DOWNTIME_TYPE_DROPDOWN
+    - CLICK_SERVICE_AFFECTED_DROPDOWN
+    - TEXT_IN_POPUP
+    - CLICK_PLUS_ICON_NEW_DOWNTIME
+    - DOWNTIME_NAME_INPUT
+    - DOWNTIME_NAME_SAVE_TICK_ICON
+    - SELECT_FIELD
+    - CIS_INVOLVED_TOGGLE_BUTTON
+    - CIS_INVOLVED_LIST
+    - CIS_INVOLVED_WITHOUT_DATA
+    - CIS_INVOLVED_WITH_DATA
 data_constants:
   file: com/zoho/automater/selenium/modules/releases/releasedowntime/common/ReleaseDowntimeDataConstants.java
   classes:
@@ -109,113 +131,3 @@ preprocess_groups:
   creates_count: 0
   local_storage_keys: []
 data_json_keys: []
-api_util_deep:
-- name: createDowntimeType
-  params: String testCase
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - downtime_type_name
-  - downtime_type
-  local_storage_reads: []
-- name: createReleaseWithDowntime
-  params: String downtimetype, String downtime
-  api_paths:
-  - releases
-  rest_methods_used:
-  - create
-  - createAndGetResponse
-  local_storage_writes:
-  - downtimeName
-  - releaseId
-  - release
-  - releaseName
-  local_storage_reads:
-  - releaseId
-preprocess_deep:
-- group: adddowntimetypeinrelease
-  source_file: ReleaseDowntime.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ReleaseDowntimeAPIUtil.createDowntimeType
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - ReleaseDowntime.DowntimeType
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createdowntimewithrelease
-  source_file: ReleaseDowntime.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ReleaseDowntimeAPIUtil.createReleaseWithDowntime
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - ReleaseDowntime.ReleaseWithDowntime
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: create
-  source_file: ReleaseDowntime.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: releasewithci
-  source_file: ReleaseDowntime.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  dataids_count: 4
-  api_util_calls:
-  - CmdbAPIUtil.createCmdb
-  - ReleaseAPIUtil.createRelease
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Cmdb.Cmdb
-  - Release.Release
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: releasedowntime
-  source_file: ReleaseDowntime.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  dataids_count: 4
-  api_util_calls:
-  - CmdbAPIUtil.createCmdb
-  - ReleaseDowntimeAPIUtil.createReleaseWithDowntime
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Cmdb.Cmdb
-  - ReleaseDowntime.ReleaseWithDowntime
-  creates_user: false
-  user_role: null
-  calls_super: false

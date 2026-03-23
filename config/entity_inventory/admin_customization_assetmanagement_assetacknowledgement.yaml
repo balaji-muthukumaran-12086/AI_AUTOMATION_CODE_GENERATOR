@@ -1,0 +1,56 @@
+module: admin
+entity: customization_assetmanagement_assetacknowledgement
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/assetacknowledgement/utils/AssetAcknowledgementActionsUtil.java
+  methods:
+  - name: criteriaBuilder
+    return_type: void
+    params: String criteriaString, String valueType
+    purpose: ''
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/assetacknowledgement/common/AssetAcknowledgementLocators.java
+  interfaces:
+    AssetAcknowledgementLocators:
+    - ASSET_ACKNOWLEDGMENT_IS_ENABLED
+    - CONFIGURE_PRODUCT_TYPE
+    - ASSET_ACKNOWLEDGE_STATUS
+    - ACKNOWLEDGE_BUTTON
+    - ACKNOWLEDGMENT_IN_ACCORDIN_SEARCH
+    - ACCORDIN_SEARCH
+    - NO_ACTIVE_ACKNOWLEDGEMENTS_IN_LISTVIEW
+    - ACKNOWLEDGEMENT_DETAILS
+    - CLOSE_BUTTON
+    - ACKNOWLEDGMENT_BUTTON_IN_ROWACTION
+    - MORE_BUTTON
+    - ASSET_MANAGEMENT_SUBTAB
+    - ASSET_MANAGEMENT_MORE_SUBTAB
+    Detailview:
+    - ASSET_ACKNOWLEDGE_STATUS
+    - ACKNOWLEDGE_BUTTON
+    - ASSIGN_DEPARTMENT
+    AcknowledgementForm:
+    - ASSET_ACKNOWLEDGEMENT_FORM
+    - ASSET_DETAILS
+    - ACKNOWLEDGEMENT
+    - CRITERIA_FIELD
+    - CRITERIA_FIELD_LAST_VALUE
+    - CRITERIA_VALUE
+    - ENABLE_CRITERIA_CHECKBOX
+    - DELETE_ICON
+    - ACKNOWLEDGEMENT_BUTTON
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/assetacknowledgement/common/AssetAcknowledgementDataConstants.java
+  classes:
+    AssetAcknowledgementDataConstants:
+    - ASSIGN_DEPARTMENT_IN_UI
+    - ASSIGN_USER
+    - ACKNOWLEDGEMENT_CONFIG
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

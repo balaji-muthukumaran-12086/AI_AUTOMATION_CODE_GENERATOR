@@ -1,0 +1,31 @@
+module: admin
+entity: customization_helpdesk_level
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/level/common/LevelLocators.java
+  interfaces:
+    LevelLocators:
+    - NEW_LEVEL
+    - EDIT_LEVEL
+    - DELETE_LEVEL
+    - LEVEL_TITLE
+    - ICN_LEVELACTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/level/common/LevelDataConstants.java
+  classes:
+    LevelDataConstants:
+    - API_LEVEL1
+    - UI_LEVEL1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- API_Level1
+- UI_Level1

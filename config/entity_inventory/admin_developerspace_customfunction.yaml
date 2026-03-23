@@ -1,0 +1,50 @@
+module: admin
+entity: developerspace_customfunction
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/customfunction/common/CustomFunctionLocators.java
+  interfaces:
+    CustomFunctionLocators:
+    - CODE_GENERATOR
+    - SELECT_MODULE
+    - SELECT_MODULE_DROPDOWN
+    - SELECT_CUSTOM_FUNCTION
+    - TIMER_SELECT_ACTION
+    - MODULE_SELECT_DROPDOWN
+    - NAME_MANDATORY_LOCATOR
+    - RETURN_TYPE_LOCATOR
+    - CF_CODE_REMOVER_LOCATOR
+    - SETTING_ICON
+    - CF_ENABLE_DISABLE
+    - ACTIONS_DROP_DOWN_VALUES
+    - CF_CANCEL_LOCATOR
+    - SAVE_AND_EXCUTE_SCRIPT
+    - USAGE_STATE_LOCATOR
+    - USAGE_STATE_CLOSE_LOCATOR
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/customfunction/common/CustomFunctionDataConstants.java
+  classes:
+    CustomFunctionDataConstants:
+    - CF_DATA_FOR_CHANGE
+    - GET_ASSET_ID
+    - CF_DATA_FOR_CONTRACT
+    - CF_DATA_FOR_SOLUTION
+    - CF_DATA_FOR_RELEASE
+    - CF_DATA_FOR_ASSET
+    - CF_DATA_FOR_PROJECT
+    - CF_DATA_FOR_CMDB
+    - CF_DATA_FOR_PURCHASE
+    - CF_DATA_FOR_PROBLEM
+    - CF_DATA_FOR_REQUEST
+    - GET_CMDB_ID
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

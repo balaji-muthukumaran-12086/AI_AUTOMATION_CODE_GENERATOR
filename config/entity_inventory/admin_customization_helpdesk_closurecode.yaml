@@ -1,0 +1,30 @@
+module: admin
+entity: customization_helpdesk_closurecode
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/closurecode/common/ClosureCodeLocators.java
+  interfaces:
+    ClosureCodeLocators:
+    - NEW_CLOSURECODE
+    - EDIT_CLOSURECODE
+    - DELETE_CLOSURECODE
+    - CLOSURECODE_TITLE
+    - ICN_CLOSURECODEACTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/closurecode/common/ClosureCodeDataConstants.java
+  classes:
+    ClosureCodeDataConstants:
+    - API_CLOSURECODE1
+    - CLOSEINCIDENT
+    - UI_CLOSURECODE1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

@@ -7,8 +7,13 @@ api_util:
   file: null
   methods: []
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/activities/activity/common/ActivityLocators.java
+  interfaces:
+    ActivityLocators:
+    - ALL_MY_ACTVITIES_FILTER
+    - CLICK_ACTIVITIES_SUBJECT_WITH_ENTITY_ID
+    - GO_TO_DETAILVIEW_AFTER_TEMPLATE_SEARCH
+    - CHOOSE_ACTIVITY_TYPE_IN_DROPDOWN
 data_constants:
   file: com/zoho/automater/selenium/modules/activities/activity/common/ActivityDataConstants.java
   classes:
@@ -23,45 +28,3 @@ preprocess_groups: []
 data_json_keys:
 - create_request_for_activities
 - request_data_for_group_head
-data_json_deep:
-  total_entries: 2
-  field_frequency:
-    request: 1
-    template: 1
-    subject: 1
-    site: 1
-    group: 1
-    requester: 1
-  all_placeholders:
-  - custom_associated_group_name
-  - custom_associated_site_name
-  - unique_string
-  - user_email_id
-  - user_name
-  reuse_groups_count: 0
-  entries:
-    create_request_for_activities:
-      fields:
-      - request
-      placeholders:
-      - unique_string
-      - user_name
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    request_data_for_group_head:
-      fields:
-      - template
-      - subject
-      - site
-      - group
-      - requester
-      placeholders:
-      - unique_string
-      - custom_associated_site_name
-      - custom_associated_group_name
-      - user_name
-      local_storage_keys_required:
-      - associated_site_name
-      - associated_group_name
-      purpose: ui_form

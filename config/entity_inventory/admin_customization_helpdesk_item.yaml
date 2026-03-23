@@ -1,0 +1,26 @@
+module: admin
+entity: customization_helpdesk_item
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/item/common/ItemLocators.java
+  interfaces:
+    ItemLocators: []
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/item/common/ItemDataConstants.java
+  classes:
+    ItemDataConstants:
+    - UI_ITEM1
+    - CREATE_ITEM
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- UI_Item1
+- create_item

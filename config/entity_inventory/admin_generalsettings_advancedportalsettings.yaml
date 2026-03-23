@@ -1,0 +1,90 @@
+module: admin
+entity: generalsettings_advancedportalsettings
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/generalsettings/advancedportalsettings/common/AdvancedPortalSettingsLocators.java
+  interfaces:
+    AdvancedPortalSettingsLocators:
+    - SELECT_FIELD
+    - CLICK_CLOSE_ICON_IN_REQUESTER_REPLIES_TO_DROPDOWN
+    - CLICK_REQUESTER_REPLIES_TO_DROPDOWN
+    - SELECT_DROPDOWN_VALUES_IN_REQUESTER_REPLIES_TO
+    - SELECT_RADIO_BTN
+    - SELECT_REOPEN_STATUS_DROPDOWN_1
+    - SELECT_REOPEN_DROPDOWN_VALUES_1
+    - CLICK_REMAINING_COMPLETED_STATUS_DROPDOWN
+    - REMAINING_COMPLETED_STATUS_DROPDOWN_SELECT_REOPEN_AND_SET_STATUS
+    - SELECT_COMPLETED_STATUS_DROPDOWN_VALUES
+    - SELECT_CHECKBOX_VALUE
+    - SELECT_ADD_TO_CONVERSATION_FROM_REMAINING_COMPLETED_STATUS
+    - SELECT_AUTOMATICALLY_APPROVE_IF_APPROVER_IS
+    - TYPE_AUTO_APPROVE_CONFIG_LABEL_INPUT
+    - LOCATE_RADIO
+    - ADVANCE_PORTAL_SAVE
+    RequestApprovalSettings:
+    - ENABLE_APPROVAL_SETTINGS_CHECKBOX
+    - CLICK_APPROVAL_SETTINGS_DROPDOWN
+    - SELECT_ACTIONS_OPTIONS
+    - SELECT_MODULE_DROPDOWN
+    - SELECT_MODULE_FROM_DROPDOWN
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/generalsettings/advancedportalsettings/common/AdvancedPortalSettingsDataConstants.java
+  classes:
+    AdvancedPortalSettingsDataConstants:
+    - REQUEST_CREATE_APPROVAL_LEVEL
+    - ADD_REQUEST
+    - FIELDNAME_SEARCH1
+    - REQUEST_APPROVAL_LEVEL_APPROVER
+    - SERVICE_CATERGORY_INPUT
+    - SERVICE_CATEGORY_TEMPLATE
+    - CLOSED_REQUEST
+    - INCLUDETECHENABLED
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: closedrequest
+  creates_count: 0
+  local_storage_keys:
+  - requestId
+- name: resolvedrequest
+  creates_count: 0
+  local_storage_keys:
+  - requestId
+  - requestSubject
+- name: anycompletedstatus
+  creates_count: 0
+  local_storage_keys:
+  - requestId
+- name: createreqwithtechnician
+  creates_count: 0
+  local_storage_keys:
+  - requestId
+  - requestSubject
+- name: enablenotificationrule
+  creates_count: 0
+  local_storage_keys:
+  - requestId
+  - requestSubject
+- name: customopenstatus
+  creates_count: 0
+  local_storage_keys:
+  - requestId
+- name: closedrequestwithapprovalsettings
+  creates_count: 0
+  local_storage_keys:
+  - requestId
+  - requestSubject
+- name: createservicetemplate
+  creates_count: 0
+  local_storage_keys: []
+- name: create
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []

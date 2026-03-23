@@ -1,0 +1,62 @@
+module: admin
+entity: customization_helpdesk_status
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/status/utils/StatusAPIUtil.java
+  methods:
+  - name: createStatusWithSpecialCharacters
+    return_type: void
+    params: String testCase
+    purpose: ''
+  - name: getStatusId
+    return_type: String
+    params: String value
+    purpose: LocalStorage.store("statusId", statuss.get("status"));
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/status/common/StatusLocators.java
+  interfaces:
+    StatusLocators:
+    - NEW_STATUS
+    - EDIT_STATUS
+    - DELETE_STATUS
+    - STATUS_TYPE
+    - STOPTIMER_TOGGLE
+    - STATUS_TITLE
+    - ICN_STATUSACTIONS
+    - TYPE_COMPLETED
+    - TYPE_INPROCESS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/status/common/StatusDataConstants.java
+  classes:
+    StatusDataConstants:
+    - UI_STATUS_SPECIALCHARACTERS
+    - API_CUSTOM_ONHOLD_STATUS
+    - STATUS_SEARCH
+    - CUSTOM_COMPLETED_STATUS
+    - API_STATUS_SPECIALCHARACTERS
+    - UI_STATUS3
+    - UI_STATUS4
+    - API_CUSTOM_COMPLETED_STATUS
+    - UI_STATUS1
+    - UI_STATUS2
+    - API_CUSTOM_STATUS
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- UI_Status1
+- UI_Status2
+- UI_Status3
+- UI_Status4
+- api_custom_completed_status
+- api_custom_onhold_status
+- api_custom_status
+- api_status_specialcharacters
+- custom_completed_status
+- custom_inprogress_status
+- status_search
+- ui_status_specialcharacters

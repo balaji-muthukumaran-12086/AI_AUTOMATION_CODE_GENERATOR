@@ -1,0 +1,41 @@
+module: admin
+entity: automation_closurerules_requestclosurerules
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/closurerules/requestclosurerules/common/RequestClosureRulesLocators.java
+  interfaces:
+    RequestClosureRulesLocators: []
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/automation/closurerules/requestclosurerules/common/RequestClosureRulesDataConstants.java
+  classes:
+    RequestClosureRulesDataConstants:
+    - SEARCH_SSPREQDEPT
+    - FIELDUPDATEBR
+    - REMOVEALLFIELDS
+    - ATTACHMENTS
+    - CLOSURECOMMENTSUI
+    - CUSTOMCOMPLETESTATUS
+    - CLOSURECOMMENTS
+    - SEARCHCLOSEDSTATUS
+    - ATTACHMENTSUI
+    - UIREQUEST
+    - ATTACHMENTSNOPROMTUI
+    - CLOSURECODE
+    - AUTOMATIONREQUEST
+    - CUSTOMCOMPLETEREQUEST
+    - CLOSURECODEUI
+    - RESOLVEDREQUEST
+    - SEARCH_SSPREQSITE
+    - ATTACHMENTSNOPROMT
+    - GETREQUESTMODULEINFO
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

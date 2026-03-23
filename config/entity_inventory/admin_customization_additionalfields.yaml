@@ -1,0 +1,594 @@
+module: admin
+entity: customization_additionalfields
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/additionalfields/utils/AdditionalFieldsActionsUtil.java
+  methods:
+  - name: getAttribute
+    return_type: String
+    params: String name
+    purpose: ''
+  - name: getCount
+    return_type: Integer
+    params: Locator locator
+    purpose: ''
+  - name: selectModule
+    return_type: void
+    params: String moduleName
+    purpose: ''
+  - name: enterDataForMultiSelect
+    return_type: void
+    params: JSONArray values
+    purpose: actions.click(AdditionalFieldsLocators.ADDITIONALFIELDS_MODULE_DROPDOWN);
+  - name: getValuesForGivenKey
+    return_type: List<String>
+    params: String jsonArrayStr, String key
+    purpose: ''
+  - name: convertArrayList
+    return_type: ArrayList<String>
+    params: ArrayList<Object> values
+    purpose: return IntStream.range(0, jsonArray.length())
+  - name: createAllUDFs
+    return_type: HashMap<String, ArrayList<String>>
+    params: ArrayList<Object> group
+    purpose: ''
+  - name: selectModule
+    return_type: void
+    params: String moduleName
+    purpose: ''
+  - name: deleteBR
+    return_type: void
+    params: String id
+    purpose: ''
+  - name: addSingleLineUDF
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addMultiLineUDF
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addCostUDF
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: subractCostUDF
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addPicklistUDF
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addNumericUDF
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: dateTimeUDF
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: emailUDF
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: phoneUDF
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: webUrlUDF
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addMultiSelectUDF
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addCheckbox
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addRadioButton
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addCurrency
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addDecimal
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addAutoNumber
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addPercentage
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addLookUp
+    return_type: void
+    params: TestCaseData data
+    purpose: ''
+  - name: addDecisionBox
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addMultiLookUpUDF
+    return_type: void
+    params: Boolean withCriteria
+    purpose: ''
+  - name: addMultiLookUpUDFUI
+    return_type: void
+    params: TestCaseData input, String modulename
+    purpose: add method for multi-lookup creation
+  - name: dragDropAndCreateUDF
+    return_type: void
+    params: JSONObject udfData
+    purpose: ''
+  - name: getUdfDetails
+    return_type: HashMap<String, String>
+    params: String name
+    purpose: ''
+  - name: getUdfInternalName
+    return_type: String
+    params: String displayName
+    purpose: ''
+  - name: areAllElementsPresent
+    return_type: boolean
+    params: ArrayList<String> arr1, ArrayList<String> arr2
+    purpose: ''
+  - name: searchCustomFilterCriteria
+    return_type: void
+    params: String fields
+    purpose: Check if all elements in arr1 are present in arr2
+  - name: customFilterCriteria
+    return_type: void
+    params: String fields, String operator
+    purpose: ''
+  - name: addLookUpInAFPage
+    return_type: void
+    params: JSONObject lookUpData
+    purpose: ''
+  - name: createlookup
+    return_type: String
+    params: String criteria, String refEntityName, String moduleName
+    purpose: ''
+  - name: createlookupWithoutCriteria
+    return_type: String
+    params: String refEntityName, String moduleName
+    purpose: ''
+  - name: addAssetLookUp
+    return_type: void
+    params: TestCaseData udfData
+    purpose: ''
+  - name: deleteUDF
+    return_type: void
+    params: String id , String name
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/additionalfields/utils/AdditionalFieldsAPIUtil.java
+  methods:
+  - name: createSiteLookUpUDF
+    return_type: void
+    params: TestCaseData caseId
+    purpose: ''
+  - name: getData
+    return_type: JSONObject
+    params: JSONObject inputData
+    purpose: ''
+  - name: createUDFInAPI
+    return_type: void
+    params: String entity, String udfData
+    purpose: ''
+  - name: createBulkUDF
+    return_type: void
+    params: String entity, JSONArray udfData
+    purpose: ''
+  - name: createBulkMultiLookupUDF
+    return_type: void
+    params: String moduleName, JSONArray refEntities
+    purpose: ''
+  - name: getSubModuleId
+    return_type: String
+    params: (none)
+    purpose: Code to get set submodule id for Asset module
+  - name: setSubModuleId
+    return_type: void
+    params: String id
+    purpose: Code to get set submodule id for Asset module
+  - name: getPath
+    return_type: String
+    params: (none)
+    purpose: ''
+  - name: getFieldkey
+    return_type: String
+    params: String fieldType, String fieldName
+    purpose: Getter setter code for submodule id ends here
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/additionalfields/common/AdditionalFieldsLocators.java
+  interfaces:
+    AdditionalFieldsLocators:
+    - ADMIN_BTN
+    - ADDITIONALFIELDS_MODULE_DROPDOWN
+    - ADDITIONALFIELDS_MODULE_SELECT_DROPDOWN
+    - NEW_FIELD
+    - NEW_FIELD_HEADER
+    - ADDITINAL_FIELD_ROW
+    - PARENT_ROW
+    - MULTI_INPUT_FIELD
+    - ADD_FIELD_VALUES
+    - ADD_LOOKUP_BTN
+    - DECISIONBOX_VALUE
+    - LISTOFVALUES_LOCATOR
+    - BUTT_LOCATOR
+    - DATA_TYPE_FILTER
+    - FIELDKEY_ROW
+    - DATA_TYPE_FILTER_DROPDOWN
+    - UDF_WITH_SPECIFIC_TYPE_COUNT
+    - CLICK_ROW_ACTIONS_WITH_ENTITYID
+    - ACTIONS_LIST
+    - GET_SUBJECT_USING_ENTITYID
+    - CONFIRM_POPUP_BTN
+    - ADD_NEW_TEMPLATE
+    - DEFAULT_REPLY_TEMP
+    - SAVE_BUTTON
+    - ROW_COUNT_FIELDS
+    - CLOSE_COLUMN_SEARCH
+    - USER_CATEGORY_TEXT
+    - CLICK_CRITERIA
+    - CLICK_REF_ENTITY
+    - CLICK_CMDB_REF_ENTITY_IN_REQ_LOOKUP
+    - CLICK_ASSET_REF_ENTITY_IN_REQ_LOOKUP
+    - CLICK_VALUES_ENTITY_DROPDOWN
+    - CLICK_CMDB_CHILDREN_IN_REQ_LOOKUP
+    - VERIFY_UDF_CRITERIA_VALUE
+    - FIELD_TYPE
+    - REFERENCE_ENTITY
+    - REFERENCE_ENTITY_DROPDOWN
+    - CRITERIA
+    - CRITERIA_LIST
+    - OPERATOR_LIST
+    - VALUE_FIELD
+    - CRITERIA_FIELD_SUBLIST
+    - DYNAMIC_VALUE
+    - CRITERIA_COLUMN_BACK_BUTTON
+    - REPORT_SEARCH
+    - REPORT_LIST
+    - REPORT_ADVANCED_FILTER
+    - REPORT_GROUP_BY
+    - REPORT_ADVANCED_FILTER_LIST
+    - REPORT_GROUP_BY_LIST
+    - STATIC_VALUE
+    - SELECT_UNIQUE_CHECKBOX
+    - ASSET_LOCATOR
+    - ASSET_LOCATOR_SUB_TAB
+    - SELECT_REFER_ENTITY
+    - SELECT_REFER_SUB_ENTITY
+    - SELECT_FIELD_TYPE_DROPDOWN
+    - SELECT_MULTI_LOOKUP_FIELD_TYPE
+    - SELECT_LOOKUP_FIELD_TYPE
+    - SELECT_REF_ENTITY_DROPDOWN
+    - FIELDKEY_NAME_LISTVIEW
+    - ADDITIONAL_FIELD_NAME
+    Popup:
+    - NEW_FIELD_POPUP
+    - UDF_FIELD_FORM_ACK_BUTTON
+    - FIELDKEY_PREFIX
+    - ERROR
+    - NAME_ERROR
+    Fields:
+    - TEMPLATE_ADD_NEW_FIELDS_SECTION
+    - TEMPLATE_NEW_FIELD
+    - UDF_DROP_AREA
+    - UDF_POPUP_SAVE
+    - UDF_FIELD_KEY
+    - CLEAR_FIELD_VALUE
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/additionalfields/common/AdditionalFieldsDataConstants.java
+  classes:
+    AdditionalFieldsDataConstants:
+    - LOOKUP_WITH_ORGANIZATIONROLES_CRITERIA
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_SITE_CITY
+    - TRIGGER_FIELDS_DATA
+    - MULTI_LOOKUP_UI_REQUESTER_REF_WITH_CRITERIA
+    - CONTRACT_TECHNICIAN_LOOKUP_DATA
+    - MULTI_LOOKUP_FKEY_WITH_SITECRITERIA
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_USER_MOBILE
+    - CRITERIA_SITE_WITH_SITE
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_DEPARTMENT_SITE
+    - LOOKUP_CMDB_API
+    - SITE_LOOKUP_CRITERIA_API2
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_FIRST_NAME
+    - SITE_LOOKUP_CRITERIA_API3
+    - NUMERIC_API
+    - CONTRACT_LOOKUP_WITH_DEPARTMENT
+    - MULTILOOKUP_UDF_WITH_CUSTOM_DEPARTMENT_API
+    - RADIO_BUTTON_API
+    - ADD_COST_UI
+    - GROUPTYPES_UI
+    - MULTI_LOOKUP_WITH_STATUS_REF_API
+    - MULTI_LOOKUP_WITH_TECH_GRP_REF_API
+    - CRITERIA_CMDB_ACCESSPOINT_DESCRIPTION
+    - CRITERIA_VENDOR_WITH_VENDORNAME
+    - PO_LOOKUP_WITH_SITE_RAMAINS_CRITERIA
+    - MULTILOOKUP_FIELDS_DATA1
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_DEPARTMENT
+    - RELEASE_MULTI_LOOKUP_WITH_DEPARTMENT_REF_API
+    - EDIT_MULTI_LOOKUP_UI
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_GROUP_NAME
+    - ADD_CMDB_USING_APPLICATION
+    - LOOKUP_WITH_DEPARTMENT_CRITERIA
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_JOB_TITLE
+    - WORKFLOW_FIELDS_DATA_1
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_DEPARTMENT_DESCRIPTION
+    - AUTO_NUMBER_WITH_SPECIALCHARACTERS_API
+    - PO_LOOKUP_FOR_TECHNICIAN
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_USER_LAST_NAME
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_SITE_DESCRIPTION
+    - DATETIME_WITH_SPECIALCHARACTERS_API
+    - LOOKUP_WITH_REQUESTAPPROVER_CRITERIA
+    - MULTI_SELECT_LOOKUP_UI
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_USER_PHONE
+    - REQUEST_BULK_UDF_DATA
+    - MULTI_LOOKUP_FKEYWITH_CRITERIA_DEPARTMENTSITE
+    - AUTO_NUMBER_API
+    - LIST_INFO_FIELD_KEY_NAME_SEARCH
+    - PICK_LIST_API
+    - LOOKUP_DATA_WITHOUT_CRITERIA
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_ASSET_IS
+    - SINGLE_LINE_INPUT_WITH_PII_API
+    - SITE_LOOKUP_UI
+    - CRITERIA_BARCODE_WITH_IMPACTDETAILS
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_IMPACT_NAME_IS_NOT
+    - ASSET_LOOKUP_USER_UI
+    - MULTI_LOOKUP_UI_WITH_CUSTOM_FIELD_KEY
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_PRODUCTS_PRODUCT_TYPE
+    - GET_PRODUCTTYPE
+    - LOOKUP_WITHOUT_CRITERIA
+    - FIELD_UPDATE
+    - CONTRACT_VENDOR_LOOKUP_DATA_WITH_CRITERIA_CONDITIONS
+    - MULTI_LOOKUP_FIELDS_DATA1
+    - IP_ADDRESS_API
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_EMPLOYEE_ID
+    - EMAIL_WITH_SPECIALCHARACTERS_API
+    - CONTRACT_LOOKUP_DATA
+    - PO_LOOKUP_WITH_SITE
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_GROUP
+    - SITE_LOOKUP_CRITERIA_API
+    - LOOK_UP_CREATE_WITH_DEPARTMENT
+    - PO_LOOKUP_WITH_TECHNICIAN
+    - MULTI_LOOKUP_UI_TECH_REF_WITH_CRITERIA
+    - ATTACHMENT_FIELD_API
+    - LOOKUP_CRITERIA_2
+    - LOOKUP_CRITERIA_1
+    - LOOKUP_WITH_SITEDOORNUMBER_IS_CRITERIA
+    - LOOKUP_WITH_LASTNAME_CRITERIA
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_REQUESTER_FIRST_NAME
+    - PHONE_UI
+    - PHONE_WITH_SPECIALCHARACTERS_API
+    - SEARCH_FIELD_TYPE
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_REQUESTER_EMPLOYEE_ID
+    - CHANGE_BULK_UDF_DATA
+    - DATE_API
+    - ADD_COST_API
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_SITE
+    - ASSET_LOOKUP_IN_REQUEST_UDF
+    - EDIT_CMDB_REQUEST_LOOKUP_NAME_ALONE_UI
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_REQUESTER_LAST_NAME
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_REQUESTER_JOB_TITLE
+    - PO_LOOKUP_FOR_VENDOR_WITH_VENDON_CRITERIA_CONDITION
+    - CHECK_BOX_API
+    - SUBTRACT_COST_API
+    - CRITERIA_MAC_ADDRESS_WITH_SUBJECT
+    - MULTI_SELECT_API
+    - CRITERIA_CMDB_ACCESSPOINT_NAME_WITH_SUBJECT
+    - CRITERIA_CMDB_ENTITY_CIFIELDS_BUSINESSIMPACT
+    - FIELD_TYPE_UI
+    - MULTI_LOOKUP_WITH_USER_REF_API
+    - WEB_URL_API
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_GROUP_SITE
+    - LOOKUP_WITH_DEPARTMENT_IS_CRITERIA
+    - MULTI_LOOKUP_WITH_SITE_REF_API
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_VENDOR
+    - DECIMAL_API
+    - LOOKUP_WITH_FIRSTNAME_CRITERIA
+    - CRITERIA_BARCODE_WITH_SUBJECT
+    - LOOKUP_CUSTOMMODULE_ENTITY_CM_CRITERIA_SITE
+    - LOOKUP_UI_WITH_ASSET_REF_ENTITY
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_USER_FIRST_NAME
+    - DECISION_BOX_API
+    - DECIMAL_UI
+    - PO_LOOKUP_FOR_VENDOR
+    - LOOKUP_UDF
+    - DECISION_BOX_WITH_SPECIALCHARACTERS_API
+    - SITE_LOOKUP_WITHOUT_CRITERIA_API
+    - SINGLE_LINE_UNIQUE
+    - PERCENT_API
+    - NUMERIC_UI
+    - SITE_LOOKUP_CRITERIA_UI
+    - CHECK_BOX_WITH_SPECIALCHARACTERS_API
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_DEPARTMENT_SITE_MSP
+    - GET_SDADMIN_ROLE_ID
+    - CURRENCY_UI
+    - LOOKUP_WITH_DEPARTMENTSITE_CRITERIA
+    - FIELD_KEY_FOR_REQUEST
+    - CRITERIA_SERVICECOST
+    - MULTI_LOOKUP_FKEY_WITH_CRITERIA_DEPARTMENT
+    - DATE_UDF_UI
+    - CRITERIA_IS_LOANABLE
+    - IP_ADDRESS_DEFAULTVALUE_API
+    - FIELDFILTERS
+    - WEB_URL_WITH_SPECIALCHARACTERS_API
+    - LOOKUP_FIELD_API
+    - ASSET_LOOKUP_IN_REQUEST_UDF2
+    - EMAIL_UI
+    - TABLE_SETTINGS
+    - MULTI_LINE_UI
+    - MULTI_LOOKUP_UI_STATUS_REF_WITH_CRITERIA
+    - CONTRACT_LOOKUP_WITH_SITE
+    - PICK_LIST_WITH_SPECIALCHARACTERS_API
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_USER_EMPLOYEE_ID
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_PHONE
+    - LOOKUP_DATA_WITHOUT_CRITERIA_FOR_REQUEST
+    - CRITERIA_NAME_WITH_SUBJECT
+    - GET_BUSINESS_IMPACT_ID
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_SITE_NAME
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_USER_NAME
+    - MULTI_LOOKUP_UI_DEPARTMENT_REF_WITH_CRITERIA
+    - PERCENT_UI
+    - CONTRACT_LOOKUP_WITH_SITE_REMAINS_CRITERIA
+    - LOOKUP_WITH_LASTNAME_CONTAINS_CRITERIA
+    - IP_ADDRESS_ENCRYPTED_VALUE_API
+    - STATUS_LOOKUP_UI
+    - UDF_FOR_REQUEST_TEMPLATES
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_LAST_NAME
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_REQUESTER_EMAIL
+    - PICK_LIST_UI
+    - SINGLE_LINE_INPUT_WITH_SPECIALCHARACTERS_API
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_GROUP_DESCRIPTION
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_USER_JOB_TITLE
+    - LOOKUP_WITH_SITEDOORNUMBER_CRITERIA
+    - LOOK_UP_CREATE_WITH_VENDOR
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_IMPACT_NAME
+    - DYNAMICVALUELIST_UI
+    - CONTRACT_VENDOR_LOOKUP_DATA
+    - CURRENCY_API
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_IMPACT_NAME_IS
+    - CRITERIALIST_UI_1
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_ASSET_IS_NOT
+    - CONTRACT_TECHNICIAN_LOOKUP_DATA_WITH_UDF
+    - LOOKUP_UI
+    - DATETIME_API
+    - AUTO_NUMBER_UI
+    - LOOKUP_WITH_SITEFAXNO_CRITERIA
+    - LOOKUP_UI_WITH_REF
+    - LOOKUP_FIELD_FOR_USER
+    - WORKFLOW_FIELDS_DATA
+    - MULTI_LOOKUP_WITH_REF_API
+    - EDIT_SITE_LOOKUP_CRITERIA_UI
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_VENDOR_NAME
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_REQUESTER_PHONE
+    - CRITERIA_DEPARTMENT_WITH_DEPARTMENT
+    - LOOKUP_WITH_CRITERIA_10
+    - MULTI_LINE_UNIQUE
+    - REFERENCE_ENTITY
+    - CRITERIA_NAME_WITH_IMPACTDETAILS
+    - REQUEST_CMDB_LOOKUP_IN_CUSTOM_FILTER
+    - OPERATORSUBLIST_UI_3
+    - OPERATORSUBLIST_UI_2
+    - CRITERIA_SITE_WITH_LOGGEDIN_TECH_SITES
+    - OPERATORSUBLIST_UI_1
+    - MULTI_LINE_INPUT_WITH_SPECIALCHARACTERS_API
+    - EMAIL_API
+    - CMDB_LOOKUP_ASSET_STATE_WITH_CRITERIA
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_REGION_NAME
+    - MULTI_LOOKUP_UI_SITE_REF_WITH_CRITERIA
+    - LOOKUP_DATA
+    - PERCENT_WITH_SPECIALCHARACTERS_API
+    - MULTI_LOOKUP_UI_TECH_GROUP_REF_WITH_CRITERIA
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_DEPARTMENT_NAME
+    - OPERATORLIST_UI
+    - SITE_LOOKUP_CUSTOM_MODULE
+    - ASSET_LOOKUP_SITE_UI
+    - LOOKUP_WITH_EMPLOYEEID_CRITERIA
+    - LOOKUP_WITH_CRITERIA_1
+    - MULTI_LOOKUP_UI
+    - CRITERIA_PRODUCT
+    - LOOKUP_WITH_CRITERIA_3
+    - LOOKUP_WITH_CRITERIA_2
+    - LOOK_UP_CREATE_WITH_TECHNICIAN
+    - PO_LOOKUP_WITH_DEPARTMENT
+    - CHECK_BOX_UI
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_MOBILE
+    - LOOKUP_WITH_CRITERIA_9
+    - LOOKUP_WITH_CRITERIA_8
+    - DECIMAL_WITH_SPECIALCHARACTERS_API
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_REQUESTER_NAME
+    - REQUEST_CMDB_LOOKUP_WITHOUT_CRITERIA
+    - CRITERIA_CMDB_CIFIELDS_BUSINESSIMPACT
+    - LOOKUP_WITH_CRITERIA_5
+    - LOOKUP_WITH_CRITERIA_4
+    - LOOKUP_WITH_CRITERIA_7
+    - LOOKUP_WITH_CRITERIA_6
+    - VALUELIST_UI
+    - LOOKUP_WITH_PHONE_CRITERIA
+    - SITE_LOOKUP_API
+    - CUSTOM_MODULE_PICK_LIST_API
+    - LOOKUP_WITH_DEPARTMENTNAME_IS_CRITERIA
+    - ADD_REQUEST_ASSET_LOOKUP
+    - CRITERIA_ASSETTAG_WITH_IMPACTDETAILS
+    - LOOKUP_WITH_CUSTOMMODULENAME_IS_CRITERIA
+    - MULTI_LOOKUP_WITH_TECHNICIAN_REF_API
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_PRODUCT_NAME
+    - SEARCH_FIELD_TYPE1
+    - LOOK_UP_CREATE_WITH_SITE
+    - WEB_URL_UI
+    - TECHNICIANUPDATE
+    - CURRENCY_WITH_SPECIALCHARACTERS_API
+    - MULTI_LOOKUP_UI_USER_REF_WITH_CRITERIA
+    - PHONE_API
+    - CRITERIA_OPERATIONALCOST
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_SITE_EMAIL
+    - MULTI_SELECT_UI
+    - CRITERIA_CMDB_ACCESSPOINT_APPLICATION_NAME_WITH_SUBJECT
+    - FIELD_VALUES
+    - EDIT_SITE_LOOKUP_NAME_ALONE_UI
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_REGION
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_DEPARTMENT
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_USER_DEPARTMENT
+    - MULTI_LOOKUP_UI_WITH_REF
+    - DECISION_BOX_UI
+    - MULTILOOKUP_FIELDS_DATA
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_REQUESTER_MOBILE
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_NAME
+    - LOOKUP_WITH_DEPARTMENTNAME_CRITERIA
+    - CRITERIA_IS_DEPRECIATION_CALCULATED
+    - MULTI_LOOKUP_UI_CMDB_REF_WITH_CRITERIA
+    - PROBLEM_MULTI_LOOKUP_WITH_DEPARTMENT_REF_API
+    - NUMERIC_WITH_SPECIALCHARACTERS_API
+    - LOOKUP_UI_ASSET_REF_WITH_CRITERIA
+    - SINGLE_LINE_INPUT_API
+    - CRITERIA_IS_DEPRECIATION_CONFIGURED
+    - RADIO_BUTTON_WITH_SPECIALCHARACTERS_API
+    - STATICVALUELIST_UI
+    - DATETIME_UI
+    - LOOKUP_WITH_JOBTITLE_CRITERIA
+    - SUBTRACT_COST_UI
+    - TEMPLATE_UDF
+    - MULTI_LOOKUP_WITH_DEPARTMENT_REF_API
+    - RADIO_BUTTON_UI
+    - LOOKUP_UI_CMDB_REF_WITH_CRITERIA
+    - CRITERIA_CMDB_ACCESSPOINT_WITH_ASSET
+    - LOOKUP_WITH_DEPARTMENTDESCRIPTION_IS_NOT_CRITERIA
+    - AUTO_NUMBER_CREATED_VIA_API
+    - LOOKUP_WITH_DEPARTMENTDESCRIPTION_CRITERIA
+    - CRITERIA_PURCHASECOST
+    - MULTI_LOOKUP_WITH_ASSET_REF_API
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_TECHNICIAN_EMAIL
+    - MULTI_LINE_INPUT_API
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_REQUESTER_DEPARTMENT
+    - MULTI_LOOKUP_UI_WITH_CRITERIA
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_USER_EMAIL
+    - MULTI_SELECT_WITH_SPECIALCHARACTERS_API
+    - CRITERIA_ASSETTAG_WITH_SUBJECT
+    - CRITERIA_CURRENTBOOKVALUE
+    - MULTI_LOOKUP_WITH_CMDB_REF_API
+    - GET_PROJECT_ROLE_ID
+    - GROUPTYPES
+    - MULTI_LOOKUP_UI_WITH_CRITERIA_IMPACT_DESCRIPTION
+    - GET_REFERENCE_ENTITYID
+    - MULTI_LOOKUP_UI_ASSET_REF_WITH_CRITERIA
+    - PO_LOOKUP_WITH_TECHNICIAN_DATA
+    - CRITERIA_NAME_WITH_UDFCHARONE
+    - CRITERIA_PRODUCTTYPE
+    - SINGLE_LINE_UI
+    - PROBLEM_BULK_UDF_DATA
+    - MULTI_LOOKUP_CMDB_API
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

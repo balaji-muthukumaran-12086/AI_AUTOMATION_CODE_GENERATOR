@@ -1,0 +1,33 @@
+module: admin
+entity: templatesandforms_resolutiontemplate
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/resolutiontemplate/utils/ResolutionTemplateAPIUtil.java
+  methods:
+  - name: createResolution
+    return_type: void
+    params: (none)
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/resolutiontemplate/common/ResolutionTemplateLocators.java
+  interfaces:
+    ResolutionTemplateLocators: []
+    DetailsPage:
+    - SELECT_RESOLUTION_TEMP_DROPDOWN
+    - SELECT_RESOLUTION_TEMP_VALUE
+    - FRAME_ZE
+    - DESC
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/resolutiontemplate/common/ResolutionTemplateDataConstants.java
+  classes:
+    ResolutionTemplateDataConstants:
+    - RESOLUTION_TEMPLATE
+    - CHANGE_INPUT
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

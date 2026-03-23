@@ -1,0 +1,29 @@
+module: admin
+entity: customization_helpdesk_requesttype
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/requesttype/common/RequestTypeLocators.java
+  interfaces:
+    RequestTypeLocators:
+    - NEW_REQUESTTYPE
+    - EDIT_REQUESTTYPE
+    - DELETE_REQUESTTYPE
+    - REQUESTTYPE_TITLE
+    - ICN_REQUESTTYPEACTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/requesttype/common/RequestTypeDataConstants.java
+  classes:
+    RequestTypeDataConstants:
+    - API_REQUESTTYPE1
+    - UI_REQUESTTYPE1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

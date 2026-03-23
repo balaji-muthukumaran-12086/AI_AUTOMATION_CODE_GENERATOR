@@ -1,0 +1,82 @@
+module: admin
+entity: usersandpermissions_users_technician
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/users/technician/common/TechnicianLocators.java
+  interfaces:
+    TechnicianLocators:
+    - TECHNICIAN_ENABLE_LOGIN
+    - TECHNICIAN_ROLE_ASSETCONFIG
+    - TECHNICIAN_ASSIGN_ROLE
+    - ROW_BY_TITLE
+    - TECH_SELECT_CHKBOX
+    - TECH_ACTIONSGEAR
+    - VIP_BADGE
+    - DRPDWN_ACTIONS
+    - ACTIONS_LIST
+    - TECH_GRP_GLOBAL_SITE_FILTER
+    - NO_MATCH_FOUND_SITE_FILTER
+    - TECHS_SITE_FILTER
+    Editpage:
+    - TECH_SAVE_BUTTON
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/users/technician/common/TechnicianDataConstants.java
+  classes:
+    TechnicianDataConstants:
+    - TASKFORVIP
+    - BR_TECHNICIANISNOTVIP
+    - CREATE_TECHNICIAN_FOR_MSP
+    - CREATE_TECHICIAN_VIA_API
+    - CUSTOMFILTER_TECHNICIANISNOTVIP
+    - SEARCHLEVELTIER4
+    - TRIGGER_REQUESTERISNOTVIP
+    - TRIGGER_TECHNICIANISVIP
+    - TECHNICIAN_UPADATE_FOR_CONTRACT_LOOKUP
+    - ASSIGN_GROUP
+    - CUSTOMFILTER_REQUESTERISVIP
+    - CUSTOMFILTER_REQUESTERISNOTVIP
+    - BR_REQUESTERISVIP
+    - TECHNICIAN_GROUP_ASSOCIATION
+    - TRIGGER_REQUESTERISVIP
+    - TECHNICIAN_UPDATE_FOR_LOOK
+    - CUSTOMFILTER_TECHNICIANISVIP
+    - BR_REQUESTERISNOTVIP
+    - ASSOCIATE_DEPT_AND_SITE_TO_USERS
+    - CREATE_NEW_TECHICIAN
+    - GETREQUESTMODULEINFO
+    - TRIGGER_TECHNICIANISNOTVIP
+    - BR_TECHNICIANISVIP
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- BR_RequesterIsNotVIP
+- BR_RequesterIsVIP
+- BR_TechnicianIsNotVIP
+- BR_TechnicianIsVIP
+- CustomFilter_RequesterIsNotVIP
+- CustomFilter_RequesterIsVIP
+- CustomFilter_TechnicianIsNotVIP
+- CustomFilter_TechnicianIsVIP
+- Trigger_RequesterIsNotVIP
+- Trigger_RequesterIsVIP
+- Trigger_TechnicianIsNotVIP
+- Trigger_TechnicianIsVIP
+- assign_group
+- associate_dept_and_site_to_users
+- create_new_techician
+- create_techician_via_api
+- create_technician_for_msp
+- getRequestModuleInfo
+- searchLevelTier4
+- taskForVIP
+- technician_group_association
+- technician_upadate_for_contract_lookup
+- technician_update_for_look

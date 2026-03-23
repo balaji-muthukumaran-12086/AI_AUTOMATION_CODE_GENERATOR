@@ -1,0 +1,57 @@
+module: admin
+entity: generalsettings_requesterportal_requesterportalsettings
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/generalsettings/requesterportal/requesterportalsettings/common/RequesterPortalSettingsLocators.java
+  interfaces:
+    RequesterPortalSettingsLocators:
+    - SELECT_REQUESTER_PORTAL_MODULE_CHECKBOX
+    - HOME_TAB_SEARCH_IN_REQUESTERPAGE
+    - SEARCH_IN_REQUESTERPAGE
+    - ENTITYID_IS_VISIBLE
+    - IS_MODULE_ISVISIBLE
+    - ENABLE_REQUESTER_TO_EDIT_THEIR_REQUEST
+    - SELECT_REQUEST_TO_EDIT_DROPDOWN
+    - SELECT_REQUEST_TO_EDIT_DROPDOWN_VALUES
+    - REQUESTER_DIRECT_CANCELLATION
+    - NOTIFY_TECHNICIAN
+    - EDITOR_LIST_SCOPE_OF_REQUESTER
+    - EDITOR_LIST_SCOPE_OF_REQUESTER_OPTION
+    - REQUEST_SETTING_OPTION_IN_REQUESTER_APPROVAL_SETTING
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/generalsettings/requesterportal/requesterportalsettings/common/RequesterPortalSettingsDataConstants.java
+  classes:
+    RequesterPortalSettingsDataConstants:
+    - OBOREQUEST
+    - TASKFOROBO
+    - OBOISCUTOMFILTER
+    - OBOISVIP_TRIGGER
+    - OBOISNOTVIP_SLA
+    - OBOISVIP_SLA
+    - SEARCHCLOSEDSTATUS
+    - OBOISVIP_BR
+    - OBOISCHANGED_TRIGGER
+    - INCLUDETECHENABLED
+    - OBOISNOTVIP_BR
+    - OBOISNOTVIP_TRIGGER
+    - OBOISEMPTY_TRIGGER
+    - CUSTOMFILTER_OBOISVIP
+    - OBOISEMPTY_BR
+    - OBOISEMPTYCUTOMFILTER
+    - INCLUDETECHDISABLED
+    - ADDOBOFIELD
+    - SEARCH_SSPREQSITE
+    - CUSTOMFILTER_OBOISNOTVIP
+    - SEARCH_SSPUSER
+    - GETREQUESTMODULEINFO
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

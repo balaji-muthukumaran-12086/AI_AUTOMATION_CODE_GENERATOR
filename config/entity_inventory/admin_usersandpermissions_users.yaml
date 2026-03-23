@@ -1,0 +1,71 @@
+module: admin
+entity: usersandpermissions_users
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/users/common/UsersLocators.java
+  interfaces:
+    UsersLocators:
+    - SELECT_USER
+    - ACTIONS_DROPDOWN
+    - ASSIGN_DEPARTMENT
+    - ASSIGN_DEPARTMENT_POPUP
+    - SITE_DROPDOWN
+    - DEPT_DROPDOWN
+    - OPEN_USER
+    - ALL_USERS_DROPDOWN
+    - TECHNICIAN_ALL_USERS_DROPDOWN
+    - SITE_GLOBAL_FILTER
+    - GEAR
+    - EDIT_USER
+    - SELECT_USERS_WITH_CHECKBOX
+    - SEARCH_ROLES
+    - SELECT_ROLES
+    - FIRST_ROW_IN_LISTVIEW
+    - SELECTING_TECHNICIAN
+    - TYPING_TEXT_IN_GROUP_ASSOCIATION
+    UserForm:
+    - CHECK_DEPT
+    - FIRST_NAME
+    - CLICK_REQUESTER
+    - SUBJECT_NEW_REQUEST
+    - SUBJECT
+    - CLICK_GROUP_ASSOCIATION
+    - FIRST_NAME_ERROR
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/users/common/UsersDataConstants.java
+  classes:
+    UsersDataConstants:
+    - SEARCH_TECHNICIAN
+    - GENERAL_REQ_USER
+    - SMS_MAILID
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: siteAndDepartment
+  creates_count: 0
+  local_storage_keys:
+  - departmentName
+  - DeptID
+  - technician1
+  - user2
+- name: updateRolesToUser
+  creates_count: 0
+  local_storage_keys:
+  - technician1
+  - user2
+  - technician2
+  - user3
+- name: checkAndCreateGroup
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys:
+- SMS_MailId
+- Search_Technician
+- general_req_user

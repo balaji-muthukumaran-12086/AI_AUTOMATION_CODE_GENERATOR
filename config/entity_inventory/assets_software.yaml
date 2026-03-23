@@ -47,8 +47,99 @@ api_util:
   file: null
   methods: []
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/assets/software/common/SoftwareLocators.java
+  interfaces:
+    SoftwareLocators:
+    - LISTVIEW_BUTTONS
+    - CREATE_SCANNED_NEWSOFTWARE_BUTTON_IN_LISTVIEW
+    - DROP_DOWN_LOCATOR_IN_NEW_SOFTWARE
+    - GET_SCANEED_SOFTWARE_NAME_USING_ENTITY_ID
+    - ALERTBOX
+    - DELTE_BUTTON_IN_LISTVIEW
+    - ACTIONS
+    - MOVE_TO_TYPES
+    - LISTVIEW_PAGE
+    - HEADING_NAME
+    - FIRST_ROW_IN_LISTVIEW
+    - CHECKBOX_USING_ENTITY_ID
+    - EMPTY_SOFTWARE_ASSET
+    - MANUFACTURER_DROPDOWN_BOX
+    - MANUFACTURER_LIST_SEARCHBOX
+    - CHANGE_CATEGORY_DROPDOWN
+    - TABLE_HEADING_NAME
+    - GET_TABLE_COLUMN_VALUE_FROM_ROW
+    - LISTVIEW_PAGE_TITLE_NAME
+    - SOFTWARE_LICENSE_NO_ASSET
+    - NEW_LICENSE_AGREEMENT_NUMBER
+    - PAGE_COUNT
+    - TOTAL_PAGE_COUNT
+    - CHECK_ASSET_PRESENT
+    - ICON_SEARCH
+    - GO_TO_SOFTWARE_LICENSES_DETAILVIEW
+    - SELECT_CHECKBOX_IN_SOFTWARE
+    - GO_TO_DETAILPAGE_USING_ENTITYID
+    - COLUMN_SEARCH_IN_SOFTWARE_LICENSES_AGREEMENT
+    - SEARCH_TABLE_HEADER
+    - GO_BUTTON_IN_ASSOCIATE_LICENSES
+    - SELECT_ASSOCIATE_LICENSES_CHECKBOX_IN_SOFTWWARE
+    - ASSOCIATE_TO_AGREEMENT
+    - TASK_TEMPLATE
+    - ADDSOFTWARE_BUTTON_LOCATOR
+    - SUITERULEROW_LOCATOR
+    - NAME_LOCATOR
+    - MANUFACTURERLIST_LOCATOR
+    - CATEGORY_LOCATOR
+    - SWLIST_LOCATOR
+    - BARCODE_LOCATOR
+    - BARCODE_LOCATOR_NEW
+    - PRODUCT_TYPE_LOCATOR
+    - PRODUCT_NAME_LOCATOR
+    - STARTING_FROM
+    - COUNT
+    - NEWLABLE_LOCATOR
+    - CANVAS_LOCATOR
+    - SCANNED_SOFTWARE_USING_ENTITY_ID
+    - NEW_SOFTWARE_BTN
+    - GOTO_SOFTWARE_DV
+    - CUSTOM_FILTER_EDIT_ICON
+    - CUSTOM_FILTER_DELETE_ICON
+    - CUSTOM_FILTER_FAVORITES_ICON
+    - CUSTOM_FILTER_NAME
+    - REMOVE_FAVORITE_ICON
+    - FAVORITE_FILTERS
+    - FAVORITE_EXPAND_COLLAPSE_ICON
+    Detailsview:
+    - GOBACK_BUTTON_LOCATOR
+    - SOFTWARE_NAME_LOCATOR
+    - SELECT_ELEMENT
+    - CANCEL_BUTTON
+    - SELECT_FIELD_IN_SOFTWARE_LICENSE
+    - SEARCH_BUTTON
+    - INSTALLATIONS_TYPE
+    - PAGE_COUNT
+    - ASSOCIATE_LICENSES_LISTVIEW_IN_SOFTWARE
+    - COLUMN_SEARCH_IN_RHS
+    - LICENSE_TYPE
+    - SELECT_ALL_CHECKBOX
+    - LICENSE_AGREEMENT_FORM_IN_DETAILPAGE
+    - FIELDNAME
+    - USED_BY_FIELD
+    - GET_SOFTWARENAME_IN_DETAILPAGE
+    InstallationSubtab:
+    - TABLE_HEADER
+    - SEARCH_TABLE_HEADER
+    - GO
+    - SELECT_CHECKBOX_IN_ADD_SOFTWARE_INSTALLATIONS_POPUP
+    - INSTALLATIONS_LISTVIEW
+    - INSTALLATIONS_TYPE_COUNT
+    - SCANNED_SOFTWARE_RIGHTPANEL
+    - SELECT_CHECKBOX_USING_ASSET_NAME
+    - NO_MATCHES_FOUND_IN_LISTVIEW
+    - SELECT_ALL_CHECKBOX
+    - SELECT_CHECKBOX_USING_ENTITYID
+    FormBuilder:
+    - MANUFACTURER_FIELD
+    - ADD_SM_ICN
 data_constants:
   file: com/zoho/automater/selenium/modules/assets/software/common/SoftwareDataConstants.java
   classes:
@@ -112,399 +203,3 @@ data_json_keys:
 - get_license_type_id_using_manufacturer
 - set_table_setting
 - software_license_type_create_form
-data_json_deep:
-  total_entries: 18
-  field_frequency:
-    name: 7
-    type: 4
-    category: 4
-    row_count: 4
-    start_index: 4
-    search_criteria: 4
-    manufacturer: 3
-    get_total_count: 3
-    criteria: 3
-    software_license: 2
-    product: 1
-    sort_fields: 1
-    trackby: 1
-    manufacture: 1
-    software: 1
-    list_view_filter: 1
-  all_placeholders:
-  - custom_License_Option
-  - custom_License_Type
-  - custom_scanned_software_entityId
-  - custom_softwareWithInstallation.name
-  - unique_string
-  reuse_groups_count: 4
-  entries:
-    create_scanned_software:
-      fields:
-      - name
-      - type
-      - category
-      - manufacturer
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_scanned_software_II:
-      fields:
-      - name
-      - type
-      - category
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_workstaion_asset:
-      fields:
-      - name
-      - product
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    set_table_setting:
-      fields:
-      - sort_fields
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Create_Sofware_License:
-      fields:
-      - software_license
-      placeholders:
-      - custom_scanned_software_entityId
-      - custom_License_Type
-      - custom_License_Option
-      local_storage_keys_required:
-      - scanned_software_entityId
-      - License_Type
-      - License_Option
-      purpose: ui_form
-    Search_Licenses_Type:
-      fields:
-      - row_count
-      - start_index
-      - get_total_count
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    Search_License_Option:
-      fields:
-      - row_count
-      - start_index
-      - get_total_count
-      - search_criteria
-      placeholders:
-      - custom_License_Type
-      local_storage_keys_required:
-      - License_Type
-      purpose: ui_form
-    Search_Manufacturer:
-      fields:
-      - row_count
-      - start_index
-      - get_total_count
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_scanned_software_in_api:
-      fields:
-      - name
-      - type
-      - category
-      - manufacturer
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    software_license_type_create_form:
-      fields:
-      - trackby
-      - manufacture
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    get_license_type_id_using_manufacturer:
-      fields:
-      - start_index
-      - row_count
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_suite_software:
-      fields:
-      - software
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_scanned_software_III:
-      fields:
-      - name
-      - type
-      - category
-      - manufacturer
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    custom_view_with_criteria:
-      fields:
-      - name
-      - criteria
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    custom_view_with_criteria_all_fields:
-      fields:
-      - name
-      - criteria
-      placeholders:
-      - unique_string
-      - custom_softwareWithInstallation.name
-      local_storage_keys_required:
-      - softwareWithInstallation.name
-      purpose: ui_form
-    create_custom_filter_api:
-      fields:
-      - list_view_filter
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_concurrent_sofware_license:
-      fields:
-      - software_license
-      placeholders:
-      - custom_scanned_software_entityId
-      - custom_License_Type
-      - custom_License_Option
-      local_storage_keys_required:
-      - scanned_software_entityId
-      - License_Type
-      - License_Option
-      purpose: api_preprocess
-    criteria_for_compliance_fields:
-      fields:
-      - criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-actions_util_deep:
-- name: columnSearch
-  params: String column, String value
-  locators_used:
-  - ClientFrameworkLocators.ListViewLocators.SEARCH_TABLE_HEADER
-  - SoftwareLocators.InstallationSubtab.GO
-  - SoftwareLocators.InstallationSubtab.TABLE_HEADER
-  - SoftwareLocators.Listview.ICON_SEARCH
-  - SoftwareLocators.Listview.SEARCH_TABLE_HEADER
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  - actions.click
-  - actions.getAllElements
-  - actions.type
-  - actions.click
-  - actions.clickByNameInput
-  line_count: 25
-- name: columnSearchinAssociateLicense
-  params: String column, String value
-  locators_used:
-  - SoftwareLocators.Detailsview.ASSOCIATE_LICENSES_LISTVIEW_IN_SOFTWARE
-  - SoftwareLocators.InstallationSubtab.GO
-  - SoftwareLocators.Listview.COLUMN_SEARCH_IN_SOFTWARE_LICENSES_AGREEMENT
-  - SoftwareLocators.Listview.SEARCH_TABLE_HEADER
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  - actions.getAllElements
-  - actions.type
-  - actions.click
-  - actions.popUp.clickByNameInput
-  line_count: 18
-- name: addSoftware
-  params: (none)
-  locators_used:
-  - SoftwareLocators.InstallationSubtab.SELECT_CHECKBOX_IN_ADD_SOFTWARE_INSTALLATIONS_POPUP
-  - SoftwareLocators.Listview.GOTO_SOFTWARE_DV
-  local_storage_reads:
-  - Name
-  - scanned_software_entityId
-  - scanned_software_displayname
-  local_storage_writes: []
-  action_chain:
-  - actions.listView.columnSearch
-  - actions.click
-  - actions.detailsView.clickSubTab
-  - actions.clickByName
-  - actions.popUp.columnSearch
-  - actions.click
-  - actions.clickByNameInput
-  - actions.validate.successMessageInAlert
-  line_count: 11
-- name: removeSoftware
-  params: (none)
-  locators_used:
-  - SoftwareLocators.InstallationSubtab.SELECT_CHECKBOX_USING_ASSET_NAME
-  local_storage_reads:
-  - Name
-  local_storage_writes: []
-  action_chain:
-  - actions.listView.columnSearch
-  - actions.clickByNameInput
-  - actions.click
-  - actions.clickByName
-  - actions.clickByNameSpan
-  - actions.validate.successMessageInAlert
-  line_count: 7
-- name: addNewSoftwareLicenses
-  params: String manufacturer, String softwareName, String licenseType
-  locators_used:
-  - AssetLocators.CommonLocators.DIV_TAG
-  - SoftwareLocators.Detailsview.LICENSE_TYPE
-  - SoftwareLocators.Detailsview.SELECT_FIELD_IN_SOFTWARE_LICENSE
-  - SoftwareLocators.Listview.LISTVIEW_BUTTONS
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.clickByNameSpan
-  - actions.click
-  - actions.formBuilder.typeAndSelectOption
-  - actions.click
-  - actions.formBuilder.typeAndSelectOption
-  - actions.click
-  - actions.formBuilder.typeAndSelectOption
-  line_count: 11
-- name: toDetailsPageUsingRecordId
-  params: String id
-  locators_used:
-  - SoftwareLocators.Listview.GO_TO_DETAILPAGE_USING_ENTITYID
-  local_storage_reads:
-  - scanned_software_entityId
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  - actions.waitForAjaxComplete
-  line_count: 3
-- name: addNewSoftwareLicenses
-  params: (none)
-  locators_used:
-  - AssetLocators.CommonLocators.DIV_TAG
-  - SoftwareLocators.Detailsview.GOBACK_BUTTON_LOCATOR
-  - SoftwareLocators.Detailsview.SELECT_FIELD_IN_SOFTWARE_LICENSE
-  - SoftwareLocators.Listview.LISTVIEW_BUTTONS
-  local_storage_reads:
-  - scanned_software_displayname
-  local_storage_writes: []
-  action_chain:
-  - actions.clickByNameSpan
-  - actions.click
-  - actions.formBuilder.typeAndSelectOption
-  - actions.click
-  - actions.formBuilder.typeAndSelectOption
-  - actions.clickByNameInput
-  - actions.waitForAjaxComplete
-  - actions.validate.successMessageInAlert
-  - actions.click
-  line_count: 12
-- name: isSoftwarePresentInListView
-  params: String entityId
-  locators_used:
-  - SoftwareManufacturerLocators.Listview.ENTITY_ROW
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  line_count: 5
-- name: fillValuesForSoftwareAndSubmit
-  params: JSONObject inputData
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.clickByNameInput
-  line_count: 4
-- name: isCustomFilterPresentInListView
-  params: String filterName
-  locators_used:
-  - RequestLocators.Listview.CLICK_LISTVIEW_FILTERS
-  - RequestLocators.Listview.HOVERING_TAG
-  - RequestLocators.Listview.SEARCH_INPUT
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.click
-  - actions.type
-  - actions.isElementPresent
-  line_count: 7
-preprocess_deep:
-- group: create_scanned_software
-  source_file: Software.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: create_workstation_and_scannedSoftware
-  source_file: Software.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: create_software_license
-  source_file: Software.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  - getEntityIdUsingSearchCriteria
-  local_storage_stores:
-  - key: License_Type
-    source_type: computed
-  - key: License_Option
-    source_type: computed
-  - key: software_license_name
-    source_type: api_response_field
-  - key: softwae_licenses_id
-    source_type: api_response_field
-  - key: scanned_software_entityId
-    source_type: hardcoded
-  - key: License_Type
-    source_type: computed
-  - key: License_Option
-    source_type: computed
-  - key: software_license_name
-    source_type: api_response_field
-  - key: softwae_licenses_id
-    source_type: api_response_field
-  local_storage_reads:
-  - softwareWithInstallation.id
-  entities_created:
-  - software_license
-  - software_license
-  creates_user: false
-  user_role: null
-  calls_super: false

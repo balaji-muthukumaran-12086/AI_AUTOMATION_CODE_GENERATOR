@@ -1,0 +1,31 @@
+module: admin
+entity: appaddons_integrations_jira
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/appaddons/integrations/jira/common/JiraLocators.java
+  interfaces:
+    JiraLocators:
+    - FIELD_INPUT_ELEMENT
+    - SELECT_ELEMENT
+    - SELECT_OPTION
+    - SYSTEM_SELECT_ELEMENT
+    - DATE_TIME_SELECT
+    - MULTICHOICE_INPUT
+    - MULTICHOICE_OPTION
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/appaddons/integrations/jira/common/JiraDataConstants.java
+  classes:
+    JiraDataConstants:
+    - VALID_INPUT
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- Valid_Input

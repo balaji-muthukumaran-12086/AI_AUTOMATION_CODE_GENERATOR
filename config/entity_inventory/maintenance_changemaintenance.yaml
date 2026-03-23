@@ -7,8 +7,9 @@ api_util:
   file: null
   methods: []
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/maintenance/changemaintenance/common/ChangeMaintenanceLocators.java
+  interfaces:
+    ChangeMaintenanceLocators: []
 data_constants:
   file: com/zoho/automater/selenium/modules/maintenance/changemaintenance/common/ChangeMaintenanceDataConstants.java
   classes:
@@ -44,46 +45,3 @@ preprocess_groups:
   creates_count: 0
   local_storage_keys: []
 data_json_keys: []
-preprocess_deep:
-- group: create
-  source_file: ChangeMaintenance.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: enabledowntimeintemplate
-  source_file: ChangeMaintenance.java
-  dataids_consumed:
-  - 2
-  dataids_count: 1
-  api_util_calls:
-  - ChangeTemplateAPIUtil.createChangeTemplateWithRequesterPermission
-  - ChangeTemplateAPIUtil.enablePlanningDetailsInTemplate
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - ChangeTemplate.ChangeTemplateWithRequesterPermission
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: changeStageNameChange
-  source_file: ChangeMaintenance.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls:
-  - getEntityIdUsingSearchCriteria
-  - update
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false

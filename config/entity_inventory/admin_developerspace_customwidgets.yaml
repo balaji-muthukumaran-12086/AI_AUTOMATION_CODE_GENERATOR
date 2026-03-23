@@ -1,0 +1,147 @@
+module: admin
+entity: developerspace_customwidgets
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/customwidgets/utils/CustomWidgetsActionsUtil.java
+  methods:
+  - name: naviagetToCustomWidget
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: clickCustomWidgetExpandIcon
+    return_type: void
+    params: String entityId
+    purpose: ''
+  - name: fillCustomWidgetFieldValuesAndSubmit
+    return_type: void
+    params: JSONObject inputData
+    purpose: ''
+  - name: storeCustomWidgetDetails
+    return_type: void
+    params: String cwName
+    purpose: ''
+  - name: isEnabled
+    return_type: boolean
+    params: Locator locator
+    purpose: ''
+  - name: getCustomWidgetsModuleId
+    return_type: String
+    params: String moduleDisplayName
+    purpose: Get custom widget accessibility Id using displaye location like Asset Details right panel , Asset - Custom Menu
+  - name: isCustomWidgetDisplayed
+    return_type: boolean
+    params: Locator widgetLocator
+    purpose: Checking whether custom widget text displayed or not . we checking the static text so use the same widget file
+      for all the module
+  - name: isCustomWidgetTabPresentInDetailsPageRHSPanel
+    return_type: boolean
+    params: String cwViewId
+    purpose: ''
+  - name: isCustomWidgetTabPresentInDetailsPage
+    return_type: boolean
+    params: String cwViewId
+    purpose: ''
+  - name: searchAndSelect
+    return_type: void
+    params: String moduleId,String value
+    purpose: Search and select value for Asset, CMDB , Change and Release sub modules (Stages)
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/customwidgets/utils/CustomWidgetsAPIUtil.java
+  methods:
+  - name: getCustomWidgetIdUsingName
+    return_type: String
+    params: String name
+    purpose: ''
+  - name: getCustomWidgetData
+    return_type: JSONObject
+    params: String cwName
+    purpose: Getting custom widget data response using custom widget name
+  - name: generateFileUploadScript
+    return_type: String
+    params: String fileUrl, String entityName, String formData
+    purpose: It will generate script for uploading a file
+  - name: uploadFile
+    return_type: String
+    params: String entityName, String fileUrl, JSONObject formData
+    purpose: ''
+  - name: createCustomWidget
+    return_type: String
+    params: (none)
+    purpose: ''
+  - name: createCustomWidget
+    return_type: String
+    params: String data
+    purpose: ''
+  - name: createCustomWidget
+    return_type: String
+    params: TestCaseData data
+    purpose: ''
+  - name: createCustomWidget
+    return_type: String
+    params: JSONObject inputData
+    purpose: ''
+  - name: getCustomWidgetsModuleId
+    return_type: String
+    params: String cwViewtId,String module, String location
+    purpose: ''
+  - name: selectSubModulesForModules
+    return_type: void
+    params: String cwViewId,String module, String location,JSONObject inputData
+    purpose: ''
+  - name: getSubModuleIdForEntity
+    return_type: String
+    params: String entity,String module,String subModule
+    purpose: Getting the submodule ID using display name
+  - name: selectSubModulesForModules
+    return_type: void
+    params: String cwViewId,String module, String location,String data
+    purpose: ''
+  - name: selectSubModulesForModules
+    return_type: void
+    params: String cwViewId,String module, String location,TestCaseData data
+    purpose: ''
+  - name: disableCustomWidgetModule
+    return_type: void
+    params: String cwViewId,String module,String location
+    purpose: ''
+  - name: createMultipleCustomWidgets
+    return_type: void
+    params: int n
+    purpose: ''
+  - name: deleteCustomWidget
+    return_type: void
+    params: String entityId
+    purpose: Delete custom widget
+locators:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/customwidgets/common/CustomWidgetsLocators.java
+  interfaces:
+    CustomWidgetsLocators:
+    - CW_STATUS
+    - CW_STATUS_BTN
+    - CW_EXPAND_ICN
+    - CW_MODULE_STATUS
+    - CW_MODULE_STATUS_BTN
+    - CW_MODULE_ID
+    - CW_MODULE_SELECT_OPTION
+    - CW_MODULE_ACTIONS
+    - CW_NAME_FIELD_VALUE
+    - CW_DESCRIPTION_FIELD_VALUE
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/developerspace/customwidgets/common/CustomWidgetsDataConstants.java
+  classes:
+    CustomWidgetsDataConstants:
+    - CREATE_CUSTOM_WIDGET_API
+    - CREATE_CUSTOM_WIDGET
+    - GET_CUSTOM_WIDGET_MODULE_ID
+    - CUSTOM_WIDGET_SUBMODULES_LIST_FOR_CMDB_II
+    - UPDATE_CUSTOM_WIDGET
+    - DISABLE_CUSTOM_WIDGET_MODULE
+    - CUSTOM_WIDGET_FORM_DATA
+    - CUSTOM_WIDGET_SUBMODULES_LIST_FOR_CMDB
+    - CUSTOM_WIDGET_SUBMODULES_LIST_FOR_ASSET
+    - CUSTOM_WIDGET_SUBMODULES_LIST_FOR_CMDB_III
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

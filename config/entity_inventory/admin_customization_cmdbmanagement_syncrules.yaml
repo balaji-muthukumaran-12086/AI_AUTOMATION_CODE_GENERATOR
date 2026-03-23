@@ -1,0 +1,148 @@
+module: admin
+entity: customization_cmdbmanagement_syncrules
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/syncrules/common/SyncRulesLocators.java
+  interfaces:
+    SyncRulesLocators: []
+    Form:
+    - RADIO_BTN
+    - SELECT_ACTION_BTN
+    - SELECT_ACTION
+    - ICN_ADD_MAPPING
+    - ICN_ADD_RELATIONSHIP
+    - ICN_ADD
+    - ICN_ADD_CRITERIA
+    - LOGICAL_OPERATOR
+    - CRITERIA_SELECT
+    - CRITERIA_LIST
+    - FIELD_UPDATE_LIST
+    - ICN_REMOVE_FIELD_UPDATE
+    - COLLAPSE_ACTIONS
+    - RELATIONSHIP_FILTER
+    - FIELD_INPUT
+    - TXT_FIELD_VALUE
+    - TXTAREA_FIELD_VALUE
+    - SELECT_FIELD_VALUE
+    - FIELD_MAPPING_ROW_LIST
+    - FIELD_MAPPING_SOURCE
+    - FIELD_MAPPING_DESTINATION
+    - RELATIONSHIP_ROW_LIST
+    - RELATION_TYPE_FIELD
+    - CI_TYPE_FIELD
+    - PRODUCT_TYPE_FIELD
+    - RELATIONSHIPTYPE_OPTION_ELEMENT
+    - TYPE_DROPDOWN_SEARCH_INPUT
+    - TXT_CRITERIA_VALUE
+    - DIV_CRITERIA_VALUE
+    - TEXTAREA_CRITERIA_LOCATOR
+    - BACK_BUTTON
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/syncrules/common/SyncRulesDataConstants.java
+  classes:
+    SyncRulesDataConstants:
+    - ADD_ASSET_SYNC_RULE_CREATE_RELATIONSHIP
+    - EDIT_MAP_ASSET_FIELDS
+    - CREATE_REQUESTER_WITH_VIEWALL_REQUESTS_PERMISSION
+    - MAP_ASSET_FIELDS
+    - ADD_ASSET_SYNC_RULE_MAP_FIELDS
+    - GET_RELATIONSHIP_TYPE_ID
+    - CREATE_SCANNED_SOFTWARE
+    - ADD_ASSET_SYNC_RULE_DELETE_CI
+    - GET_SOFTWARE_INSTALLATION_ID
+    - GET_SYNCRULE_ID
+    - ADD_ASSET_SYNC_RULE_CREATE_CI
+    - GET_USER_DATA
+    - EXECUTE_ASSET_SYNCRULE_WITH_CREATE_ASSET_WITH_CONDITION
+    - GET_SOFTWARE_INSTALLATION_CI_ID
+    - EXECUTE_ASSET_SYNCRULE_WITH_CREATE_RELATIONSHIP
+    - GET_PRODUCT_TYPE_ID
+    - CRITERIA_CONDITION_FOR_ASSETS
+    - GET_ASSET_DATA
+    - EXECUTE_ASSET_SYNCRULE_WITH_DELETE_ACCESS_POINTS
+    - USER_SYNCRULE_WITH_ALL_ACTIONS
+    - ADD_ASSET_SYNC_RULE_CREATE_ASSET
+    - GET_CI_ID
+    - EXECUTE_ASSET_SYNCRULE_WITH_CREATE_CI_WITH_CONDITION
+    - CREATE_ASSET_WITH_FIELD_VALUES
+    - ALL_ASSET_SYNCRULE_WITH_ALL_ACTIONS
+    - EXECUTE_ASSET_SYNCRULE_WITH_MAP_ACCESS_POINT_FIELDS
+    - ADD_ASSET_SYNC_RULE_DELETE_ASSET
+    - SOFTWARE_INSTALLATION_SYNCRULE_WITH_ALL_ACTIONS
+    - CREATE_SERVER_ASSET
+    - GET_SOFTWARE_INSTALLATION
+    - CRITERIA_CONDITION_FOR_CI
+    - GET_ASSET_ID
+    - CREATE_VIRTUAL_HOST_ASSET
+    - ASSET_SYNCRULE_WITH_ALL_ACTIONS
+    - CREATE_VIRTUAL_MACHINE_ASSET
+    - UI_DATA_1
+    - UI_DATA_2
+    - EXECUTE_ASSET_SYNCRULE_WITH_DELETE_CI
+    - UI_DATA_3
+    - CREATE_RELATIONSHIPS
+    - CREATE_WORKSTAION_ASSET
+    - UI_DATA_4
+    - UI_DATA_5
+    - UI_DATA_6
+    - UI_DATA_7
+    - GETUSERID
+    - SYNC_RYLE_VM_VH
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createsyncrule
+  creates_count: 0
+  local_storage_keys: []
+- name: createsyncrulewithproduct
+  creates_count: 0
+  local_storage_keys: []
+- name: createsyncrulewithrelationship
+  creates_count: 0
+  local_storage_keys: []
+- name: createsyncrulewithallactions
+  creates_count: 0
+  local_storage_keys:
+  - siteId
+- name: createsisyncrulewithallactions
+  creates_count: 0
+  local_storage_keys:
+  - siteId
+- name: createusersyncrulewithallactions
+  creates_count: 0
+  local_storage_keys:
+  - siteId
+- name: executesyncrulebycreatingassetwithrelationship
+  creates_count: 0
+  local_storage_keys: []
+- name: executesyncrulebycreatingci
+  creates_count: 0
+  local_storage_keys: []
+- name: executesyncrulewithallactionsbycreatingasset
+  creates_count: 0
+  local_storage_keys: []
+- name: executesyncrulewithallactionsbycreatingci
+  creates_count: 0
+  local_storage_keys: []
+- name: executesyncrulebycreatingasset
+  creates_count: 0
+  local_storage_keys: []
+- name: executesisyncrulewithallactions
+  creates_count: 0
+  local_storage_keys:
+  - siteId
+- name: executeusersyncrulewithallactions
+  creates_count: 0
+  local_storage_keys:
+  - siteId
+- name: uiudf
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []

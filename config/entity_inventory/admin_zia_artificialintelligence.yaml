@@ -1,0 +1,29 @@
+module: admin
+entity: zia_artificialintelligence
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/zia/artificialintelligence/common/ArtificialIntelligenceLocators.java
+  interfaces:
+    ArtificialIntelligenceLocators:
+    - AI_FEATURE_INTERNALNAME
+    - PREDICTIVE_FEATURE_NAME
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/zia/artificialintelligence/common/ArtificialIntelligenceDataConstants.java
+  classes:
+    ArtificialIntelligenceDataConstants:
+    - GENAI_CARDS_LIST
+    - PREDICTIVE_CARDS_PROBLEM_LIST
+    - PREDICTIVE_CARDS_CHANGE_LIST
+    - PREDICTIVE_CARDS_SOLUTION_LIST
+    - PREDICTIVE_CARDS_REQUEST_LIST
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

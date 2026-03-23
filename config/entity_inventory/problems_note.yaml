@@ -7,8 +7,9 @@ api_util:
   file: null
   methods: []
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/problems/note/common/NoteLocators.java
+  interfaces:
+    NoteLocators: []
 data_constants:
   file: com/zoho/automater/selenium/modules/problems/note/common/NoteDataConstants.java
   classes:
@@ -21,16 +22,3 @@ annotation_constants:
 preprocess_groups: []
 data_json_keys:
 - add_Notes_From_ListView
-data_json_deep:
-  total_entries: 1
-  field_frequency:
-    description: 1
-  all_placeholders: []
-  reuse_groups_count: 0
-  entries:
-    add_Notes_From_ListView:
-      fields:
-      - description
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form

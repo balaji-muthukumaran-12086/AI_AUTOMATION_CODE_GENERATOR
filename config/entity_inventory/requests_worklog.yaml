@@ -7,8 +7,9 @@ api_util:
   file: null
   methods: []
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/requests/worklog/common/WorklogLocators.java
+  interfaces:
+    WorklogLocators: []
 data_constants:
   file: com/zoho/automater/selenium/modules/requests/worklog/common/WorklogDataConstants.java
   classes:
@@ -25,47 +26,3 @@ data_json_keys:
 - UI_Worklog1
 - Worklog_Data_For_Resolution
 - worklog_data_for_oh
-data_json_deep:
-  total_entries: 3
-  field_frequency:
-    time_spent: 1
-    worklog: 1
-    owner: 1
-    start_time: 1
-    end_time: 1
-  all_placeholders:
-  - custom_nextHour
-  - custom_previousHour
-  - user_name
-  reuse_groups_count: 0
-  entries:
-    UI_Worklog1:
-      fields:
-      - time_spent
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    worklog_data_for_oh:
-      fields:
-      - worklog
-      placeholders:
-      - user_name
-      - custom_previousHour
-      - custom_nextHour
-      local_storage_keys_required:
-      - previousHour
-      - nextHour
-      purpose: ui_form
-    Worklog_Data_For_Resolution:
-      fields:
-      - owner
-      - start_time
-      - end_time
-      placeholders:
-      - user_name
-      - custom_previousHour
-      - custom_nextHour
-      local_storage_keys_required:
-      - previousHour
-      - nextHour
-      purpose: ui_form

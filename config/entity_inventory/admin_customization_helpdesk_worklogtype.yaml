@@ -1,0 +1,29 @@
+module: admin
+entity: customization_helpdesk_worklogtype
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/worklogtype/common/WorklogTypeLocators.java
+  interfaces:
+    WorklogTypeLocators:
+    - NEW_WORKLOGTYPE
+    - EDIT_WORKLOGTYPE
+    - DELETE_WORKLOGTYPE
+    - WORKLOGTYPE_TITLE
+    - ICN_WORKLOGTYPEACTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/worklogtype/common/WorklogTypeDataConstants.java
+  classes:
+    WorklogTypeDataConstants:
+    - API_WORKLOGTYPE1
+    - UI_WORKLOGTYPE1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

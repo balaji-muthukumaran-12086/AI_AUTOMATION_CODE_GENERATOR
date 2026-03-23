@@ -1,0 +1,27 @@
+module: admin
+entity: customization_changemanagement_changestage
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/changemanagement/changestage/common/ChangeStageLocators.java
+  interfaces:
+    ChangeStageLocators:
+    - NEW_CHNGSTAGE_STATUS
+    - DRPDWN_STAGE
+    - ICN_STAGEEXPAND
+    - ICN_STAGEACTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/changemanagement/changestage/common/ChangeStageDataConstants.java
+  classes:
+    ChangeStageDataConstants:
+    - UI_STATUS1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

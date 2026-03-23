@@ -1,0 +1,111 @@
+module: admin
+entity: templatesandforms_customscripts
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/customscripts/common/CustomscriptsLocators.java
+  interfaces:
+    CustomscriptsLocators:
+    - HEADERTAB_BUTTON_IN_LISTVIEW
+    - HEADERTAB_BUTTON_IN_LISTVIEW
+    - ACTIONS_IN_LISTVIEW
+    - ACTIONS_DROPDOWN_IN_LISTVIEW
+    - HELP_CARD_BUTTON
+    - GEAR_ICON_IN_SAMPLE_SCRIPTS
+    - GEAR_ACTIONS
+    - CUSTOM_SCRIPT_DESCRIPTION
+    - SELECT_CHECKBOX_IN_SAMPLE_SCRIPT
+    - TOGGLE_BUTTON_IN_SAMPLE_SCRIPTS
+    - OPEN_DETAILS_IN_CUSTOM_SCRIPT
+    - RELATED_FORM_RULES
+    - RULENAME_IN_RELATED_FORM_RULES
+    - DEFINED_TASK_GROUP
+    - BTN_BYNAME
+    - CS_CODE_TEXT_LOCATOR
+    - CS_ACTION_NAME
+    - CS_ACTION_SCRIPT
+    - GET_CS_CODE
+    - EXCISTING_CS_NAME_ALERT
+    - CS_IMPORT_LOCATOR
+    - CS_LISTVIEW_EXPAND_ICON
+    - CS_CODE_VALUE_IN_LISTVIEW
+    - CHECK_ENABLE_DISABLE_CS_TOGGLE_BUTTON
+    - CS_ENABLE_DISABLE_TOGGLE_BUTTON
+    - CS_LISTVIEW_CHECKBOX_USING_NAME
+    - FIELD_LOCATORS
+    - HIDE_FIELD_LOCATORS
+    - MANDATE_ICON
+    - MANDATE_ALERT_TEXT
+    - DISABLE_FIELD
+    - DISABLE_DATE
+    - SHOW_FIELD_ERROR
+    - IMPORT_SAVE_AND_CANCEL_LOCATOR
+    - CS_CODE_LINES
+    - CS_SERACH_LOCATOR
+    - CF_CODE_TEXT_LOCATOR
+    FormBuilderLocators:
+    - OPTION_ELEMENT
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/customscripts/common/CustomscriptsDataConstants.java
+  classes:
+    CustomscriptsDataConstants:
+    - CUSTOM_SCRIPT_EDIT_DATA
+    - CUSTOM_SCRIPT_CUSTOM_DATA_FOR_PROBLEM
+    - CS_API_DATA_FOR_REQUEST
+    - CS_ACTION_NAME_AND_ACTION_SCRIPT_CHECK_FOR_GENERAL
+    - IMPORT_SAMPLE_SCRIPT_DATA_FOR_REQUEST
+    - CS_ACTION_NAME_AND_ACTION_SCRIPT_CHECK_FOR_PROBLEM_ACTIONS
+    - CS_ACTION_NAME_AND_ACTION_SCRIPT_CHECK_FOR_FORM_SUBMIT_EVENTS
+    - GET_CUSTOM_SCRIPTS_ID
+    - CS_ACTION_NAME_AND_ACTION_SCRIPT_CHECK_FOR_LOCAL_STORAGE
+    - IMPORT_SAMPLE_SCRIPT_DATA_FOR_RELEASE
+    - CS_API_DATA_FOR_CHANGE
+    - CS_ACTION_NAME_AND_ACTION_SCRIPT_CHECK_FOR_FIELD_CHANGE_EVENTS
+    - CUSTOM_SCRIPT_CUSTOM_DATA_FOR_REQUEST
+    - CUSTOM_SCRIPT_SAMPLE_DATA_FOR_PROBLEM
+    - CS_ACTION_NAME_AND_ACTION_SCRIPT_CHECK_FOR_CHANGE_ACTIONS
+    - CUSTOM_SCRIPT_SAMPLE_DATA_FOR_RELEASE
+    - CUSTOM_SCRIPT_SAMPLE_DATA_FOR_REQUEST
+    - CS_ACTION_NAME_AND_ACTION_SCRIPT_CHECK_FOR_REQUEST_ACTIONS
+    - CREATE_FORM_RULE_IN_API
+    - IMPORT_SAMPLE_SCRIPT_DATA_FOR_CHANGE
+    - CUSTOM_SCRIPT_SAMPLE_DATA
+    - CUSTOM_SCRIPT_CUSTOM_DATA_FOR_CHANGE
+    - CS_API_DATA_FOR_PROBLEM
+    - CS_ACTION_NAME_AND_ACTION_SCRIPT_CHECK_FOR_RELEASE_ACTIONS
+    - IMPORT_SAMPLE_SCRIPT_DATA_FOR_PROBLEM
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- create_form_rule_in_api
+- cs_action_name_and_action_script_check_for_change_actions
+- cs_action_name_and_action_script_check_for_field_change_events
+- cs_action_name_and_action_script_check_for_form_submit_events
+- cs_action_name_and_action_script_check_for_general
+- cs_action_name_and_action_script_check_for_local_storage
+- cs_action_name_and_action_script_check_for_problem_actions
+- cs_action_name_and_action_script_check_for_release_actions
+- cs_action_name_and_action_script_check_for_request_actions
+- cs_api_data_for_change
+- cs_api_data_for_problem
+- cs_api_data_for_request
+- custom_script_custom_data_for_change
+- custom_script_custom_data_for_problem
+- custom_script_custom_data_for_request
+- custom_script_edit_data
+- custom_script_sample_data
+- custom_script_sample_data_for_problem
+- custom_script_sample_data_for_release
+- custom_script_sample_data_for_request
+- get_custom_scripts_id
+- import_sample_script_data_for_change
+- import_sample_script_data_for_problem
+- import_sample_script_data_for_release
+- import_sample_script_data_for_request

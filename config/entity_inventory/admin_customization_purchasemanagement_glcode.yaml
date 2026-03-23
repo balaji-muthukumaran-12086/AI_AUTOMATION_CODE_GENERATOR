@@ -1,0 +1,23 @@
+module: admin
+entity: customization_purchasemanagement_glcode
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/purchasemanagement/glcode/common/GlCodeLocators.java
+  interfaces:
+    GlCodeLocators: []
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/purchasemanagement/glcode/common/GlCodeDataConstants.java
+  classes:
+    GlCodeDataConstants:
+    - API_GL_CODE
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

@@ -1,0 +1,109 @@
+module: admin
+entity: automation_customactions_approvals
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/customactions/approvals/common/ApprovalsLocators.java
+  interfaces:
+    ApprovalsLocators:
+    - CLICK_TOGGLE_SLIDER_IN_APPROVALS
+    - VERIFY_APPORVALS_IS_DISABLED
+    - VERIFY_APPROVALS_IS_ENABLED
+    - CLICK_GLOBAL_CONFIGURATION
+    - GLOBAL_CONFIG_DROPDOWN_OPTIONS
+    - APPROVAL_SETTINGS_POPUP
+    - APPROVAL_SETTINGS_POPUP
+    - APPROVAL_SETTINGS_CHANGE_OPTIONS
+    - VERIFY_OPTIONS_CUSTOMACTIONS
+    - MY_PENDING_APPROVALS
+    - TAKE_ACTIONS
+    - APPROVE
+    - SELECT_TRIGGER_APPROVAL_NOTIFY
+    - SELECT_TRIGGER_APPROVAL_NOTIFY_OPTION
+    - ADD_APPROVERS_OPTION
+    - SEARCH_APPROVAL
+    - VERIFY_ADVANCED_PORTAL_OPTIONS
+    - VERIFY_CHANGE_CARD_IN_APPROVALS
+    - TYPE_COMMENTS_IN_APPROVALS_SIDEBAR
+    ApprovalForm:
+    - APPROVAL_FORM_OPENED
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/automation/customactions/approvals/common/ApprovalsDataConstants.java
+  classes:
+    ApprovalsDataConstants:
+    - ADD_APPROVAL_LEVEL_IN_CHANGE_DETAILVIEW
+    - ADD_APPROVAL_PROBLEM_CLOSURERULES
+    - EDIT_CHANGE_APPROVALS
+    - CREATE_APPROVAL_FOR_TRIGGER_SUBENTITY
+    - CREATE_PROBLEM_APPROVALS
+    - CREATE_RELEASE_APPROVALS
+    - CHANGE_APPROVALS_WITH_MANDATE_COMMENTS_FOR_ALL_APPORVALS
+    - CREATE_APPROVAL_FOR_TRIGGER
+    - ADD_APPROVAL_LEVEL_IN_RELEASE_DETAILVIEW
+    - CREATE_CHANGE_APPROVALS_WITH_APPROVAL_LEVELS
+    - CHANGE_APROVALS_WITH_MAJORITY_TO_APPROVE
+    - CREATE_CHANGE_APPROVALS_NOTES_EVERYONETOAPPROVE
+    - CHANGE_APPROVALS_WITH_NOTIFY_OTHER_APPROVERS_ACT_ON_APPORVALS
+    - ADD_APPROVERS_PROBLEM_APPROVAL
+    - CREATE_PROBLEM_APPROVALS_WITHPERCENTAGE
+    - EDIT_PROBLEM_APPROVALS
+    - CREATE_CHANGE_APPROVALS_WITH_APPROVAL_LEVELS_WITH_EVERYONETOAPPROVE
+    - CREATE_CHANGE_APPROVALS
+    - CHANGE_APPROVALS_WITH_AUTO_APPROVE_IF_SAME_APPROVER_HAS_PREVIOUS_LEVEL
+    - CHANGE_APROVALS_WITH_FIRST_RESPONSE_ACTION
+    - ADD_APPROVAL_LEVEL_IN_CHANGE_DETAILVIEW_FOR_TRIGGER
+    - ADD_APPROVAL_LEVEL_IN_CHANGE_DETAILVIEW_FOR_TRIGGER_FOR_E2A
+    - CREATE_CHANGE_APPROVALS_WITH_ANYONETOAPPROVE_TASKS
+    - CHANGE_APPROVALS_WITH_AUTO_APPROVE_REQUESTER
+    - CREATE_APPROVAL_FOR_TRIGGER_TASK_SUBENTITY
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createchangeapprovals
+  creates_count: 0
+  local_storage_keys:
+  - problemId
+- name: createreleaseapprovals
+  creates_count: 0
+  local_storage_keys:
+  - problemId
+  - userId
+  - techName
+- name: editproblemapprovals
+  creates_count: 0
+  local_storage_keys:
+  - problemId
+  - userId
+  - techName
+data_json_keys:
+- add_approval_level_in_change_detailview
+- add_approval_level_in_change_detailview_for_trigger
+- add_approval_level_in_change_detailview_for_trigger_for_e2a
+- add_approval_level_in_release_detailview
+- add_approval_problem_closurerules
+- add_approvers_problem_approval
+- change_approvals_with_auto_approve_if_same_approver_has_previous_level
+- change_approvals_with_auto_approve_requester
+- change_approvals_with_mandate_comments_for_all_apporvals
+- change_approvals_with_notify_other_approvers_act_on_apporvals
+- change_aprovals_with_first_response_action
+- change_aprovals_with_majority_to_approve
+- create_approval_for_trigger
+- create_approval_for_trigger_subentity
+- create_approval_for_trigger_task_subentity
+- create_change_approvals
+- create_change_approvals_notes_everyonetoapprove
+- create_change_approvals_with_anyonetoapprove_tasks
+- create_change_approvals_with_approval_levels
+- create_change_approvals_with_approval_levels_with_everyonetoapprove
+- create_problem_approvals
+- create_problem_approvals_withPercentage
+- create_release_approvals
+- edit_change_approvals
+- edit_problem_approvals

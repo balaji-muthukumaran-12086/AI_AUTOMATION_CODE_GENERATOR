@@ -1,0 +1,32 @@
+module: admin
+entity: appaddons_integrations_chatgpt
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/appaddons/integrations/chatgpt/common/ChatGptLocators.java
+  interfaces:
+    ChatGptLocators:
+    - CODE_GENERATOR
+    - GENERATE_BTN
+    - TYPE_MESSAGE_ERROR
+    - COPY_BTN
+    - CANCEL_BTN
+    - SUGGESTED_CODE_TEXT
+    - INTEG_POPUP_TITLE
+    - PROMPT_TEXTAREA
+    - SUGESSTED_INPUT
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/appaddons/integrations/chatgpt/common/ChatGptDataConstants.java
+  classes:
+    ChatGptDataConstants:
+    - FEATURES
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

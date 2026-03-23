@@ -11,8 +11,18 @@ api_util:
     params: String change, String worklog
     purpose: ''
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/changes/changeworklog/common/ChangeWorklogLocators.java
+  interfaces:
+    ChangeWorklogLocators: []
+    ChangeWorklogPopup:
+    - TYPE_HOURS
+    - TYPE_MINUTES
+    - TYPE_INCIDENT_COST
+    - TYPE_OTHER_CHARGES
+    ChangeWorklogDetailview:
+    - WORKLOG_ROW_DESCRIPTION
+    - EDIT_DELETE_WORKLOG
+    - WORKLOG_ROW
 data_constants:
   file: com/zoho/automater/selenium/modules/changes/changeworklog/common/ChangeWorklogDataConstants.java
   classes:
@@ -51,51 +61,3 @@ preprocess_groups:
   local_storage_keys:
   - changeId
 data_json_keys: []
-api_util_deep:
-- name: createChangeWithWorklog
-  params: String change, String worklog
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes: []
-  local_storage_reads:
-  - changeId
-preprocess_deep:
-- group: createchangewithworklog
-  source_file: ChangeWorklog.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ChangeWorklogAPIUtil.createChangeWithWorklog
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: change
-    source_type: hardcoded
-  - key: worklogName
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - ChangeWorklog.ChangeWithWorklog
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createchange
-  source_file: ChangeWorklog.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - ChangeAPIUtil.createChange
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: changeId
-    source_type: hardcoded
-  local_storage_reads:
-  - changeId
-  entities_created:
-  - Change.Change
-  creates_user: false
-  user_role: null
-  calls_super: false

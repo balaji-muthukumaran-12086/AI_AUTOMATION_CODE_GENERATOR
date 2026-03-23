@@ -1,0 +1,102 @@
+module: admin
+entity: customization_assetmanagement_softwaremanufacturer
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/softwaremanufacturer/utils/SoftwareManufacturerActionsUtil.java
+  methods:
+  - name: naviagateToSoftwareManufacturer
+    return_type: void
+    params: (none)
+    purpose: Navigates to Software Manufacturer tab (Admin -> Asset Management -> Software Manufacturers)
+  - name: fillValuesForSoftwareManufacturerAndSubmit
+    return_type: void
+    params: JSONObject inputData
+    purpose: Fill values for Software Manufacturer fields and submit the form
+  - name: storeSoftwareManufacturerDetails
+    return_type: void
+    params: String smName
+    purpose: Storing software manufacturer details (name , id , description and display name)
+  - name: getColumnIndex
+    return_type: String
+    params: String columName
+    purpose: Getting the column index of a column
+  - name: getColumnValueFromListView
+    return_type: String
+    params: String entityId, String columnName
+    purpose: Getting column value of an given entity id
+  - name: isOptionPresent
+    return_type: boolean
+    params: Locator locator, String value
+    purpose: Check whether value present in the fields values
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/softwaremanufacturer/utils/SoftwareManufacturerAPIUtil.java
+  methods:
+  - name: getSoftwareManufacturerDetailsUsingFieldValue
+    return_type: JSONObject
+    params: String fieldName,String value
+    purpose: ''
+  - name: createSoftwareManufacturer
+    return_type: String
+    params: JSONObject inputData
+    purpose: ''
+  - name: createSoftwareManufacturer
+    return_type: String
+    params: String dataId
+    purpose: ''
+  - name: createSoftwareManufacturer
+    return_type: String
+    params: TestCaseData data
+    purpose: ''
+  - name: createSoftwareManufacturer
+    return_type: String
+    params: (none)
+    purpose: ''
+  - name: createMultipleSoftwareManufacturers
+    return_type: void
+    params: int n
+    purpose: ''
+  - name: createMultipleSoftwareManufacturers
+    return_type: void
+    params: List<String> testCaseIds
+    purpose: ''
+  - name: reconcileSoftwareManufacturers
+    return_type: void
+    params: String parentId,List<String> child
+    purpose: ''
+  - name: deleteSoftwareManufacturer
+    return_type: void
+    params: String entityId
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/softwaremanufacturer/common/SoftwareManufacturerLocators.java
+  interfaces:
+    SoftwareManufacturerLocators:
+    - COLUMN_NAME
+    - DATA_COLUMN_INDEX
+    - COLUMN_NAME_WITH_SIZE
+    - COLUMN_VALUE
+    - ENTITY_ROW
+    - CHILD_SMS_TABLE_HEADER
+    ReconcilePopUp:
+    - NOTE_MSG
+    - SELECT_PARENT_MANUFACTURER_DROP_DOWN
+    - RECONCILE_BTN
+    FormBuilderLocators:
+    - MANDATORY_FIELD_ERROR
+    - ALREADY_EXISTS_FIELD_ERROR
+    - ALREADY_IN_USE_FIELD_ERROR
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/softwaremanufacturer/common/SoftwareManufacturerDataConstants.java
+  classes:
+    SoftwareManufacturerDataConstants:
+    - UPDATE_SOFTWARE_MANUFACTURER
+    - CREATE_SOFTWARE_MANUFACTURER
+    - RECONCILE_SOFTWARE_MANUFACTURER_2
+    - RECONCILE_SOFTWARE_MANUFACTURER_1
+    - DEFAULT_SOFTWARE_MANUFACTURERS
+    - CREATE_SOFTWARE_MANUFACTURER_II
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

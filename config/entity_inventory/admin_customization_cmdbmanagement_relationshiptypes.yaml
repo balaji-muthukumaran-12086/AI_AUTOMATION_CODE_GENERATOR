@@ -1,0 +1,28 @@
+module: admin
+entity: customization_cmdbmanagement_relationshiptypes
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/relationshiptypes/common/RelationshipTypesLocators.java
+  interfaces:
+    RelationshipTypesLocators: []
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/relationshiptypes/common/RelationshipTypesDataConstants.java
+  classes:
+    RelationshipTypesDataConstants:
+    - RELATIONSHIP_DATA_API_3
+    - GET_RELATIONSHIP_TYPE_ID
+    - RELATIONSHIP_DATA_API_2
+    - RELATIONSHIP_DATA_API_1
+    - CREATE_RELATIONSHIP
+    - LIST_INFO_CI_SEARCH
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

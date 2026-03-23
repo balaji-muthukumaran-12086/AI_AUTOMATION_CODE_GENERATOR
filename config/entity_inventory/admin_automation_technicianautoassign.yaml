@@ -1,0 +1,51 @@
+module: admin
+entity: automation_technicianautoassign
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/automation/technicianautoassign/utils/TechnicianAutoAssignActionsUtil.java
+  methods:
+  - name: techAvailabilitySetting
+    return_type: void
+    params: String configureTechInternalName
+    purpose: ''
+  - name: technicianAutoAssign
+    return_type: void
+    params: (none)
+    purpose: actions.validate.successMessageInAlert("Settings saved");
+  - name: modifyTechnicianStatus
+    return_type: void
+    params: (none)
+    purpose: ''
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/technicianautoassign/common/TechnicianAutoAssignLocators.java
+  interfaces:
+    TechnicianAutoAssignLocators:
+    - EXCLUDE_RQUESTS_CHECKBOX
+    - TECH_ONLINE_TOGGLE_BUTTON
+    - ONLINE_TECHNICIAN
+    - SHOW_ONLINE_TECH
+    - BULK_EDIT_TECH
+    - SELECT_CHECKBOX_USING_REQUESTID
+    - SHOW_ONLINE_TECH_POPUP
+    - ENABLE_AUTO_ASSIGN
+    - EXCLUDE_REQUESTS
+    - ASSIGN_TECH_TO
+    - CLOSE_ICON_IN_PROFILE
+    - CHECKBOX_IN_TECHAUTOASSIGN_FORM
+    Detailview:
+    - SELECT_RHS_FIELD
+    - SELECT_TECHNCIAN
+    - CHECK_TECH_IS_LIVE
+    - CHECK_TECH_IS_ONLINE
+    - ACKNOWLEDGEMENT_BUTTON
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

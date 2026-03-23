@@ -1,0 +1,108 @@
+module: admin
+entity: templatesandforms_changetemplate
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/changetemplate/utils/ChangeTemplateActionsUtil.java
+  methods:
+  - name: addNewSectioninStage
+    return_type: void
+    params: String stage
+    purpose: ''
+  - name: editchangetemplate
+    return_type: void
+    params: String changename, String changetempid
+    purpose: ''
+  - name: editSectionInStage
+    return_type: void
+    params: String stage, String section
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/changetemplate/utils/ChangeTemplateAPIUtil.java
+  methods:
+  - name: createChangeTemplateWithRequesterPermission
+    return_type: void
+    params: String[] dataIds
+    purpose: ''
+  - name: createChangeTemplateWithUserGroups
+    return_type: void
+    params: String[] dataIds
+    purpose: ''
+  - name: enablePlanningDetailsInTemplate
+    return_type: void
+    params: String testData
+    purpose: ''
+  - name: updateCategoryField
+    return_type: void
+    params: JSONObject testData
+    purpose: ''
+  - name: updateRolesInChangeTemplate
+    return_type: void
+    params: String testData
+    purpose: ''
+  - name: createChangeTemplate
+    return_type: void
+    params: String dataName
+    purpose: ''
+  - name: createChangeTemplateWithCIInvolved
+    return_type: void
+    params: (none)
+    purpose: LocalStorage.store("change_Template_Title", title);
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/changetemplate/common/ChangeTemplateLocators.java
+  interfaces:
+    ChangeTemplateLocators:
+    - TEMPLATE_NAME
+    - GET_CHANGE_ROW_ID
+    - CLICK_ROW_ACTIONS_WITH_ENTITYID
+    - SELECT_ACTION_LIST_FROM_TEMP_SETTINGS_ICON
+    Detailview:
+    - SELECT_LHS_NAME_IN_CHANGE_TEMP
+    - VERIFY_USER_GROUP_NAME
+    - DELETE_USERGROUP_IN_TEMPLATE
+    - CLICK_CHANGE_STAGE
+    - TARGET_LOCATION_PLANNING
+    - MOVE_SECTION
+    - MOVE_SECTION_POPUP
+    - MOVE_SECTION_POPUP_SAVE
+    - SELECT_FIELD
+    - FIELD_DELETE_ICON
+    - FIELD_EDIT_ICON
+    - SELECT_CHECKBOX
+    - SELECT_FIELD_CONFIGURATION
+    - SELECT_MANDATORY_FIELD
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/changetemplate/common/ChangeTemplateDataConstants.java
+  classes:
+    ChangeTemplateDataConstants:
+    - GET_UAT_OWNER_ID
+    - CHANGE_APPROVER
+    - CHANGE_TEMPLATE_WITH_ALL_TYPE_OF_UDF
+    - SHOW_CHANGE_TEMPLATE_TO_REQUESTER
+    - LINE_MANAGER
+    - CREATE_CHANGE_TEMPLATE_VIA_API
+    - UAT_OWNER
+    - CHANGE_TEMPLATE_TITLE_CATEGORY
+    - ENABLE_PLANNING_DETAILS_IN_TEMPLATE
+    - IMPLEMENTER
+    - REVIEWER
+    - SEARCH_CHANGE_STAGE
+    - CHANGE_TEMPLATE_CMDB
+    - CHANGE_TEMPLATE
+    - GET_CHANGE_APPROVER_ID
+    - UPDATE_CHANGE_ROLES_IN_CHANGE_TEMPLATE
+    - COPY_TEMPLATE
+    - CHANGE_TEMPLATE_ASSOCITE_WORKFLOW
+    - CHANGE_TITLE_ALONE
+    - GET_LINE_MANAGER_ID
+    - SHOW_CHANGE_TEMPLATE_TO_REQUESTER_WITH_USERGROUPS
+    - GET_REVIEWER_ID
+    - GET_IMPLEMENTER_ID
+    - CHANGE_INPUT
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: uatissuefield
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []

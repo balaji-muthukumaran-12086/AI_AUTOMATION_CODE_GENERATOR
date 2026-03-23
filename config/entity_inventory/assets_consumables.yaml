@@ -23,8 +23,21 @@ api_util:
     params: String consumableId, String data
     purpose: ''
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/assets/consumables/common/ConsumablesLocators.java
+  interfaces:
+    ConsumablesLocators:
+    - DEMO
+    - LISTVIEW_BUTTONS
+    - ADD_QUANTITY
+    - SELECT_CHECKBOX_USING_NAME
+    - LINK_INACTIONS
+    - NO_CONSUMABLE_ASSETS
+    - WITH_BATCH_OR_LOT_DETAILS_RADIO_BUTTON
+    Detailview:
+    - DETAILVIEW_TOPMENU_BUTTONS
+    - ACTIONS_DROPDOWN_LIST
+    MSP:
+    - MSP_ALERT_MSG
 data_constants:
   file: com/zoho/automater/selenium/modules/assets/consumables/common/ConsumablesDataConstants.java
   classes:
@@ -62,184 +75,3 @@ data_json_keys:
 - create_consumable_asset_in_UI_with_BarchOrLotDetails
 - create_product
 - modify_product
-data_json_deep:
-  total_entries: 10
-  field_frequency:
-    quantity: 6
-    state: 4
-    product: 3
-    consumable: 2
-    is_batch_tracking: 2
-    user: 2
-    consumable_stock: 1
-  all_placeholders:
-  - custom_product
-  - custom_product1
-  - custom_productId
-  - custom_siteName
-  - custom_userId
-  - unique_string
-  - user_email_id
-  reuse_groups_count: 4
-  entries:
-    create_product:
-      fields:
-      - product
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_consumable_asset:
-      fields:
-      - consumable
-      placeholders:
-      - custom_productId
-      local_storage_keys_required:
-      - productId
-      purpose: api_preprocess
-    create_consumable_asset_in_UI:
-      fields:
-      - is_batch_tracking
-      - product
-      - quantity
-      placeholders:
-      - custom_product
-      local_storage_keys_required:
-      - product
-      purpose: api_preprocess
-    allocate_quantity:
-      fields:
-      - state
-      - quantity
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_consumable_asset_in_UI_with_BarchOrLotDetails:
-      fields:
-      - is_batch_tracking
-      - product
-      - quantity
-      placeholders:
-      - custom_product
-      local_storage_keys_required:
-      - product
-      purpose: api_preprocess
-    modify_product:
-      fields:
-      - consumable
-      placeholders:
-      - custom_product1
-      local_storage_keys_required:
-      - product1
-      purpose: ui_form
-    allocate_quantity_inuse_state:
-      fields:
-      - state
-      - user
-      - quantity
-      placeholders:
-      - user_email_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    allocate_quantity_with_department:
-      fields:
-      - state
-      - quantity
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    add_quanity_with_customsite:
-      fields:
-      - consumable_stock
-      placeholders:
-      - custom_siteName
-      local_storage_keys_required:
-      - siteName
-      purpose: ui_form
-    allocate_quantity_inuse_state_AssignUser:
-      fields:
-      - state
-      - user
-      - quantity
-      placeholders:
-      - custom_userId
-      local_storage_keys_required:
-      - userId
-      purpose: ui_form
-actions_util_deep:
-- name: allocateConsumable
-  params: String productType, String productName, JSONObject data
-  locators_used:
-  - AssetLocators.Listview.CLICK_ROW_ACTIONS_WITH_ENTITYID
-  - ConsumablesLocators.Listview.LINK_INACTIONS
-  local_storage_reads:
-  - consumableId
-  local_storage_writes: []
-  action_chain:
-  - actions.navigate.toModule
-  - actions.listView.columnSearch
-  - actions.click
-  - actions.navigate.to
-  - actions.popUp.formBuilder.fillInputForAnEntity
-  - actions.popUp.clickByName
-  line_count: 8
-api_util_deep:
-- name: createProduct
-  params: String productType
-  api_paths:
-  - products
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - productId
-  - product
-  local_storage_reads: []
-- name: createConsumableAsset
-  params: String productType
-  api_paths:
-  - consumables
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - consumableId
-  local_storage_reads: []
-- name: allocateQuantity
-  params: String consumableId, String data
-  api_paths:
-  - consumables/
-  - consumables/*/allocations
-  rest_methods_used:
-  - create
-  local_storage_writes:
-  - quantity
-  local_storage_reads: []
-preprocess_deep:
-- group: create_consumable_asset
-  source_file: Consumables.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: consumableId
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - consumable
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: create_product
-  source_file: Consumables.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false

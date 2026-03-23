@@ -1,0 +1,26 @@
+module: admin
+entity: templatesandforms_solutiontemplate
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/solutiontemplate/common/SolutionTemplateLocators.java
+  interfaces:
+    SolutionTemplateLocators: []
+    Editor:
+    - SOLUTION_HEADING
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/solutiontemplate/common/SolutionTemplateDataConstants.java
+  classes:
+    SolutionTemplateDataConstants:
+    - SOLUTION_INPUT
+    - SOLUTION_TEMPLATE
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

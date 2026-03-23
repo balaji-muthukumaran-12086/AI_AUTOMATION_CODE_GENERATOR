@@ -1,0 +1,29 @@
+module: admin
+entity: customization_changemanagement_reasonforchange
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/changemanagement/reasonforchange/common/ReasonForChangeLocators.java
+  interfaces:
+    ReasonForChangeLocators:
+    - NEW_REASONFORCHANGE
+    - EDIT_REASONFORCHANGE
+    - DELETE_REASONFORCHANGE
+    - REASONFORCHANGE_TITLE
+    - ICN_REASONFORCHANGEACTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/changemanagement/reasonforchange/common/ReasonForChangeDataConstants.java
+  classes:
+    ReasonForChangeDataConstants:
+    - UI_REASONFORCHANGE1
+    - API_REASONFORCHANGE1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

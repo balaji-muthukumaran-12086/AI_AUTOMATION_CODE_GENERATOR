@@ -7,8 +7,34 @@ api_util:
   file: null
   methods: []
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/maintenance/requestmaintenance/common/RequestMaintenanceLocators.java
+  interfaces:
+    RequestMaintenanceLocators:
+    - CHECKBOX_LISTVIEW
+    - CHECKBOX_ALL_LISTVIEW
+    - ICON_ROWACTION
+    - LINK_INACTIONS
+    - MAINTENANCE_STATE_INLISTVIEW
+    - SUSPEND_MAINTENANCE_POPUPCOMMENTS
+    - LINK_COMMON
+    - REQUEST_ROW
+    - NO_MAINTENANCE
+    - CREATE_REQUEST_FROM_LISTVIEW
+    - AJAX_NOTIFIACTION_TEXT
+    - MAINTENANCE_HEADING_LOCATOR
+    - MAINTENANCE_REQUEST_ID
+    - ABC_LOCATOR
+    - NO_OF_MAINTENANCE_WITH_STATE
+    - LISTVIEW_BUTTONS
+    - QUICK_ACTIONS_BUTTON_LISTS
+    DetailView:
+    - ICON_SPOTEDIT_IN_DESCRIPTION_LOCATOR
+    - ICON_SPOTEDIT_IN_RESOLUTION_LOCATOR
+    - GOBACK_BUTTON_LOCATOR
+    - RESOULTION_LOCATOR_IN_DETAILVIEW
+    - SUBTAB_IN_DETAILVIEW_FUNCTION
+    - CONFIRM_BOX_IN_DETAILVIEW
+    - CLICK_TEMPLATE
 data_constants:
   file: com/zoho/automater/selenium/modules/maintenance/requestmaintenance/common/RequestMaintenanceDataConstants.java
   classes:
@@ -31,45 +57,3 @@ preprocess_groups:
   - CIsname
   - template_Name
 data_json_keys: []
-preprocess_deep:
-- group: create
-  source_file: RequestMaintenance.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - ServiceCategoryAPIUtil.createServiceCategoryAPI
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - ServiceCategoryAPIUtil.createServiceCategoryAPI
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  - IncidentTemplateAPIUtil.createIncidentTemplate
-  rest_direct_calls:
-  - create
-  - createAndGetAPIResponse
-  - createAndGetFullResponse
-  local_storage_stores:
-  - key: criteriaValue
-    source_type: computed
-  - key: CIsname
-    source_type: hardcoded
-  - key: template_Name
-    source_type: computed
-  - key: Id
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - ci_ibm_workstation
-  - request_templates
-  - sla
-  - IncidentTemplate.IncidentTemplate
-  - IncidentTemplate.IncidentTemplate
-  - ServiceCategory.ServiceCategoryAPI
-  - IncidentTemplate.IncidentTemplate
-  - ServiceCategory.ServiceCategoryAPI
-  - IncidentTemplate.IncidentTemplate
-  - IncidentTemplate.IncidentTemplate
-  creates_user: false
-  user_role: null
-  calls_super: false

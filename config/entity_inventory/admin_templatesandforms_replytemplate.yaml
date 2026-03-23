@@ -1,0 +1,46 @@
+module: admin
+entity: templatesandforms_replytemplate
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/replytemplate/common/ReplyTemplateLocators.java
+  interfaces:
+    ReplyTemplateLocators:
+    - VERIFY_REPLY_TEMP_NAME
+    - VERIFY_UDF_KEY
+    - TYPE_UDF_NAME
+    DetailsView:
+    - REPLY_IN_CONVERSATIONS
+    - REPLY_TEMPLATE_DROPDOWN
+    - REPLY_TEMPLATE_OPTION
+    - REPLY_SUBJECT
+    - REPLY_MESSAGE
+    - INPUT_TITLE
+    - AUTOCOMPLETE_FIELDS
+    - GET_REPLY_SUBJECT
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/replytemplate/common/ReplyTemplateDataConstants.java
+  classes:
+    ReplyTemplateDataConstants:
+    - CUSTOMSITE
+    - REPLY_TEMP_WITH_REQ_CMDB_LOOKUP
+    - REPLY_TEMPLATE_LASTUPDATEDBY
+    - ASSETS
+    - CREATEPRODUCT
+    - REPLY_TEMPLATE_REQUESTDETAILS
+    - MAIL_FIELDS
+    - AUTO_COMPLETE
+    - REQUEST_INPUT
+    - REPLY_TEMPLATE_REQUESTERDETAILS
+    - REPLY_TEMPLATE
+    - REPLY_TEMPLATE_REQUESTLINK
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

@@ -1,0 +1,254 @@
+module: admin
+entity: instanceconfigurations_operationalhour
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/operationalhour/utils/OperationalHourActionsUtil.java
+  methods:
+  - name: selectSiteFiltersAlone
+    return_type: void
+    params: String value
+    purpose: ''
+  - name: selectGroupFiltersAlone
+    return_type: void
+    params: String value
+    purpose: ''
+  - name: selectAllOperationalHoursFilters
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: appliesToSiteOH
+    return_type: void
+    params: (none)
+    purpose: inside of OH popup
+  - name: appliesToGroupOH
+    return_type: void
+    params: (none)
+    purpose: inside of OH popup
+  - name: appliesToSiteAndGroupInOH
+    return_type: void
+    params: (none)
+    purpose: inside of OH popup
+  - name: selectConfigureExceptionsInOH
+    return_type: void
+    params: String value1, String value2
+    purpose: inside of OH popup - frequency and weekday
+  - name: setTime
+    return_type: void
+    params: String startTime, String endTime
+    purpose: WaitUtil.sleep(3l);
+  - name: setStartEndHoursMinutes
+    return_type: void
+    params: String startTimeHours, String startTimeMinutes, String endTimeHours, String endTimeMinutes
+    purpose: hours and time alone for both start and end time
+  - name: setStartAndEndHours
+    return_type: void
+    params: String startTimeHours, String endTimeHours
+    purpose: hours alone for both start and end time
+  - name: associatedOHInSpecialOH
+    return_type: void
+    params: String value1
+    purpose: inside of SOH popup
+  - name: setOperationalHour
+    return_type: void
+    params: Boolean inOut
+    purpose: ''
+  - name: setMinutesInStartAndEndTime
+    return_type: void
+    params: String startTime, String endTime
+    purpose: mins alone in new oh popup
+  - name: createOH
+    return_type: void
+    params: JSONObject inputData
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/operationalhour/utils/OperationalHourAPIUtil.java
+  methods:
+  - name: createOH
+    return_type: void
+    params: String inputData
+    purpose: ''
+  - name: createSOH
+    return_type: void
+    params: String inputData
+    purpose: ''
+  - name: setOperationalHour
+    return_type: void
+    params: Boolean inOut
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/operationalhour/common/OperationalHourLocators.java
+  interfaces:
+    OperationalHourLocators:
+    - CLICK_FILTERS_DROPDOWN
+    - CLICK_ALL_OPERTIONAL_HOURS_DROPDOWN
+    - SELECT_SITE_RADIO_BTN
+    - CLICK_DROPDOWN_IN_FILTERS
+    - SELECT_GROUPS_RADIO_BTN
+    NewOHPopup:
+    - VERIFY_OH_POPUP_OPENED
+    - START_TIME
+    - END_TIME
+    - CLICK_TIME_HOUR
+    - CLICK_FREQUENCY_DROPDOWN
+    - TYPE_FREQUENCY_NAME_IN_DROPDOWN
+    - SELECT_ACTIONS_OPTIONS
+    - CLICK_WEEKDAY_DROPDOWN
+    - SELECT_WEEKDAY_OPTIONS_IN_DROPDOWN
+    - START_TIME_HOURS
+    - SELECT_OPTION_IN_DROPDOWN
+    - START_TIME_MINUTES
+    - END_TIME_HOURS
+    - END_TIME_MINUTES
+    - SELECT_OPTION_VALUES
+    - TEXT_IN_POPUP
+    - VERIFY_APPLIES_TO_FIELD
+    - CLICK_ADD_BREAK_HOURS
+    - CLICK_ADD_PLUS_ICON
+    - START_MINS
+    - END_MINS
+    Listview:
+    - VERIFY_OH_NAME_IN_LISTVIEW
+    - VERIFY_OH_NAME_IN_LISTVIEW
+    - VERIFY_GROUP_NAME_IN_LISTVIEW
+    - VERIFY_SITE_NAME_IN_LISTVIEW
+    - CLICK_TYPE_OF_HOURS
+    - CLICK_ROW_ACTIONS_WITH_ENTITYID
+    - SELECT_OPTIONS_IN_ACTIONS_ICON
+    - SELECT_CHECKBOX_WITH_ENTITYID
+    - CLICK_SOH_TAB_IN_DETAILS
+    - VERIFY_DIASSOCIATE_IN_DETAILS
+    - CLICK_DIASSOCIATE_IN_DETAILS
+    - VERIFY_SOH_NAME_IN_LISTVIEW
+    - CLICK_NEW_DROP_ICON_IN_OH_DETAILS
+    - CLICK_NEW_BTN_IN_OH_DETAILS
+    - CLICK_ASSOCIATE_FROM_EXISTING
+    - CLICK_ASSOCIATE_BTN
+    NewSOHPopup:
+    - CLICK_ASSOCIATE_OH
+    - ASSOCIATE_OH
+    - SELECT_VALUES
+    - CLICK_DATE_FIELD
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/operationalhour/common/OperationalHourDataConstants.java
+  classes:
+    OperationalHourDataConstants:
+    - GET_COPYSITE_DATA
+    - OPERATIONAL_HOUR_UAE
+    - SPECIAL_OPERATIONAL_HOURS
+    - SPECIAL_OPERATIONAL_HOUR_EXCEPTION
+    - APPLIES_TO_SITE_AND_GROUP
+    - OPERATIONAL_HOURS_WITH_BREAK_HOURS
+    - GET_GROUP_DATA
+    - APPLIES_TO_GROUP
+    - APPLIES_TO_SITE
+    - EDIT_SOH
+    - OPERATIONAL_HOUR_DEFAULT_DATA
+    - OPERATIONAL_HOURS_EXCEPTION
+    - OPERATIONAL_HOUR_FOR_BR
+    - OPERATIONAL_HOUR_STANDARD_HOURS
+    - OPERATIONAL_HOURS
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createSiteAndGroupForOH
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+- name: createOH
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+- name: createSOH
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+  - currentDate
+- name: createOHwithprevioushour
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+  - moduleName
+- name: createuaeoh
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+  - moduleName
+- name: createOHwithBreakHours
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+  - currentMin
+  - afterMin
+  - currentbreakhour
+  - nextbreakhour
+- name: createOOHwithBreakHours
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+  - currentMin
+  - afterMin
+  - currentbreakhour
+  - nextbreakhour
+- name: createOHforBR
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+- name: createOOHforBR
+  creates_count: 1
+  local_storage_keys:
+  - previousHour
+  - nextHour
+  - moduleName
+  - subName
+- name: createohandsoh
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+  - currentDate
+  - moduleName
+- name: createSOHwithOOH
+  creates_count: 1
+  local_storage_keys:
+  - previousHour
+  - nextHour
+  - currentDate
+  - moduleName
+- name: createholidayforoh
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+  - moduleName
+- name: createOHwithExceptionNonWorkingDay
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+  - week
+  - day
+  - moduleName
+- name: executeSLAbyOH
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+  - moduleName
+- name: createSOHwithExceptionNonWorkingDay
+  creates_count: 0
+  local_storage_keys:
+  - previousHour
+  - nextHour
+  - week
+  - day
+  - currentDate
+data_json_keys: []

@@ -1,0 +1,24 @@
+module: admin
+entity: templatesandforms_purchaseordertemplate
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/purchaseordertemplate/common/PurchaseOrderTemplateLocators.java
+  interfaces:
+    PurchaseOrderTemplateLocators: []
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/purchaseordertemplate/common/PurchaseOrderTemplateDataConstants.java
+  classes:
+    PurchaseOrderTemplateDataConstants:
+    - PO_TEMPLATE_DATA_API
+    - PO_TEMPLATE_DATA_WITH_ADDITIONAL_FIELD_API
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

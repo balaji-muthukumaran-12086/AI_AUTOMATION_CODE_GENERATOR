@@ -1,0 +1,748 @@
+module: admin
+entity: automation_workflows
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/automation/workflows/utils/WorkflowsActionsUtil.java
+  methods:
+  - name: checkAndCreateVendor
+    return_type: void
+    params: String vendorName
+    purpose: static Workflows workflow = new Workflows(null, null);
+  - name: fillNewWorkflowField
+    return_type: void
+    params: JSONObject inputData
+    purpose: ''
+  - name: fillWorkFlowTypeField
+    return_type: void
+    params: String value
+    purpose: ''
+  - name: fillTextField
+    return_type: void
+    params: String fieldAttribute, String value
+    purpose: only for select field not select 2 options
+  - name: connection
+    return_type: void
+    params: Locator source, Locator target
+    purpose: ''
+  - name: takeOutputLocator
+    return_type: Locator
+    params: String outputStage, String outputName, String outputValue
+    purpose: ''
+  - name: takeInputLocator
+    return_type: Locator
+    params: String outputStage, String outputName, String outputValue
+    purpose: ''
+  - name: fillNotifyField
+    return_type: void
+    params: JSONArray array
+    purpose: ''
+  - name: searchAndSelectNotifyField
+    return_type: void
+    params: String name
+    purpose: actions.click(WorkflowsLocators.Listview.HIDE_DROPDOWN);
+  - name: executeScript
+    return_type: void
+    params: String script, Locator locator
+    purpose: ''
+  - name: createNotification
+    return_type: void
+    params: JSONObject inputData
+    purpose: 'TODO: handle exception'
+  - name: createChangeNotification
+    return_type: void
+    params: JSONObject inputData
+    purpose: ''
+  - name: fillScope
+    return_type: void
+    params: JSONArray arr, int i
+    purpose: ''
+  - name: fillScope
+    return_type: void
+    params: JSONArray scope
+    purpose: public static void fillScope(JSONArray arr, int i) throws Exception {
+  - name: fillMandatoryField
+    return_type: void
+    params: JSONArray mandatory_fields
+    purpose: ''
+  - name: fillMandatoryRules
+    return_type: void
+    params: JSONArray mandatory_rules
+    purpose: ''
+  - name: setCriteriaForScope
+    return_type: void
+    params: JSONObject criteriadata, String datapath
+    purpose: ''
+  - name: fillPreActionsRules
+    return_type: void
+    params: JSONObject criteriadata, String datapath, Workflow workflowObject
+    purpose: ''
+  - name: fillPostActionsRules
+    return_type: void
+    params: JSONObject criteriadata, String datapath, Workflow workflowObject
+    purpose: ''
+  - name: waitForTransitionToAppear
+    return_type: void
+    params: String transition
+    purpose: ''
+  - name: clickTransition
+    return_type: void
+    params: String transitionname
+    purpose: ''
+  - name: spotEditUdfFieldUsingSearch
+    return_type: void
+    params: String field, String value
+    purpose: ''
+  - name: spotEditUdfFieldRadioAndCheckBox
+    return_type: void
+    params: String field, String value
+    purpose: ''
+  - name: saveAndVerifyTransitionAlert
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: editStage
+    return_type: void
+    params: String stageName
+    purpose: ''
+  - name: sendPrompt
+    return_type: void
+    params: String prompt
+    purpose: ''
+  - name: navigateToWorkflowCanvasPage
+    return_type: void
+    params: String module
+    purpose: ''
+  - name: navigateToManageStageStatusInNewWorkflow
+    return_type: void
+    params: String module
+    purpose: ''
+  - name: navigateToManageStageStatusInWorkflow
+    return_type: void
+    params: String module, String workflowName
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/automation/workflows/utils/WorkflowsAPIUtil.java
+  methods:
+  - name: createWorkflowViaAPI
+    return_type: void
+    params: JSONObject workflowData
+    purpose: ''
+  - name: createTransition
+    return_type: String
+    params: String transitionData
+    purpose: ''
+  - name: associateRoleToUser
+    return_type: void
+    params: String[] dataIds
+    purpose: ''
+  - name: getEntitytId
+    return_type: String
+    params: String wfName
+    purpose: ''
+  - name: updateGlobalWorkflowSetting
+    return_type: void
+    params: String settingData
+    purpose: ''
+  - name: createWorkflowWithManageStageStatus
+    return_type: void
+    params: JSONObject workflowData, String stageStatus
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/workflows/common/WorkflowsLocators.java
+  interfaces:
+    WorkflowsLocators:
+    - DRAG_NODE_LOCATOR
+    - DROP_CANVAS_LOCATOR
+    - STATUSES_LOCATOR_IN_POPUP
+    - STATUSES_LOCATOR_IN_POPUP_1
+    - STATUSES_VALUE
+    - SAVE_IN_POPUP
+    - DROP_DOWN_LOCATOR
+    - STAGE_DROP_DOWN_LOCATOR
+    - ARROW_LOCATOR
+    - STAGE_INPUT_LOCATOR
+    - STAGE_OUTPUT_LOCATOR
+    - STAGE_OUTPUT_LOCATOR_MANUAL
+    - IF_OUTPUT_LOCATOR
+    - IF_INPUT_LOCATOR
+    - SWITCH_INPUT_LOCATOR
+    - SWITCH_OUTPUT_LOCATOR
+    - WAIT_FOR_INPUT_LOCATOR
+    - WAIT_FOR_OUTPUT_LOCATOR
+    - FORK_INPUT_LOCATOR
+    - FORK_OUTPUT_LOCATOR
+    - JOINT_INPUT_LOCATOR
+    - JOINT_OUTPUT_LOCATOR
+    - NOTIFICATION_INPUT_LOCATOR
+    - NOTIFICATION_OUTPUT_LOCATOR
+    - APPROVAL_INPUT_LOCATOR
+    - APPROVAL_OUTPUT_LOCATOR
+    - FIELD_UPDATE_INPUT_LOCATOR
+    - FIELD_UPDATE_OUTPUT_LOCATOR1
+    - FIELD_UPDATE_OUTPUT_LOCATOR2
+    - TASK_INPUT_LOCATOR
+    - TASK_OUTPUT_LOCATOR
+    - TASK_OUTPUT_LOCATOR
+    - TIMER_INPUT_LOCATOR
+    - TIMER_OUTPUT_LOCATOR
+    - TIMER_OUTPUT_LOCATOR
+    - STATUS_OUTPUT_LOCATOR
+    - STATUS_INPUT_LOCATOR
+    - STATE_OUTPUT_LOCATOR
+    - STATE_INPUT_LOCATOR
+    - STATE_OUTPUT_LOCATOR_MANUAL
+    - RESOURCE_INPUT_LOCARTOR
+    - RESOURCE_OUTPUT_LOCATOR
+    - STAGE_STATUS_VALUE_LOCATOR
+    - STAGE_VALUE_LOCATOR
+    - CONVERSATION_FILTER_CHECKBOX
+    - NOTIFICATION_LOCATOR
+    - NOTIFICATION_SUBJECT_LOCATOR
+    - NO_DATA_AVAILABLE_LOCATOR
+    - NOTIFICATION_COUNT_LOCATOR
+    - DETAILS_PAGE_FIELD_VALUE
+    - DETAILS_PAGE_FIELD_VALUE_SPAN
+    - NOTIFICATION_SUBJECT_LOCATOR2
+    - APPROVE_OR_REJECT_LOCATOR
+    - APPROVAL_LEVEL_NAME
+    - APPROVAL_COMMENT_SUBMIT
+    - ALL_TASK_TITTLE_LOCATOR
+    - SINGLE_TASK_TITTLE_LOCOTOR
+    - BACK_BUTTON
+    - NOTIFY_LOCATOR
+    - NOTIFY_TO_LOCATOR
+    - NOTIFY_DROPDOWN_LOCATOR
+    - NOTIFY_GROUP
+    - NOTIFY_SEARCH_LOCATOR
+    - SELECT_NOTIFIER_LOCATOR
+    - HIDE_DROPDOWN
+    - NODE_VALUE
+    - DELETE_CONNECTION
+    - CONNECTION_DELETE_BUTTON
+    - END_INPUT_LOCATOR
+    - SUBMISSION
+    - FIELD_UPDATE_FIELDS
+    - TIMER_CONFIGURE_ACTION_BUTTON
+    - TIMER_ADD_ACTIONS_BUTTON
+    - TIMER_ACTIONS
+    - TIMER_END_ACTION_BUTTON
+    - WORKFLOW_EXECUTION_STATUS_LOCATOR
+    - CHANGE_ACTIONS_BUTTON
+    - RELEASE_WORKFLOW_LOCATOR
+    - WORKFLOW_EXECUTION_OF_RELEASES
+    - WORKFLOW_UNDO_LOCATOR
+    - WORKFLOW_REDO_LOCATOR
+    - WORKFLOW_RESET_LOCATOR
+    - COPY_WORKFLOW_LOCATOR
+    - FIRST_WORKFLOW_USING_NAMESEARCH
+    - INVALID_WORKFLOW_ICON
+    - INVALID_WORKFLOW_ICON_INSIDE_WORKFLOW
+    - SELECT_WORKFLOW
+    - NO_MATCH_FOUND_IN_SELECT_OPTION
+    - WORKFLOW_RHS_TOGGLE_BUTTON
+    - ADD_NODE_LOCATOR
+    - TIMER_DAYS_OR_PERCENTAGE_LOCATOR
+    - TIMER_FIELD_UPDATE_FIELD_VALUE_LOCATOR
+    - NODE_SETTINGS_BUTTON
+    - NODE_SETTING_VALUE
+    - REQUEST_STATUS_LOCATOR
+    - ASSET_FIELD_UPDATE_USER_LOCATOR
+    - TOOLTIP_OUTPUT_LOCATOR
+    - TOOLTIP_FLOW_NODE_LOCATOR
+    - TOOLTIP_CONDITION_NODE_LOCATOR
+    - TOOLTIP_ACTION_NODE_LOCATOR
+    - TOOLTIP_BRANCH_NODE_LOCATOR
+    - TOOLTIP_ALL_NODE_COMMEON_LOCATOR
+    - WORKFLOW_CLOSE_LOCATOR
+    - WORKFLOW_CANCEL_LOCATOR
+    - NODE_SETTINGS_BUTTON
+    - NODE_ICON_TAKE_USE_TITTLE
+    - SELECT_ACTIONS_IN_POPUP
+    - SELECT_ACTIONS_EDIT_BUTTON
+    - FIELD_UPDATE_FIELD_VALUE_LOCATOR
+    - RELEASE_ROLE_LOCATOR
+    - RELEASE_ENGINEER_ROLE_GIVE_ALL_PERMISSION
+    - ASSET_WORKFLOW_PRODUCT_TYPE
+    - ALL_NODE_COMMON_LOCATOR
+    - WORKFLOWS_SETTING_ICON
+    - WORKFLOW_CLOSE_LOCATOR_EXECUTION_VIEW
+    - WORKFLOW_NOT_FOR_FURTHER_USE
+    - WORKFLOW_EXECUTION_POPUP_CLOSE_LOCATOR
+    - NOTIFIER_REMOVE_CROSS_LOCATOR
+    - ASSET_PRODUCT_TYPE
+    - REQUEST_DETAIS_PAGE_LOCATOR
+    - GET_DISPLAY_NAME_USING_ENTITYID
+    - SAVE_MORE
+    - SAVE_CLOSE
+    - STATUS_OUTPUT_LOCATOR_MANUAL
+    - STATUS_INPUT_LOCATOR_MANUAL
+    - TRANSITION
+    - TRANSITION_NEW_1
+    - MODULE_DROPDOWN
+    - SELECT_MODULE
+    - MANDATORY_RULES
+    - MANDATORY_RULES_FIELDS
+    - START_TRANSITION
+    - DELETE_TRANSITION
+    - CLICK_TRANSITION
+    - TRANSITION_NAME
+    - SELECT_TRANSITION
+    - VERIFY_TRANSITION
+    - VERIFY_TRANSITION_RHS
+    - VERIFY_STATUS
+    - VERIFY_MANDATORY_RULES
+    - VERIFY_PRE_ACTION_REASONS_IN_HISTORY
+    - VERIFY_PRE_ACTION_OPERATION_IN_HISTORY
+    - VERIFY_POST_ACTION_OPERATION_IN_HISTORY
+    - VERIFY_TRANSITION_OPERATION_IN_HISTORY
+    - VERIFY_POST_ACTION_OPERATION_IN_PROBLEM_HISTORY
+    - VERIFY_POST_ACTION_OPERATION_IN_RELEASE_HISTORY
+    - VERIFY_NOTIFICATION_OPERATION_IN_HISTORY
+    - TRANSITION_RULES_HEADER
+    - SELECT_RECIPIENTS_IN_SCOPE
+    - SELECT_DROPDOWN_IN_SCOPE
+    - SELECT_USER_SCOPE
+    - SELECT_USER_ROLE
+    - CLICK_ADD_CRITERIA
+    - MANDATORY_FIELDS
+    - SELECT_MANDATORY_FIELD
+    - RANDOM_CLICK
+    - SELECT_MANDATORY_RULES
+    - PRE_ACTION_RULES
+    - POST_ACTION_RULES
+    - ACTIONS_DOTS
+    - SPOT_EDIT_UDF_CLICK
+    - ABORT_CUSTOM_ACTION
+    - TRANSITION_VIEW
+    - CHECK_TRANSITION
+    - ADD_STATUS_LOCATOR
+    - NOTIFY_SEARCH_LOCATOR_LAST
+    - CF_OUTPUT_LOCATOR
+    - CF_INPUT_LOCATOR
+    - WEBHOOK_INPUT_LOCATOR
+    - WEBHOOK_OUTPUT_LOCATOR
+    - WF_COMPLETED_ICON
+    - SHOW_DETAILS
+    - VERIFY_COMMENTS
+    - LCTRANSITION
+    - CLICK_LCENTITY
+    - LCTRANSITION_DURING
+    - LC_ADD_MANDATORY_FIELDS
+    - ADD_RULE_SET_DURING_LC
+    - CLOSE_LC
+    - WORKFLOW_MANAGE_STAGE_STATUS
+    - WORKFLOW_MANAGE_STAGE_STATUS_ICON
+    - MANAGE_STAGE_STATUS_HEADING
+    - ACTION_BY_SDPTITLE
+    - MANAGE_STAGE_STATUS_SLIDE_OPEN
+    - RADIO_BUTTON_VALUE
+    - RESET_TO_DEFAULT_ORDER_DISABLED
+    - RESET_TO_DEFAULT_ORDER_ENABLED
+    - REORDER_ROW_DISABLED
+    - REORDER_ROW_ENABLED
+    - SELECT_WORKFLOW_WITH_NAME
+    - NODE_NAME_WITH_NODE_TYPE
+    - APPLY_MANAGE_STAGE_STATUS
+    - CANCEL_MANAGE_STAGE_STATUS
+    Zia:
+    - ASK_ZIA
+    - ASK_ZIA_IN_HEADER
+    - TYPE_IN_PROMPT
+    - ZIA_LOADER
+    - ZIA_SEND
+    - EXPLORE_PROMPT
+    - SEARCH_BOX_SAMPLE_PROMPT
+    - CLICK_SAMPLE_PROMPT
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/automation/workflows/common/WorkflowsDataConstants.java
+  classes:
+    WorkflowsDataConstants:
+    - GET_DEPLOYMENT_ID
+    - GET_PLANNING_APPROVED_ID
+    - GET_OPEN_ID
+    - GET_LEVEL_TIER1_ID
+    - EDITED_NOTIFICATION
+    - GET_UAT_ON_HOLD_ID
+    - SINGLE_NODE_FIELD_UPDATE
+    - GET_CLOSE_ID
+    - GET_MODULE_ID
+    - WORKFLOW_DETAILS
+    - CREATE_PROBLEM_WORKFLOW_APPROVAL_TECH
+    - CREATE_INCIDENT_REQUEST_WORKFLOW_WITH_CF
+    - GET_MODE_EMAIL_ID
+    - CREATE_PROBLEM_WORKFLOW_WITH_UDF
+    - GET_TESTING_ON_HOLD_ID
+    - CHECK_ASSET_WF_NOTIFICATION_API
+    - SINGLE_NODE_FORK
+    - RELEASE_WORKFLOW_API_5_WITH_CUSTOM_STAGE
+    - CREATE_FIELD_UPDATE_VIA_API
+    - GET_CHANGE_CLOSE_ID
+    - GET_CLOSE_CANCELLED_ID
+    - CREATE_PROBLEM_WORKFLOW_APPROVAL_REPORTEDBY
+    - CREATE_SERVICE_REQUEST_WORKFLOW_WITH_RESOURCE_ENHANCEMENT_ALL_QUESTIONS
+    - CREATE_CHANGE_TRANSITION_WITH_MANDATORY_RULES
+    - CREATE_PROBLEM_WORKFLOW_APPROVAL_WITH_ASSOCIATED_ENTITY
+    - CREATE_INCIDENT_TRANSITION_WITH_MANDATORY_RULES
+    - GET_CLOSE_FAILED_ID
+    - GET_DEPLOYMENT_ON_HOLD_ID
+    - CREATE_WORKFLOW_CH_AND_RL_FOR_INVALID
+    - GET_REVIEW_COMPLETED_ID
+    - EDITED_TASK
+    - CREATE_TRANSITION_VIA_API
+    - CREATE_QUESTION_FOR_INCIDENT_REQUEST
+    - GET_PLANNING_REJECTED_ID
+    - GET_INTERNET_ID
+    - GET_DEPLOYMENT_DEPLOYED_ID
+    - CREATE_INCIDENT_TRANSITION_WORKLOG_ADDED_API
+    - GET_TRAINING_ID
+    - CREATE_RELEASE_WORKFLOW_TRANSITION_WITH_UDF_UI
+    - EDIT_CHANGE_TRANSITION_VIA_API
+    - GET_TESTING_ID
+    - GET_PRIORITYHIGH_ID
+    - CREATE_RELEASE_WORKFLOW_TRANSITION
+    - SINGLE_NODE_APPROVAL_PROBLEM
+    - CREATE_WORKFLOW2
+    - CREATE_PROBLEM_TRANSITION_MANDATORY_FIELDS
+    - RELEASE_WORKFLOW_API_11
+    - RELEASE_WORKFLOW_API_10
+    - RELEASE_WORKFLOW_API_12
+    - CREATE_TRANSITION_WITH_CRITERIA
+    - CREATE_PROBLEM_TRANSITION_WITH_MANDATORY_RULES
+    - RELEASE_WORKFLOW_API_WITH_CUSTOM_STAGE_AND_STATUS
+    - CREATE_WORKFLOW_VIA_API
+    - CREATE_RELEASE_WORKFLOW
+    - GET_SUBMISSION_ID
+    - CREATE_TRANSITION_WITH_UDF_CRITERIA
+    - NOTIFICATION_DATA_FOR_ASSET_WORKFLOW_SUBENTITY
+    - GET_SUBCATEGORY_ADOBE_ID
+    - CREATE_SERVICE_REQUEST_WORKFLOW_TRANSITION
+    - GET_UAT_ID
+    - GET_REVIEW_REJECTED_ID
+    - GET_DEVELOPMENT_BACK_OUT_ID
+    - EDITED_JOIN
+    - CREATE_CHANGE_TRANSITION_MANDATORY_FIELDS
+    - GET_TESTING_IN_PROGRESS_ID
+    - CREATE_PROBLEM_WORKFLOW_TRANSITION
+    - CREATE_WORKFLOW_RELEASE_TRANSITION_VIA_API
+    - RELEASE_WORKFLOW_API
+    - QUESTION_INFO_CRITERIA_SEARCH
+    - CREATE_SERVICE_REQUEST_WORKFLOW_WITH_CF
+    - GET_UAT_IN_PROGRESS_ID
+    - CREATE_NEW_IMPACT
+    - CREATE_RELEASE
+    - GET_DEPLOYMENT_FAILED_ID
+    - CREATE_PROBLEM_TRANSITION_WITH_MANDATORY_RULES_CHANGE_ASSOCIATIONS
+    - EDITED_SWITCH
+    - CREATE_RELEASE_WORKFLOW_WITH_CF
+    - ADD_QUESTION_SERVICE_TEMPLATE
+    - CREATE_INCIDENT_TRANSITION_MANDATORY_FIELDS
+    - CREATE_ASSET_WORKFLOW_TRANSITION
+    - CREATE_PROBLEM_TRANSITION_WITH_MANDATORY_RULES_CHANGE_ASSOCIATIONS_CLOSED
+    - SINGLE_NODE_TIMER
+    - CREATE_ASSET_TRANSITION_API
+    - GET_ASSET_IN_USE_ID
+    - CREATE_RELEASE_TRANSITION_WITH_MANDATORY_RULES
+    - FIELDUPDATE_ONLY
+    - CREATE_PROBLEM_WORKFLOW_APPROVAL_TECH_GROUPS
+    - GET_ASSET_IN_STORE_ID
+    - GET_TESTING_COMPLETED_ID
+    - CREATE_ASSET_WORKFLOW
+    - GET_ITEM_INSTALL_ID
+    - GET_SITE_ID
+    - GET_CLOSURE_ID
+    - GET_CATEGORYGENERAL_ID
+    - CREATE_TEST_WORKFLOW
+    - GET_TRAINING_IN_PROGRESS_ID
+    - SINGLE_NODE_APPROVAL
+    - EDITED_FIELD_UPDATE
+    - GET_CLOSURE_IN_PROGRESS_ID
+    - GET_GROUP_HARDWARE_ID
+    - GET_ASSET_PRODUCT_ID
+    - GET_SUBMISSION_ACCEPTED_ID
+    - GET_DEVELOPMENT_COMPLETED_ID
+    - CREATE_WORKFLOW_CHANGE_TRANSITION_VIA_API
+    - CREATE_CHANGE
+    - ASSIGN_WORKFLOW_ON_SERVICE_TEMPLATE
+    - SINGLE_NODE_JOIN
+    - APPROVERS_DATA
+    - CREATE_CHANGE_WORKFLOW_TRANSITION
+    - GET_REVIEW_ID
+    - GET_REVIEW_IN_PROGRESS_ID
+    - GET_CLOSE_COMPLETED_ID
+    - CREATE_PROBLEM_TRANSITION_WITH_MANDATORY_RULES_ASSOCIATIONS
+    - GET_DEVELOPMENT_IN_PROGRESS_ID
+    - CREATE_PROBLEM_WORKFLOW_WITH_CF
+    - GET_UAT_REJECTED_ID
+    - CREATE_WORKFLOW_TRANSITION_VIA_API
+    - WORKFLOW_WITH_GROUP_AS_SWITCH_NODE
+    - GET_DEVELOPMENT_ON_HOLD_ID
+    - CREATE_INCIDENT_REQUEST_WORKFLOW_TRANSITION
+    - CREATE_WORKFLOW_CHANGE_GUIDED_PATH_VIA_API
+    - CREATE_PROBLEM_WORKFLOW_APPROVAL_CEO
+    - GET_PLANNING_IN_PROGRESS_ID
+    - CREATE_PROBLEM_WORKFLOW
+    - CREATE_SERVICE_REQUEST_WORKFLOW
+    - COPY_WORKFLOW
+    - CREATE_PROBLEM_WORKFLOW_APPROVAL_REQUESTERS
+    - CREATE_CHANGE_WORKFLOW
+    - CREATE_PROBLEM_WORKFLOW_TRANSITION_WITH_UDF_UI
+    - GET_DEPLOYMENT_IN_PROGRESS_ID
+    - SHOW_ONLY_STAGES_AND_STATUSES_INCLUDED_IN_WORKFLOW
+    - SINGLE_NODE_IF
+    - GET_SUBMISSION_REJECTED_ID
+    - SHOW_ALL_STAGES_AND_STATUSES_IN_WORKFLOW_SETTING
+    - SERVICE_TEMPLATE_WORKFLOW_ASSOCIATION
+    - CREATE_FIELDUPDATE
+    - CREATE_RELEASE_WORKFLOW_WITH_UDF
+    - CREATE_PROBLEM_WORKFLOW_APPROVAL_CHANGE_OWNER
+    - SINGLE_NODE_TASK
+    - CREATE_TRANSITION_MANDATORY_FIELDS_UDF
+    - EDIT_INCIDENT_TRANSITION_VIA_API
+    - GET_DEVELOPMENT_ID
+    - CREATE_VENDOR
+    - CREATE_INCIDENT_REQUEST_WORKFLOW
+    - GET_TRAINING_NOT_YET_STARTED_ID
+    - CREATE_ASSET_WORKFLOW_TRANSITION_API
+    - CREATE_INCIDENT_WORKFLOW_TRANSITION
+    - GET_TRAINING_COMPLETED_ID
+    - CREATE_SERVICE_REQUEST_WORKFLOW_WITH_RESOURCE_ENHANCEMENT
+    - EDITED_IF
+    - RELEASE_FIELD_UPDATE_VIA_API_1
+    - GET_CLOSURE_CANCELLED_ID
+    - RELEASE_FIELD_UPDATE_VIA_API_2
+    - RELEASE_FIELD_UPDATE_VIA_API_3
+    - GET_CATEGORYSOFTWARE_ID
+    - RELEASE_FIELD_UPDATE_VIA_API_4
+    - SINGLE_NODE_SWITCH
+    - SINGLE_NODE_NOTIFICATION
+    - CREATE_WORKFLOW_PROBLEM_USER_NOTIFY
+    - GET_UAT_ACCEPTED_ID
+    - EDIT_PROBLEM_TRANSITION_VIA_API
+    - CREATE_ASSET_WORKFLOW_WITH_CF
+    - GET_SUBMISSION_REQUESTED_ID
+    - EDITED_FORK
+    - GET_CLOSURE_FAILED_ID
+    - GET_PLANNING_ID
+    - GET_TESTING_FAILED_ID
+    - GET_CLOSE_IN_PROGRESS_ID
+    - RELEASE_WORKFLOW_API_9
+    - CREATE_INVALID_WORKFLOW
+    - RELEASE_WORKFLOW_API_8
+    - CREATE_CHANGE_WORKFLOW_WITH_CF
+    - RELEASE_WORKFLOW_API_7
+    - RELEASE_WORKFLOW_API_6
+    - GET_CLOSURE_COMPLETED_ID
+    - RELEASE_WORKFLOW_API_4
+    - RELEASE_WORKFLOW_API_3
+    - RELEASE_WORKFLOW_API_2
+    - RELEASE_WORKFLOW_API_1
+    - EDITED_APPROVAL
+    - GET_AFFESTBUSINESS_ID
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createWorkflow
+  creates_count: 3
+  local_storage_keys:
+  - taskId
+  - taskTittleName
+  - taskId2
+  - taskTittleName2
+  - workflowId
+- name: problemmultilookupanddateudf
+  creates_count: 0
+  local_storage_keys:
+  - dateUdfvalue
+  - moduleName
+  - ProductType
+- name: releasemultilookupanddateudf
+  creates_count: 0
+  local_storage_keys:
+  - dateUdfvalue
+- name: custom_stage_and_workflow
+  creates_count: 0
+  local_storage_keys:
+  - orgrole
+data_json_keys:
+- Release_workflow_api
+- add_question_service_template
+- approvers_data
+- assign_workflow_on_service_template
+- check_asset_wf_notification_api
+- copy_workflow
+- create_Asset_workflow_With_CF
+- create_asset_transition_api
+- create_asset_workflow
+- create_asset_workflow_transition
+- create_asset_workflow_transition_api
+- create_change
+- create_change_transition_mandatory_fields
+- create_change_transition_with_mandatory_rules
+- create_change_workflow
+- create_change_workflow_With_CF
+- create_change_workflow_transition
+- create_fieldUpdate
+- create_field_update_via_api
+- create_incident_request_workflow
+- create_incident_request_workflow_With_CF
+- create_incident_request_workflow_transition
+- create_incident_transition_mandatory_fields
+- create_incident_transition_with_mandatory_rules
+- create_incident_transition_worklog_added_api
+- create_incident_workflow_transition
+- create_invalid_workflow
+- create_new_impact
+- create_problem_transition_mandatory_fields
+- create_problem_transition_with_mandatory_rules
+- create_problem_transition_with_mandatory_rules_associations
+- create_problem_transition_with_mandatory_rules_change_associations
+- create_problem_transition_with_mandatory_rules_change_associations_closed
+- create_problem_workflow
+- create_problem_workflow_With_CF
+- create_problem_workflow_approval_CEO
+- create_problem_workflow_approval_ReportedBy
+- create_problem_workflow_approval_Tech
+- create_problem_workflow_approval_change_owner
+- create_problem_workflow_approval_requesters
+- create_problem_workflow_approval_tech_groups
+- create_problem_workflow_approval_with_associated_entity
+- create_problem_workflow_transition
+- create_problem_workflow_transition_with_udf_ui
+- create_problem_workflow_with_udf
+- create_question_for_incident_request
+- create_release
+- create_release_transition_with_mandatory_rules
+- create_release_workflow
+- create_release_workflow_With_CF
+- create_release_workflow_transition
+- create_release_workflow_transition_with_udf_ui
+- create_release_workflow_with_udf
+- create_service_request_workflow
+- create_service_request_workflow_With_CF
+- create_service_request_workflow_transition
+- create_service_request_workflow_with_resource_enhancement
+- create_service_request_workflow_with_resource_enhancement_all_questions
+- create_test_workflow
+- create_transition_mandatory_fields_udf
+- create_transition_via_api
+- create_transition_with_criteria
+- create_transition_with_udf_criteria
+- create_vendor
+- create_workflow2
+- create_workflow_ch_and_rl_for_invalid
+- create_workflow_change_guided_path_via_api
+- create_workflow_change_transition_via_api
+- create_workflow_problem_User_Notify
+- create_workflow_release_transition_via_api
+- create_workflow_transition_via_api
+- create_workflow_via_API
+- edit_change_transition_via_api
+- edit_incident_transition_via_api
+- edit_problem_transition_via_api
+- edited_approval
+- edited_field_update
+- edited_fork
+- edited_if
+- edited_join
+- edited_notification
+- edited_switch
+- edited_task
+- fieldUpdate_only
+- get_affestBusiness_id
+- get_asset_in_store_id
+- get_asset_in_use_id
+- get_asset_product_id
+- get_categoryGeneral_id
+- get_categorysoftware_id
+- get_change_close_id
+- get_close_cancelled_id
+- get_close_completed_id
+- get_close_failed_id
+- get_close_id
+- get_close_in_progress_id
+- get_closure_cancelled_id
+- get_closure_completed_id
+- get_closure_failed_id
+- get_closure_id
+- get_closure_in_progress_id
+- get_deployment_deployed_id
+- get_deployment_failed_id
+- get_deployment_id
+- get_deployment_in_progress_id
+- get_deployment_on_hold_id
+- get_development_back_out_id
+- get_development_completed_id
+- get_development_id
+- get_development_in_progress_id
+- get_development_on_hold_id
+- get_group_hardware_id
+- get_internet_id
+- get_item_install_id
+- get_level_tier1_id
+- get_mode_email_id
+- get_module_id
+- get_open_id
+- get_planning_approved_id
+- get_planning_id
+- get_planning_in_progress_id
+- get_planning_rejected_id
+- get_priorityHigh_id
+- get_review_completed_id
+- get_review_id
+- get_review_in_progress_id
+- get_review_rejected_id
+- get_site_id
+- get_subcategory_adobe_id
+- get_submission_accepted_id
+- get_submission_id
+- get_submission_rejected_id
+- get_submission_requested_id
+- get_testing_completed_id
+- get_testing_failed_id
+- get_testing_id
+- get_testing_in_progress_id
+- get_testing_on_hold_id
+- get_training_completed_id
+- get_training_id
+- get_training_in_progress_id
+- get_training_not_yet_started_id
+- get_uat_accepted_id
+- get_uat_id
+- get_uat_in_progress_id
+- get_uat_on_hold_id
+- get_uat_rejected_id
+- notification_data_for_asset_workflow_subentity
+- question_info_criteria_search
+- release_field_update_via_api_1
+- release_field_update_via_api_2
+- release_field_update_via_api_3
+- release_field_update_via_api_4
+- release_workflow_api_1
+- release_workflow_api_10
+- release_workflow_api_11
+- release_workflow_api_12
+- release_workflow_api_2
+- release_workflow_api_3
+- release_workflow_api_4
+- release_workflow_api_5_with_custom_stage
+- release_workflow_api_6
+- release_workflow_api_7
+- release_workflow_api_8
+- release_workflow_api_9
+- release_workflow_api_with_custom_stage_and_status
+- service_template_workflow_association
+- show_all_stages_and_statuses_in_workflow_setting
+- show_only_stages_and_statuses_included_in_workflow
+- single_node_approval
+- single_node_approval_problem
+- single_node_field_update
+- single_node_fork
+- single_node_if
+- single_node_join
+- single_node_notification
+- single_node_switch
+- single_node_task
+- single_node_timer
+- workflow_details
+- workflow_with_group_as_switch_node

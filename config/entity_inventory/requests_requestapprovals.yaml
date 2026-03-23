@@ -1,0 +1,71 @@
+module: requests
+entity: requestapprovals
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/requests/requestapprovals/common/RequestApprovalsLocators.java
+  interfaces:
+    RequestApprovalsLocators:
+    - SUBMIT_FOR_APPROVAL_BUTTON
+    - MANAGE_APPROVAL_BUTTON
+    - APPROVAL_ACTION_BUTTON
+    - APPROVAL_STAGE_WRAPPER
+    - SELECT_FIELD
+    - NEED_MORE_INFO_COMMENT_DETAILS
+    - NEED_MORE_INFO_COMMENT_REPLY_DETAILS
+    - SAVE_AND_SEND_BUTTON
+    - APPROVAL_NAME
+    - APPROVER_NAME_FIELD
+    - TYPE_APPROVER_NAME
+    - OPTION_ELEMENT
+    - ADD_STAGE_BUTTON
+    - APPROVAL_STATUS
+    - NEW_COMMENT_BUTTON
+    - COMMENT_TYPE_AREA
+    - APPROVAL_COMMENTS_DETAILS
+    - APPROVAL_COMMENTS_REPLY
+    - ERROR_MESSAGE_POPUP
+    - ERROR_MESSAGE
+    - CANCEL_BUTTON
+    - APPROVED_COMMENT
+    - APPROVAL_SETTINGS_SAVE
+    - HISTORY_CONTENT
+    - HISTORY_FILTER
+    - FILTER_SEARCH
+    - AUTO_NOTIFICATION
+    - CONVERSATION
+    - CUSTOMIZED_TEMPLATE_VALUE
+    Popup:
+    - APPROVAL_ACTION_APPROVE
+    - APPROVAL_ACTION_REJECT
+    - APPROVAL_ACTION_COMMENT
+    - NEED_INFO_COMMENT
+    - MANDATORY_FIELD_COMMENTS
+    Listview:
+    - PENDING_CLARIFICATION_COUNT
+    - PENDING_CLARIFICATION_ZERO_COUNT
+    - APPROVAL_ICON
+    - APPROVAL_ACTION_IN_MY_PENDING_APPROVAL
+    - MORE_INFORMATION_REQUESTED
+    - NOTIFICATION_ICON
+    - NOTIFICATION_CONTENT
+    - NOTIFICATION_CONTENT_WITHOUT_DATA
+    - NOTIFICATION_HISTORY
+data_constants:
+  file: com/zoho/automater/selenium/modules/requests/requestapprovals/common/RequestApprovalsDataConstants.java
+  classes:
+    RequestApprovalsDataConstants:
+    - SUBMIT_FOR_APPROVAL_UI
+    - SUBMIT_FOR_APPROVAL_API
+    - MANAGE_APPROVAL_UI
+    - NEED_MORE_INFO_API
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

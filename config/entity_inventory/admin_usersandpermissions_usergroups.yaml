@@ -1,0 +1,91 @@
+module: admin
+entity: usersandpermissions_usergroups
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/usergroups/utils/UserGroupsAPIUtil.java
+  methods:
+  - name: createUserGroup
+    return_type: void
+    params: String inputData
+    purpose: ''
+  - name: updateUser
+    return_type: void
+    params: String inputData
+    purpose: ''
+  - name: departmentId
+    return_type: void
+    params: (none)
+    purpose: base site
+  - name: departmentIdForCopySite
+    return_type: void
+    params: (none)
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/usergroups/common/UserGroupsLocators.java
+  interfaces:
+    UserGroupsLocators:
+    - ROW_USING_ENTITYID
+    - CLICK_ROW_ACTIONS_WITH_ENTITYID
+    - SELECT_ACTION_LIST
+    UserGroupsForm:
+    - VERIFY_USER_GROUP_FORM_OPENED
+    - CLICK_PREVIEW_SECTION
+    - VERIFY_EMAIL_SITE_IS_PRESENT
+    - VERIFY_EMAIL_JOBTITLE_IS_PRESENT
+    - VERIFY_EMAIL_AND_FIELD_VALUES_ARE_PRESENT
+    - VERIFY_ORG_ROLE_PRESENT_IN_REQUESTER_FORM
+    - CLICK_USERS
+    - NO_REQUESTER_FOUND_MATCHING_SEARCH_CRITERIA
+    RequetserListview:
+    - CLICK_REQUESTER_NAME
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/usergroups/common/UserGroupsDataConstants.java
+  classes:
+    UserGroupsDataConstants:
+    - ADD_ORGROLES_IN_USERGROUP
+    - UPDATE_DEPARTMENT_JOBTITLE_AND_VIP_FALSE_IN_USERS
+    - UPDATE_VIP_DEPARTMENT_VIP_JOBTITLE_IN_USERS
+    - LIST_INFO_CRITERIA_NAME_SEARCH
+    - UPDATE_ORGROLE_AND_UDF_IN_USERS
+    - EDIT_USERGROUP
+    - ADD_USERGROUP_IN_THE_SERVICE_TEMPLATE
+    - ADD_SITE_USER_GROUP
+    - UPDATE_ORGROLE_IN_USERS
+    - CREATE_REQUEST_BY_INC_TEMP_FOR_USERGROUP
+    - CREATE_ORG_ROLE
+    - SINGLE_LINE_UDF_VIA_API
+    - ADD_USERGROUP_WITH_SINGLELINE_UDF_AND_VIPUSER
+    - LIST_INFO_CRITERIA_NAME_SEARCH_FOR_COPYSITE
+    - ADD_EMAIL_SITE_USERGROUP
+    - EDIT_ORGROLE_USERGROUP
+    - ADD_DEPT_JOBTITLE_USER_VIPUSER_USERGROUP_CRITERIA
+    - ADD_USERGROUP_IN_THE_INCIDENT_TEMPLATE
+    - UPDATE_ORGROLE_AND_ENABLE_CREATE_CHANGES_IN_REQUESTER
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createusergroupwithsite
+  creates_count: 0
+  local_storage_keys:
+  - testUserMailId
+  - testUserName
+- name: createusergroup
+  creates_count: 0
+  local_storage_keys:
+  - testUserMailId
+  - testUserName
+- name: createorgroleandassociateinusergroup
+  creates_count: 0
+  local_storage_keys: []
+- name: associateusergroupintemplate
+  creates_count: 0
+  local_storage_keys: []
+- name: createudfandassociateusergroupandinservicetemp
+  creates_count: 1
+  local_storage_keys:
+  - UDF_Name
+data_json_keys: []

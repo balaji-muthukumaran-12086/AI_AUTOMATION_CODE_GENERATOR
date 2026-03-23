@@ -1,0 +1,24 @@
+module: general
+entity: requesterhome
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/general/requesterhome/common/RequesterHomeLocators.java
+  interfaces:
+    RequesterHomeLocators:
+    - WIDGET_NAME
+    - CLOSED_MODULE_CHECK_IN_WIDGET
+    - SURVEYFRAME
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

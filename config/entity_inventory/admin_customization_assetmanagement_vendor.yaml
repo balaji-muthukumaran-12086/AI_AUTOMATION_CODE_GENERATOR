@@ -1,0 +1,37 @@
+module: admin
+entity: customization_assetmanagement_vendor
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/vendor/utils/VendorActionsUtil.java
+  methods:
+  - name: createVendorFromAssetUI
+    return_type: void
+    params: JSONObject vendorInputData
+    purpose: ''
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/vendor/common/VendorLocators.java
+  interfaces:
+    VendorLocators: []
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/vendor/common/VendorDataConstants.java
+  classes:
+    VendorDataConstants:
+    - CREATE_UI_PO_VENDOR
+    - EDIT_VENDOR_FOR_CONTRACT_LOOKUP
+    - DEFAULT_VENDOR_API
+    - DEFAULT_VENDOR
+    - CREATE_VENDOR_API
+    - TIME_ZONR_CHANGE
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- create_ui_po_vendor
+- create_vendor_api
+- default_vendor
+- default_vendor_api
+- edit_vendor_for_contract_lookup

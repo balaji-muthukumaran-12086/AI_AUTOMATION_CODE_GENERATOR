@@ -1,0 +1,50 @@
+module: admin
+entity: customization_releasemanagement_releaserole
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/releasemanagement/releaserole/common/ReleaseRoleLocators.java
+  interfaces:
+    ReleaseRoleLocators:
+    - CROSSED_STAGE_CHECKBOX
+    - ACKNOWLEDGEMENT_BUTTON
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/releasemanagement/releaserole/common/ReleaseRoleDataConstants.java
+  classes:
+    ReleaseRoleDataConstants:
+    - ENABLE_CROSSED_STAGE_WITH_CURRENT_STAGE_EDIT_ENABLED
+    - ENABLE_CROSSED_STAGE_WITH_SUBMISSION_STAGE_EDIT_ENABLED
+    - DISABLE_CROSSED_STAGE_WITH_CURRENT_STAGE_EDIT_ENABLED
+    - DISABLE_CROSSED_STAGE_WITH_CURRENT_STAGE_EDIT_DISABLED
+    - DISABLE_CROSSED_STAGE_WITH_CURRENT_STAGE_EDIT_ENABLED_SUBMISSION_STAGE_DISABLED
+    - DEVELOPMENT_AND_REVIEW_STAGE_WITH_ONLY_EDIT_PERMISSION
+    - CROSSED_STAGE_WITH_PLANNING_STAGE_PERMISSION
+    - DEPLOYMENT_AND_REVIEW_STAGE_WITH_ONLY_EDIT_PERMISSION
+    - CUSTOM_ROLE_WITH_CURRENT_STAGE_EDIT_PERMISSION
+    - PLANNING_AND_REVIEW_STAGE_WITH_ONLY_EDIT_PERMISSION
+    - UAT_AND_CLOSURE_STAGE_WITH_ONLY_EDIT_PERMISSION
+    - DISABLED_CROSSED_STAGE_WITH_PLANNING_STAGE
+    - QA_MANAGER_WITH_CURRENT_STAGE_EDIT_PERMISSION
+    - SUBMISSION_AND_REVIEW_STAGE_WITH_ONLY_EDIT_PERMISSION
+    - UAT_AND_REVIEW_STAGE_WITH_ONLY_EDIT_PERMISSION
+    - TESTING_AND_REVIEW_STAGE_WITH_ONLY_EDIT_PERMISSION
+    - TRAINING_AND_REVIEW_STAGE_WITH_ONLY_EDIT_PERMISSION
+    - UAT_AND_TESTING_STAGE_WITH_ONLY_EDIT_PERMISSION
+    - PLANNING_STAGE_WITH_ONLY_EDIT_PERMISSION
+    - ENABLE_CROSSED_STAGE
+    - ENABLE_CROSSED_STAGE_WITH_RESTRICTED_PERMISSION
+    - DISABLE_CROSSED_STAGE
+    - ENABLE_CROSSED_STAGE_WITH_ALL_PERMISSION
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: enable
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []

@@ -1,0 +1,41 @@
+module: admin
+entity: customization_cmdbmanagement_citypes
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/citypes/common/CiTypesLocators.java
+  interfaces:
+    CiTypesLocators: []
+    Detailview:
+    - CI_TYPE_SUBTAB
+    - SEARCH_FIELD_IN_CITEMPLATE
+    - CHECK_FIELDNAME_IN_FORM
+    - DISPLAY_OPTIONS
+    - INFO_ICON
+    - FORM_CONTROL_BUTTON
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/cmdbmanagement/citypes/common/CiTypesDataConstants.java
+  classes:
+    CiTypesDataConstants:
+    - RELATIONSHIP_DATA_UI_1
+    - RELATIONSHIP_DATA_UI_2
+    - RELATIONSHIP_DATA_UI_3
+    - CREATE_CI
+    - SINGLE_LINE_INPUT_API
+    - RELATIONSHIP_SEARCH_CRITERIA
+    - UDF_FIELD_SINGLE_INE
+    - CREATE_CHILD_CITYPE
+    - RELATIONSHIPTYPE_LIST
+    - CITYPE_LIST
+    - GET_CMDB_ID
+    - CREATE_CI_CUSTOMDATA
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

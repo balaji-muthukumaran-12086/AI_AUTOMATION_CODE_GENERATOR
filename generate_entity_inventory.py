@@ -34,23 +34,40 @@ from config.project_config import PROJECT_NAME, BASE_DIR
 
 
 def find_modules(src_root: Path) -> list:
-    """Find all entity modules under modules/."""
+    """Find all entity modules under modules/, recursing into nested sub-modules."""
     modules_dir = src_root / "com" / "zoho" / "automater" / "selenium" / "modules"
     if not modules_dir.exists():
         return []
 
+    skip_dirs = {'common', 'utils', '__pycache__'}
     results = []
+
+    def _recurse(current_dir: Path, module_parts: list):
+        """Recursively find leaf entity dirs that contain a 'common/' subfolder (Locators live there)."""
+        has_common = (current_dir / "common").is_dir()
+        has_child_entities = False
+
+        for child in sorted(current_dir.iterdir()):
+            if not child.is_dir() or child.name.startswith('.') or child.name in skip_dirs:
+                continue
+            # If a child itself has a common/ dir or deeper entity dirs, recurse
+            _recurse(child, module_parts + [child.name])
+            has_child_entities = True
+
+        # Register this dir as an entity if it has a common/ folder (contains Locators/Constants)
+        if has_common and len(module_parts) >= 2:
+            # module = top-level dir, entity = rest joined by underscore
+            results.append({
+                'module': module_parts[0],
+                'entity': '_'.join(module_parts[1:]),
+                'path': current_dir,
+            })
+
     for module_dir in sorted(modules_dir.iterdir()):
         if not module_dir.is_dir() or module_dir.name.startswith('.'):
             continue
-        for entity_dir in sorted(module_dir.iterdir()):
-            if not entity_dir.is_dir() or entity_dir.name in ('common', 'utils', '__pycache__'):
-                continue
-            results.append({
-                'module': module_dir.name,
-                'entity': entity_dir.name,
-                'path': entity_dir,
-            })
+        _recurse(module_dir, [module_dir.name])
+
     return results
 
 
@@ -106,9 +123,9 @@ def extract_locator_interfaces(filepath: Path) -> dict:
     content = filepath.read_text(encoding='utf-8', errors='replace')
     interfaces = {}
 
-    # Find interface blocks
+    # Find interface or inner class blocks (some Locators use 'interface', others use 'class')
     iface_pattern = re.compile(
-        r'interface\s+(\w+)\s*\{(.*?)\}',
+        r'(?:interface|class)\s+(\w+)\s*(?:extends\s+\w+\s*)?\{(.*?)\}',
         re.DOTALL
     )
 
@@ -262,8 +279,24 @@ def build_entity_inventory(module_info: dict, src_roots: list) -> dict:
         'data_json_keys': [],
     }
 
+    # Compute the real relative path from module_info (e.g. admin/automation/workflows)
+    entity_real_path = module_info.get('path')  # absolute Path set by find_modules
+
     for src_root in src_roots:
-        base_path = src_root / "com" / "zoho" / "automater" / "selenium" / "modules" / module / entity
+        # Use real path if it's under this src_root; otherwise reconstruct for alternate src_roots
+        if entity_real_path and str(entity_real_path).startswith(str(src_root)):
+            base_path = entity_real_path
+        elif entity_real_path:
+            # For alternate src_roots (--include-original): extract path relative to "modules/"
+            parts = entity_real_path.parts
+            try:
+                mod_idx = parts.index("modules")
+                rel_after_modules = Path(*parts[mod_idx:])  # modules/admin/automation/workflows
+                base_path = src_root / "com" / "zoho" / "automater" / "selenium" / rel_after_modules
+            except ValueError:
+                base_path = src_root / "com" / "zoho" / "automater" / "selenium" / "modules" / module / entity
+        else:
+            base_path = src_root / "com" / "zoho" / "automater" / "selenium" / "modules" / module / entity
 
         # Utils directory
         utils_dir = base_path / "utils"
@@ -347,9 +380,20 @@ def build_entity_inventory(module_info: dict, src_roots: list) -> dict:
             if groups and not inventory['preprocess_groups']:
                 inventory['preprocess_groups'] = groups
 
-        # Data JSON keys
+        # Data JSON keys — derive path from real directory structure
         res_root = src_root.parent / "resources"
-        data_json = res_root / "entity" / "data" / module / entity / f"{entity}_data.json"
+        # Build the data path matching the actual module directory structure
+        if entity_real_path:
+            parts = entity_real_path.parts
+            try:
+                mod_idx = parts.index("modules")
+                rel_parts = parts[mod_idx + 1:]  # e.g. ('admin', 'automation', 'workflows')
+                leaf_name = rel_parts[-1]  # actual entity dir name
+                data_json = res_root / "entity" / "data" / Path(*rel_parts) / f"{leaf_name}_data.json"
+            except (ValueError, IndexError):
+                data_json = res_root / "entity" / "data" / module / entity / f"{entity}_data.json"
+        else:
+            data_json = res_root / "entity" / "data" / module / entity / f"{entity}_data.json"
         if data_json.exists():
             keys = extract_data_json_keys(data_json)
             if keys and not inventory['data_json_keys']:
@@ -485,6 +529,8 @@ def main():
             inventory['api_util']['methods'] or
             inventory['locators']['interfaces'] or
             inventory['preprocess_groups'] or
+            inventory['data_json_keys'] or
+            inventory['data_constants']['classes'] or
             inventory.get('data_json_deep', {}).get('total_entries', 0) > 0
         )
         if not has_content:

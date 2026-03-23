@@ -1,0 +1,118 @@
+module: admin
+entity: instanceconfigurations_orgrole
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/orgrole/utils/OrgRolesAPIUtil.java
+  methods:
+  - name: associateUsersToOrgRoles
+    return_type: void
+    params: String testData, String testcaseDate2, User user
+    purpose: ''
+  - name: orgRoleAPICreate
+    return_type: JSONObject
+    params: String testdata, String orgRolecategory
+    purpose: ''
+  - name: associateusertoOrgrolewithCustomUser
+    return_type: void
+    params: String name, String testcaseDate2, String userId
+    purpose: ''
+  - name: getOrgRolexpath
+    return_type: String
+    params: String orgRolename, String module, String context
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/orgrole/common/OrgRoleLocators.java
+  interfaces:
+    OrgRoleLocators:
+    - MANAGE_ORG_ROLE_ACTION
+    - ASSOCIATE_USER
+    - ORG_ROLE_MENU_ACTION
+    - ORG_ROLE_EMP_ACTION_ICON
+    - ORG_ROLE_EMP_ACTION_ICON2
+    - ORG_ROLE_SETTING_ICON
+    - ORG_ROLE_DROP_DOWN_CHECK
+    - ORG_ROLE_DROP_DOWN
+    - ORG_ROLE_ADD_ICON
+    - ORG_ROLE_TRANSFER_OWNER
+    - MULTI_SELECT_DROP
+    - ASSOCIATE_BYVALUE
+    - CANCEL_BYVALUE
+    - ASSIGN_ORG_ROLE_BTN
+    - CLOSE_BYTITLE
+    - ORG_ROLE_ERROR_VAL
+    - ORG_DISABLED_FIELD_CHECK
+    - ORG_ROLE_CLICK
+    - ORG_ROLE_MAXIMUM_ASSOCIATE_ALERT
+    - ASSIGN_ORG_ROLE
+    - ASSOCIATE_LIMIT_SINGLE_CONTENT
+    - OPTION_ELEMENT
+    - ADD_ASSOCIATION_ICON
+    - DELETE_ASSOCIATION_ICON
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/orgrole/common/OrgRoleDataConstants.java
+  classes:
+    OrgRoleDataConstants:
+    - APPROVALS_1
+    - APPROVALS_2
+    - SITE_INCHARGE
+    - REGIONAL_INCHARGE
+    - ORGROLE_SINGLE_API
+    - ROLE_DATA2_ASSOCIATE2
+    - ORGROLEVALIDATION1
+    - ORGROLEVALIDATION2
+    - UNAVAILABILITY_API_DATA
+    - ORGROLE_MULTIPLE_ENABLE_IN_UI
+    - CREATE_COPY_API_SITE
+    - ROLE_DATA2_ASSOCIATE1
+    - GET_USER_DATA
+    - WFTRIGGER_APPROVAL
+    - DEPARTMENT_HEAD
+    - WFACTIONDATA_NOTIFICATION
+    - ROLE_DATA2_ASSOCIATE1_2
+    - SLA_BASE_SITE
+    - ASSOCIATE_REGIONAL_LEVEL_TO_ORGROLES
+    - DEASSIGN_REGION_INCHARGE_ORGROLES
+    - CREATE_GROUP
+    - ORGROLEVALIDATION3
+    - DELEGATE_APPROVAL_ENABLE
+    - BR_UDF_FIELD_UPDATE
+    - ASSOCIATE_USER_TO_ORGROLES_WITH_ONE_USER_IN_API
+    - ROLE_DATA3_ASSOCIATE2
+    - ASSOCIATE_USER_TO_ORGROLES
+    - ROLE_DATA3_ASSOCIATE1
+    - CREATE_SITE
+    - DEPARTMENT_INCHARGE
+    - UNAVAILIBITY_SEARCH
+    - DEPARTMENT_APPROVER
+    - WFACTIONDATA_APPROVAL
+    - ROLE_DATA4_ASSOCIATE2
+    - CREATE_GROUP_WITH_TECHNICIAN
+    - CREATE_DEPARTMENT
+    - ROLE_DATA2_ASSOCIATE2_1
+    - ROLE_DATA2_ASSOCIATE2_2
+    - REGIONAL_MANAGER
+    - WORKFLOW_GROUP_SWITCH_NOTIFICATION
+    - ROLE_DATA1_ASSOCIATE1
+    - ORGROLE_NAME_IN_UI
+    - ORGROLE_INTERNAL_NAME_IN_UI
+    - APPROVAL_3
+    - SITE_MANAGER
+    - ASSOCIATE_DEPARTMENT_APPROVER_TO_ORGROLES
+    - ASSOCIATE_USER_TO_ORGROLES_WITH_ENTITIES_IN_API
+    - GENERAL_MANAGER
+    - CREATE_REGION
+    - WORKFLOW_ORGROLE_APPROVAL
+    - SLA_SITE_REGION
+    - ORGROLE_MULTIPLE_API
+    - ASSOCIATE_USER_TO_ORGROLES_WITH_MULTIPLE_USER_IN_API
+    - WORKFLOW_ORGROLE_NOTIFICATION
+    - WFTRIGGER_NOTIFICATION
+    - SLA_CUSTOM_SITE
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

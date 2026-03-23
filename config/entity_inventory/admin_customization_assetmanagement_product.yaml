@@ -1,0 +1,54 @@
+module: admin
+entity: customization_assetmanagement_product
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/product/common/ProductLocators.java
+  interfaces:
+    ProductLocators: []
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/product/common/ProductDataConstants.java
+  classes:
+    ProductDataConstants:
+    - CREATE_BASIC_PRODUCT_ASSOCIATION
+    - CREATE_API_SERVICE
+    - PRODUCT_VENDOR_ASSOCIATION_FOR_CUSTOM_PRODUCT
+    - CREATE_API_WS_PRODUCT
+    - PRODUCT_VENDOR_ASSOCIATION
+    - CUSTOM_API_SERVICE
+    - CREATE_API_PRODUCT
+    - CREATE_UI_PO_PRODUCT
+    - CREATE_BASIC_PRODUCT
+    - CREATE_PRODUCT_FOR_PART_NUMBER_SEARCH
+    - SERVICE_VENDOR_ASSOCIATION
+    - CREATE_API_PO_PRODUCT
+    - CREATE_BASIC_SERVICE_ASSOCIATION
+    - CREATE_API_PRODUCT_WITH_ID
+    - PRODUCT_VENDOR_ASSOCIATION_FOR_CUSTOM_PRODUCT_AND_CUSTOM_VENDOR
+    - CREATE_SOFTWARE_PRODUCT
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- create_api_po_product
+- create_api_product
+- create_api_product_with_id
+- create_api_service
+- create_api_ws_product
+- create_basic_product
+- create_basic_product_association
+- create_basic_service_association
+- create_product_for_part_number_search
+- create_software_product
+- create_ui_po_product
+- custom_api_service
+- product_vendor_association
+- product_vendor_association_for_custom_product
+- product_vendor_association_for_custom_product_and_custom_vendor
+- service_vendor_association

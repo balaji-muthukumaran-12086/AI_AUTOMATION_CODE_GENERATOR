@@ -1,0 +1,32 @@
+module: admin
+entity: customization_helpdesk_mode
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/mode/common/ModeLocators.java
+  interfaces:
+    ModeLocators:
+    - NEW_MODE
+    - EDIT_MODE
+    - DELETE_MODE
+    - MODE_TITLE
+    - ICN_MODEACTIONS
+    - VERIFY_MODE_POPUP_OPENED
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/mode/common/ModeDataConstants.java
+  classes:
+    ModeDataConstants:
+    - UI_MODE1
+    - API_MODE1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- API_Mode1
+- UI_Mode1

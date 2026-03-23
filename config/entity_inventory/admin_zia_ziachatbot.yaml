@@ -1,0 +1,34 @@
+module: admin
+entity: zia_ziachatbot
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/zia/ziachatbot/common/ZiachatbotLocators.java
+  interfaces:
+    ZiachatbotLocators:
+    - ZIA_CHATBOT_HEADERS
+    - ASK_ZIA_ENABLED
+    - ASK_ZIA_DISABLED
+    - ENABLE_CONVERSATION
+    - CUSTOMIZE_LINK
+    - CONVERSATION_TYPE
+    - BOT_NAME
+    - BOT_HEADER
+    - BOT_THEME
+    - BOT_AVATAR
+    - WELCOME_MESSAGE
+    - BOT_SETTINGS
+    - CLASSIC_ZIA_FOOTER
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

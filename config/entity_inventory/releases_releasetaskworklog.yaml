@@ -15,8 +15,18 @@ api_util:
     params: String worklogDataID
     purpose: ''
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/releases/releasetaskworklog/common/ReleaseTaskWorklogLocators.java
+  interfaces:
+    ReleaseTaskWorklogLocators: []
+    WorklogPopup:
+    - TYPE_HOURS
+    - TYPE_MINUTES
+    - TYPE_INCIDENT_COST
+    - TYPE_OTHER_CHARGES
+    WorklogDetailview:
+    - WORKLOG_ROW_DESCRIPTION
+    - EDIT_DELETE_WORKLOG
+    - WORKLOG_ROW
 data_constants:
   file: com/zoho/automater/selenium/modules/releases/releasetaskworklog/common/ReleaseTaskWorklogDataConstants.java
   classes:
@@ -80,63 +90,3 @@ preprocess_groups:
   local_storage_keys:
   - technician
 data_json_keys: []
-api_util_deep:
-- name: createReleaseAndTaskWorklog
-  params: String releaseDataID, String taskDataID, String worklogDataID
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - taskId
-  - releaseId
-  - releaseName
-  - worklogId
-  - worklogName
-  local_storage_reads: []
-- name: createTaskWorklog
-  params: String worklogDataID
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - worklogId
-  - description
-  local_storage_reads:
-  - taskId
-  - releaseId
-preprocess_deep:
-- group: createreleaseandtask
-  source_file: ReleaseTaskWorklog.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ReleaseTaskAPIUtil.createReleaseAndTask
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - ReleaseTask.ReleaseAndTask
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createreleaseandtaskworklog
-  source_file: ReleaseTaskWorklog.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - ReleaseTaskWorklogAPIUtil.createReleaseAndTaskWorklog
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: technician
-    source_type: computed
-  local_storage_reads: []
-  entities_created:
-  - ReleaseTaskWorklog.ReleaseAndTaskWorklog
-  creates_user: false
-  user_role: null
-  calls_super: false

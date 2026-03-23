@@ -1,0 +1,135 @@
+module: admin
+entity: automation_customactions
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/automation/customactions/utils/CustomActionsUtil.java
+  methods:
+  - name: selectSubTabsAndModule
+    return_type: void
+    params: String subTabs, String moduleName
+    purpose: ''
+  - name: selectModule
+    return_type: void
+    params: String moduleName
+    purpose: ''
+  - name: timerFormconfigureActions
+    return_type: void
+    params: String noOfActions, String fieldName
+    purpose: timer form-Actions - When Timer is Running
+  - name: timerFormAbortSelectCustomActions
+    return_type: void
+    params: String fieldName
+    purpose: timer form-Actions - When Timer Aborts
+  - name: timerFormEndsSelectCustomActions
+    return_type: void
+    params: String fieldName
+    purpose: timer form-Actions - When Timer Ends
+  - name: approvalsGlobalConfig
+    return_type: void
+    params: String fieldName
+    purpose: select approvalsetting or approvalnotification in approvals- global config
+  - name: createOrUpdateNotification
+    return_type: void
+    params: JSONObject inputData, boolean isUpdate
+    purpose: custom actions- Notification- create and update
+  - name: typeNotificationMessageField
+    return_type: void
+    params: String msg
+    purpose: not popup
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/automation/customactions/utils/CustomActionsAPIUtil.java
+  methods:
+  - name: createTaskForTimer
+    return_type: void
+    params: (none)
+    purpose: Only default values
+  - name: createTaskForAbortTimer
+    return_type: void
+    params: (none)
+    purpose: task title stored here
+  - name: createTimer
+    return_type: void
+    params: (none)
+    purpose: task title stored here
+  - name: createTimerWithTech
+    return_type: void
+    params: (none)
+    purpose: Technician - admin mail id (currrentuser)
+  - name: createTimer3
+    return_type: void
+    params: (none)
+    purpose: Priority and workaround solution in fieldupdate and closure code for abort
+  - name: createTimerBasedOnDateField
+    return_type: void
+    params: (none)
+    purpose: duebydate in timer duration || timer running - category,subcategory,item || abort timer-> category-software ||
+      categoy-internet || task
+  - name: createRequestTimer
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: createApprovals
+    return_type: void
+    params: JSONObject obj, String approvalrule
+    purpose: Only default values
+  - name: createApprovalsWithFirstResponseAction
+    return_type: void
+    params: JSONObject obj, String approvalrule
+    purpose: FirstResponseAction
+  - name: createApprovalsWithMajorityToApprove
+    return_type: void
+    params: JSONObject obj, String approvalrule
+    purpose: Majority To Approve
+  - name: createApprovalsWithEveryoneToApprove
+    return_type: void
+    params: JSONObject obj, String approvalrule
+    purpose: Everyone To Approve
+  - name: createTimerWithTechCreatedDate
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: createNotificationViaAPI
+    return_type: void
+    params: String data
+    purpose: custom actions- notification
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/customactions/common/CustomActionsLocators.java
+  interfaces:
+    CustomActionsLocators:
+    - SELECT_MODULE
+    - SELECT_MODULE_DROPDOWN
+    - ACTIONS_HEADERS
+    - CREATE_NEW_ACTION
+    - CUSTOMACTIONS_MODULE_DROPDOWN
+    - CUSTOMACTIONS_MODULE_SELECT_DROPDOWN
+    - CUSTOMACTIONS_SUBTABS
+    - VERIFY_TASKS
+    - VERIFY_TIMERS
+    - VERIFY_TRIGGERS
+    - VERIFY_APPROVAL
+    - VERIFY_NOTIFICATIONS
+    - ADD_ZOHOFLOW
+    - CREATE_ACTION_SEQUENCE
+    Editor:
+    - INPUT_LOCATOR
+    - TEXTAREA_LOCATOR
+    - RADIO_BUTTON
+    - CHECK_BOX
+    - TEXT_AREA
+    - SUBJECT
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/automation/customactions/common/CustomActionsDataConstants.java
+  classes:
+    CustomActionsDataConstants:
+    - CUSTOMNOTIFICATION
+    - SEARCH_FIELDS
+    - CREATE_INTRANET_PROBE_WEBHOOK_ACTION
+    - SEARCH_BR_TOPIC
+    - CREATE_TASK_VIA_API
+    - CUSTOMNOTIFICATION_LASTUPDATEDBY
+    - CUSTOMNOTIFICATION_WITHASSET
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

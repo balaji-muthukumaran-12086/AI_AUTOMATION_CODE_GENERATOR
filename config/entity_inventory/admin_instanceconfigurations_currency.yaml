@@ -1,0 +1,72 @@
+module: admin
+entity: instanceconfigurations_currency
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/currency/utils/CurrencyActionsUtil.java
+  methods:
+  - name: typeAndSelectOption
+    return_type: void
+    params: String value
+    purpose: ''
+  - name: createCurrency
+    return_type: void
+    params: String value, String exchangerate
+    purpose: ''
+  - name: editCurrency
+    return_type: void
+    params: String exchangerate
+    purpose: ''
+  - name: createWorklogInUI
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: deleteCurrencyinUI
+    return_type: void
+    params: String currencyName
+    purpose: actions.hoverElement(null);
+  - name: retainCurencyForFurtherUse
+    return_type: void
+    params: String currencyName
+    purpose: ''
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/currency/common/CurrencyLocators.java
+  interfaces:
+    CurrencyLocators:
+    - NEW_CURRENCY
+    - NEW_CURRENCY
+    - CURRENCY_TOP_BUTTON
+    - SELECT_CURRENCY
+    - SEARCH_CURRENCY
+    - EXCHANGE_RATE
+    - SELECT_CHECKBOX_USING_CURRENCY_NAME
+    - CLICK_CHECKBOX_WITH_ENTITYID
+    - CONFIGURE_EXCHANGE_RATE
+    - SAVE_IN_POPUP
+    - SAVE_IN_POPUP
+    - WORKLOG_TYPE
+    - HOVER_TECH_CHARGES
+    - EDIT_WORKLOG_ICON
+    - EDIT_WORKLOG_ICON
+    - TXTTITLEINROW
+    - WORKLOG_SHOWFULLCONTENT_ICON
+    - EQUIVALENT_BASECURRENCY
+    - EXCHANGE_RATE_FIELD
+    - VERIFY_EURO_CURRENCY
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/currency/common/CurrencyDataConstants.java
+  classes:
+    CurrencyDataConstants:
+    - CURRENCY_SEARCH_CRITERIA
+    - CREATE_AUSTRAILIAN_CURRENCY
+    - CREATE_CURRENCY
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- create_austrailian_currency
+- create_currency
+- currency_search_criteria

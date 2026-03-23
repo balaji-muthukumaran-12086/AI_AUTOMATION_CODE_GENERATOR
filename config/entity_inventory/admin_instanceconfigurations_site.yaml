@@ -1,0 +1,99 @@
+module: admin
+entity: instanceconfigurations_site
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/site/utils/SiteAPIUtil.java
+  methods:
+  - name: createCopySite
+    return_type: void
+    params: JSONObject inputData
+    purpose: ''
+  - name: storeSiteNameandID
+    return_type: void
+    params: String site
+    purpose: ''
+  - name: createSiteForOH
+    return_type: void
+    params: JSONObject inputData
+    purpose: for OH alone
+  - name: createSite
+    return_type: void
+    params: (none)
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/site/common/SiteLocators.java
+  interfaces:
+    SiteLocators:
+    - NEW_SITE
+    - RADIO_COPYSETTINGS
+    - VERIFY_SITE_WITH_ENTITYID
+    - CLICK_SITE_FILTER
+    - SELECT_INACTIVE_SITE
+    - SELECT_ACTIVE_SITE
+    - CLICK_SETTINGS_ICON
+    - CLEAR_SEARCH
+    - UNCHECKED_NOT_FOR_FURTHER_TO_USE
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/site/common/SiteDataConstants.java
+  classes:
+    SiteDataConstants:
+    - CUSTOMSITEONE
+    - CPYSITE
+    - REFERBASESITE
+    - EDIT_SITE_REGION
+    - CREATE_API_SITE
+    - API_COPYSITEDATA1
+    - SIVA_CUSTOM_SITE
+    - GET_BASESITE_ID
+    - COPYSITE
+    - REFERCUSTOMSITE
+    - REFERCOPYSITE
+    - CREATE_BASIC_SITE
+    - OHCOPYSITE
+    - REFERCUSTOMSITEONE
+    - SIVA_REFER_SITE
+    - CUSTOMSITE
+    - GET_COPYSITE_ID
+    - SITE_FOR_LOOKUP
+    - SITE_UPDATE_DATA_FOR_UDF
+    - EDIT_SITE
+    - CREATE_CUSTOM_API_SITE
+    - SIVA_COPY_SITE
+    - API_UDF_SITE
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createcopysite
+  creates_count: 0
+  local_storage_keys: []
+- name: createcopysitewithproblem
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys:
+- API_CopySiteData1
+- API_UDF_SITE
+- CopySite
+- CpySite
+- CustomSite
+- CustomSiteOne
+- OHCopySite
+- ReferBaseSite
+- ReferCopySite
+- ReferCustomSite
+- ReferCustomSiteOne
+- create_api_site
+- create_basic_site
+- create_custom_api_site
+- edit_site
+- edit_site_region
+- get_basesite_id
+- get_copysite_id
+- site_for_lookup
+- site_update_data_for_udf
+- siva_copy_site
+- siva_custom_site
+- siva_refer_site

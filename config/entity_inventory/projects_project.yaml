@@ -163,8 +163,197 @@ api_util:
     params: String projectDataID, String milestoneDataID
     purpose: ''
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/projects/project/common/ProjectLocators.java
+  interfaces:
+    ProjectLocators:
+    - CLICK_LISTVIEW_FILTERS
+    - SELECT_PROJECTS_FILTER
+    - TRASHED_PROJECTS_FILTER
+    - VERFIY_PROJECT_WITH_ENTITYID
+    - CLICK_ROW_ACTIONS_WITH_ENTITYID
+    - ACTIONS_LIST
+    - VERIFY_PROJECT_NAME_IN_LISTVIEW
+    - VERIFY_EDIT_PROJECT_TEMPLATE_PAGE_OPENED
+    - SELECK_CHECKBOX_WITH_ENTITYID
+    - SELECT_CHECKBOX_ENTITYID_PROJECT
+    - VERIFY_WITH_ENTITYID
+    - VERIFY_RELEASE_TITLE_IN_PROJECT_ASSOCIATION
+    - VERIFY_PROJECT_STATUS_IN_LISTVIEW
+    - NO_PROJECTS_WITH_STATUS
+    - BULK_SELECT_CHECKBOX
+    - PAGE_COUNT
+    - ROW_USING_ENTITYID
+    - NEW_PROJECT_BTN
+    - DELETE_BTN
+    - IMPORT_PROJECTS_BTN
+    - LIST_VIEW_ICON
+    - TEMPLATE_VIEW_ICON
+    - CUSTOM_FILTER_ICON
+    - PROJECT_REQUESTER_ICON_IN_FORM
+    - SELECT_RADIO_BTN_IN_POPUP
+    - CLICK_SAVE_BUTTON_USING_SUBMIT
+    - VERIFY_USER
+    - ASSOCIATE_OPTION
+    - TITLE_FILED
+    - VERIFY_PROJECT_LISTVIEW_SELECTED
+    Popup:
+    - POPUP_TITLE_TEXT
+    - TYPE_PROJECT_TITLE_IN_POPUP
+    - CLICK_SAVE_BTN_IN_POPUP
+    - TYPE_TEMPLATE_NAME_IN_POPUP
+    - CHK_COLUMN_PRESENT
+    ProjectDetailview:
+    - GO_BACK
+    - CLICK_COMMENT
+    - VERFIY_ADDED_TEXT_IN_COMMENTS_SUBTAB
+    - VERFIY_ADDED_TEXT_IN_REPLY_COMMENTS
+    - VERFIY_ADDED_TEXT_IN_REPLY_COMMENTS_USING_NAME
+    - COMMENT_HOVER
+    - REPLY_COMMENT_HOVER
+    - CLICK_EDIT_DELETE_COMMENT
+    - CLICK_EDIT_DELETE_REPLY_COMMENT
+    - COMMENT_ROW
+    - REPLY_COMMENT_ROW
+    - CLICK_EDIT_BTN
+    - CLICK_CLOSE_BTN
+    - MODULE_STATUS
+    - VERIFY_CHANGE_ATTACHED_WITH_DATA_ROW_ID
+    - CLICK_TIMESHEET_MEMBERS
+    - VERIFY_TASK_NAME_IN_TIMESHEET
+    - CLICK_SPOT_EDIT_DATE_INPUT
+    - DETAILVIEW_ACTIONS_DROPDOWN
+    - CLICK_ATTACH_BUTTON
+    - FILE_INPUT
+    - ATTACHMENT_COUNT
+    - ATTACHMENT_IN_DETAILVIEW
+    - ATTACHMENT_IN_RHS
+    - SPOTEDIT
+    - GENERAL_HISTORY_TEXT
+    - INPUT_PROJECT_CODE
+    - SAVE_TICK_ICON
+    - DETAILVIEW_ATTACH_BTN
+    - DETAILVIEW_FILE_INPUT
+    - INPUT_ESTIMATED_HOURS
+    - INPUT_ACTUAL_HOURS
+    - INPUT_ESTIMATED_COST
+    - INPUT_ACTUAL_COST
+    - INPUT_PERCENTAGE_COMPLETED
+    - COPY_PROJECT_ACTIONS_DROPDOWN
+    - TYPE_PERCENTAGE_COMPLETED
+    - VERIFY_COMMENTS_IN_THREAD_VIEW
+    - CLICK_LINEAR_VIEW_IN_COMMENTS
+    - SELECT_USERS_IN_COMMENT_DROPDOWN
+    - GLOBAL_ACTION_ELEMENT
+    - GLOBAL_ACTION_ELEMENT_DROPDOWN_BTNS
+    - CLICK_SEARCH_ICON_IN_ASSOCIATIONS_SUBTAB
+    - VERIFY_CHANGE_ATTACHED_WITH_DISPLAY_ID
+    - CHANGES_CASUED_BY_PROJECT_TABLE_HEADER
+    - ENABLE_CHECKBOX_CHANGE_ATTACHED_WITH_DISPLAY_ID
+    - SELECT_GLOBAL_CHECKBOX_IN_ASSOCIATION_SUBTAB
+    - NO_CHANGES_FOUND_IN_THIS_VIEW_IN_ASSOCIATION_SUBATB
+    - VERIFY_ASSOCIATIONS_COUNT_IN_RHS
+    - CHANGES_CASUED_BY_PROJECT_TABLE
+    - CUSTOMER_FIELD_IN_COLUMNCHOOSER
+    - MENTIONS_DROPDOWN_IN_COMMENTS
+    - TABLE_VIEW_TYPE
+    - PROJECT_TITLE
+    - LAST_MILESTONE
+    ProjectTemplateListview:
+    - VERIFY_COPY_PROJECT_TEMPLATE
+    TrashedProject:
+    - CLICK_BACK_BTN_IN_TRASH_PROJECT
+    - CLICK_PROJECT_WITH_ENTITYID_IN_TRASH
+    - VERIFY_TRASH_PROJECT_EXPANDED_WITH_ENTITYID
+    ImportWizard:
+    - ADMIN_VERIFY_IMPORT_PROJECTS_PAGE_OPENED
+    - ADMIN_VERIFY_IMPORT_WIZARD_TEXT
+    ProjectDetailViewRHS:
+    - RHS_ASSOCIATIONS
+    - VERIFY_ASSOCIATIONS_TAB_OPENED_REQUEST
+    - VERIFY_ASSOCIATIONS_TAB_OPENED_CHANGES_CAUSED_BY_PROJECT
+    - VERIFY_ASSOCIATIONS_TAB_OPENED_CHANGES_INITIATED_THE_PROJECT
+    - VERIFY_ASSOCIATIONS_TAB_OPENED_RELEASE
+    - ATTACH_DETACH_REQUEST
+    - ATTACH_DETACH_CHANGES_CAUSED_BY_PROJECT
+    - ATTACH_DETACH_RELEASE
+    - VERIFY_RHS_STATUS
+    - VERIFY_RHS_PRIORITY
+    - VERIFY_RHS_OWNER
+    - CLICK_RHS_MILESTONES
+    - VERIFY_MILESTONE_SUBTAB_OPENED
+    - CLICK_RHS_TASKS
+    - VERIFY_TASKS_SUBTAB_OPENED
+    - ATTACH_DETACH_CHANGES_INITIATED_THE_PROJECT
+    - RELEASES_INTIATED_PROJECT
+    - RELEASES_INTIATED_BY_MILESTONE
+    - RELEASES_INTIATED_BY_MILESTONE_ASSOCIATIONS_PAGE
+    RHSPopup:
+    - VERIFY_ASSOCIATE_REQUEST_TO_PROJECT_TEXT_IN_POPUP
+    - BTN_ASSOCIATE
+    - CLICK_LISTVIEW_FILTERS
+    - CLICK_CHANGE_LISTVIEW_FILTERS
+    - CLICK_ALL_REQUESTS_FILTERS
+    - VERIFY_SEARCH_CHANGES_TEXT_IN_POPUP
+    - CLICK_ALL_CHANGES_FILTERS
+    - VERIFY_ASSOCIATE_RELEASE_TEXT_IN_POPUP
+    - CLICK_PROJECTS_LISTVIEW_FILTERS
+    - TEXT_IN_POPUP
+    - SELECT_RADIOBTN_WITH_ENTITYID
+    - SELECK_CHECKBOX_WITH_ENTITYID
+    - SELECT_RADIOBTN_WITH_DATA_ROW_ID
+    - CHANGE_LISTVIEW_FILTERS_DROPDOWN_IN_POPUP
+    - SELECT_GLOBAL_CHECKBOX_IN_POPUP
+    ValidationMessage:
+    - VERIFY_VALIDATION_MESSAGE
+    HistoryLocators:
+    - DESCRIPTION
+    - ICONS_IN_HISTORY
+    - VERIFY_CAN_SELECT_ONLY_15_ITEMS
+    - VERIFY_15_ITEMS
+    - HISTORY_TEXT
+    Association:
+    - SELECT_RELEASE_MILESTONE_ASSOCIATION
+    - DETACH_RELEASE_MILESTONE
+    - ASSOCIATE_RELEASE_MILESTONE
+    - RELEASE_ASSOCIATED_HISTORY
+    - SELECT_RELEASE_ALERT
+    - DISSOCIATE_MILESTONE_ALERT
+    - GO_BACK_BUTTON
+    - NEW_RELEASE_BUTTON
+    - NEW_CHANGE_BUTTON
+    - RELEASE_PROJECT_BUTTON
+    - SAVE_NEWCHANGE
+    - CANCEL_NEWCHANGE
+    - NEW_CHANGE_PAGE_POPUP
+    - VERIFY_ASSOCIATED_CHANGE
+    - VERIFY_ASSOCIATED_CHANGE_CAUSED
+    - SEARCH_CHANGE_IN_ASSOCIATION
+    - OPEN_CHANGES_DROPDOWN
+    - SELECT_DROPDOWN_OPTION_BY_TEXT
+    - POPOUT_ICON_BY_CHANGE_ID
+    - VERIFY_CHANGE_TITLE_POPOUT
+    - VERIFY_HISTORY_STATUS_TEXT
+    - CHANGE_SEARCH
+    - CHANGE_INITIATED_ACTION_BUTTON
+    - OPEN_CHANGES_OPTION_DROPDOWN
+    - NO_CHANGE_SELECT_ALERT
+    - CLICK_RADIO_SPAN_WITH_CHANGENAME
+    - VERIFY_CHANGENAME_ASSOCIATION_SEARCH
+    - POPOUT_CHANGEDETAILS_ASSOCIATIONPAGE
+    - VERIFY_TITLE_VALUE_NEWCHANGE
+    - VERIFY_FIELDVALUES_NEWCHANGE
+    - VERIFY_PROJECTDESCRIPTION_NEWCHANGE
+    - CLICK_CHECKBOX_BY_TITLE
+    - CLICK_CHECKBOX_BY_CHANGE_NAME
+    - VERIFY_CHANGE_ASSOCIATION
+    - RELEASE_COUNT_INITIATEDBY_MILESTONE
+    - NEW_RELEASE_ATTACHMENT_STATUS
+    - SEARCH_CHANGE_CAUSED_BYPROJECT
+    - TITLE_SEARCH
+    - CLICK_GO
+    GanttChart:
+    - EXPORT_GANTT_CHART
+    - GANTT_CHART_PDF
 data_constants:
   file: com/zoho/automater/selenium/modules/projects/project/common/ProjectDataConstants.java
   classes:
@@ -385,1461 +574,3 @@ data_json_keys:
 - spot_edit_status_to_closed
 - spot_edit_status_to_onhold
 - spot_edit_status_to_open
-data_json_deep:
-  total_entries: 75
-  field_frequency:
-    title: 18
-    project: 17
-    template: 13
-    description: 13
-    status: 10
-    priority: 8
-    owner: 7
-    project_type: 5
-    percentage_completion: 4
-    data_array: 4
-    project_requester: 3
-    estimated_hours: 3
-    actual_hours: 3
-    estimated_cost: 3
-    actual_cost: 3
-    project_code: 2
-    name: 2
-    comment: 2
-    scheduled_start_time: 1
-    scheduled_end_time: 1
-  all_placeholders:
-  - custom_moduleId
-  - custom_techName
-  - date, 0Y 1M 1D 0h 0m, true
-  - date, 0Y 1M 2D 0h 0m, true
-  - date, 0Y 1M 3D 0h 0m, true
-  - date, 0Y 1M 4D 0h 0m, true
-  - date, 0Y 1M 5D 0h 0m, true
-  - date, 1Y 10M 50D 0h 0m, false
-  - date, 2Y 10M 100D 0h 0m, true
-  - date, 2Y 11M 100D 0h 0m, true
-  - date, 2Y 11M 110D 0h 0m, true
-  - rest_api, search, task_layouts, name, Default Task Layout
-  - unique_string
-  - user_id
-  - user_name
-  reuse_groups_count: 17
-  entries:
-    create_project_using_default_project_template:
-      fields:
-      - template
-      - title
-      - priority
-      - status
-      - project_code
-      - project_type
-      - project_requester
-      - owner
-      - estimated_hours
-      - actual_hours
-      - estimated_cost
-      - actual_cost
-      - percentage_completion
-      - scheduled_start_time
-      - scheduled_end_time
-      - actual_start_time
-      - actual_end_time
-      - projected_end
-      - description
-      placeholders:
-      - unique_string
-      - unique_string
-      - user_name
-      - user_name
-      - date, 0Y 1M 1D 0h 0m, true
-      - date, 0Y 1M 2D 0h 0m, true
-      - date, 0Y 1M 3D 0h 0m, true
-      - date, 0Y 1M 4D 0h 0m, true
-      - date, 0Y 1M 5D 0h 0m, true
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_project_mandatory_fields:
-      fields:
-      - template
-      - title
-      - description
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_project:
-      fields:
-      - template
-      - title
-      - description
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    edit_project:
-      fields:
-      - title
-      - description
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    copy_project:
-      fields:
-      - title
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    copy_project_template:
-      fields:
-      - name
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_release_for_project:
-      fields:
-      - template
-      - title
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    rhs_status_to_onhold:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_status_Onhold:
-      fields:
-      - status
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    rhs_status_to_canceled:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_status_canceled:
-      fields:
-      - status
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    rhs_status_to_closed:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_status_closed:
-      fields:
-      - status
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    rhs_priority_to_high:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_priority_to_high:
-      fields:
-      - priority
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    rhs_priority_to_low:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_priority_to_low:
-      fields:
-      - priority
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    rhs_priority_to_medium:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_priority_to_medium:
-      fields:
-      - priority
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    rhs_priority_to_normal:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_priority_to_normal:
-      fields:
-      - priority
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    rhs_owner:
-      fields:
-      - project
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_owner:
-      fields:
-      - owner
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    Table_Settings:
-      fields:
-      - count
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_project_status_to_onhold:
-      fields:
-      - template
-      - title
-      - description
-      - status
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_project_status_to_canceled:
-      fields:
-      - template
-      - title
-      - description
-      - status
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_project_status_to_closed:
-      fields:
-      - template
-      - title
-      - description
-      - status
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    create_project_status_to_open:
-      fields:
-      - template
-      - title
-      - description
-      - status
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: api_preprocess
-    add_comment_ui:
-      fields:
-      - comment
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    add_comment_api:
-      fields:
-      - project_comment
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    edit_comment:
-      fields:
-      - comment
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    details_spot_edit_using_search_input:
-      fields:
-      - data_array
-      placeholders:
-      - user_name
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    details_spot_edit_date_fields_input:
-      fields:
-      - data_array
-      placeholders:
-      - date, 1Y 10M 50D 0h 0m, false
-      - date, 2Y 10M 100D 0h 0m, true
-      - date, 2Y 11M 100D 0h 0m, true
-      - date, 2Y 11M 110D 0h 0m, true
-      - date, 2Y 11M 100D 0h 0m, true
-      local_storage_keys_required: []
-      purpose: ui_form
-    details_spot_edit_textarea_fields_input:
-      fields:
-      - data_array
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    listview_search_by_column_input:
-      fields:
-      - data_array
-      placeholders:
-      - user_name
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    add_task_via_actions:
-      fields:
-      - email_before
-      - status
-      - description
-      - title
-      - priority
-      - task_type
-      - percentage_completion
-      - additional_cost
-      placeholders:
-      - unique_string
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    add_task_from_template:
-      fields:
-      - layouts
-      - task
-      - modules
-      - name
-      - comments
-      placeholders:
-      - rest_api, search, task_layouts, name, Default Task Layout
-      - unique_string
-      - unique_string
-      - custom_moduleId
-      - unique_string
-      local_storage_keys_required:
-      - moduleId
-      purpose: ui_form
-    history_priority:
-      fields:
-      - priority
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_status_to_canceled:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_status_to_closed:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_status_to_onhold:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_project_type_to_business:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_project_type_to_business:
-      fields:
-      - project_type
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_project_type_to_infrastructure:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_project_type_to_infrastructure:
-      fields:
-      - project_type
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_project_type_to_maintenance:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_project_type_to_maintenance:
-      fields:
-      - project_type
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_project_type_to_research:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_project_type_to_research:
-      fields:
-      - project_type
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_project_code:
-      fields:
-      - project
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_project_code:
-      fields:
-      - project_code
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_status_to_open:
-      fields:
-      - project
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_status_to_open:
-      fields:
-      - status
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_project_requester:
-      fields:
-      - project_requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_project_requester:
-      fields:
-      - project_requester
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_owner:
-      fields:
-      - owner
-      placeholders:
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_estimated_hours:
-      fields:
-      - estimated_hours
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_estimated_hours:
-      fields:
-      - estimated_hours
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_actual_hours:
-      fields:
-      - actual_hours
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_actual_hours:
-      fields:
-      - actual_hours
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_estimated_cost:
-      fields:
-      - estimated_cost
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_estimated_cost:
-      fields:
-      - estimated_cost
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_actual_cost:
-      fields:
-      - actual_cost
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_actual_cost:
-      fields:
-      - actual_cost
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    spot_edit_percentage_completed:
-      fields:
-      - percentage_completion
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    history_percentage_completed:
-      fields:
-      - percentage_completion
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    add_members:
-      fields:
-      - project_members
-      placeholders:
-      - user_id
-      local_storage_keys_required: []
-      purpose: ui_form
-    bulk_create_project_mandatory_fields:
-      fields:
-      - template
-      - title
-      - description
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    change_casued_by_project_via_new_change:
-      fields:
-      - title
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    list_info_criteria_title_search:
-      fields:
-      - search_criteria
-      placeholders: []
-      local_storage_keys_required: []
-      purpose: ui_form
-    project_data_for_trigger:
-      fields:
-      - title
-      - owner
-      placeholders:
-      - unique_string
-      - user_name
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_projects_for_change_NR:
-      fields:
-      - template
-      - owner
-      - title
-      placeholders:
-      - custom_techName
-      - unique_string
-      local_storage_keys_required:
-      - techName
-      purpose: api_preprocess
-    project_data_association:
-      fields:
-      - template
-      - owner
-      - title
-      - description
-      placeholders:
-      - user_name
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    project_change_association_data:
-      fields:
-      - template
-      - priority
-      - title
-      - description
-      placeholders:
-      - unique_string
-      local_storage_keys_required: []
-      purpose: ui_form
-    create_project_with_owner:
-      fields:
-      - template
-      - title
-      - description
-      - owner
-      placeholders:
-      - unique_string
-      - user_name
-      local_storage_keys_required: []
-      purpose: api_preprocess
-actions_util_deep:
-- name: getCount
-  params: Locator locator
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain: []
-  line_count: 3
-- name: clickSpotEditField
-  params: String field, String input
-  locators_used:
-  - ClientFrameworkLocators.DetailsViewLocators.SPOT_EDIT
-  - ProjectLocators.ProjectDetailview.CLICK_SPOT_EDIT_DATE_INPUT
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.waitForAjaxComplete
-  - actions.click
-  line_count: 3
-- name: uploadFileInRHS
-  params: String fileName
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain: []
-  line_count: 1
-- name: uploadFileInDetails
-  params: String fileName
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain: []
-  line_count: 1
-- name: verifyDetailsAttachment
-  params: int count, ArrayList<String> filenames
-  locators_used:
-  - ChangeLocators.ChangeDetailsview.ATTACHMENT_COUNT_DETAILS
-  - ChangeLocators.ChangeDetailsview.ATTACHMENT_FILE_NAME
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.getText
-  - actions.getAllElements
-  line_count: 21
-- name: verifyRHSAttachment
-  params: int count, ArrayList<String> filenames
-  locators_used:
-  - ChangeLocators.ChangeDetailsview.ATTACHMENT_COUNT
-  - ChangeLocators.ChangeDetailsview.ATTACHMENT_FILE_NAME
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.getText
-  - actions.click
-  - actions.getAllElements
-  line_count: 22
-- name: pressEscapeKey
-  params: (none)
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain: []
-  line_count: 10
-- name: uploadFile
-  params: Locator locator, String fileName
-  locators_used: []
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.executeScript
-  - actions.type
-  line_count: 10
-- name: uploadFile
-  params: String fileName, String mode
-  locators_used:
-  - ChangeLocators.ChangeDetailsview.FILE_INPUT
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.executeScript
-  - actions.type
-  line_count: 11
-- name: verifyAjaxMessage
-  params: String text
-  locators_used:
-  - ReleaseLocators.Ajax.TEXT_AJAXMESSAGETEXT
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.waitForAnElementToAppear
-  - actions.validate.textContent
-  line_count: 3
-- name: globalCheckboxSelect
-  params: String entityId
-  locators_used:
-  - ProjectLocators.ProjectListview.SELECK_CHECKBOX_WITH_ENTITYID
-  - ProjectLocators.RHSPopup.SELECT_RADIOBTN_WITH_DATA_ROW_ID
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.waitForAjaxComplete
-  - actions.isElementPresent
-  - actions.click
-  - actions.isElementPresent
-  - actions.click
-  line_count: 11
-- name: globalCheckboxSelectInTemplateForTasks
-  params: String entityId
-  locators_used:
-  - ProjectTemplateLocators.TasksListview.CHECKBOX_DATA_ROW_COLUMN_ID
-  - RequestLocators.SelectBoxes.RADIO_CURRID
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.waitForAjaxComplete
-  - actions.isElementPresent
-  - actions.click
-  - actions.isElementPresent
-  - actions.click
-  line_count: 11
-- name: columnSearchForInitiatedChangesListView
-  params: String column, String value
-  locators_used:
-  - ClientFrameworkLocators.ButtonLocators.BTN_BYNAME
-  - ClientFrameworkLocators.ListViewLocators.SEARCH_TABLE_HEADER
-  - ClientFrameworkLocators.ListViewLocators.TABLE_HEADER_ROW
-  - ProjectLocators.ProjectDetailview.CHANGES_CASUED_BY_PROJECT_TABLE_HEADER
-  - ProjectLocators.ProjectDetailview.CLICK_SEARCH_ICON_IN_ASSOCIATIONS_SUBTAB
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.isElementPresent
-  - actions.click
-  - actions.getAllElements
-  - actions.type
-  - actions.isElementPresent
-  - actions.clickByName
-  - actions.clickByNameInput
-  line_count: 25
-- name: setTableViewType
-  params: String viewType
-  locators_used:
-  - ProjectLocators.ProjectDetailview.TABLE_VIEW_TYPE
-  - ProjectLocators.ProjectListview.TEMPLATE_VIEW_ICON
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.waitForAjaxComplete
-  - actions.isElementPresent
-  - actions.click
-  line_count: 4
-- name: editTaskUsingRowActionsViaMilestone
-  params: (none)
-  locators_used:
-  - ProjectMilestoneTaskLocators.MilestoneListview.CLCIK_MILESTONE_WITH_ENTITYID
-  - ProjectTaskLocators.Popup.TEXT_IN_POPUP
-  - ProjectTaskLocators.TaskListview.CLICK_EDIT_IN_ACTIONS_ICON
-  - ProjectTaskLocators.TaskListview.CLICK_ROW_ACTIONS_WITH_ENTITYID
-  local_storage_reads:
-  - taskId
-  - milestoneId
-  local_storage_writes: []
-  action_chain:
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  - actions.validate.textContent
-  line_count: 8
-- name: deleteTaskUsingRowActionsViaMilestone
-  params: (none)
-  locators_used:
-  - ProjectMilestoneTaskLocators.MilestoneListview.CLCIK_MILESTONE_WITH_ENTITYID
-  - ProjectTaskLocators.TaskListview.CLICK_DELETE_IN_ACTIONS_ICON
-  - ProjectTaskLocators.TaskListview.CLICK_ROW_ACTIONS_WITH_ENTITYID
-  local_storage_reads:
-  - taskId
-  - milestoneId
-  local_storage_writes: []
-  action_chain:
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  - actions.validate.confirmationBoxTitleAndConfirmationText
-  - actions.clickByNameSpan
-  - actions.validate.successMessageInAlert
-  line_count: 10
-- name: deleteMultipleTaskUsingRowActionsViaMilestone
-  params: (none)
-  locators_used:
-  - ProjectMilestoneTaskLocators.MilestoneListview.CLCIK_MILESTONE_WITH_ENTITYID
-  - ProjectMilestoneTaskLocators.MilestoneTaskListview.DELETE_BTN
-  - ProjectTaskLocators.TaskListview.SELECT_CHECKBOX_WITH_ENTITYID
-  local_storage_reads:
-  - milestoneId
-  local_storage_writes: []
-  action_chain:
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  - actions.validate.confirmationBoxTitleAndConfirmationText
-  - actions.clickByNameSpan
-  line_count: 12
-- name: clickAddTaskInAddTaskDropdownViaMilestone
-  params: (none)
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.OPTION_ELEMENT
-  - ProjectMilestoneTaskLocators.MilestoneListview.CLCIK_MILESTONE_WITH_ENTITYID
-  - ProjectTaskLocators.TaskListview.ADD_TASK_DROPDOWN
-  local_storage_reads:
-  - milestoneId
-  local_storage_writes: []
-  action_chain:
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  line_count: 7
-- name: closeSingleTaskViaMilestone
-  params: (none)
-  locators_used:
-  - ProjectMilestoneTaskLocators.MilestoneListview.CLCIK_MILESTONE_WITH_ENTITYID
-  - ProjectTaskLocators.TaskListview.CLICK_CLOSE_BUTTON_IN_TASK_TAB
-  - ProjectTaskLocators.TaskListview.SELECT_CHECKBOX_WITH_ENTITYID
-  local_storage_reads:
-  - taskId
-  - milestoneId
-  local_storage_writes: []
-  action_chain:
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  - actions.validate.confirmationBoxTitleAndConfirmationText
-  - actions.clickByNameSpan
-  - actions.validate.successMessageInAlert
-  line_count: 10
-- name: closeMultipleTaskViaMilestone
-  params: (none)
-  locators_used:
-  - ProjectMilestoneTaskLocators.MilestoneListview.CLCIK_MILESTONE_WITH_ENTITYID
-  - ProjectTaskLocators.TaskListview.CLICK_CLOSE_BUTTON_IN_TASK_TAB
-  - ProjectTaskLocators.TaskListview.SELECT_CHECKBOX_WITH_ENTITYID
-  local_storage_reads:
-  - milestoneId
-  local_storage_writes: []
-  action_chain:
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  - actions.validate.confirmationBoxTitleAndConfirmationText
-  - actions.clickByNameSpan
-  - actions.validate.successMessageInAlert
-  line_count: 13
-- name: triggerSingleTaskViaMilestone
-  params: (none)
-  locators_used:
-  - ProjectMilestoneTaskLocators.MilestoneListview.CLCIK_MILESTONE_WITH_ENTITYID
-  - ProjectTaskLocators.TaskListview.VERIFY_MARKED_TECHNICIAN_ICON
-  local_storage_reads:
-  - taskId
-  - milestoneId
-  local_storage_writes: []
-  action_chain:
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.click
-  - actions.navigate.toSubTabInDetailsPage
-  - actions.isElementPresent
-  line_count: 6
-- name: selectUsersInNotesEditor
-  params: String message
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.FRAME_ZE
-  - ClientFrameworkLocators.FormBuilderLocators.TXT_EDITOR
-  - ProjectLocators.ProjectDetailview.SELECT_USERS_IN_COMMENT_DROPDOWN
-  local_storage_reads: []
-  local_storage_writes:
-  - notesUser
-  action_chain:
-  - actions.waitForAjaxComplete
-  - actions.waitForAnElementToAppear
-  - actions.switchFrame
-  - actions.type
-  - actions.waitForAjaxComplete
-  - actions.switchToDefaultFrame
-  - actions.click
-  - actions.waitForAjaxComplete
-  line_count: 10
-- name: selectTaskOwnersInNotesEditor
-  params: String message
-  locators_used:
-  - ClientFrameworkLocators.FormBuilderLocators.FRAME_ZE
-  - ClientFrameworkLocators.FormBuilderLocators.TXT_EDITOR
-  - ProjectLocators.ProjectDetailview.SELECT_USERS_IN_COMMENT_DROPDOWN
-  local_storage_reads: []
-  local_storage_writes:
-  - notesUser
-  action_chain:
-  - actions.waitForAjaxComplete
-  - actions.waitForAnElementToAppear
-  - actions.switchFrame
-  - actions.type
-  - actions.waitForAnElementToAppear
-  - actions.switchToDefaultFrame
-  - actions.click
-  line_count: 9
-- name: navigateTo
-  params: String listviewFilter, String tableViewName, String searchProject, String entityID, String subTab
-  locators_used:
-  - ClientFrameworkLocators.ListViewLocators.BTN_ALL_FILTER
-  - ProblemLocators.Listview.ICN_LISTVIEW
-  local_storage_reads: []
-  local_storage_writes: []
-  action_chain:
-  - actions.waitForAjaxComplete
-  - actions.navigate.toModule
-  - actions.validate.textContent
-  - actions.listView.selectFilter
-  - actions.click
-  - actions.listView.columnSearch
-  - actions.navigate.toDetailsPageUsingRecordId
-  - actions.navigate.toSubTabInDetailsPage
-  line_count: 13
-api_util_deep:
-- name: createProject
-  params: String testCase
-  api_paths:
-  - projects
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - projectName
-  - projectDisplayId
-  - userID
-  - projectId
-  - projectDisplayValue
-  - projectcode
-  - description
-  local_storage_reads: []
-- name: createMilestone
-  params: String milestoneDataID
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - milestoneName
-  - milestoneId
-  - description
-  local_storage_reads:
-  - projectId
-- name: createProjectWithMilestone
-  params: String projectDataID, String milestoneDataID
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - milestoneName
-  - milestoneId
-  local_storage_reads:
-  - projectId
-- name: createProjectWithMultipleMilestones
-  params: String projectDataID, String milestoneDataID
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - milestones
-  - milestoneNames
-  local_storage_reads:
-  - projectId
-- name: createProjectWithMultipleMilestone
-  params: String projectDataID, String milestoneDataID, LinkedHashMap<String, FieldDetails> fields
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - milestones
-  - milestoneNames
-  local_storage_reads:
-  - projectId
-- name: createComments
-  params: String commentDataID
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - commentId
-  - commentName
-  local_storage_reads:
-  - projectId
-- name: createProjectWithComments
-  params: String projectDataID, String commentDataID
-  api_paths: []
-  rest_methods_used: []
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createMembers
-  params: String memberDataID
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - memberId
-  - memberName
-  local_storage_reads:
-  - projectId
-- name: createProjectWithMembers
-  params: String testCase, String memberDataID
-  api_paths: []
-  rest_methods_used: []
-  local_storage_writes: []
-  local_storage_reads: []
-- name: createProjectWithMembersAndMilestone
-  params: String testCase, String memberDataID, String milestoneDataID
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - memberId
-  - milestoneId
-  - milestoneName
-  - memberName
-  local_storage_reads:
-  - Project
-- name: createProjectWithMultipleMilestoneAndMembers
-  params: String projectDataID, String milestoneDataID, LinkedHashMap<String, FieldDetails> fields, String memberDataID
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - milestones
-  - memberName
-  - milestoneNames
-  - memberId
-  local_storage_reads:
-  - projectId
-  - Project
-- name: createProjectWithCommentsAndMembers
-  params: String projectDataID, String commentDataID, String memberDataID
-  api_paths:
-  - projects
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - projectName
-  - memberId
-  - commentId
-  - memberName
-  - commentName
-  - projectId
-  local_storage_reads:
-  - Project
-- name: projectCreation
-  params: String testCase
-  api_paths:
-  - projects
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - projectDisplayId
-  local_storage_reads: []
-- name: editProject
-  params: TestCaseData testCase
-  api_paths:
-  - projects/
-  rest_methods_used:
-  - update
-  local_storage_writes: []
-  local_storage_reads:
-  - projectId
-- name: ProjectWithMilestone
-  params: String projectDataID, String milestoneDataID
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - milestoneId
-  local_storage_reads:
-  - projectId
-preprocess_deep:
-- group: createproject
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - ProjectAPIUtil.createProject
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Project.Project
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createanddeleteproject
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - delete
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createrequestforproject
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - ProjectAPIUtil.createProject
-  rest_direct_calls:
-  - create
-  local_storage_stores:
-  - key: requestid
-    source_type: computed
-  - key: subject
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - ModuleConstants
-  - Project.Project
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createchangeforproject
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ChangeAPIUtil.createChange
-  - ProjectAPIUtil.createProject
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: changeId
-    source_type: api_response_field
-  - key: changeName
-    source_type: hardcoded
-  - key: changeDisplayId
-    source_type: display_id
-  local_storage_reads: []
-  entities_created:
-  - change
-  - Change.Change
-  - Project.Project
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createreleaseforproject
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ReleaseAPIUtil.createRelease
-  - ProjectAPIUtil.createProject
-  rest_direct_calls:
-  - create
-  local_storage_stores:
-  - key: releaseid
-    source_type: computed
-  - key: title
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - release
-  - Release.Release
-  - Project.Project
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: bulkcreate
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createprojectwithcomments
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ProjectAPIUtil.createProjectWithComments
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Project.ProjectWithComments
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: differentprojectsforfilters
-  source_file: ProjectBase.java
-  dataids_consumed: []
-  dataids_count: 0
-  api_util_calls: []
-  rest_direct_calls:
-  - create
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - project
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createprojectandtaskworklog
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - ProjectTaskWorklogAPIUtil.createProjectAndTaskWorklog
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - ProjectTaskWorklog.ProjectAndTaskWorklog
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createAndGetDisplayID
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls: []
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: display_id
-    source_type: display_id
-  - key: projectcode
-    source_type: api_response_field
-  local_storage_reads: []
-  entities_created:
-  - getName
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: addtasktemplate
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 1
-  dataids_count: 1
-  api_util_calls:
-  - TaskTemplateAPIUtil.createTaskTemplate
-  - ProjectAPIUtil.createProject
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - TaskTemplate.TaskTemplate
-  - Project.Project
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: bulkchangeforproject
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ProjectAPIUtil.createProject
-  rest_direct_calls:
-  - createAndGetResponse
-  local_storage_stores:
-  - key: change
-    source_type: api_response_field
-  - key: title
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - change
-  - Project.Project
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: lookup
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: userlookupandproject
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  dataids_count: 4
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: customlookupandproject
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  - 4
-  - 5
-  dataids_count: 6
-  api_util_calls: []
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads:
-  - cm_display_name
-  entities_created: []
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: projectwithuserandcustomlookup
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  - 3
-  - 4
-  - 5
-  - 6
-  - 7
-  dataids_count: 8
-  api_util_calls:
-  - ChangeAPIUtil.createChangeForConflictDetection
-  - ChangeAPIUtil.releaseScheduleAPI
-  - ReleaseAPIUtil.createRelease
-  - ChangeAPIUtil.createChangeForConflictDetection
-  - ChangeAPIUtil.releaseScheduleAPI
-  - ReleaseAPIUtil.createRelease
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: UDF_Name_1
-    source_type: hardcoded
-  - key: udf_fields1
-    source_type: hardcoded
-  local_storage_reads:
-  - UDF_Name
-  - udf_fields
-  - cm_display_name
-  entities_created:
-  - Change.ChangeForConflictDetection
-  - Release.Release
-  - Change.ChangeForConflictDetection
-  - Release.Release
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: project_multiple_association
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - ReleaseAPIUtil.createRelease
-  - ReleaseAPIUtil.createRelease
-  - ProjectAPIUtil.createProjectWithMilestone
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: releaseId1
-    source_type: hardcoded
-  local_storage_reads:
-  - releaseId
-  entities_created:
-  - Release.Release
-  - Release.Release
-  - Project.ProjectWithMilestone
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: project_change_association
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - ChangeAPIUtil.createChange
-  - ProjectAPIUtil.createProjectWithMilestone
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Change.Change
-  - Project.ProjectWithMilestone
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: hotfix_milestone
-  source_file: ProjectBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ProjectAPIUtil.createProjectWithMultipleMilestones
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Project.ProjectWithMultipleMilestones
-  creates_user: false
-  user_role: null
-  calls_super: false

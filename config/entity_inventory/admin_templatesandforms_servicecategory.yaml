@@ -1,0 +1,255 @@
+module: admin
+entity: templatesandforms_servicecategory
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/servicecategory/utils/ServiceCategoryAPIUtil.java
+  methods:
+  - name: createServiceCategoryAPI
+    return_type: void
+    params: String inputData
+    purpose: ''
+  - name: createMultipleServiceCategory
+    return_type: void
+    params: String inputData
+    purpose: ''
+  - name: createMultipleSerCatAndSerTemp
+    return_type: void
+    params: int count, String inputData
+    purpose: method for multiple service categories, service template and incident template
+  - name: multipleServiceTemplateWithServiceCategory
+    return_type: void
+    params: int count
+    purpose: API - UDF associated in both template
+  - name: multipleIncidentTemplateWithServiceCategory
+    return_type: void
+    params: int count
+    purpose: api
+  - name: createMultipleServiceCategoryViaAPI
+    return_type: void
+    params: int count, String inputData
+    purpose: API- multiple service category and both servicetemplate and incidenttemplate - in API
+  - name: createMultipleServiceCategoryWithSerTemp
+    return_type: void
+    params: int count, String inputData
+    purpose: servicecategory and servicetemlate without udf
+  - name: multipleServiceTemplateWithoutUDF
+    return_type: void
+    params: int count
+    purpose: API -
+  - name: multipleIncidentTemplateWithoutUDF
+    return_type: void
+    params: int count
+    purpose: ''
+  - name: createMultipleServiceCategoryWithIncidentTemp
+    return_type: void
+    params: int count, String inputData
+    purpose: servicecategory and incidentTemplate without udf
+  - name: createServicecategoryAndServicetemplate
+    return_type: void
+    params: String caseId
+    purpose: new line
+  - name: createServicecategoryAndServicetemplate
+    return_type: void
+    params: JSONObject tempData
+    purpose: ''
+  - name: createServiceTemplate
+    return_type: void
+    params: JSONObject tempData
+    purpose: // // String serviceCategoryId = Response.optJSONObject("service_category").optString("id");
+  - name: createServicecategoryWithMultipleServicetemplate
+    return_type: void
+    params: String caseId, int count
+    purpose: ''
+  - name: createServiceTemplate
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: resourceQuestion
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: simpleTypeQuestion
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: CheckBoxQuestion
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: selectTypeQuestion
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: textBoxQuestion
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: resourceCreation
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: existingResourceQuestion
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: createServiceTemplateForTrigger
+    return_type: void
+    params: (none)
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/servicecategory/common/ServiceCategoryLocators.java
+  interfaces:
+    ServiceCategoryLocators:
+    - ENTITY_ID_ALONE
+    - TEMPLATE_ROW
+    - CLICK_INPUT_FIELD_IN_SEARCH_TEMPLATE
+    - CLICK_IMAGE_ICON_IN_SERVICE_CATEGORY
+    - SELECT_SC_IMAGE_ICON_IN_POPUP
+    - VERIFY_IMAGE_ICON_IN_SERVICE_CATEGORY_POPUP
+    - SEARCH_SERVICE_TEMPLATE_NAME
+    - VERIFY_SELECT_OPTION_VALUES
+    - CLICK_SERVICE_CATEGORY_NAME
+    - HELP_CARD
+    - VERIFY_HELP_CARD_SLIDE
+    - CLOSE_HELP_CARD_SLIDE
+    - VERIFY_TEMPLATE_IMAGE_IN_SEARCH_INPUT
+    - CLICK_SETTINGS_ICON_IN_TEMP_BY_NAME
+    - VERIFY_CUSTOM_IMAGE_IN_TEMPLATE
+    - VERIFY_CUSTOM_IMAGE_PRESENT_IN_SEARCH_INPUT
+    - DATAFIELDREF_NAME_INPUT
+    - DATAFIELDREF_NAME_TEXTAREA
+    - DATAFIELDREF_NAME_A
+    - GET_DATA_ROWID
+    - BUTTON
+    - CLICK_DELETE_IN_ACTIONS_ICON
+    - CLICK_SETTINGS_ICON
+    - CLICK_SETTINGS_ICON_IN_SERVICE_CATEGORY_BY_NAME
+    - ACTIONS_MENU
+    - SUBTAB
+    - ICON_ROWACTION
+    - SEARCH_TEMPLATE_VALUES_DISPLAYED
+    - TXT_DROPDOWN_SEARCH_INPUT
+    - DELETE_SERVICE_CATEGORY_VIA_POPUP
+    - CLICK_HOME_BREADCRUMP
+    - SERVICE_CATEGORY_ID
+    - CLICK_HOME_BREADCRUMP_IN_POPUP
+    - TOGGLE_SLIDER
+    - VERIFY_TOGGLE_DISABLED_ENABLED
+    - VERIFY_TOGGLE_DISABLED_ENABLED
+    - BREADCRUMP_SERVICE_CATEGORY_ID
+    - CLICK_HOME_DROPDOWN_IN_SERVICE_CATEGORY_POPUP
+    - NAME
+    - CLICK_HERE
+    - TREE_ICON_IN_SEARCH_TEMPLATE
+    - CLICK_BACK_BREADCRUMP_IN_SEARCH_TEMPLATE
+    - VERIFY_DESCRIPTION_IN_LISTVIEW
+    - SELECT_CHECKBOX_WITH_ENTITYID
+    - ACTION_DROPDOWN
+    - VERIFY_DISABLED_BY_GRAYOUT_COLOR
+    SearchTemplateBox:
+    - CLICK_EXPAND_ARROW_ICON_IN_SEARCH_TEMPLATE
+    - SELECT_SEARCH_TEMPLATE_TAB_NAME
+    - VERIFY_AND_CLICK_OPTIONS_IN_SEARCH_RESULTS
+    - VERIFY_NO_DATA_AVAILABLE
+    - VERIFY_NO_DATA_AVAILABLE_ROLE_LISTBOX
+    - BREADCRUMP_DOT_ICON_ELLIPSIS
+    - VERIFY_CATEGORY_NAME_IN_BREADCRUMP_DROPDOWN
+    - VERIFY_HOME_ICON_IN_BREADCRUMP_DROPDOWN
+    Customize:
+    - VERIFY_CUSTOMIZE_POPUP_OPENED
+    - VERIFY_LHS_SC_DOT_ICON_IN_REQ_CAT
+    - VERIFY_LHS_MOVETO_ICON_IN_REQ_CAT
+    - VERIFY_RHS_MOVE_TEMP_ICON
+    - CLICK_REORDER_DROPDOWN
+    - GET_TEMP_NAME_FIRST_CHILD_IN_CUSTOMIZE
+    - GET_TEMP_NAME_FIRST_CHILD_IN_CUSTOMIZE_PANEL_VIEW
+    - VERIFY_SELECT_OPTION_VALUES
+    - GET_TEMP_NAME_LAST_CHILD_IN_CUSTOMIZE
+    - GET_TEMP_NAME_LAST_CHILD_IN_CUSTOMIZE_PANEL_VIEW
+    - SAVE_BTN_IN_CUSTOMIZE
+    - GET_TEMP_NAME_IN_LAST_CHILD_IN_INC_TEMP
+    - CLICK_LHS_SER_CAT_IN_CUSTOMIZE
+    - CLICK_CARD_VIEW_LAYOUT
+    - VERIFY_CARD_VIEW_LAYOUT
+    - CLICK_PANEL_VIEW_LAYOUT
+    - CLICK_LIST_VIEW_LAYOUT
+    - GET_REQ_CATALOG_LIST
+    - GET_REQ_CATALOG_LIST_NAME
+    - VERIFY_REQ_CATALOG_LIST_NAME_FROM_GET
+    - VERIFY_REQ_CATALOG_LIST_NAME_FROM_GET_LISTVIEW_LAYOUT
+    - CLICK_ON_HOVER
+    - HOVER_CATEGORY_NAME
+    - VERIFY_CATEGORY_DESC_NAME
+    - CLICK_EXPAND_ALL_IN_SERVICE_CATEGORY
+    - GET_REQ_CATALOG_LIST_AND_TEMP_NAME_FOR_EXPANDALL
+    - CARD_LAYOUT_TEMP_NAME
+    - CLICK_PREFERENCES_IN_CUSTOMIZE
+    - PREFRERENCES_DESCRIPTION
+    - PREFRERENCES_SORTING
+    - CLICK_GENERAL_INC_TEMP_CUSTOMIZE
+    - VERIFY_LHS_SERVICE_CATEGORY_PANEL_VIEW
+    - VERIFY_RHS_REQUEST_TEMP_PANEL_VIEW
+    - SHOW_TEMPLATES_ON_TOP
+    - RHS_INC_TEMP_COLLAPSE
+    - RHS_INC_TEMP_EXPAND
+    - VERIFY_INCIDENT_TEMP_COLLAPSE_EXPAND_RHS
+    - CLICK_LHS_SERVICE_CATEGORY_PANEL_VIEW
+    - GET_TEMP_CATEGORIES_LISTVIEW_LAYOUT
+    ReqLogin:
+    - VERIFY_LHS_CATEGORY
+    - VERIFY_SER_CAT_AND_TEMP_IN_REQ_LOGIN
+    - VERIFY_SER_CAT_AND_TEMP_IN_REQ_LOGIN
+    TemplateForm:
+    - VERIFY_IMAGE_NAME
+    - VERIFY_IMAGE_NAME_IN_FORM
+    - VERIFY_IMAGE_NAME_IN_POPUP
+    Slider:
+    - VERIFY_IMAGE_TEMP_ICON_IN_SLIDER
+    Listview:
+    - CLICK_SER_CATEGORY
+    - CLICK_SER_TEMPLATE
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/servicecategory/common/ServiceCategoryDataConstants.java
+  classes:
+    ServiceCategoryDataConstants:
+    - DUPLICATE_SR
+    - SERVICE_CATEGORY_AND_SERVICE_TEMPLATE_WITH_SITE_LOOKUP
+    - SERVICE_CATEGORY_DATA
+    - SERVICE_TEMPLATE_WITH_SITE_LOOKUP_REQUESTER_CAN_SET_AND_VIEW_FALSE
+    - COPY_INCIDENTTEMPLATE
+    - COPY_TEMPLATE
+    - SERVICE_TEMPLATE_WITH_HELPCARD
+    - SERVICE_TEMPLATE_WITH_REQ_HELPCARD_FORM_ENABLED
+    - SERVICE_TEMPLATE_WITH_ALL_TYPE_UDF
+    - SERVICE_CATEGORY_WITHOUT_EDITOR_FIELD
+    - LIST_INFO_FIELD_KEY_NAME_SEARCH
+    - SERVICE_TEMPLATE_WITH_REQ_HELPCARD
+    - CREATE_SERVICE_CATEGORY_EDITOR
+    - SERVICE_CATEGORY_TEMPLATE_WITHOUT_EDITOR
+    - SET_TASK_DEPENDENCY
+    - REMOVE_CI_FIELD_SERVICE_TEMPLATE
+    - CREATE_QUESTION_SELECT_TYPE
+    - SERVICE_CATEGORY_DATA_API
+    - SERVICE_TEMPLATE_WITH_EMPTY_HELPCARD
+    - SERVICE_TEMPLATE_FOR_TRIGGER_WITH_ALL_INPUT_FIELD
+    - SERVICE_CATEGORY_TEMPLATE
+    - SERVICE_CATEGORY_TEMPLATE_WITH_EDITOR
+    - SET_APPROVAL_VALUE
+    - ADD_SINGLE_APPROVAL_IN_TEMPLATE
+    - SERVICE_TEMPLATE_WITH_HELPCARD_FORM_ENABLED
+    - SERVICE_CATEGORY_TEMPLATE_LASTUPDATEDBY
+    - SERVICE_CATEGORY_AND_SERVICE_TEMPLATE_WITH_SITE_LOOKUP_AND_EMAILID
+    - SERVICE_CATERGORY_INPUT
+    - ADD_MULTIPLE_APPROVAL_IN_TEMPLATE
+    - CREATE_RESOURCE
+    - TASK_IN_SERVICE_TEMPLATE
+    - CREATE_RESOURCE_WITH_1_QUEST
+    - CUSTOMIZED_SERVICE_TEMPLATE_FOR_CMDB
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

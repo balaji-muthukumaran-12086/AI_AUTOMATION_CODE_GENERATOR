@@ -1,0 +1,85 @@
+module: admin
+entity: customization_assetmanagement_producttype
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/producttype/utils/ProductTypeActionsUtil.java
+  methods:
+  - name: clickProductTypeActionIcon
+    return_type: void
+    params: String productType
+    purpose: ''
+  - name: gotoProductType
+    return_type: void
+    params: String productTypeName, String actionName
+    purpose: ''
+  - name: createNewSectioninTemplate
+    return_type: void
+    params: String productTypeName, String sectionName
+    purpose: ''
+  - name: editSectionConfiguration
+    return_type: void
+    params: String productTypeName, String sectionName
+    purpose: ''
+  - name: configureUDFinProductTypes
+    return_type: void
+    params: String productType, String productName, List<String> udfFieldTypes
+    purpose: ''
+  - name: navigateToProductTypeUDFConfigPage
+    return_type: void
+    params: String productType
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/producttype/utils/ProductTypeAPIUtil.java
+  methods:
+  - name: createConsumableAsset
+    return_type: void
+    params: JSONObject  value
+    purpose: ''
+  - name: createCustomProductType
+    return_type: void
+    params: JSONObject productInputData
+    purpose: ''
+  - name: getProductTypeId
+    return_type: String
+    params: String name
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/producttype/common/ProductTypeLocators.java
+  interfaces:
+    ProductTypeLocators:
+    - PRODUCT_TYPE_IS_PRESENT
+    - PRODUCT_TYPE_ACTIONS_ICON
+    Detailview:
+    - REMOVE_ICON
+    - PARENT_PRODUCT_TYPE_FIELD
+    - AVAILABLE_FIELDS_IN_DETAILVIEW
+    - TEMPLATE_AVAILABLE_FIELDS
+    - SECTION_NAME
+    - SECTION_HEADING
+    - CLICK_SECTIONNAME
+    - NEW_SECTION
+    - DRAGDROPNEWFIELD
+    - EDIT_ICON_IN_TEMPLATE
+    - DELETE_ICON_IN_TEMPLATE
+    - ACKNOWLEDGEMENT_BUTTON
+    - FORM_CONTROL_BUTTON
+    - UDF_DROP_AREA
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/assetmanagement/producttype/common/ProductTypeDataConstants.java
+  classes:
+    ProductTypeDataConstants:
+    - CREATE_CUSTOM_PRODUCT_IN_UI
+    - GET_ENTITYID
+    - CREATE_CUSTOM_PRODUCT
+    - CREATE_CUSTOM_CONSUMABLE_PRODUCT
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createCustomProductType
+  creates_count: 0
+  local_storage_keys: []
+- name: create_consumable_producttype
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []

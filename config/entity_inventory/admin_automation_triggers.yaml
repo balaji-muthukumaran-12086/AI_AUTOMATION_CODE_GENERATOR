@@ -1,0 +1,485 @@
+module: admin
+entity: automation_triggers
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/triggers/common/TriggersLocators.java
+  interfaces:
+    TriggersLocators:
+    - CREATE_NEW_TRIGGER
+    - CLICK_ACTIONS_BUTTON
+    - CLICK_ACTION_BUTTON_GIVEN_VALUE
+    - CREATE_TASK_IN_POPUP
+    - SELECT_CUSTOM_ACTIONS_LOCATOR
+    - CREATE_REQUEST_LOCATOR
+    - VIEW_TASK_LOCATOR
+    - NO_TASK_LOCATOR
+    - TASK_TITLE_LOCATOR
+    - ADD_CONDITION_LOCATOR
+    - SELECTCOLUMN
+    - INPUT_VALUE_FOR_CONDITION
+    - CREATED_LOCATOR
+    - EDITED_LOCATOR
+    - DETAILS_LOCATOR
+    - TRIGGER_TOGGLE_LOCATOR
+    - SELECTALL_BUTTON_LOCATOR
+    - DELETE_BUTTON_LOCATOR
+    - LOGICAL_OPERATOR
+    - OPERATOR_LOCATOR
+    - TASK_SAVE_BUTTON
+    - TEXTAREA_CRITERIA_LOCATOR
+    - DATE_CRITERIA_LOCATOR
+    - APPLY_LOCATOR
+    - NUMERIC_CRITETRIA_LOCATOR
+    - DECISION_BOX
+    - SAVED_ALERT_LOCATOR
+    - DROP_DOWN_LOCATOR
+    - ON_BEHALF_OF_USER_PERMISSION
+    - VERIFY_TRIGGER_IS_DISABLED
+    - VERIFY_TRIGGER_IS_ENABLED
+    - CLICK_TOGGLE_SLIDER_IN_TRIGGER
+    - CRITERIA_CONDITION_VALUE_FIELD_LOCATOR
+    - LOOKUP_DYNAMIC_DROPDOWN
+    - LOOKUP_DYNAMIC_VALUE
+    - WORKLOG_EDIT_AND_DELETE_DIV
+    - TASK_PAGE_EMPTY_LOCATOR
+    - IS_CHANGED_LOCATOR
+    - SAVE_IN_POPUP
+    - BACK_BUTTON
+    - ZIA_ENABLE_FIELDVISE
+    - ZIA_IS_ENABLED
+    - DIV_INSIDE_SPAN_LOCATOR
+    - CUSTOM_ACTION_CLOSE_BUTTON
+    - QUICK_ACTION_PAGE_NEW_TASK_LOCATOR
+    - APPROVAL_VERIFY_LOCATOR
+    - APPROVAL_VERIFY_LOCATOR_FOR_STAGE2_APPROVAL
+    - CHANGE_ACTIONS_DROP_DOWN_LOCATOR
+    - PO_APPROVAL_TO_FIELD_LOCATOR
+    - PO_APPROVAL_ADD_STAGE_LOCATOR
+    - TABLE_HEADER_COLUMN
+    - PROJECT_MEMBER_SAVE_LOCATOR
+    - PROJECT_COMMENT_LOCATOR
+    - TRIGGER_NAME_IN_LISTVIEW
+    - SETTINGS_ICON_USING_NAME
+    - VERIFY_UDF_NAME_IN_CRITERIA
+    - NOTIFICATION_ADDED_MESSAGE
+    - OPTION_ELEMENT
+    - TASK_SETTINGS_ICON
+    - TAKE_ACTION_BY_CLICKING_ENTITYNAME
+    - CREATED_DATE_VALUE
+    - CLICK_CUSTOM_ACTIONS_BUTTON
+    - VERIFY_TRIGGER_NAME
+    - REQUEST_ACTIONS_DROPDOWN
+    TriggerFormTimerPopup:
+    - TRIGGER_FORM_VERIFY_TIMER_NAME_IS_PRESENT_OR_NOT
+    TriggerLocatorsinCustomerIssue:
+    - GO_TO_ROW_ACTIONS
+    - EDIT_BUTTON_IN_TRIGGER_ROW_ACTIONS
+    - REMOVE_ACTIONS_IN_TRIGGER
+    - GET_HISTORY_COUNT
+    - GET_HISTORY_COUNT
+    - HISTORY_COUNT
+    WebhookSiteLocators:
+    - LOGIN_LOCATOR
+    - URL_COPY_LOCATOR
+    - NETWORK_INPUT_VALUE
+    WebHookPageLocators:
+    - WEBHOOK_PARAMETERS_LOCATOR
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/automation/triggers/common/TriggersDataConstants.java
+  classes:
+    TriggersDataConstants:
+    - CRITERIA_CONDITION_IS_EDITOR
+    - TRIGGER_NOCONDITION_ACTIONNOTIFICATION
+    - CRITERIA_CONDITION_IS_AF_RADIOBUTTON
+    - CRITERIA_CONDITION_REQ_ASSET_SUBJECT
+    - CREATE_TRIGGER_VIA_API_AND_CRITERIA_CONDITION_IS_CONTAINS
+    - CREATE_REQUESTER_VIA_API_WITH_EMPLOYEE_ID
+    - GET_MODULE_ID
+    - CRITERIA_CONDITION_IS_APPROVAL_STATUS
+    - CREATE_QUESTION_VIA_API_SIMPLE_TYPE
+    - CUSTOM_DATA_FOR_TRIGGER_WITH_NOTIFICATION_ACTION_ONLY
+    - CREATE_APPROVAL_LEVELS_TRIGGER_IN_UI_WITH_RESOURCE
+    - CREATE_TRIGGER_WITH_MULTILOOKUP_UDF_IN_CRITERIA_UI
+    - CREATE_TRIGGER_VIA_API_AND_CRITERIA_CONDITION_ISEMPTY_AND_ISNOTEMPTY
+    - GET_ENTITYID_OF_IMPACT
+    - CREATE_TRIGGER_WITH_TASK_SUBENTITY
+    - CREATE_TRIGGER_IN_UI_WITH_CF_FOR_ASSET
+    - CRITERIA_CONDITION_IS_REQUESTER
+    - CRITERIA_CONDITION_IS_AF_MULTI_SELECT
+    - FILL_TRIGGER_FIELD
+    - CREATE_TRIGGER_WITH_ALL_WORKLOG_SUBENTITY
+    - ASSOCIATED_DEPARTMENT
+    - CREATE_WORKLOG_TIMER_TRIGGER_IN_UI_WITH_RESOURCE
+    - CRITERIA_CONDITION_IS_GROUP
+    - CREATE_TRIGGER_IN_UI_WITH_CF_FOR_CONTRACT
+    - NOTIFICATION_CREATION_SLA
+    - CREATE_TRIGGER_IN_UI_WITH_CF_FOR_CHANGE
+    - CREATE_TASK_TRIGGER_VIA_API_AND_CRITERIA_CONDITION_RESOURCE
+    - CRITERIA_CONDITION_IS_DUE_BY_DATE
+    - CRITERIA_CONDITION_IS_STATUS
+    - CRITERIA_CONDITION_IS_SCHEDULED_END_TIME
+    - CREATE_SITE_VIA_API
+    - CREATE_REQUESTER_USING_NAME_ONLY_FOR_MSP
+    - CRITERIA_CONDITION_IS_URGENCY
+    - GET_GROUP_DATA
+    - SEARCH_TOPIC_FOR_DELETE
+    - CREATE_NOTES_TRIGGER_IN_UI_WITH_RESOURCE
+    - CREATE_EMAIL_RESPONSES_TRIGGER_IN_UI_WITH_RESOURCE
+    - CREATE_REQUESTER_VIA_API
+    - GET_REQUEST_ID_USING_SEARCH_CRITERIA
+    - CREATE_REQUEST_TRIGGER_IN_UI_WITH_RESOURCE_QUESTION
+    - CUSTOM_DATA_FOR_TRIGGER_WITH_TASK_NOTIFICATION
+    - CREATE_TRIGGER_IN_UI_WITH_RESOURCE_REQUEST
+    - CRITERIA_CONDITION_IS_SITE
+    - CHANGE_TRIGGER_WITH_DOWNTIME_ENTITY
+    - CREATE_TRIGGER_IN_UI_WITH_RESOURCE_TASK
+    - CREATE_PROBLEM_TRIGGER_VIA_API_FOR_URGENCY
+    - CREATE_CHANGE_TRIGGER_VIA_API
+    - CREATE_TEMPLATE_VIA_API
+    - GET_REQUEST_ID_USING_SEARCH_CRITERIA_WITH_SUBJECT
+    - CUSTOM_DATA_FOR_TRIGGER
+    - CUSTOM_DATA_FOR_TRIGGER_SUBENTITY_WITH_TASK_NOTIFICATION_ACTIONS
+    - CRITERIA_CONDITION_IS_ASSET
+    - CRITERIA_CONDITION_IS_SERVICE_COST
+    - CREATE_TASK_WORKLOGS_TRIGGER_IN_UI_WITH_RESOURCE
+    - CREATE_RELEASE_TRIGGER_WITH_UDF_API
+    - FILL_TRIGGER_FIELD_SINGLE_CONDITION
+    - CREATE_TRIGGER_IN_UI_FOR_CONTRACT
+    - CRITERIA_CONDITION_IS_AF_URL
+    - CREATE_APPROVALS_TRIGGER_IN_UI_WITH_RESOURCE
+    - CRITERIA_CONDITION_IS_LEVEL
+    - CRITERIA_CONDITION_IS_AF_CHECKBOX
+    - NOTIFICATION_DATA_FOR_TRIGGER_SUBENTITY
+    - CREATE_TRIGGER_VIA_API_AND_CRITERIA_CONDITION_IS_AND_ISNOT
+    - CRITERIA_CONDITION_IS_ITEM
+    - CRITERIA_CONDITION_IS_RESOLVED_TIME
+    - CREATE_TRIGGER_IN_UI_WITH_CF_FOR_PROBLEM
+    - CHANGE_TRIGGER_WITH_CONDTION_NOTES_ACTIONS_APPROVALS
+    - CRITERIA_CONDITION_IS_AF_LOOKUP_FIELD
+    - CREATE_TRIGGER_VIA_API_AND_CRITERIA_CONDITION_ISCHANGED
+    - FILL_NOTIFICATION_FIELD_INSIDE_TRIGGER
+    - CREATE_TRIGGER_IN_UI_APPROVAL
+    - CREATE_TASK_TRIGGER_IN_UI_WITH_RESOURCE_QUESTION
+    - CRITERIA_CONDITION_IS_AF_MULTI_LINE
+    - CREATE_DEPARTMENT_VIA_API
+    - EDIT_TRIGGER_IN_UI
+    - CREATE_QUESTION_VIA_API_TEXT_BOX
+    - CRITERIA_CONDITION_IS_SERVICE_CATEGORY
+    - CREATE_REQUEST_WORKLOGS_TRIGGER_IN_UI_WITH_RESOURCE
+    - CREATE_REQUEST_TRIGGER_VIA_API_AND_CRITERIA_CONDITION_RESOURCE
+    - CRITERIA_CONDITION_IS_AF_NUMERIC
+    - CRITERIA_CONDITION_IS_COUNTRY
+    - CRITERIA_CONDITION_WITH_AND
+    - GET_PRIORITY_DATA
+    - PROBLEM_TRIGGER_APPROVALS
+    - CRITERIA_CONDITION_IS_IMPACT
+    - FILL_TASK_INPUT_FIELDS_INSIDE_TRIGGER
+    - CREATE_CHECKLISTS_TRIGGER_IN_UI_WITH_RESOURCE
+    - CREATE_TRIGGER_IN_UI
+    - CREATE_TRIGGER_IN_UI_WITH_CF_FOR_PO
+    - CRITERIA_CONDITION_IS_CATEGORY
+    - CRITERIA_CONDITION_IS_PRIORITY
+    - CRITERIA_CONDITION_MODE_SUBJECT
+    - CRITERIA_CONDITION_IS_SUBJECT
+    - CRITERIA_CONDITION_IS_AF_EMAIL
+    - CREATE_TRIGGER_IN_UI_WITH_CF_FOR_SOLUTION
+    - CREATE_TRIGGER_IN_UI_WITH_NOTIFICATION
+    - CRITERIA_CONDITION_REQ_CMDB_SUBJECT
+    - CRITERIA_CONDITION_IS_CIS
+    - NOTIFICATION_DATA_FOR_RESOURCE_AND_QUESTION
+    - CRITERIA_CONDITION_IS_ISMAINTENANCE
+    - CREATE_TRIGGER_IN_UI_WITH_CF_FOR_RELEASE
+    - CUSTOM_DATA_FOR_TRIGGER_SUBENTITY_WITH_NOTIFICATION_ACTIONS_ONLY
+    - CRITERIA_CONDITION
+    - CRITERIA_CONDITION_IS_SUBCATEGORY
+    - CRITERIA_CONDITION_IS_AF_DECISION_BOX
+    - CREATE_TRIGGER_IN_UI_WITH_APPROVAL
+    - FILL_TRIGER_INPUT_FIELDS
+    - CREATE_PROBLEM_TRIGGER_VIA_API
+    - CRITERIA_CONDITION_IS_ASSIGNED_TIME
+    - CREATE_QUESTION_VIA_API_CHECK_BOX
+    - CRITERIA_CONDITION_IS_AF_PICK_LIST
+    - GET_NOTIFICATION_ID
+    - NOTIFICATION_DATA_FOR_TASK_TRIGGER
+    - CREATE_PROBLEM_TRIGGER_WITH_UDF_API
+    - CREATE_TRIGGER_IN_API_WITH_RESOURCE_REQUEST_NOTIFICATION
+    - CREATE_TRIGGER_VIA_API
+    - CRITERIA_CONDITION_IS_TOTAL_COST
+    - CRITERIA_CONDITION_IS_SCHEDULED_START_TIME
+    - CRITERIA_CONDITION_IS_AF_PHONE
+    - CREATE_TRIGGER_IN_UI_WITH_CF_FOR_CMDB
+    - EDIT_TASK_WITHOUT_TITLE
+    - CREATE_TRIGGER_IN_UI_WITH_RESOURCE_REQUEST_TIMER
+    - CRITERIA_CONDITION_IS_RESPONSE_DUE_DATE
+    - CREATE_TRIGGER_VIA_API_WITH_ACTIONS_TASK
+    - CRITERIA_CONDITION_IS_CREATED_DATE
+    - CRITERIA_CONDITION_IS_REQUESTTYPE
+    - CRITERIA_CONDITION_IS_AF_DATE_TIME
+    - NOTIFICATION_DATA_FOR_TRIGGERXPATH
+    - CREATE_QUESTION_VIA_API
+    - NOTIFICATION_DATA_FOR_WORKFLOW
+    - CRITERIA_CONDITION_IS_TEMPLATE
+    - NOTIFICATION_DATA_FOR_TRIGGER
+    - CREATE_TRIGGER_VIA_API_WITH_ACTIONS_TASK_OOH
+    - CRITERIA_CONDITION_IS_DESCRIPTION
+    - CRITERIA_CONDITION_IS_AF_AUTO_NUMBER
+    - CREATE_TRIGGER_VIA_API_LASTUPDATEDBY
+    - CREATE_PROJECT_TRIGGER_IN_UI
+    - CREATE_TRIGGER_IN_UI_WITH_NOTIFICATION_FOR_CUSTOM_MODULE
+    - CREATE_TRIGGER_IN_UI_WITH_CF
+    - CRITERIA_CONDITION_IS_ON_BEHALF_OF_USER
+    - CRITERIA_CONDITION_IS_COMPLETED_TIME
+    - CREATE_PROBLEM_TRIGGER_VIA_API_FOR_DESCRIPTION
+    - CREATE_QUESTION_VIA_API_SELECT_TYPE
+    - CRITERIA_CONDITION_IS_TECHNICIAN
+    - CRITERIA_CONDITION_IS_AF_SINGLE_LINE
+    - CRITERIA_CONDITION_IS_AF_DECIMAL
+    - CREATE_RESOURCE_VIA_API
+    - CREATE_RESOURCE_VIA_API_ALL_QUESTION
+    - CREATE_ALL_WORKLOGS_TRIGGER_IN_UI_WITH_RESOURCE
+    - CREATE_CHANGE_TRIGGER_WITH_APPROVAL_LEVELS_VIA_API
+    - CREATE_TRIGGER_IN_UI_WITH_CF_FOR_PROJECT
+    - FILL_TRIGER_INPUT_FIELDS_FOR_MODE
+    - CUSTOM_DATA_FOR_TRIGGER_SUBENTITY
+    - CREATE_CHANGE_TRIGGER_WITH_APPROVAL_LEVELS_E2A_VIA_API
+    - FILL_TRIGER_INPUT_FIELDS_FOR_REQ_UDF
+    - CRITERIA_CONDITION_WITH_NOTIFICATION_STATUS
+    - CREATE_PROBLEM_TRIGGER_VIA_API_WITH_TEMPLATE
+    - CRITERIA_CONDITION_IS_ON_BEHALF_OF_USER_WITH_EMPLOYEE_ID
+    - CHANGE_TRIGGER_WITH_CONDTION_TASKS_ACTIONS_APPROVALS
+    - CREATE_REQUESTER_VIA_API_WITH_DEPT
+    - FILL_TRIGGER_FIELD_WITHOUT_CONDITION
+    - CRITERIA_CONDITION_IS_CC
+    - CREATE_REQUEST_TRIGGER_VIA_API
+    - CRITERIA_CONDITION_IS_MODE
+    - CRITERIA_CONDITION_IS_DEPARTMENT
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createchangetriggerwithapproval
+  creates_count: 0
+  local_storage_keys: []
+- name: verifychangeapprovalistriggered
+  creates_count: 0
+  local_storage_keys:
+  - requesterName
+  - requesterId
+- name: createcustomapprovalforautoapproverequester
+  creates_count: 0
+  local_storage_keys:
+  - requesterName
+  - requesterId
+- name: mandatecommentsforallapprovals
+  creates_count: 0
+  local_storage_keys:
+  - requesterName
+- name: notifyotherapproversactonapprovals
+  creates_count: 0
+  local_storage_keys:
+  - requesterName
+- name: autoapproveifsameapproverhaspreviouslevel
+  creates_count: 0
+  local_storage_keys:
+  - requesterName
+- name: changetriggerwithapprovalfirstresponseaction
+  creates_count: 0
+  local_storage_keys:
+  - requesterName
+- name: changetriggerwithapprovalmajoritytoapprove
+  creates_count: 0
+  local_storage_keys:
+  - requesterName
+- name: changetriggerwithapprovallevels
+  creates_count: 0
+  local_storage_keys: []
+- name: changeapprovalforapprovallevelwitheveryonetoapprove
+  creates_count: 0
+  local_storage_keys:
+  - requesterName
+  - requesterId
+- name: changetriggerwithtasksandapproval
+  creates_count: 0
+  local_storage_keys:
+  - softwareId
+  - adobeReaderId
+  - installId
+- name: changetriggerwithnotesandapprovale2e
+  creates_count: 0
+  local_storage_keys:
+  - softwareId
+  - adobeReaderId
+- name: downtimeinchangeform
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys:
+- Trigger_nocondition_actionNotification
+- associated_department
+- change_trigger_with_condtion_notes_actions_approvals
+- change_trigger_with_condtion_tasks_actions_approvals
+- change_trigger_with_downtime_entity
+- create_all_worklogs_trigger_in_ui_with_resource
+- create_approval_levels_trigger_in_ui_with_resource
+- create_approvals_trigger_in_ui_with_resource
+- create_change_trigger_via_api
+- create_change_trigger_with_approval_levels_E2A_via_api
+- create_change_trigger_with_approval_levels_via_api
+- create_checklists_trigger_in_ui_with_resource
+- create_department_via_api
+- create_email_responses_trigger_in_ui_with_resource
+- create_notes_trigger_in_ui_with_resource
+- create_problem_trigger_via_api
+- create_problem_trigger_via_api_for_description
+- create_problem_trigger_via_api_for_urgency
+- create_problem_trigger_via_api_with_template
+- create_problem_trigger_with_udf_api
+- create_project_trigger_in_UI
+- create_question_via_api
+- create_question_via_api_check_box
+- create_question_via_api_select_type
+- create_question_via_api_simple_type
+- create_question_via_api_text_box
+- create_release_trigger_with_udf_api
+- create_request_trigger_in_UI_with_resource_question
+- create_request_trigger_via_api
+- create_request_trigger_via_api_and_criteria_condition_resource
+- create_request_worklogs_trigger_in_ui_with_resource
+- create_requester_using_name_only_for_msp
+- create_requester_via_api
+- create_requester_via_api_with_dept
+- create_requester_via_api_with_employee_id
+- create_resource_via_api
+- create_resource_via_api_all_question
+- create_site_via_API
+- create_task_trigger_in_UI_with_resource_question
+- create_task_trigger_via_api_and_criteria_condition_resource
+- create_task_worklogs_trigger_in_ui_with_resource
+- create_trigger_in_UI
+- create_trigger_in_UI_Approval
+- create_trigger_in_UI_With_CF
+- create_trigger_in_UI_With_CF_For_Asset
+- create_trigger_in_UI_With_CF_For_CMDB
+- create_trigger_in_UI_With_CF_For_Change
+- create_trigger_in_UI_With_CF_For_Contract
+- create_trigger_in_UI_With_CF_For_PO
+- create_trigger_in_UI_With_CF_For_Problem
+- create_trigger_in_UI_With_CF_For_Project
+- create_trigger_in_UI_With_CF_For_Release
+- create_trigger_in_UI_With_CF_For_Solution
+- create_trigger_in_UI_for_contract
+- create_trigger_in_UI_with_approval
+- create_trigger_in_UI_with_notification
+- create_trigger_in_UI_with_notification_for_custom_module
+- create_trigger_in_UI_with_resource_request
+- create_trigger_in_UI_with_resource_task
+- create_trigger_in_api_with_resource_request_notification
+- create_trigger_in_ui_with_resource_request_timer
+- create_trigger_via_API
+- create_trigger_via_api_and_criteria_condition_is_and_isnot
+- create_trigger_via_api_and_criteria_condition_is_contains
+- create_trigger_via_api_and_criteria_condition_ischanged
+- create_trigger_via_api_and_criteria_condition_isempty_and_isnotempty
+- create_trigger_via_api_lastupdatedby
+- create_trigger_via_api_with_actions_task
+- create_trigger_via_api_with_actions_task_OOH
+- create_trigger_with_all_worklog_subentity
+- create_trigger_with_multilookup_udf_in_criteria_ui
+- create_trigger_with_task_subentity
+- create_worklog_timer_trigger_in_ui_with_resource
+- criteria_condition
+- criteria_condition_is_CC
+- criteria_condition_is_CIs
+- criteria_condition_is_af_auto_number
+- criteria_condition_is_af_checkbox
+- criteria_condition_is_af_date_time
+- criteria_condition_is_af_decimal
+- criteria_condition_is_af_decision_box
+- criteria_condition_is_af_email
+- criteria_condition_is_af_lookup_field
+- criteria_condition_is_af_multi_line
+- criteria_condition_is_af_multi_select
+- criteria_condition_is_af_numeric
+- criteria_condition_is_af_phone
+- criteria_condition_is_af_pick_list
+- criteria_condition_is_af_radiobutton
+- criteria_condition_is_af_single_line
+- criteria_condition_is_af_url
+- criteria_condition_is_approval_status
+- criteria_condition_is_asset
+- criteria_condition_is_assigned_time
+- criteria_condition_is_category
+- criteria_condition_is_completed_time
+- criteria_condition_is_country
+- criteria_condition_is_created_date
+- criteria_condition_is_department
+- criteria_condition_is_description
+- criteria_condition_is_due_by_date
+- criteria_condition_is_editor
+- criteria_condition_is_group
+- criteria_condition_is_impact
+- criteria_condition_is_ismaintenance
+- criteria_condition_is_item
+- criteria_condition_is_level
+- criteria_condition_is_mode
+- criteria_condition_is_on_behalf_of_user
+- criteria_condition_is_on_behalf_of_user_with_employee_id
+- criteria_condition_is_priority
+- criteria_condition_is_requestType
+- criteria_condition_is_requester
+- criteria_condition_is_resolved_time
+- criteria_condition_is_response_due_date
+- criteria_condition_is_scheduled_end_time
+- criteria_condition_is_scheduled_start_time
+- criteria_condition_is_service_category
+- criteria_condition_is_service_cost
+- criteria_condition_is_site
+- criteria_condition_is_status
+- criteria_condition_is_subcategory
+- criteria_condition_is_subject
+- criteria_condition_is_technician
+- criteria_condition_is_template
+- criteria_condition_is_total_cost
+- criteria_condition_is_urgency
+- criteria_condition_mode_subject
+- criteria_condition_req_asset_subject
+- criteria_condition_req_cmdb_subject
+- criteria_condition_with_AND
+- criteria_condition_with_notification_status
+- custom_data_for_trigger
+- custom_data_for_trigger_subentity
+- custom_data_for_trigger_subentity_with_notification_actions_only
+- custom_data_for_trigger_subentity_with_task_notification_actions
+- custom_data_for_trigger_with_notification_action_only
+- custom_data_for_trigger_with_task_notification
+- edit_task_without_title
+- edit_trigger_in_UI
+- fill_Task_input_fields_inside_trigger
+- fill_notification_field_inside_trigger
+- fill_triger_input_fields
+- fill_triger_input_fields_for_mode
+- fill_triger_input_fields_for_req_udf
+- fill_trigger_field
+- fill_trigger_field_single_condition
+- fill_trigger_field_without_condition
+- get_entityid_of_impact
+- get_group_data
+- get_module_id
+- get_notification_id
+- get_priority_data
+- get_request_id_using_search_criteria
+- get_request_id_using_search_criteria_with_subject
+- notification_creation_sla
+- notification_data_for_resource_and_question
+- notification_data_for_task_trigger
+- notification_data_for_trigger
+- notification_data_for_triggerXpath
+- notification_data_for_trigger_subentity
+- notification_data_for_workflow
+- problem_trigger_approvals
+- search_topic_for_delete

@@ -11,8 +11,18 @@ api_util:
     params: String release, String worklog
     purpose: ''
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/releases/releaseworklog/common/ReleaseWorklogLocators.java
+  interfaces:
+    ReleaseWorklogLocators: []
+    ReleaseWorklogPopup:
+    - TYPE_HOURS
+    - TYPE_MINUTES
+    - TYPE_INCIDENT_COST
+    - TYPE_OTHER_CHARGES
+    ReleaseWorklogDetailview:
+    - WORKLOG_ROW_DESCRIPTION
+    - EDIT_DELETE_WORKLOG
+    - WORKLOG_ROW
 data_constants:
   file: com/zoho/automater/selenium/modules/releases/releaseworklog/common/ReleaseWorklogDataConstants.java
   classes:
@@ -47,51 +57,3 @@ preprocess_groups:
   local_storage_keys:
   - releaseId
 data_json_keys: []
-api_util_deep:
-- name: createReleaseWithWorklog
-  params: String release, String worklog
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes: []
-  local_storage_reads:
-  - releaseId
-preprocess_deep:
-- group: createreleasewithworklog
-  source_file: ReleaseWorklog.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ReleaseWorklogAPIUtil.createReleaseWithWorklog
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: releaseId
-    source_type: hardcoded
-  - key: worklogName
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - ReleaseWorklog.ReleaseWithWorklog
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createrelease
-  source_file: ReleaseWorklog.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - ReleaseAPIUtil.createRelease
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: releaseId
-    source_type: hardcoded
-  local_storage_reads:
-  - releaseId
-  entities_created:
-  - Release.Release
-  creates_user: false
-  user_role: null
-  calls_super: false

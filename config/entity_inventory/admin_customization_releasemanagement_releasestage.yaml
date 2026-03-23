@@ -1,0 +1,48 @@
+module: admin
+entity: customization_releasemanagement_releasestage
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/releasemanagement/releasestage/common/ReleaseStageLocators.java
+  interfaces:
+    ReleaseStageLocators:
+    - SELECT_STAGE_DOWNARROW
+    - STATUS_TITLE_LOCATOR
+    - EDIT_ICON_BY_STATUS
+    - SELECT_RADIO_BY_STATUS
+    - BUTTON_BY_VALUE
+    - VERIFY_STATUS_COLOUR
+    - NAME_FIELD_SEARCH
+    - SEARCH_GO_BUTTON
+    - VERIFY_RELEASE_LISTVIEW
+    - COMPLETED_COLUR_CODE
+    - NEW_STATUS_SAVE
+    - DELETE_STATUS
+    - VERIFY_APPROVAL_STATUS
+    - VERIFY_SEARCH_RELEASE_POPUP
+    - RELEASE_TITLE_SEARCH
+    - RELEASE_ASSOCIATION_GO_BUTTON
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/releasemanagement/releasestage/common/ReleaseStageDataConstants.java
+  classes:
+    ReleaseStageDataConstants:
+    - GET_STATUS_ID_CANCELLED
+    - API_RELEASE_CUSTOM_STATUS_INPROGRESS
+    - GET_STATUS_ID_CLOSED
+    - API_RELEASE_CUSTOM_STATUS_REJECTION
+    - RELEASE_STATUS_FAILED_EDIT_DATA
+    - API_RELEASE_CUSTOM_STATUS_COMPLETION
+    - RELEASE_STATUS_CLOSED_EDIT_DATA
+    - GET_STATUS_ID_FAILED
+    - RELEASE_STAGES
+    - RESTRICTED_RELEASE_STAGES_WITH_ROLES
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

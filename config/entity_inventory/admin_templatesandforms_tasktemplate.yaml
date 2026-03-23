@@ -1,0 +1,58 @@
+module: admin
+entity: templatesandforms_tasktemplate
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/tasktemplate/utils/TaskTemplateAPIUtil.java
+  methods:
+  - name: createTaskTemplate
+    return_type: void
+    params: TestCaseData testCase, String moduleName
+    purpose: ''
+  - name: createMultipleTaskTemplate
+    return_type: void
+    params: String moduleName
+    purpose: ''
+  - name: createTaskTemplateFromJSON
+    return_type: void
+    params: JSONObject templateData
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/tasktemplate/common/TaskTemplateLocators.java
+  interfaces:
+    TaskTemplateLocators:
+    - CLICK_VALUE_IN_ACTIONS_ICON
+    - VERIFY_DISABLE_ENABLE_TOGGLE
+    - CLICK_TOGGLE_SLIDER
+    - TYPE_COPY_AS_TASK_TEMPLATE
+    Editor:
+    - TASK_TEMP_NAME
+    - TASK_TEMP_TITLE
+    - TASK_SAVE
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/tasktemplate/common/TaskTemplateDataConstants.java
+  classes:
+    TaskTemplateDataConstants:
+    - ADD_TASKTEMPLATE
+    - COPY_TEMPLATE
+    - CREATE_TASK_TEMPLATE
+    - ADD_TASK_WITH_SCHEDULE_END_REMINDER_API
+    - ADD_TASK_WITH_SCHEDULE_END_REMINDER
+    - UPDATE_TASK_TEMPLATE1
+    - TASK_LAYOUT_WITH_UDF
+    - CREATE_TASK_TEMPLATE_WITH_UDF
+    - ADD_TASK_LAYOUT
+    - API_TASKTEMPLATE1
+    - TASKTEMPLATE_TITLE_SCRIPT
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/tasktemplate/common/TaskTemplateAnnotationConstants.java
+  groups: []
+  data:
+  - constant: API_TASKTEMPLATE1
+    value: API_TaskTemplate1
+preprocess_groups:
+- name: addtasktemplate
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []

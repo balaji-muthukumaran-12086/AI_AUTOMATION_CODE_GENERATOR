@@ -15,8 +15,15 @@ api_util:
     params: String projectDataID, String milestoneDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
     purpose: ''
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/projects/projectmilestonetask/common/ProjectMilestoneTaskLocators.java
+  interfaces:
+    ProjectMilestoneTaskLocators:
+    - CLCIK_MILESTONE_WITH_ENTITYID
+    - VERIFY_TASK_ASSIGNED_IN_MILESTONE_BY_CIRLCE
+    MilestoneTaskListview:
+    - DELETE_BTN
+    MilestoneDetailview:
+    - CLICK_BREAD_CRUMBS_PROJECT
 data_constants:
   file: com/zoho/automater/selenium/modules/projects/projectmilestonetask/common/ProjectMilestoneTaskDataConstants.java
   classes:
@@ -50,79 +57,3 @@ annotation_constants:
     value: add_task
 preprocess_groups: []
 data_json_keys: []
-api_util_deep:
-- name: createProjectWithTaskInMilestone
-  params: String projectDataID, String milestoneDataID, String taskDataID
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - Milestone
-  - taskName
-  - MilestoneName
-  - taskId
-  local_storage_reads:
-  - projectId
-  - milestoneId
-- name: createProjectWithMultipleTaskInMilestone
-  params: String projectDataID, String milestoneDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - tasks
-  - taskNames
-  local_storage_reads:
-  - projectId
-  - milestoneId
-preprocess_deep:
-- group: createprojectandmilestone
-  source_file: ProjectMilestoneTaskBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ProjectAPIUtil.createProjectWithMilestone
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Project.ProjectWithMilestone
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createprojectwithtaskinmilestone
-  source_file: ProjectMilestoneTaskBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - ProjectMilestoneTaskAPIUtil.createProjectWithTaskInMilestone
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - ProjectMilestoneTask.ProjectWithTaskInMilestone
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createprojectwithmultipletaskinmilestone
-  source_file: ProjectMilestoneTaskBase.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - ProjectMilestoneTaskAPIUtil.createProjectWithMultipleTaskInMilestone
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - ProjectMilestoneTask.ProjectWithMultipleTaskInMilestone
-  creates_user: false
-  user_role: null
-  calls_super: false

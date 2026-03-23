@@ -1,0 +1,235 @@
+module: admin
+entity: templatesandforms_formrules
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/formrules/utils/FAFRActionsUtil.java
+  methods:
+  - name: fillInputFields
+    return_type: void
+    params: JSONObject fafrData
+    purpose: ''
+  - name: createFAFRWithoutSave
+    return_type: void
+    params: JSONObject fafrData
+    purpose: ''
+  - name: createFAFR
+    return_type: void
+    params: JSONObject fafrData
+    purpose: ''
+  - name: fillInputFieldsForRequest
+    return_type: void
+    params: JSONObject fafrData
+    purpose: ''
+  - name: createFAFRWithoutSaveForRequest
+    return_type: void
+    params: JSONObject fafrData
+    purpose: ''
+  - name: createFFAFRForRequest
+    return_type: void
+    params: JSONObject fafrData
+    purpose: ''
+  - name: selectFieldWithoutSearch
+    return_type: void
+    params: String fieldId, String fieldValue
+    purpose: ''
+  - name: selectFieldWithoutSearchforRequest
+    return_type: void
+    params: String fieldId, String fieldValue
+    purpose: ''
+  - name: deleteFAFR
+    return_type: boolean
+    params: String fafrName
+    purpose: ''
+  - name: createFormRule
+    return_type: void
+    params: String actionType, String field, String templateName, String rulename
+    purpose: ''
+  - name: chooseIncidentFormRule
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: typeAndSelectOption
+    return_type: void
+    params: Locator searchLocator, String value
+    purpose: ''
+  - name: openRequestForm
+    return_type: void
+    params: String templateName
+    purpose: ''
+  - name: changeRecordPerPage
+    return_type: void
+    params: (none)
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/formrules/utils/FAFRAPIUtil.java
+  methods:
+  - name: getDesktopHardwareIdAndName
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: createFAFR
+    return_type: void
+    params: String dataIds
+    purpose: ''
+  - name: getSoftwareIdAndName
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: createRequestFAFR
+    return_type: void
+    params: String dataIds
+    purpose: ''
+  - name: createReleaseFAFR
+    return_type: void
+    params: String dataIds
+    purpose: ''
+  - name: createRequestFAFR2
+    return_type: void
+    params: JSONObject fafrData
+    purpose: ''
+  - name: buildOptionAction
+    return_type: JSONObject
+    params: String actionKey, String fieldName, String optionId, String optionValue
+    purpose: ''
+  - name: createIncidentFAFRWithAction
+    return_type: void
+    params: String jsonFile, String actionKey, String fieldName, String optionId, String optionValue
+    purpose: ARRAY
+  - name: createIncidentFAFRWithActionOFC
+    return_type: void
+    params: String jsonFile, String onFieldChange, String actionKey, String fieldName, String optionId, String optionValue
+    purpose: On Field Change
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/formrules/common/FormRulesLocators.java
+  interfaces:
+    FormRulesLocators:
+    - NEW_RULE
+    - LIST_VIEW_EXPAND_ICON
+    - EVENT_LOCATOR
+    - CRITERIALIST
+    - FORM_RULE_SAVE_LOCATOR
+    - FORM_RULE_NANE_LOCATOR
+    - FORM_RULE_SETTINGS_ICON_USING_NANE
+    - FORM_RULE_SAVE_LOCATOR_FOR_REQUEST_MODULE
+    - CRITERIA_ERROR_LOCATOR
+    - ACTIONS_ERROR_LOCATOR
+    - SELECT_CRITERIA_CHECKBOX
+    - CRITERIA_COLUMN_LOCATOR
+    - ACTIONS_PLUS_ADD_ICON
+    - CRITERIA_FIELD_VALUE_SELECT_OPTION
+    - CRITERIA_FIELD_VALUE_SELECT_OPTION_FOR_LOOKUP
+    - REQUEST_FAFR_ACTIONS_SECOND_COLUMN_LOCATOR
+    - REQUEST_FAFR_ACTIONS_THIRD_COLUMN_LOCATOR
+    - REQUEST_FAFR_ACTIONS_THIRD_COLUMN_LOCATOR_FOR_SEARCH_AND_SELECT_OPTION
+    - ENABLE_DISABLE_LOCATOR
+    - CANCE_LOCATOR
+    - FORM_RULE_CHECKBOX_LOCATOR
+    - FORM_RULE_ENABLE_DISABLE_LOCATOR
+    - FORM_RULE_ENABLE_DISABLE_LOCATOR_FOR_REQUEST
+    - ERROR_LOCATOR
+    - CRITERIA_CHECKBOX_LOCATOR
+    - CRITERIALIST_FU
+    - CUSTOM_VIEW_CRITERIA_FU
+    - TYPE_DROPDOWN_SEARCH_INPUT_FU
+    - CRITERIA_LIST_FU
+    - ICN_ADD_FU
+    - CRITERIALIST_TIMER
+    - CUSTOM_VIEW_CRITERIA_TIMER
+    - CRITERIA_LIST_TIMER
+    - ICN_ADD_TIMER
+    - CUSTOM_VIEW_CRITERIA_SLA_LEVEL1
+    - CUSTOM_VIEW_CRITERIA_SLA_LEVEL2
+    - CUSTOM_VIEW_CRITERIA_SLA_LEVEL3
+    - CUSTOM_VIEW_CRITERIA_SLA_LEVEL4
+    - ICN_ADD_SLA_LEVEL1
+    - ICN_ADD_SLA_LEVEL2
+    - ICN_ADD_SLA_LEVEL3
+    - ICN_ADD_SLA_LEVEL4
+    - DROPDOWN_OPTION
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/formrules/common/FormRulesDataConstants.java
+  classes:
+    FormRulesDataConstants:
+    - FAFR_DATA_WITH_FIELDCHANGE_FOR_PROBLEM_WITHOUT_CRITERIA
+    - FAFR_DATA_FOR_PROBLEM_WITHOUT_CRITERIA
+    - FAFR_DATA_WITH_FIELDCHANGE_FOR_PROBLEM
+    - CHANGE_FAFR_ACTIONS_MANDATE
+    - FAFR_DATA_WITH_FIELDCHANGE_FOR_INCIDENT_REQUEST
+    - FAFR_DATA_WITH_FORMLOAD_FOR_INCIDENT_REQUEST
+    - FAFR_DATA_FOR_UI_FOR_SERVICE_REQUEST
+    - SERVICE_FAFR_ACTIONS_UNSET_TASK
+    - FAFR_DATA_SHOW_FIELDS_SERVICE_CATEGORY
+    - FAFR_DATA_FOR_RELEASE_IN_FIELD_CHANGE
+    - FAFR_DATA_ACTIONS_FIELDS_ONFIELDCHANGE
+    - FAFR_DATA_WITH_FORMLOAD_FOR_SERVICE_REQUEST
+    - FAFR_DATA_FOR_FIELD_CHANGE_UI_WITH_UDF
+    - FAFR_DATA_WITH_FORMSUBMIT_FOR_SERVICE_REQUEST
+    - FAFR_DATA_FOR_RELEASE_IN_FORM_LOAD
+    - GET_TEMPLATE_ID
+    - FAFR_DATA_FOR_CHANGE
+    - FAFR_DATA_WITH_FIELDCHANGE_FOR_CHANGE
+    - FAFR_DATA_FOR_UI_FOR_REQUEST_EDIT
+    - GET_WORKFLOW_ID
+    - FAFR_DATA_WITH_FORMSUBMIT_FOR_CHANGE
+    - FAFR_DATA_FOR_UI_FOR_CHANGE
+    - FAFR_DATA_FOR_UI_FOR_RELEASE
+    - FAFR_DATA_FOR_UI_FOR_PROBLEM
+    - FAFR_DATA_FOR_FORM_LOAD_UI_WITH_UDF
+    - FAFR_DATA_FOR_RELEASE
+    - FAFR_DATA_FOR_RELEASE_IN_FORM_SUBMIT
+    - UPDATE_TASK
+    - FAFR_DATA_ACTIONS_FIELDS_ONFORMSUBMIT
+    - FAFR_DATA_FOR_PROBLEM
+    - FAFR_DATA_FOR_UI_WITH_ALL_ACTIONS
+    - FAFR_DATA_WITH_FIELDCHANGE_FOR_SERVICE_REQUEST
+    - FAFR_DATA_WITH_FORMSUBMIT_FOR_INCIDENT_REQUEST
+    - FAFR_DATA_FOR_UI_FOR_REQUEST
+    - FAFR_DATA_APPROVALSTATUS_IS_REJECTED
+    - FAFR_DATA_FOR_FORM_SUBMIT_UI_WITH_UDF
+    - FAFR_DATA_WITH_FORMSUBMIT_FOR_PROBLEM
+    - FAFR_DATA_WITH_FORMSUBMIT_FOR_PROBLEM_WITHOUT_CRITERIA
+    - CHANGE_FAFR_ACTIONS_NONMANDATE
+    - FAFR_DATA_FOR_UI_FOR_PROBLEM_EDIT
+    - FAFR_DATA_ACTIONS_FIELDS_AND_VALUES
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: changefafrwithmandate
+  creates_count: 0
+  local_storage_keys: []
+- name: bulkCreate
+  creates_count: 0
+  local_storage_keys:
+  - moduleName
+  - csName
+  - tempName
+  - fafrName
+  - moduleName
+  - csName
+  - tempId
+  - templateId
+- name: bulkCreateForRequest
+  creates_count: 0
+  local_storage_keys:
+  - moduleName
+  - csName
+  - tempId
+  - templateId
+  - fafrName
+- name: ServiceRequestFafrWithServiceTemplate
+  creates_count: 0
+  local_storage_keys:
+  - requesterName2
+  - requesterMailId2
+  - requesterIdUser2
+- name: problemmultilookupanddateudf
+  creates_count: 0
+  local_storage_keys:
+  - dateUdfvalue
+  - dateUdfvalue
+- name: releasemultilookupanddateudf
+  creates_count: 0
+  local_storage_keys:
+  - dateUdfvalue
+data_json_keys: []

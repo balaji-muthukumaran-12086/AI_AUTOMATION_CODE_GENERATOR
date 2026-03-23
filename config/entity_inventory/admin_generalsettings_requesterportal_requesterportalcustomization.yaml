@@ -1,0 +1,112 @@
+module: admin
+entity: generalsettings_requesterportal_requesterportalcustomization
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/generalsettings/requesterportal/requesterportalcustomization/common/RequesterPortalCustomizationLocators.java
+  interfaces:
+    RequesterPortalCustomizationLocators:
+    - PORTAL_SETTINGS_OPTION
+    - PORTAL_CUSTOMZATION_TYPE
+    - MANAGE_WIDGETS
+    - DASHBOARD_VERIFICATION_IN_REQUESTER_PORTAL
+    - GUI_BASED
+    - CODE_BASED
+    - CONFIGURE
+    - SELECT_RANDOM_CARD
+    - SET_HOMEPAGE_RANDOM
+    - EDIT_RANDOM_CARD
+    - PANEL_BTN_LOCATOR
+    - CLOSE_POPUP
+    - NEW_TEMPLATE
+    - CLICK_REQUESTER_PORTAL_CUSTOMIZATION
+    - SELECT_CUSTOMIZATION_CARD
+    - CONFIGURE_BTN
+    - AJAX_MSG
+    - GUI_CARD
+    - CODE_CARD
+    - GUI_MESSAGE
+    - CODE_MESSAGE
+    - GUI_PREVIEW_BTN
+    - CODE_PREVIEW_BTN
+    - GUI_TICK
+    - CODE_TICK
+    - CODE_BASIC_CUSTOMIZATION_PAGE
+    - SEARCH_SETTINGS
+    - SORTABLE_DRAG
+    - FIRST_SEARCH_OPTION
+    - FIRST_SORTABLE_DRAG
+    - LAST_SORTABLE_DRAG
+    - SEARCH_OPTIONS
+    - SEARCH_SETTINGS_CHECKBOX
+    - SEARCH_BAR_HOME_REQUESTER_LOGIN
+    - ALL_MODULE_DISPLAYED_IN_SEARCH
+    - GUI_BASED_ICON_COLOUR_VERIFY
+    - GUI_BASED_CONTENT
+    - PREVIEW
+    - GUI_BASED_TICK_ICON
+    - GUI_PREVIEW_BUTTON
+    - CONFIRM_YES_BUTTON
+    - SWITCH_PORTAL
+    - ESM_PORTAL_HOME_BUTTON
+    - PORTAL_SEARCH_INPUT
+    - SEARCH_SELECTION_OPTION
+    - SEARCH_SETTINGS_POSITION
+    - REQ_DASHBORAD_SEARCH
+    - SEARCH_CHECKBOX_LABEL
+    - SEARCH_SETTINGS_LABEL
+    GUI_BASED:
+    - ADVANCED_CUSTOMIZATION_PAGE
+    - ALL_PAGES_TAB
+    - HOVER_TEMPALTE_CARD
+    - TEMPLATE_CARD_BTN
+    - TEMPLATE_EDIT_PAGE
+    - SELECT_SUBTAB
+    - SELECT_WIDGET
+    - CHECK_TEXT_INWIDGET
+    - DESTINATION_LOCATOR_FOR_WIGDET_DRAGANDDROP
+    - SAVE_OPTIONS
+    - CHANGES_LOST_ALERT_POPUP_INSAVE
+    - CLICK_SAVE
+    - CLOSE_ADVANCED_CUSTOMIZATION_PAGE
+    - CHECK_WIDGET
+    - SELECT_PREFERENCES
+    - CLICKING_SHOW_HEADER_AND_FOOTER_MENU
+    - VERIFY_OPTIONS_ALIGNMENT
+    - EDIT_PAGE
+    - HOVER_0N_PAGE
+    - PAGE_NAME
+    - CONFIGURE
+    - PREVIEW_PAGE
+    CODE_BASED:
+    - GUI_CARD_BUTTON
+    - CODE_BASED_CONFIGURE_PAGE
+    - CODE_BASED_MESSAGE
+    - CONFIRM_DIALOG_BUTTON
+    PortalCustomizationCardLocators:
+    - CUSTOMIZATION_CARD
+    - CUSTOMIZATION_CARD_TICK
+    - SELECTED_CUSTOMIZATION_CARD
+    - UNSELECTED_CARD_TICK
+    - CUSTOMIZATION_CARD_BUTTON
+    - CUSTOMIZATION_CARD_DESC
+    - CODE_BASED_CONFIGURE_PAGE
+    - SEARCH_SETTINGS_POSITION
+    - CARD_BY_DATA_TYPE
+    - SELECTED_CARD_BY_DATA_TYPE
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/generalsettings/requesterportal/requesterportalcustomization/common/RequesterPortalCustomizationDataConstants.java
+  classes:
+    RequesterPortalCustomizationDataConstants:
+    - LIST_DATA_SSP
+    - ENABLECUSTOMIZATIONCARD
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

@@ -1,0 +1,30 @@
+module: admin
+entity: customization_contractmanagement_contracttype
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/contractmanagement/contracttype/common/ContractTypeLocators.java
+  interfaces:
+    ContractTypeLocators:
+    - NEW_CONTRACTTYPE
+    - EDIT_CONTRACTTYPE
+    - DELETE_CONTRACTTYPE
+    - CONTRACTTYPE_TITLE
+    - ICN_CONTRACTTYPEACTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/contractmanagement/contracttype/common/ContractTypeDataConstants.java
+  classes:
+    ContractTypeDataConstants:
+    - API_CONTRACTTYPE_WITH_ACCESSIBLITY_ORG_ROLE
+    - API_CONTRACTTYPE1
+    - UI_CONTRACTTYPE1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

@@ -1,0 +1,53 @@
+module: admin
+entity: instanceconfigurations_holidaysets
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/holidaysets/utils/HolidaySetActionsUtil.java
+  methods:
+  - name: selectSiteFiltersAlone
+    return_type: void
+    params: String value
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/holidaysets/utils/HolidaySetAPIUtil.java
+  methods:
+  - name: createHolidaySet
+    return_type: void
+    params: String inputData
+    purpose: ''
+  - name: createHolidayInDetails
+    return_type: void
+    params: String inputData
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/holidaysets/common/HolidaySetLocators.java
+  interfaces:
+    HolidaySetLocators:
+    - VERIFY_HOLIDAY_NAME
+    - CLICK_HOLIDAY_WITH_ENTITYID
+    - VERIFTY_HOLIDAY_SET_DETAILS_EXPANDED
+    - ENABLE_RECURRING_CHECKBOX
+    - CLICK_HOLIDAY_DETAILS_BTN
+    - VERIFY_HOLIDAY_DESCRIPTION
+    NewHolidayPopup:
+    - CLICK_DATE_FIELD
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/instanceconfigurations/holidaysets/common/HolidaySetDataConstants.java
+  classes:
+    HolidaySetDataConstants:
+    - GET_COPYSITE_DATA
+    - CREATE_HOLIDAY
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createholiday
+  creates_count: 0
+  local_storage_keys: []
+- name: createholidayindetails
+  creates_count: 0
+  local_storage_keys: []
+- name: createsite
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []

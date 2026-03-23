@@ -1,0 +1,43 @@
+module: admin
+entity: customization_helpdesk_tasktype
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/tasktype/utils/TaskTypeAPIUtil.java
+  methods:
+  - name: createTaskTypeWithSpecialCharacters
+    return_type: void
+    params: String testCase
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/tasktype/common/TaskTypeLocators.java
+  interfaces:
+    TaskTypeLocators:
+    - NEW_TASKTYPE
+    - EDIT_TASKTYPE
+    - DELETE_TASKTYPE
+    - TASKTYPE_TITLE
+    - ICN_TASKTYPEACTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/tasktype/common/TaskTypeDataConstants.java
+  classes:
+    TaskTypeDataConstants:
+    - ADDPROBLEM
+    - UI_TASK1
+    - ADDINCIDENTREQUEST
+    - ADDPROJECT
+    - ADDMAINTENANCE
+    - API_TASKTYPE_SPECIALCHARACTERS
+    - API_TASKTYPE1
+    - ADDRELEASE
+    - ADDSERVICEREQUEST
+    - UI_TASKTYPE1
+    - ADDCHANGE
+    - UI_TASKTYPE_SPECIALCHARACTERS
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

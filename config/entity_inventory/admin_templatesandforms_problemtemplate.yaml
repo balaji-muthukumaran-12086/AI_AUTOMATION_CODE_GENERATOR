@@ -1,0 +1,57 @@
+module: admin
+entity: templatesandforms_problemtemplate
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/problemtemplate/utils/ProblemTemplateAPIUtil.java
+  methods:
+  - name: searchProblemTemplate
+    return_type: JSONArray
+    params: String name
+    purpose: ''
+  - name: createProblemTemplate
+    return_type: String
+    params: String dataId
+    purpose: ''
+  - name: createProblemTemplate
+    return_type: String
+    params: JSONObject inputData
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/problemtemplate/common/ProblemTemplateLocators.java
+  interfaces:
+    ProblemTemplateLocators:
+    - ASSOCIATE_WORKFLOW_OR_LC_DROPDOWN
+    - CHOOSE_WORKFLOW_OR_LIFECYCLE
+    - SEARCH_WORKFLOW_OR_LIFECYCLE
+    - CLICK_WORKFLOW_OR_LIFECYCLE
+    - NO_WF_OR_LC_LOCATOR
+    - CLICK_ROW_ACTIONS_WITH_ENTITYID
+    - SELECT_ACTION_LIST_FROM_TEMP_SETTINGS_ICON
+    Editor:
+    - REPORTED_BY
+    - SAVE_BUTTON
+    - SECTION_GLOBAL_ACTION
+    - DELETE_SECTION
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/problemtemplate/common/ProblemTemplateDataConstants.java
+  classes:
+    ProblemTemplateDataConstants:
+    - PROBLEM_TEMPLATE
+    - COPY_TEMPLATE
+    - SOLUTION_CHECKBOX_ENABLED_IN_TEMPLATE
+    - PROBLEM_INPUT
+    - SEARCH_PROBLEMTEMPLATE
+    - PROBLEM_TEMPLATE_WITHOUT_GROUP
+    - PROBLEM_TEMPLATE_WITH_ALL_TYPES_OF_UDF
+    - ANALYSIS_CHECKBOX_ENABLED_IN_TEMPLATE
+    - PROBLEM_INPUT_WITH_CUSTOM_TEMPLATE
+    - PROBLEM_TEMPLATE_WITH_MULTI_LOOKUP_DATE_UDF
+    - PROBLEM_WITH_UDF
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

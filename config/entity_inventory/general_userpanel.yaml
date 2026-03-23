@@ -1,0 +1,26 @@
+module: general
+entity: userpanel
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/general/userpanel/common/UserpanelLocators.java
+  interfaces:
+    UserpanelLocators:
+    - ICN_PROFILE
+    - BTN_ACCESSIBLITY_CONTORL
+    - LAYOUT_PARENT_TITLE
+    - SUBTAB_ACCESSIBLITY_CONTORL
+    - POPUP_USER_PREFERENCE
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

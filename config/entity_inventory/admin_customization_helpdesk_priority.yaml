@@ -1,0 +1,44 @@
+module: admin
+entity: customization_helpdesk_priority
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/priority/utils/PriorityAPIUtil.java
+  methods:
+  - name: createPriorityeWithSpecialCharacters
+    return_type: void
+    params: String testCase
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/priority/common/PriorityLocators.java
+  interfaces:
+    PriorityLocators:
+    - NEW_PRIORITY
+    - EDIT_PRIORITY
+    - DELETE_PRIORITY
+    - BTN_COLORPICKER
+    - COLOR
+    - TD_COLOR
+    - PRIORITY_TITLE
+    - ICN_PRIORITYACTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/helpdesk/priority/common/PriorityDataConstants.java
+  classes:
+    PriorityDataConstants:
+    - API_PRIORITY1
+    - SEARCH_PRIORITY_AS_MEIDUM
+    - UI_PRIORITY_SPECIALCHARACTERS
+    - UI_PRIORITY1
+    - API_PRIORITY_SPECIALCHARACTERS
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- API_Priority1
+- UI_Priority1
+- api_priority_specialcharacters
+- search_priority_as_meidum
+- ui_priority_specialcharacters

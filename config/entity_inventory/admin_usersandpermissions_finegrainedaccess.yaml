@@ -1,0 +1,174 @@
+module: admin
+entity: usersandpermissions_finegrainedaccess
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/finegrainedaccess/common/FineGrainedAccessLocators.java
+  interfaces:
+    FineGrainedAccessLocators:
+    - SEARCH_SETUP_IN_ADMIN
+    - FGA_MODULE
+    - FGA_MODULE_LIST
+    - SELECT_MODULE_IN_DROPDOWN
+    - SEARCH_CRITERIA
+    - TECHNICIAN_COUNT
+    - LIST_VIEW_EXPAND
+    - WITHOUT_CONDITION
+    - ADVANCED_CRITERIA
+    - VERIFY_FIELD_IN_LISTVIEW
+    - SELECT_IN_ACTIONS
+    - MANDATORY_FIELD_CRITERIA
+    - MANAGE_TECHNICIAN
+    - POPUP_TITLE
+    - POPUP_CHECKBOX
+    - ALL_CHECKBOX
+    - TECHNICIAN_MAX_ERROR
+    - USERS_ACTION
+    - USERS_ACTION_OPTIONS
+    - ASSOCIATED_FGA_POPUP
+    - CMDB_ACCORDIAN
+    - CITYPES_LIST
+    - ALL_CILIST
+    - CI_FIELD
+    - CHECKBOX_BYNAME
+    - CHECK_FOR_CI
+    - FGA_FIELD
+    - ACKNOWLEDGEMENT_BUTTON
+    - FGA_COLUMNS
+    - PAGE_COUNT
+    - PAGE_NAVIGATION
+    - RECORDS_PER_PAGE
+    - SORT_BY_COLUMN
+    - HELP_CARD_ICON
+    - HELP_CARD_CONTENT
+    - ACK_POPUP
+    - ALERTBOX
+    - NAME_FIELD_LIMIT_ERROR
+    - DESCRIPTION_FIELD_LIMIT_ERROR
+    FGAFormBuilder:
+    - RADIO_BUTTON
+    - FGA_SAVE
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/usersandpermissions/finegrainedaccess/common/FineGrainedAccessDataConstants.java
+  classes:
+    FineGrainedAccessDataConstants:
+    - PRODUCT_TYPE_LIST
+    - CREATE_ASSET_FGA_VIA_UI
+    - CREATE_FGA_FULL_CONTROLL
+    - CREATE_ASSET_FGA
+    - FGA_API_CRITERIA
+    - PRODUCT_TYPES_SEARCH
+    - CREATE_ASSET_FGA_VIA_UI_1
+    - CREATE_ASSET_FGA_VIA_UI_2
+    - CREATE_ASSET_FGA_VIA_UI_3
+    - CREATE_CMDB_FGA_VIA_UI
+    - SEARCH_CRITERIA
+    - ASSET_FGA_API_CRITERIA
+    - CREATE_BASIC_FGA
+    - FGA_MODULE
+    - CREATE_FGA_VIA_UI
+    - ASSET_FGA_API_CRITERIA_2
+    - ASSET_FGA_UI_CRITERIA
+    - CREATE_ASSET_FGA_WITH_CONDITION
+    - GET_FGA_ID
+    - FGA_UI_CRITERIA
+    - CREATE_FGA_WITH_CONDITION
+    - PRODUCT_TYPES_ALL_ASSET
+    - CREATE_CMDB_FGA_VIA_UI_3
+    - FGA_WITH_CRITERIA_1
+    - CREATE_CMDB_FGA_VIA_UI_1
+    - CREATE_CMDB_FGA
+    - CREATE_CMDB_FGA_VIA_UI_2
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: fga
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - TechDisplayId
+- name: fga_with_cmdbudf
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - TechDisplayId
+  - fgauserEmail
+  - TechDisplayId
+- name: fgainui
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - fgauserEmail
+  - TechDisplayId
+  - TechDisplayId2
+- name: multipletechnician
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - TechDisplayId2
+  - TechDisplayId
+- name: multipleFGA
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - TechDisplayId
+- name: sdcmdbadmintech
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - TechDisplayId
+  - TechDisplayId
+- name: sdcmdbmanagertech
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - TechDisplayId
+  - TechDisplayId
+- name: sdadmintech
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - TechDisplayId
+  - TechDisplayId
+- name: sdsiteadmintech
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - TechDisplayId
+  - TechDisplayId
+- name: custommoduletech
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - TechDisplayId
+  - TechDisplayId
+- name: sdassetmanagertech
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - TechDisplayId
+  - TechDisplayId
+- name: sdassetconfigtech
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - TechDisplayId
+  - TechDisplayId
+- name: sdremotecontroltech
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - TechDisplayId
+  - name
+- name: fga_with_asset
+  creates_count: 0
+  local_storage_keys:
+  - TechDisplayId
+  - name
+data_json_keys: []

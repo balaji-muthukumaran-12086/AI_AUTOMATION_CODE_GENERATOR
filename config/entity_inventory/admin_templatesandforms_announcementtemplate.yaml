@@ -1,0 +1,40 @@
+module: admin
+entity: templatesandforms_announcementtemplate
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/announcementtemplate/utils/AnnouncementTemplateAPIUtil.java
+  methods:
+  - name: createAnnouncementTemplateAPI
+    return_type: void
+    params: String inputData
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/announcementtemplate/common/AnnouncementTemplateLocators.java
+  interfaces:
+    AnnouncementTemplateLocators:
+    - ACKNOWLEDGEMENT_BUTTON
+    - TEMPLATE_FIELD
+    Listview:
+    - DATA_IN_LISTVIEW
+    - GO_TO_ROW_ACTIONS
+    - ROW_STATUS
+    - TYPE_COPY_AS_TASK_TEMPLATE
+    - MARK_AS_DEFAULT
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/announcementtemplate/common/AnnouncementTemplateDataConstants.java
+  classes:
+    AnnouncementTemplateDataConstants:
+    - GET_ANNOUNCEMENT_TEMPLATE_ID
+    - GET_GENERAL_ANNOUNCEMENT_TEMPLATE_ID
+    - ANNOUNCEMENT_TEMPLATE_API
+    - ANNOUNCEMENT_TEMPLATE_UI
+    - ANNOUNCEMENT_TEMPLATE_INVALID_API
+    - GET_COPY_ANNOUNCEMENT_TEMPLATE_ID
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

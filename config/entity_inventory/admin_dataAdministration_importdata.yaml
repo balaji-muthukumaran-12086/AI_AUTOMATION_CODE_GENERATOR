@@ -1,0 +1,47 @@
+module: admin
+entity: dataAdministration_importdata
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/dataAdministration/importdata/common/ImportDataLocators.java
+  interfaces:
+    ImportDataLocators:
+    - SELECT_DROPDOWN
+    - SELECT_FIELD_VALUE
+    - IMPORT_CHOOSE_FILE_LOCATOR
+    - FILE_CHOOSE_TYPE_LOCATOR
+    - IMPORT_NEXT_LOCATOR
+    - IMPORT_FILE_IMPORTED_STATUS_LOCATOR
+    - IMPORT_FILE_SCHEDULED_STATUS_LOCATOR
+    - NAVIGATE_TO_DETAILS_PAGE
+    - NOTIFICATION_SEARCH
+    - IMPORT_DATA_DETAILS
+    - NOTIFICATION_CONTENT
+    - NOTIFIACTION_VIEW_DETAILS_ICON
+    - IMPORT_HISTORY_TAB_VERIFIACTION
+    - BTN_TRASH_FILTER
+    - TEXT_FIELD_VALUE_LOCATOR
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/dataAdministration/importdata/common/ImportDataDataConstants.java
+  classes:
+    ImportDataDataConstants:
+    - IMPORT_DATA_FOR_REQUESTS
+    - IMPORT_DATA_FOR_CHANGES
+    - IMPORT_DATA_FOR_RELEASES
+    - IMPORT_DATA_FOR_PROBLEMS
+    - IMPORT_DATA_FOR_PROJECTS
+    - IMPORT_DATA_FOR_SOLUTIONS
+    - IMPORT_DATA_FOR_PURCHASES
+    - IMPORT_DATA_FOR_CONTRACTS
+    - IMPORT_DATA_FOR_CMDB
+    - IMPORT_DATA_FOR_ASSETS
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

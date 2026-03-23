@@ -1,0 +1,29 @@
+module: admin
+entity: customization_changemanagement_changerisk
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/changemanagement/changerisk/common/ChangeRiskLocators.java
+  interfaces:
+    ChangeRiskLocators:
+    - NEW_CHANGERISK
+    - EDIT_CHANGERISK
+    - DELETE_CHANGERISK
+    - CHANGERISK_TITLE
+    - ICN_CHANGERISKACTIONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/changemanagement/changerisk/common/ChangeRiskDataConstants.java
+  classes:
+    ChangeRiskDataConstants:
+    - API_CHANGERISK1
+    - UI_CHANGERISK1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

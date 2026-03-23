@@ -13,7 +13,7 @@ api_util:
 locators:
   file: com/zoho/automater/selenium/modules/changes/changetaskworklog/common/ChangeTaskWorklogLocators.java
   interfaces:
-    Listview: []
+    ChangeTaskWorklogLocators: []
     WorklogPopup:
     - TYPE_HOURS
     - TYPE_MINUTES
@@ -43,50 +43,3 @@ preprocess_groups:
   creates_count: 0
   local_storage_keys: []
 data_json_keys: []
-api_util_deep:
-- name: createChangeAndTaskWorklog
-  params: String changeDataID, String taskDataID, String worklogDataID
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes:
-  - taskId
-  - worklogId
-  - changeId
-  - worklogName
-  - changeName
-  local_storage_reads: []
-preprocess_deep:
-- group: createChangeAndTask
-  source_file: ChangeTaskWorklog.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ChangeTaskAPIUtil.createChangeAndTask
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - ChangeTask.ChangeAndTask
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createChangeAndTaskWorklog
-  source_file: ChangeTaskWorklog.java
-  dataids_consumed:
-  - 0
-  - 1
-  - 2
-  dataids_count: 3
-  api_util_calls:
-  - ChangeTaskWorklogAPIUtil.createChangeAndTaskWorklog
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - ChangeTaskWorklog.ChangeAndTaskWorklog
-  creates_user: false
-  user_role: null
-  calls_super: false

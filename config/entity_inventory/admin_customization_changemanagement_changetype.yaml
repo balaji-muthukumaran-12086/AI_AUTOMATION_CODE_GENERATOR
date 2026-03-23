@@ -1,0 +1,37 @@
+module: admin
+entity: customization_changemanagement_changetype
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/customization/changemanagement/changetype/common/ChangeTypeLocators.java
+  interfaces:
+    ChangeTypeLocators:
+    - NEW_CHANGETYPE
+    - EDIT_CHANGETYPE
+    - DELETE_CHANGETYPE
+    - BTN_COLORPICKER
+    - COLOR
+    - TD_COLOR
+    - CHANGETYPE_TITLE
+    - ICN_CHANGETYPEACTIONS
+    - CHANGE_ROLE_ACTION_GEAR
+    - CHANGE_STATUS_EXPAND_ICN
+    - CHANGE_STAGE_ACTION_GEAR
+    - SAVE_BTN_IN_STATUS
+    - NAME_FIELD
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/customization/changemanagement/changetype/common/ChangeTypeDataConstants.java
+  classes:
+    ChangeTypeDataConstants:
+    - API_CHANGETYPE1
+    - UI_CHANGETYPE1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

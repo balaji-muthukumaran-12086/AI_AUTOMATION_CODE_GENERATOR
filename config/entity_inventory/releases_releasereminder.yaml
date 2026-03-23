@@ -11,8 +11,23 @@ api_util:
     params: String release, String reminder
     purpose: ''
 locators:
-  file: null
-  interfaces: {}
+  file: com/zoho/automater/selenium/modules/releases/releasereminder/common/ReleaseReminderLocators.java
+  interfaces:
+    ReleaseReminderLocators: []
+    ReleaseReminderDetailsview:
+    - TYPE_REMINDER_NAME
+    - VERIFY_REMINDER_NAME
+    - SELECT_REMINDER_CHECKBOX_USING_ENTITYID
+    - CLICK_ROW_ACTIONS_WITH_ENTITYID
+    - MODIFY_REMINDER_STATE_TO_FILTER_DROPDOWN
+    - SELECT_COMPLETED_STATE
+    - VERFIY_STRIKETHROUGH_COMPLETE_STATE_BY_ENTITYID
+    - SELECT_OPEN_STATE
+    - VERFIY_NO_STRIKETHROUGH_OPEN_STATE_BY_ENTITYID
+    ReleaseReminderPopup:
+    - VERIFY_NEW_REMINDER_TEXT_IN_POPUP
+    - VERIFY_EDIT_REMINDER_TEXT_IN_POPUP
+    - CLICK_DATE_FIELD_IN_POPUP
 data_constants:
   file: com/zoho/automater/selenium/modules/releases/releasereminder/common/ReleaseReminderDataConstants.java
   classes:
@@ -54,48 +69,3 @@ preprocess_groups:
   - releaseId
   - reminderId
 data_json_keys: []
-api_util_deep:
-- name: createReleaseWithReminder
-  params: String release, String reminder
-  api_paths: []
-  rest_methods_used:
-  - createAndGetResponse
-  local_storage_writes: []
-  local_storage_reads:
-  - releaseId
-preprocess_deep:
-- group: createrelease
-  source_file: ReleaseReminder.java
-  dataids_consumed:
-  - 0
-  dataids_count: 1
-  api_util_calls:
-  - ReleaseAPIUtil.createRelease
-  rest_direct_calls: []
-  local_storage_stores: []
-  local_storage_reads: []
-  entities_created:
-  - Release.Release
-  creates_user: false
-  user_role: null
-  calls_super: false
-- group: createreleasewithreminder
-  source_file: ReleaseReminder.java
-  dataids_consumed:
-  - 0
-  - 1
-  dataids_count: 2
-  api_util_calls:
-  - ReleaseReminderAPIUtil.createReleaseWithReminder
-  rest_direct_calls: []
-  local_storage_stores:
-  - key: releaseId
-    source_type: hardcoded
-  - key: reminderId
-    source_type: hardcoded
-  local_storage_reads: []
-  entities_created:
-  - ReleaseReminder.ReleaseWithReminder
-  creates_user: false
-  user_role: null
-  calls_super: false

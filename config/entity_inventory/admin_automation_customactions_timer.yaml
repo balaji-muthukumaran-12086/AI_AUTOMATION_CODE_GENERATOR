@@ -1,0 +1,86 @@
+module: admin
+entity: automation_customactions_timer
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/automation/customactions/timer/common/TimerLocators.java
+  interfaces:
+    TimerLocators:
+    - CLICK_ROW_ACTIONS_WITH_ENTITYID
+    - CLICK_EDIT_IN_ACTIONS_ICON
+    - CLICK_DELETE_IN_ACTIONS_ICON
+    - CLICK_DISABLE_IN_ACTIONS_ICON
+    - CLICK_ENABLE_IN_ACTIONS_ICON
+    - VERIFY_TIMER_IS_DISABLED
+    - VERIFY_TIMER_IS_ENABLED
+    - VERIFY_TIMERS_EXPANDED
+    - VERIFY_TIMER_DURATION
+    - CLICK_RELEATED_WORKFLOWS
+    - VERIFY_NAME_IN_EXPANDED_VIEW
+    - VERIFY_ABORT_TIMER_SECTION
+    - VERIFY_FIELD_UPDATE_SECTION
+    - EXPAND_LEVEL1_ACTION
+    TimerForm:
+    - TIMER_FORM_OPENED
+    - TIMER_FORM_CLICK_CONFIGURE_ACTIONS
+    - TIMER_FORM_CLICK_ADD_LEVEL_ACTIONS
+    - TIMER_FORM_CLICK_ACTION_LIST
+    - TIMER_FORM_CLICK_ABORTS_CUSTOM_ACTIONS
+    - TIMER_FORM_CLICK_TIMER_ENDS_CUSTOM_ACTIONS
+    - ACTION_TIMER_ABORTS
+    - SELECT_CUSTOM_FUNCTION
+    - SELECT_CUSTOM_ACTION_DROPDOWM
+    TimerFormTaskPopup:
+    - TIMER_FORM_VERIFY_TASK_NAME_IS_PRESENT_OR_NOT
+    Timer:
+    - TIMER_NAME
+    - TIMER_DESCRIPTION
+    - TIMER_SELECT_TYPE
+    - TIMER_TYPE
+    - TIMER_WAIT_FOR_DAYS
+    - TIMER_WAIT_FOR_HOURS
+    - TIMER_WAIT_FOR_MINUTES
+    - CLICK_BUT_ADD_LEVEL_1
+    - LEVEL_CUSTOM_ACTION
+    - TIMER_ABORT_ACTIONS_CLICK
+    - TIMER_ABORT_SELECT_ACTION
+    - ACTION_TIMERABORT
+    - TIMER_CRITERIA
+    - SAVE_SELECT_TIMER
+    - CLICK_ON_ABORT_FU
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/automation/customactions/timer/common/TimerDataConstants.java
+  classes:
+    TimerDataConstants:
+    - CREATE_PROBLEM_TIMER_VIA_API_BASED_ON_CONDITIONS
+    - CREATE_PROBLEM_TIMER3_VIA_API_BASED_ON_CONDITIONS
+    - CREATE_PROBLEM_TIMER4_VIA_API_BASED_ON_DATE_FIELD
+    - LIST_INFO_CRITERIA_NAME_SEARCH
+    - EDIT_PROBLEM_TIMER_DONT_ABORT
+    - CREATE_REQUEST_TIMER_DONT_ABORT
+    - CREATE_PROBLEM_TIMER_DONT_ABORT
+    - CREATE_PROBLEM_TIMER_VIA_API_BASED_ON_CONDITIONS_CREATED_DATE
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: createtimer
+  creates_count: 0
+  local_storage_keys: []
+- name: createtriggerwithtimer
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys:
+- create_problem_timer3_via_api_based_on_conditions
+- create_problem_timer4_via_api_based_on_date_field
+- create_problem_timer_dont_abort
+- create_problem_timer_via_api_based_on_conditions
+- create_problem_timer_via_api_based_on_conditions_created_date
+- create_request_timer_dont_abort
+- edit_problem_timer_dont_abort
+- list_info_criteria_name_search

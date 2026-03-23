@@ -1,0 +1,48 @@
+module: admin
+entity: generalsettings_navigationandfootersettings
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: com/zoho/automater/selenium/modules/admin/generalsettings/navigationandfootersettings/common/NavigationAndFooterSettingsLocators.java
+  interfaces:
+    NavigationAndFooterSettingsLocators:
+    - ORGANIZE_NAVIGATION_TABS_BUTTON
+    - HEADER_DROPDOWN
+    - HEADER_DROPDOWN_VALUE
+    - ORGANIZE_NAVIGATION_TABS_NAME
+    - BUTTON
+    - LOCK_ICON_PROFILE
+    - HIDE_SHOW_ICON_PROFILE
+    - SORTABLE_ICON
+    - MORE_TABS_SECTION_HEADER
+    - HEADER_RESET
+    - FOOTER_RESET
+    - HIDE_SHOW_ICON_ADMIN
+    - LOCK_ICON_ADMIN
+    - PROFILE_POPUP
+    - UNSORTABLE_ICON
+    - UPDATE_YOUR_PERSONALIZATION_POPUP
+    - HEADER_ACK
+    - FOOTER_ACK
+    - FOOTER_MENU
+    - MODULE_TAB
+    - TEXT_AJAX_MESSAGE_TEXT
+    - ORGANIZE_OPTION_BUTTONS
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/generalsettings/navigationandfootersettings/common/NavigationAndFooterSettingsDataConstants.java
+  classes:
+    NavigationAndFooterSettingsDataConstants:
+    - REQUESTER_FOOTER_LIST
+    - REQUESTER_MODULE_LIST
+    - TECHNICIAN_FOOTER_LIST
+    - TECHNICIAN_MODULE_LIST
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []

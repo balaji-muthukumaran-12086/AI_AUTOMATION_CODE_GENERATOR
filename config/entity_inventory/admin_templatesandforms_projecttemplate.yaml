@@ -1,0 +1,88 @@
+module: admin
+entity: templatesandforms_projecttemplate
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/projecttemplate/utils/ProjectTemplateAPIUtil.java
+  methods:
+  - name: createMultipleTasksInProjectTemplate
+    return_type: void
+    params: String taskDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: create multiple Tasks alone in task Subtab
+  - name: createProjectTemplateWithMultipleMilestone
+    return_type: void
+    params: String projectDataID, String milestoneDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: ''
+  - name: createProjectTemplateWithMultipleTasks
+    return_type: void
+    params: String projectDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: ''
+  - name: createProjectTemplateWithSingleMilestone
+    return_type: void
+    params: String projectDataID, String milestoneDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: ''
+  - name: createProjectTemplateWithMultipleTaskInMilestoneSubtab
+    return_type: void
+    params: String projectDataID, String milestoneDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: ''
+  - name: createProjectTemplateWithMultipleMilestoneAndMultipleTask
+    return_type: void
+    params: String projectDataID, String milestoneDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: multiple milestone and multiple tasks(in separate tab)
+locators:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/projecttemplate/common/ProjectTemplateLocators.java
+  interfaces:
+    ProjectTemplateLocators:
+    - SELECT_TEMPLATE_DROPDOWN
+    Editor:
+    - PROJECT_REQUESTER
+    - BUTTON_BY_NAME
+    Detailview:
+    - VIEW_OPTIONS
+    - GET_MILESTONE_ORDER
+    - VERIFY_TASK_WITH_ENTITYID_IN_TEMPLATE
+    - VERIFY_TASK_WITH_TITLE
+    - VERIFY_TASK_USING_TITLE
+    - VERIFY_TASK_WITH_ENTITYID
+    - ADD_TASK_DROPDOWN_IN_TEMPLATE
+    - OPTION_ELEMENT_IN_TEMPLATE
+    MilestoneListview:
+    - CLICK_VERIFY_MILESTONE_WITH_ENTITYID
+    Popup:
+    - SELECT_TASK_IN_POPUP_WITH_ENTITYID
+    - MOVE_UP_IN_ORGANIZE_TASK_POPUP
+    - MOVE_DOWN_IN_ORGANIZE_TASK_POPUP
+    - MOVE_BY_IN_ORGANIZE_TASK_POPUP
+    - CLICK_APPLY_BTN_IN_ORGANIZE_TASK_POPUP
+    - CLICK_CANCEL_BTN_IN_ORGANIZE_TASK_POPUP
+    - POPUP_SAVE_BUTTON
+    TasksListview:
+    - CHECKBOX_DATA_ROW_COLUMN_ID
+    - GET_TASK_ORDER
+    - VERIFY_TASK_TITLE
+    - CLOSE_ICON_IN_POPUP
+    - VERIFY_TASK_WITH_ENTITYID_IN_TEMPLATE
+    - VERIFY_TASK_USING_TITLE_IN_TEMPLATE
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/templatesandforms/projecttemplate/common/ProjectTemplateDataConstants.java
+  classes:
+    ProjectTemplateDataConstants:
+    - PROJECT_TEMPLATE
+    - ADD_TASK_TASK_COUNT_2
+    - PROJECT_TEMPLATE_WITH_UDF
+    - ADD_TASK_UI
+    - ADD_MILESTONE
+    - ADD_MILESTONE_MILESTONE_COUNT_2
+    - EDIT_MILESTONE
+    - PROJECT_INPUT
+    - PROJECT_TEMPLATE_WITH_2_UDF
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: lookup
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []
