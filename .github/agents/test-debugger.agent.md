@@ -11,9 +11,10 @@ instructions:
   # - .github/skills/assertion-patterns/SKILL.md — anti-false-positive, report methods
   # - .github/skills/data-layer/SKILL.md — JSON format, loading context rules
 
-# ── VS Code 1.111: Agent Permissions ──
+# ── VS Code 1.112: Agent Permissions ──
 # Debugger needs browser access (MCP) and file edits for locator fixes.
 # execute = automatic — asks before destructive commands but allows reads.
+# Use /troubleshoot in chat to diagnose when tools/skills don't load correctly.
 permissions:
   read: "allow-always"
   edit: "allow-always"
@@ -21,8 +22,9 @@ permissions:
   execute: "automatic"
   mcp: "allow-always"
 
-# ── VS Code 1.111: Autopilot (Preview) ──
+# ── VS Code 1.112: Autopilot + Debug Logging ──
 # Autonomous Playwright-driven debug loop: snapshot→diagnose→fix→verify.
+# Screenshot results appear in image carousel (1.112).
 autopilot: true
 maxTurns: 20
 ---

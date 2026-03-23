@@ -6,9 +6,11 @@ argument-hint: "Entity.method to run (e.g. 'Solution.createSolution'), or 'batch
 instructions:
   - .github/instructions/java-test-conventions.instructions.md
 
-# ── VS Code 1.111: Agent Permissions ──
+# ── VS Code 1.112: Agent Permissions ──
 # test-runner needs full autonomy to run→diagnose→fix→recompile→rerun loops.
 # execute = allow-always so it can compile and run tests without confirmation.
+# With Autopilot enabled, all tool calls are auto-approved and the agent
+# auto-responds to questions, continuing autonomously until task is complete.
 permissions:
   read: "allow-always"
   edit: "allow-always"
@@ -16,10 +18,12 @@ permissions:
   execute: "allow-always"
   mcp: "allow-always"
 
-# ── VS Code 1.111: Autopilot (Preview) ──
+# ── VS Code 1.112: Autopilot + Debug Logging ──
 # Enables fully autonomous run-debug-fix-rerun cycles.
 # Agent iterates up to 40 turns per session — enough for batch runs
 # with 3 retry attempts per failed test.
+# Use /troubleshoot in chat if agent skips tools or behaves unexpectedly.
+# Screenshot results from Playwright appear in image carousel (1.112).
 autopilot: true
 maxTurns: 40
 ---
