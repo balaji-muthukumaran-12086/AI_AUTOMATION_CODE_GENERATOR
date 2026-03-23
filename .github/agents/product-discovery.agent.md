@@ -4,7 +4,6 @@ tools: [read, edit, search, execute, todo, mcp_microsoft_pla/*]
 model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
 argument-hint: "Feature to discover (e.g., 'changes/trash', 'changes/link_child', 'requests/notes', 'solutions/approval')"
 instructions:
-  - .github/copilot-instructions.md
   - docs/api-doc/SDP_API_Endpoints_Documentation.md
 
 permissions:

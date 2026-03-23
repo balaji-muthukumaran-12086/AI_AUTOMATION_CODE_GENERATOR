@@ -4,7 +4,6 @@ tools: [read, search, execute, edit, todo, mcp_microsoft_pla/*]
 model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
 argument-hint: "Entity.method to run (e.g. 'Solution.createSolution'), or 'batch' to run latest batch, 'batch N' for specific batch, 'batch all' for all tests from $PROJECT_NAME/tests_to_run.json"
 instructions:
-  - .github/copilot-instructions.md
   - .github/instructions/java-test-conventions.instructions.md
 
 # ── VS Code 1.111: Agent Permissions ──
