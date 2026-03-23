@@ -4,12 +4,13 @@ tools: [read, edit, search, execute, todo, mcp_microsoft_pla/*]
 model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
 argument-hint: "'batch all' to generate all from CSV automatically, 'batch' to review plan first, or describe a scenario in plain text."
 instructions:
-  - .github/copilot-instructions.md
+  # NOTE: copilot-instructions.md is auto-loaded by VS Code for ALL agents — no need to list it here
   - config/critical_rules_digest.md
-  - config/framework_rules.md
-  - config/framework_knowledge.md
   - .github/instructions/java-test-conventions.instructions.md
   - .github/instructions/test-data-format.instructions.md
+  # OPTIMIZATION: framework_rules.md (~29K tokens) and framework_knowledge.md (~25K tokens)
+  # are NOT pre-loaded. Step 0 reads ONLY the chunks needed via framework_file_index.yaml.
+  # This saves ~54K tokens — leaving ~125K for conversation instead of ~71K.
 
 # ── VS Code 1.111: Agent Permissions ──
 # Controls what this agent can do without asking for confirmation.
@@ -573,33 +574,67 @@ Shall I generate all of them, or adjust? (Reply with 'yes' or suggest changes)
 
 Before writing ANY test code, complete these steps IN ORDER:
 
-### Step 0 — Read Core Framework Files (REQUIRED — do this FIRST)
+### Step 0 — Load Framework Knowledge (Token-Optimized)
 
-> The `instructions:` YAML header attaches files as context, but large files (1000+ lines)
-> are often **truncated**. You MUST explicitly read all 3 core framework files in full
-> before generating any test code. Skipping this step leads to rule violations.
+> **Context budget**: You already have ~31K tokens of auto-loaded instructions:
+> - `copilot-instructions.md` (~23K) — auto-loaded by VS Code for all agents
+> - `critical_rules_digest.md` (~3K) — covers 80% of rules (22 most-violated)
+> - `java-test-conventions.instructions.md` (~7K) — Java patterns and conventions
+> - `test-data-format.instructions.md` (~1K) — JSON data format rules
+>
+> The heavy files (`framework_rules.md` ~29K, `framework_knowledge.md` ~25K) are
+> **NOT pre-loaded** to save ~54K tokens for your actual work. Read ONLY the chunks
+> you need using the index below.
 
-**Read ALL of these files using the read tool — every line, no skipping:**
+**Step 0a — Read the chunk index** (do this ONCE per session, ~2K tokens):
+```bash
+read_file config/framework_file_index.yaml  # ~295 lines — maps topics to line ranges
+```
 
-0. `config/critical_rules_digest.md` (~230 lines) — **START HERE**. Compact extract of the 22 most-violated rules from the full files below. This file is short enough to be fully included via YAML header, so you always have these rules even if the larger files are truncated. Read it first as your safety net.
-1. `.github/copilot-instructions.md` (~1300 lines) — project structure, lifecycle, data loading rules, API architecture, compilation, key framework behaviours, code generation rules, ActionsUtil/APIUtil patterns, placeholder reference
-2. `config/framework_rules.md` (~2600 lines) — detailed rules for locators, annotations, preProcess groups, field types, validation patterns, common pitfalls
-3. `config/framework_knowledge.md` (~2200 lines) — framework method signatures, entity patterns, module-specific conventions, known quirks
+**Step 0b — Read ONLY the chunks relevant to your task:**
 
-**How to read**: Use the read tool in chunks (e.g., 200-300 lines at a time) until you reach the end of each file. Do NOT skip sections — every section contains rules that affect code generation.
+For EVERY generation task, read at minimum these chunks from `config/framework_rules.md`:
 
-> **If the full files (items 1-3) are truncated** in the YAML header attachment, the digest (item 0) ensures you still have the 22 most critical rules. But always try to read the full files explicitly.
+| Chunk ID | Lines | Topic | When to read |
+|----------|-------|-------|-------------|
+| `FR_ANNOTATIONS` | 88-196 | @AutomaterScenario 9 fields, runType trap | **ALWAYS** |
+| `FR_PREPROCESS` | 198-367 | preProcess groups, NoPreprocess, minimal selection | **ALWAYS** |
+| `FR_DATA_JSON` | 466-600 | Data JSON format, placeholders, reuse rules | **ALWAYS** |
+| `FR_CLASS_ARCHITECTURE` | 30-86 | Two-layer class pattern | When creating new entity files |
+| `FR_CONSTANTS_IDS` | 369-464 | Role/Owner constants, Test ID format | When setting up annotations |
+| `FR_LOCATORS` | 602-750 | Locator patterns, XPath rules, Select2 | When writing new locators |
+| `FR_ACTIONSUTIL` | 752-900 | ActionsUtil/APIUtil patterns, method protection | When creating util methods |
+| `FR_ANTI_FALSE_POSITIVE` | 110-190 | Two-phase assertion pattern | When writing validation logic |
+| `FR_API_REGISTRY_GATE` | 192-220 | API registry check before RestAPI calls | When writing preProcess API calls |
 
-**After reading all 3 files**, confirm to yourself:
+From `config/framework_knowledge.md`:
+
+| Chunk ID | Lines | Topic | When to read |
+|----------|-------|-------|-------------|
+| `FK_FORMBUILDER` | 1-80 | fillInputForAnEntity, field types, skip behavior | When scenarios involve form fills |
+| `FK_LIFECYCLE` | 82-200 | Entity/EntityCase lifecycle, report flow | When debugging test flow issues |
+| `FK_RESTAPI` | 202-350 | RestAPI methods, session context, input wrapping | When writing preProcess API calls |
+| `FK_CLOSE_CHANGE` | 500-600 | Close change via stage transitions | When scenarios involve closing changes |
+
+**Example — reading only what's needed for a "Problem Association" task:**
+```bash
+# Annotations + preProcess + data rules = 3 reads, ~500 lines, ~4K tokens
+read_file config/framework_rules.md startLine=88 endLine=196    # FR_ANNOTATIONS
+read_file config/framework_rules.md startLine=198 endLine=367   # FR_PREPROCESS
+read_file config/framework_rules.md startLine=466 endLine=600   # FR_DATA_JSON
+# Total: ~4K tokens instead of 54K tokens (92% savings)
+```
+
+> **FORBIDDEN**: Reading `framework_rules.md` or `framework_knowledge.md` in full.
+> At 2600+ and 2200+ lines respectively, full reads burn ~54K tokens and leave
+> insufficient budget for the actual generation work.
+
+**After reading the relevant chunks**, confirm to yourself:
 - [ ] I know all valid `preProcess` group names for the target module
 - [ ] I know which field types are handled by `fillInputForAnEntity` vs manual handling
 - [ ] I know the correct data loading method for each context (test method / preProcess / APIUtil)
 - [ ] I know the `@AutomaterScenario` annotation rules (all 9 fields, runType trap, owner)
 - [ ] I know the Existing Method Protection rule for ActionsUtil/APIUtil
-
-> **The two smaller instruction files** (`java-test-conventions.instructions.md` at 270 lines and
-> `test-data-format.instructions.md` at 73 lines) are auto-attached via the YAML header and
-> small enough to be included in full — no need to re-read them.
 
 ### Step 0.5 — Check for Duplicate Scenarios (MANDATORY)
 
