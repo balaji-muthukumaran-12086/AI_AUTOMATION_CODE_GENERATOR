@@ -161,6 +161,14 @@ Place your file (`.csv`, `.xlsx`, or `.xls`) in `<PROJECT_NAME>/Testcase/` (temp
 
 > Only rows with `UI To-be-automated = Yes` are processed.
 
+### Upload a feature document (optional)
+
+Optionally place a feature document (`.pdf`, `.docx`, `.doc`, `.md`, or `.txt`) in `<PROJECT_NAME>/Testcase/Feature_Document/` (template: `docs/templates/feature_document_template.md`).
+
+> **Why upload a feature document?** It gives the AI product knowledge — UI flows, API endpoints, business rules, and edge cases — so it generates more accurate test code with correct locators and validations.
+
+During the Web UI setup flow, a feature document upload prompt appears automatically after the use-case upload step. You can upload one or skip it.
+
 ### Generate from a use-case document
 
 Pick the command based on how many test cases you have:
