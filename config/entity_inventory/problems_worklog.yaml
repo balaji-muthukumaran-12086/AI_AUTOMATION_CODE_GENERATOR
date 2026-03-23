@@ -1,0 +1,71 @@
+module: problems
+entity: worklog
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/problems/worklog/common/WorklogDataConstants.java
+  classes:
+    WorklogDataConstants:
+    - API_WORKLOG1
+    - UI_WORKLOG1_EDITDATA
+    - API_WORKLOG2
+    - UI_WORKLOG1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- API_Worklog1
+- API_Worklog2
+- UI_Worklog1
+- UI_Worklog1_EditData
+data_json_deep:
+  total_entries: 4
+  field_frequency:
+    time_spent: 4
+    other_charge: 4
+    owner: 2
+  all_placeholders:
+  - user_name
+  reuse_groups_count: 2
+  entries:
+    UI_Worklog1:
+      fields:
+      - time_spent
+      - other_charge
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    UI_Worklog1_EditData:
+      fields:
+      - time_spent
+      - other_charge
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    API_Worklog1:
+      fields:
+      - owner
+      - time_spent
+      - other_charge
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    API_Worklog2:
+      fields:
+      - owner
+      - time_spent
+      - other_charge
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form

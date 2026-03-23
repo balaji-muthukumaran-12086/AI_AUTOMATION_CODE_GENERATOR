@@ -1,0 +1,224 @@
+module: changes
+entity: downtime
+actions_util:
+  file: com/zoho/automater/selenium/modules/changes/downtime/utils/DowntimeActionsUtil.java
+  methods:
+  - name: editChangeDowntimeUI
+    return_type: void
+    params: (none)
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/changes/downtime/utils/DowntimeAPIUtil.java
+  methods:
+  - name: createDowntimeType
+    return_type: void
+    params: String testCase
+    purpose: admin
+  - name: changeDowntime
+    return_type: void
+    params: String changeData, String downtimeData
+    purpose: below lines for the getentityid
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/changes/downtime/common/DowntimeDataConstants.java
+  classes:
+    DowntimeDataConstants:
+    - ADD_DOWNTIME_ALONE
+    - ADD_CHANGE_DOWNTIME_API
+    - ADD_DOWNTIME_API
+    - ADD_DOWNTIME_UI
+    - ADD_DOWNTIME_UI_FROM_POPUP_USING_PLUSICON
+    - EDITDOWNTIME
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- Add_change_downtime_API
+- Add_downtime_API
+- Add_downtime_Alone
+- Add_downtime_UI
+- Add_downtime_UI_From_Popup_using_PlusIcon
+- EditDowntime
+data_json_deep:
+  total_entries: 6
+  field_frequency:
+    description_text: 3
+    downtime_type: 2
+    downtime: 2
+    name: 1
+    description: 1
+    scheduled_start_time: 1
+    scheduled_end_time: 1
+  all_placeholders:
+  - custom_CmdbId
+  - datetime, 2Y 10M 100D 10h 10m, false
+  - datetime, 2Y 10M 100D 10h 10m, true
+  - unique_string
+  reuse_groups_count: 1
+  entries:
+    Add_downtime_API:
+      fields:
+      - name
+      - description
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    Add_downtime_UI:
+      fields:
+      - description_text
+      - downtime_type
+      - scheduled_start_time
+      - scheduled_end_time
+      placeholders:
+      - unique_string
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    Add_downtime_UI_From_Popup_using_PlusIcon:
+      fields:
+      - description_text
+      - downtime_type
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    Add_change_downtime_API:
+      fields:
+      - downtime
+      placeholders:
+      - custom_CmdbId
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required:
+      - CmdbId
+      purpose: ui_form
+    Add_downtime_Alone:
+      fields:
+      - description_text
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    EditDowntime:
+      fields:
+      - downtime
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+actions_util_deep:
+- name: editChangeDowntimeUI
+  params: (none)
+  locators_used:
+  - DowntimeLocators.DowntimeDetailsview.CLICK_EDIT_IN_ACTIONS_ICON
+  - DowntimeLocators.DowntimeDetailsview.CLICK_SETTINGS_ACTIONS_ICON
+  - DowntimeLocators.DowntimeDetailsview.TYPE_DESCRIPTION_TEXTAREA
+  - DowntimeLocators.Popup.VERIFY_EDIT_DOWNTIME_TEXT_IN_POPUP
+  local_storage_reads: []
+  local_storage_writes:
+  - edit_downTime_Name
+  action_chain:
+  - actions.click
+  - actions.validate.textContent
+  - actions.type
+  - actions.waitForAjaxComplete
+  line_count: 7
+api_util_deep:
+- name: createDowntimeType
+  params: String testCase
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - downtimeType_Name
+  - downtimeType_Id
+  local_storage_reads: []
+- name: changeDowntime
+  params: String changeData, String downtimeData
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - downtimeName
+  local_storage_reads:
+  - changeId
+preprocess_deep:
+- group: createdowntimeforchange
+  source_file: DowntimeBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeAPIUtil.createChange
+  - DowntimeAPIUtil.createDowntimeType
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Change.Change
+  - Downtime.DowntimeType
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: enabledowntimeintemplate
+  source_file: DowntimeBase.java
+  dataids_consumed:
+  - 2
+  dataids_count: 1
+  api_util_calls:
+  - ChangeTemplateAPIUtil.createChangeTemplateWithRequesterPermission
+  - ChangeTemplateAPIUtil.enablePlanningDetailsInTemplate
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTemplate.ChangeTemplateWithRequesterPermission
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: downtimeinchangeform
+  source_file: DowntimeBase.java
+  dataids_consumed:
+  - 2
+  - 3
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTemplateAPIUtil.createChangeTemplateWithRequesterPermission
+  - ChangeTemplateAPIUtil.enablePlanningDetailsInTemplate
+  - DowntimeAPIUtil.createDowntimeType
+  - ChangeAPIUtil.createChange
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTemplate.ChangeTemplateWithRequesterPermission
+  - Downtime.DowntimeType
+  - Change.Change
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: reqenabledowntimeintemplate
+  source_file: DowntimeBase.java
+  dataids_consumed:
+  - 2
+  dataids_count: 1
+  api_util_calls:
+  - ChangeTemplateAPIUtil.createChangeTemplateWithRequesterPermission
+  - ChangeTemplateAPIUtil.enablePlanningDetailsInTemplate
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: requesterName
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - ChangeTemplate.ChangeTemplateWithRequesterPermission
+  creates_user: true
+  user_role: null
+  calls_super: false

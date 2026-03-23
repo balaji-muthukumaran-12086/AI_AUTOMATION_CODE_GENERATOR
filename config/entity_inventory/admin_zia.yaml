@@ -1,0 +1,833 @@
+module: admin
+entity: zia
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/admin/zia/common/ZiaDataConstants.java
+  classes:
+    ZiaDataConstants:
+    - ACKNOWLEDGEMENT_P36
+    - ACKNOWLEDGEMENT_P37
+    - ACKNOWLEDGEMENT_P34
+    - ACKNOWLEDGEMENT_P35
+    - ACKNOWLEDGEMENT_P32
+    - CREATE_CUSTOM_PRIORITY
+    - ACKNOWLEDGEMENT_P33
+    - ACKNOWLEDGEMENT_P30
+    - ACKNOWLEDGEMENT_P31
+    - ACKNOWLEDGEMENT_P38
+    - ACKNOWLEDGEMENT_P39
+    - ACKNOWLEDGEMENT_P43
+    - ACKNOWLEDGEMENT_P44
+    - ACKNOWLEDGEMENT_P41
+    - ACKNOWLEDGEMENT_P42
+    - ACKNOWLEDGEMENT_P40
+    - CREATE_CUSTOM_CATEGORY
+    - ACKNOWLEDGEMENT_P14
+    - ACKNOWLEDGEMENT_P15
+    - ACKNOWLEDGEMENT_P12
+    - ACKNOWLEDGEMENT_P13
+    - ACKNOWLEDGEMENT_P10
+    - ACKNOWLEDGEMENT_P11
+    - ACKNOWLEDGEMENT_P18
+    - ACKNOWLEDGEMENT_P19
+    - ACKNOWLEDGEMENT_P16
+    - ACKNOWLEDGEMENT_P17
+    - ACKNOWLEDGEMENT_P25
+    - ACKNOWLEDGEMENT_P26
+    - ACKNOWLEDGEMENT_P23
+    - ACKNOWLEDGEMENT_P24
+    - ACKNOWLEDGEMENT_P21
+    - ACKNOWLEDGEMENT_P22
+    - ACKNOWLEDGEMENT_P20
+    - ACKNOWLEDGEMENT_P29
+    - ACKNOWLEDGEMENT_P27
+    - ACKNOWLEDGEMENT_P28
+    - ACKNOWLEDGEMENT_P8
+    - ACKNOWLEDGEMENT_N38
+    - ACKNOWLEDGEMENT_P7
+    - ACKNOWLEDGEMENT_N39
+    - ACKNOWLEDGEMENT_N36
+    - ACKNOWLEDGEMENT_P9
+    - ACKNOWLEDGEMENT_N37
+    - ACKNOWLEDGEMENT_P4
+    - ACKNOWLEDGEMENT_N34
+    - ACKNOWLEDGEMENT_P3
+    - ACKNOWLEDGEMENT_N35
+    - ACKNOWLEDGEMENT_P6
+    - ACKNOWLEDGEMENT_N32
+    - ACKNOWLEDGEMENT_P5
+    - ACKNOWLEDGEMENT_N33
+    - ACKNOWLEDGEMENT_N30
+    - ACKNOWLEDGEMENT_N31
+    - ACKNOWLEDGEMENT_P2
+    - ACKNOWLEDGEMENT_P1
+    - ACKNOWLEDGEMENT_N47
+    - ACKNOWLEDGEMENT_N48
+    - ACKNOWLEDGEMENT_N45
+    - ACKNOWLEDGEMENT_N46
+    - ACKNOWLEDGEMENT_N43
+    - ACKNOWLEDGEMENT_N44
+    - ACKNOWLEDGEMENT_N41
+    - ACKNOWLEDGEMENT_N42
+    - ACKNOWLEDGEMENT_N40
+    - REPLY_MAIL
+    - CREATE_CUSTOM_ITEM
+    - ACKNOWLEDGEMENT_N6
+    - ACKNOWLEDGEMENT_N16
+    - ACKNOWLEDGEMENT_N5
+    - ACKNOWLEDGEMENT_N17
+    - ACKNOWLEDGEMENT_N8
+    - ACKNOWLEDGEMENT_N14
+    - ACKNOWLEDGEMENT_N7
+    - ACKNOWLEDGEMENT_N15
+    - ACKNOWLEDGEMENT_N2
+    - ACKNOWLEDGEMENT_N12
+    - ACKNOWLEDGEMENT_N1
+    - ACKNOWLEDGEMENT_N13
+    - ACKNOWLEDGEMENT_N4
+    - ACKNOWLEDGEMENT_N10
+    - ACKNOWLEDGEMENT_N3
+    - ACKNOWLEDGEMENT_N11
+    - ACKNOWLEDGEMENT_N9
+    - ACKNOWLEDGEMENT_N18
+    - ACKNOWLEDGEMENT_N19
+    - ACKNOWLEDGEMENT_N27
+    - ACKNOWLEDGEMENT_N28
+    - ACKNOWLEDGEMENT_N25
+    - ACKNOWLEDGEMENT_N26
+    - ACKNOWLEDGEMENT_N23
+    - ACKNOWLEDGEMENT_N24
+    - ACKNOWLEDGEMENT_N21
+    - ACKNOWLEDGEMENT_N22
+    - ACKNOWLEDGEMENT_N20
+    - CREATE_CUSTOM_SUBCATEGORY
+    - GET_REQUEST_COUNT
+    - ACKNOWLEDGEMENT_N29
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- Acknowledgement_N1
+- Acknowledgement_N10
+- Acknowledgement_N11
+- Acknowledgement_N12
+- Acknowledgement_N13
+- Acknowledgement_N14
+- Acknowledgement_N15
+- Acknowledgement_N16
+- Acknowledgement_N17
+- Acknowledgement_N18
+- Acknowledgement_N19
+- Acknowledgement_N2
+- Acknowledgement_N20
+- Acknowledgement_N21
+- Acknowledgement_N22
+- Acknowledgement_N23
+- Acknowledgement_N24
+- Acknowledgement_N25
+- Acknowledgement_N26
+- Acknowledgement_N27
+- Acknowledgement_N28
+- Acknowledgement_N29
+- Acknowledgement_N3
+- Acknowledgement_N30
+- Acknowledgement_N31
+- Acknowledgement_N32
+- Acknowledgement_N33
+- Acknowledgement_N34
+- Acknowledgement_N35
+- Acknowledgement_N36
+- Acknowledgement_N37
+- Acknowledgement_N38
+- Acknowledgement_N39
+- Acknowledgement_N4
+- Acknowledgement_N40
+- Acknowledgement_N41
+- Acknowledgement_N42
+- Acknowledgement_N43
+- Acknowledgement_N44
+- Acknowledgement_N45
+- Acknowledgement_N46
+- Acknowledgement_N47
+- Acknowledgement_N48
+- Acknowledgement_N5
+- Acknowledgement_N6
+- Acknowledgement_N7
+- Acknowledgement_N8
+- Acknowledgement_N9
+- Acknowledgement_P1
+- Acknowledgement_P10
+- Acknowledgement_P11
+- Acknowledgement_P12
+- Acknowledgement_P13
+- Acknowledgement_P14
+- Acknowledgement_P15
+- Acknowledgement_P16
+- Acknowledgement_P17
+- Acknowledgement_P18
+- Acknowledgement_P19
+- Acknowledgement_P2
+- Acknowledgement_P20
+- Acknowledgement_P21
+- Acknowledgement_P22
+- Acknowledgement_P23
+- Acknowledgement_P24
+- Acknowledgement_P25
+- Acknowledgement_P26
+- Acknowledgement_P27
+- Acknowledgement_P28
+- Acknowledgement_P29
+- Acknowledgement_P3
+- Acknowledgement_P30
+- Acknowledgement_P31
+- Acknowledgement_P32
+- Acknowledgement_P33
+- Acknowledgement_P34
+- Acknowledgement_P35
+- Acknowledgement_P36
+- Acknowledgement_P37
+- Acknowledgement_P38
+- Acknowledgement_P39
+- Acknowledgement_P4
+- Acknowledgement_P40
+- Acknowledgement_P41
+- Acknowledgement_P42
+- Acknowledgement_P43
+- Acknowledgement_P44
+- Acknowledgement_P5
+- Acknowledgement_P6
+- Acknowledgement_P7
+- Acknowledgement_P8
+- Acknowledgement_P9
+- create_custom_category
+- create_custom_item
+- create_custom_priority
+- create_custom_subcategory
+- get_request_count
+- reply_mail
+data_json_deep:
+  total_entries: 98
+  field_frequency:
+    descriptions: 92
+    from: 1
+    to: 1
+    list_info: 1
+    category: 1
+    subcategory: 1
+    item: 1
+    priority: 1
+  all_placeholders:
+  - custom_customCategoryId
+  - custom_customSubcategoryId
+  - unique_string
+  - user_email_id
+  reuse_groups_count: 1
+  entries:
+    Acknowledgement_P1:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P2:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P3:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P4:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P5:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P6:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P7:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P8:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P9:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P10:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P11:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P12:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P13:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P14:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P15:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P16:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P17:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P18:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P19:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P20:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P21:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P22:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P23:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P24:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P25:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P26:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P27:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P28:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P29:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P30:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P31:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P32:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P33:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P34:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P35:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P36:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P37:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P38:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P39:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P40:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P41:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P42:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P43:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_P44:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N1:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N2:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N3:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N4:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N5:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N6:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N7:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N8:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N9:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N10:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N11:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N12:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N13:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N14:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N15:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N16:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N17:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N18:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N19:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N20:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N21:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N22:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N23:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N24:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N25:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N26:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N27:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N28:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N29:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N30:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N31:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N32:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N33:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N34:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N35:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N36:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N37:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N38:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N39:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N40:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N41:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N42:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N43:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N44:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N45:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N46:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N47:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Acknowledgement_N48:
+      fields:
+      - descriptions
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    reply_mail:
+      fields:
+      - from
+      - to
+      placeholders:
+      - user_email_id
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_request_count:
+      fields:
+      - list_info
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_custom_category:
+      fields:
+      - category
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_custom_subcategory:
+      fields:
+      - subcategory
+      placeholders:
+      - custom_customCategoryId
+      - unique_string
+      local_storage_keys_required:
+      - customCategoryId
+      purpose: api_preprocess
+    create_custom_item:
+      fields:
+      - item
+      placeholders:
+      - custom_customSubcategoryId
+      - unique_string
+      local_storage_keys_required:
+      - customSubcategoryId
+      purpose: api_preprocess
+    create_custom_priority:
+      fields:
+      - priority
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess

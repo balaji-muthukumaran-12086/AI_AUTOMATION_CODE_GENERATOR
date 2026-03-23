@@ -1,0 +1,101 @@
+module: projects
+entity: projecttaskworklog
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/projects/projecttaskworklog/utils/ProjectTaskWorklogAPIUtil.java
+  methods:
+  - name: createProjectAndTaskWorklog
+    return_type: void
+    params: String projectDataID, String taskDataID, String worklogDataID
+    purpose: ''
+  - name: createProjectWithMembersAndTaskWorklog
+    return_type: void
+    params: String projectDataID, String memberDataID, String taskDataID, String worklogDataID
+    purpose: ''
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/projects/projecttaskworklog/common/ProjectTaskWorklogDataConstants.java
+  classes:
+    ProjectTaskWorklogDataConstants:
+    - EDIT_WORKLOG
+    - ADD_WORKLOG
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/projects/projecttaskworklog/common/ProjectTaskWorklogAnnotationConstants.java
+  groups:
+  - constant: CREATE_PROJECT_AND_TASK
+    value: createprojectandtask
+  - constant: CREATE_PROJECT_AND_TASK_WORKLOG
+    value: createprojectandtaskworklog
+  data:
+  - constant: CREATE_PROJECT_AND_TASK
+    value: createprojectandtask
+  - constant: ADD_WORKLOG
+    value: add_worklog
+preprocess_groups: []
+data_json_keys: []
+api_util_deep:
+- name: createProjectAndTaskWorklog
+  params: String projectDataID, String taskDataID, String worklogDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskName
+  - worklogName
+  - worklogId
+  - taskId
+  local_storage_reads:
+  - projectId
+- name: createProjectWithMembersAndTaskWorklog
+  params: String projectDataID, String memberDataID, String taskDataID, String worklogDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - worklogId
+  - memberId
+  - memberName
+  - taskName
+  - worklogName
+  local_storage_reads:
+  - projectId
+  - project
+preprocess_deep:
+- group: createprojectandtask
+  source_file: ProjectTaskWorklogBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ProjectTaskAPIUtil.createProjectAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ProjectTask.ProjectAndTask
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprojectandtaskworklog
+  source_file: ProjectTaskWorklogBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ProjectTaskWorklogAPIUtil.createProjectAndTaskWorklog
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ProjectTaskWorklog.ProjectAndTaskWorklog
+  creates_user: false
+  user_role: null
+  calls_super: false

@@ -1,0 +1,129 @@
+module: changes
+entity: changeconversations
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/changes/changeconversations/common/ChangeConversationsDataConstants.java
+  classes:
+    ChangeConversationsDataConstants:
+    - RELEASE_NOTIFICATION_OWNER_PROJECTS
+    - RELEASE_NOTIFICATION_OWNER_MILESTONES
+    - API_VALID_INPUT_GENERAL_TEMPLATE
+    - SEND_NOTIFICATION_CHANGEUSERS_MANAGEDBY
+    - ADD_NOTE_IN_CONVERSATIONS
+    - SEND_NOTIFICATION_CHANGEUSERS_DHCR
+    - RELEASE_NOTIFICATION_OWNER_CHANGES
+    - CREATE_CHANGE_API
+    - EDIT_NOTE_IN_CONVERSATIONS
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/changes/changeconversations/common/ChangeConversationsAnnotationConstants.java
+  groups:
+  - constant: CREATE
+    value: create
+  - constant: CREATE_CHANGE_WITH_CONVERSATION_NOTES
+    value: createchangewithconversationnotes
+  data:
+  - constant: ADD_NOTE_IN_CONVERSATIONS
+    value: add_note_in_conversations
+  - constant: EDIT_NOTE_IN_CONVERSATIONS
+    value: edit_note_in_conversations
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE
+    value: api_valid_input_general_template
+  - constant: CREATE_CHANGE_API
+    value: create_change_api
+preprocess_groups:
+- name: createchangewithconversationnotes
+  creates_count: 0
+  local_storage_keys:
+  - change
+  - note
+  - change
+- name: create
+  creates_count: 0
+  local_storage_keys:
+  - change
+  - requesterName
+- name: associateCIinChange
+  creates_count: 0
+  local_storage_keys:
+  - requesterName
+data_json_keys: []
+preprocess_deep:
+- group: createchangewithconversationnotes
+  source_file: ChangeConversations.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeAPIUtil.createNoteAndGetId
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: change
+    source_type: computed
+  - key: note
+    source_type: computed
+  local_storage_reads:
+  - change
+  entities_created:
+  - change
+  - Change.NoteAndGetId
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create
+  source_file: ChangeConversations.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: change
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - change
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: associateCIinChange
+  source_file: ChangeConversations.java
+  dataids_consumed:
+  - 1
+  - 2
+  - 3
+  - 4
+  dataids_count: 4
+  api_util_calls:
+  - ChangeTemplateAPIUtil.createChangeTemplateWithRequesterPermission
+  - CmdbAPIUtil.createCmdbWithDefault
+  - ChangeAPIUtil.createChange
+  - SiteAPIUtil.createCopySite
+  - UserGroupsAPIUtil.departmentIdForCopySite
+  - AdminAPIUtil.associateSiteAndDepartmentToUsers
+  - DepartmentAPIUtil.associateDepartmentHead
+  - ChangeAPIUtil.createChange
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: requesterName
+    source_type: user_display_id
+  local_storage_reads: []
+  entities_created:
+  - ChangeTemplate.ChangeTemplateWithRequesterPermission
+  - Cmdb.CmdbWithDefault
+  - Change.Change
+  - Site.CopySite
+  - Change.Change
+  creates_user: true
+  user_role: Requester
+  calls_super: false

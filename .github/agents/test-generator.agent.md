@@ -4,12 +4,20 @@ tools: [read, edit, search, execute, todo, mcp_microsoft_pla/*]
 model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
 argument-hint: "'batch all' to generate all from CSV automatically, 'batch' to review plan first, or describe a scenario in plain text."
 instructions:
-  - .github/copilot-instructions.md
+  # NOTE: copilot-instructions.md is auto-loaded by VS Code for ALL agents — no need to list it here
   - config/critical_rules_digest.md
-  - config/framework_rules.md
-  - config/framework_knowledge.md
   - .github/instructions/java-test-conventions.instructions.md
   - .github/instructions/test-data-format.instructions.md
+  # OPTIMIZATION: framework_rules.md (~29K tokens) and framework_knowledge.md (~25K tokens)
+  # are NOT pre-loaded. Step 0 reads ONLY the chunks needed via framework_file_index.yaml.
+  # This saves ~54K tokens — leaving ~125K for conversation instead of ~71K.
+  #
+  # SKILLS (loaded on-demand when VS Code detects relevant task context):
+  # - .github/skills/preprocess-patterns/SKILL.md — preProcess group patterns + examples
+  # - .github/skills/data-layer/SKILL.md — JSON format, loading methods, placeholders
+  # - .github/skills/locator-patterns/SKILL.md — XPath, Select2, popup locators
+  # - .github/skills/rbac-testing/SKILL.md — role-based access control test lifecycle
+  # - .github/skills/assertion-patterns/SKILL.md — anti-false-positive, report methods
 
 # ── VS Code 1.111: Agent Permissions ──
 # Controls what this agent can do without asking for confirmation.
@@ -573,33 +581,67 @@ Shall I generate all of them, or adjust? (Reply with 'yes' or suggest changes)
 
 Before writing ANY test code, complete these steps IN ORDER:
 
-### Step 0 — Read Core Framework Files (REQUIRED — do this FIRST)
+### Step 0 — Load Framework Knowledge (Token-Optimized)
 
-> The `instructions:` YAML header attaches files as context, but large files (1000+ lines)
-> are often **truncated**. You MUST explicitly read all 3 core framework files in full
-> before generating any test code. Skipping this step leads to rule violations.
+> **Context budget**: You already have ~31K tokens of auto-loaded instructions:
+> - `copilot-instructions.md` (~23K) — auto-loaded by VS Code for all agents
+> - `critical_rules_digest.md` (~3K) — covers 80% of rules (22 most-violated)
+> - `java-test-conventions.instructions.md` (~7K) — Java patterns and conventions
+> - `test-data-format.instructions.md` (~1K) — JSON data format rules
+>
+> The heavy files (`framework_rules.md` ~29K, `framework_knowledge.md` ~25K) are
+> **NOT pre-loaded** to save ~54K tokens for your actual work. Read ONLY the chunks
+> you need using the index below.
 
-**Read ALL of these files using the read tool — every line, no skipping:**
+**Step 0a — Read the chunk index** (do this ONCE per session, ~2K tokens):
+```bash
+read_file config/framework_file_index.yaml  # ~295 lines — maps topics to line ranges
+```
 
-0. `config/critical_rules_digest.md` (~230 lines) — **START HERE**. Compact extract of the 22 most-violated rules from the full files below. This file is short enough to be fully included via YAML header, so you always have these rules even if the larger files are truncated. Read it first as your safety net.
-1. `.github/copilot-instructions.md` (~1300 lines) — project structure, lifecycle, data loading rules, API architecture, compilation, key framework behaviours, code generation rules, ActionsUtil/APIUtil patterns, placeholder reference
-2. `config/framework_rules.md` (~2600 lines) — detailed rules for locators, annotations, preProcess groups, field types, validation patterns, common pitfalls
-3. `config/framework_knowledge.md` (~2200 lines) — framework method signatures, entity patterns, module-specific conventions, known quirks
+**Step 0b — Read ONLY the chunks relevant to your task:**
 
-**How to read**: Use the read tool in chunks (e.g., 200-300 lines at a time) until you reach the end of each file. Do NOT skip sections — every section contains rules that affect code generation.
+For EVERY generation task, read at minimum these chunks from `config/framework_rules.md`:
 
-> **If the full files (items 1-3) are truncated** in the YAML header attachment, the digest (item 0) ensures you still have the 22 most critical rules. But always try to read the full files explicitly.
+| Chunk ID | Lines | Topic | When to read |
+|----------|-------|-------|-------------|
+| `FR_ANNOTATIONS` | 88-196 | @AutomaterScenario 9 fields, runType trap | **ALWAYS** |
+| `FR_PREPROCESS` | 198-367 | preProcess groups, NoPreprocess, minimal selection | **ALWAYS** |
+| `FR_DATA_JSON` | 466-600 | Data JSON format, placeholders, reuse rules | **ALWAYS** |
+| `FR_CLASS_ARCHITECTURE` | 30-86 | Two-layer class pattern | When creating new entity files |
+| `FR_CONSTANTS_IDS` | 369-464 | Role/Owner constants, Test ID format | When setting up annotations |
+| `FR_LOCATORS` | 602-750 | Locator patterns, XPath rules, Select2 | When writing new locators |
+| `FR_ACTIONSUTIL` | 752-900 | ActionsUtil/APIUtil patterns, method protection | When creating util methods |
+| `FR_ANTI_FALSE_POSITIVE` | 110-190 | Two-phase assertion pattern | When writing validation logic |
+| `FR_API_REGISTRY_GATE` | 192-220 | API registry check before RestAPI calls | When writing preProcess API calls |
 
-**After reading all 3 files**, confirm to yourself:
+From `config/framework_knowledge.md`:
+
+| Chunk ID | Lines | Topic | When to read |
+|----------|-------|-------|-------------|
+| `FK_FORMBUILDER` | 1-80 | fillInputForAnEntity, field types, skip behavior | When scenarios involve form fills |
+| `FK_LIFECYCLE` | 82-200 | Entity/EntityCase lifecycle, report flow | When debugging test flow issues |
+| `FK_RESTAPI` | 202-350 | RestAPI methods, session context, input wrapping | When writing preProcess API calls |
+| `FK_CLOSE_CHANGE` | 500-600 | Close change via stage transitions | When scenarios involve closing changes |
+
+**Example — reading only what's needed for a "Problem Association" task:**
+```bash
+# Annotations + preProcess + data rules = 3 reads, ~500 lines, ~4K tokens
+read_file config/framework_rules.md startLine=88 endLine=196    # FR_ANNOTATIONS
+read_file config/framework_rules.md startLine=198 endLine=367   # FR_PREPROCESS
+read_file config/framework_rules.md startLine=466 endLine=600   # FR_DATA_JSON
+# Total: ~4K tokens instead of 54K tokens (92% savings)
+```
+
+> **FORBIDDEN**: Reading `framework_rules.md` or `framework_knowledge.md` in full.
+> At 2600+ and 2200+ lines respectively, full reads burn ~54K tokens and leave
+> insufficient budget for the actual generation work.
+
+**After reading the relevant chunks**, confirm to yourself:
 - [ ] I know all valid `preProcess` group names for the target module
 - [ ] I know which field types are handled by `fillInputForAnEntity` vs manual handling
 - [ ] I know the correct data loading method for each context (test method / preProcess / APIUtil)
 - [ ] I know the `@AutomaterScenario` annotation rules (all 9 fields, runType trap, owner)
 - [ ] I know the Existing Method Protection rule for ActionsUtil/APIUtil
-
-> **The two smaller instruction files** (`java-test-conventions.instructions.md` at 270 lines and
-> `test-data-format.instructions.md` at 73 lines) are auto-attached via the YAML header and
-> small enough to be included in full — no need to re-read them.
 
 ### Step 0.5 — Check for Duplicate Scenarios (MANDATORY)
 
@@ -703,6 +745,45 @@ Keep the loaded learnings in working memory for Steps 2–6. Reference them when
 
 ---
 
+### Step 0.8 — Check Product Discovery Documents (NEW — Gap Prevention)
+
+> **WHY**: Past failures (trash tests, linking tests) were caused by generating code
+> that assumed API paths, UI flows, and locators without verifying them against the
+> live product. Discovery documents contain verified behavior observed via Playwright.
+
+```bash
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+
+# List all available discovery documents
+.venv/bin/python << 'CHECK_DISCOVERY'
+from knowledge_base.discovery_loader import DiscoveryLoader
+loader = DiscoveryLoader()
+discoveries = loader.list_all()
+if discoveries:
+    print(f"=== Available Product Discoveries ({len(discoveries)}) ===")
+    for d in discoveries:
+        print(f"  {d['module']}/{d['feature']} — {d['api_count']} APIs, {d['edge_case_count']} edge cases ({d['discovered_at']})")
+else:
+    print("No product discovery documents found.")
+    print("If generating tests for a new/unfamiliar feature, consider running:")
+    print("  @product-discovery <module>/<feature>")
+CHECK_DISCOVERY
+```
+
+**Decision flow:**
+
+| Situation | Action |
+|-----------|--------|
+| Discovery doc exists for the target module/feature | **Load it** — use verified APIs, locators, and flows. The discovery context is automatically injected by the context builder, but ALSO read the summary: `knowledge_base/discoveries/{module}_{feature}_summary.md` |
+| No discovery, but ALL APIs/locators used in planned tests already exist in the codebase (`*APIUtil.java`, `*ActionsUtil.java`, `*Locators.java`) | **Proceed** — existing code is the source of truth |
+| No discovery, AND the planned tests require NEW API paths, NEW locators, or NEW UI flows not present in existing codebase | **WARN** the user: `"⚠️ No product discovery found for {feature}. The planned tests require API/UI patterns not present in existing code. Recommend running @product-discovery {module}/{feature} first to avoid inventing behavior."` Then **wait for confirmation** before proceeding. |
+
+> **This gate prevents the exact failure that happened with trash/linking tests:**
+> inventing `trashChange()`, `linkChildChange()`, `link_child_changes` API path, etc.
+> without ever verifying they exist in the product.
+
+---
+
 ### Step 1 — Determine Module Placement
 Match the use-case noun to the correct module — NEVER default to whatever file is open:
 - incident request / IR → `modules/requests/request/`
@@ -711,6 +792,47 @@ Match the use-case noun to the correct module — NEVER default to whatever file
 - problem → `modules/problems/problem/`
 
 If the input came from a **CSV document** (Mode A), use the `Module` and `Sub-Module` columns directly via the **Module Routing Table** and **Sub-Module Resolution** rules defined in Step A0 above. Do NOT re-derive the module from the description text — trust the CSV columns.
+
+### Step 1.5 — Load Deep Entity Inventory (MANDATORY — replaces manual grep)
+
+> **Purpose**: Instead of manually grepping Java source files for method names, load the
+> pre-indexed deep inventory YAML. This contains ALL existing methods (with parameters,
+> action chains, locators used, LocalStorage reads/writes), ALL preProcess groups (with
+> behavior, API calls, LocalStorage stores), ALL data.json entries (with field sets,
+> placeholders, purpose classification), and reuse-group suggestions.
+
+```bash
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+INVENTORY="config/entity_inventory/<module>_<entity>.yaml"  # e.g. problems_problem.yaml
+
+if [ -f "$INVENTORY" ]; then
+  echo "✅ Deep inventory found: $INVENTORY"
+  echo "=== ActionsUtil Methods ==="
+  grep -A2 '  - name:' "$INVENTORY" | head -60
+  echo ""
+  echo "=== PreProcess Groups ==="
+  grep '  group:' "$INVENTORY" | head -30
+  echo ""
+  echo "=== Data JSON Entry Count ==="
+  grep 'total_entries:' "$INVENTORY"
+else
+  echo "⚠️  No inventory for <module>/<entity>. Generating now..."
+  .venv/bin/python generate_entity_inventory.py --deep --module <module> --entity <entity>
+fi
+```
+
+**What the inventory provides (that manual grep does NOT):**
+
+| Inventory field | What it tells you | How it prevents mistakes |
+|----------------|-------------------|------------------------|
+| `actions_util_deep[].action_chain` | Exact sequence of `actions.click`, `actions.type`, etc. | Know if a method already does what you need — don't create a duplicate |
+| `actions_util_deep[].locators_used` | Which Locators constants the method references | Reuse existing locators instead of inventing new ones |
+| `api_util_deep[].api_paths` | REST API paths used (e.g., `problems/{id}/requests`) | Don't guess API paths — the util already has them |
+| `preprocess_deep[].local_storage_stores` | What keys preProcess stores | Know what `LocalStorage.getAsString("key")` is available in the test method |
+| `data_json_deep[].fields` + `purpose` | Field names + whether it's `api_preprocess` or `ui_form` | Reuse existing data entries, don't create duplicates |
+| `data_json_deep[].reuse_groups` | Entries with ≥80% field overlap (Jaccard similarity) | Explicit reuse suggestions — use `$(custom_*)` placeholders instead of new entries |
+
+**Store the inventory in working memory** — reference it in Steps 2–5 instead of re-reading files.
 
 ### Step 2 — Read Entity Util Files
 
@@ -723,6 +845,10 @@ Then list the util files:
 find "$PROJECT/src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/" -name "*.java" | sort
 ```
 List every `public static` method in `*ActionsUtil.java` and `*APIUtil.java`.
+
+> **With Step 1.5 inventory loaded**: You already have all method names, parameters, action
+> chains, and locators. Only read the actual Java file if you need to see implementation
+> details not captured in the YAML (rare). This saves significant token budget.
 
 ### Step 2.5 — (Optional) Scout Live UI via Playwright MCP
 
@@ -788,6 +914,105 @@ List every `public static` method in `*ActionsUtil.java` and `*APIUtil.java`.
 
 ### Step 3 — Map Operations to Existing Methods
 For each operation in the scenario, check if a util method already exists. Only create new ones if genuinely needed.
+
+### Step 3.5 — Duplication Detection Gate (MANDATORY before writing code)
+
+> **Purpose**: Before writing ANY new util method or data.json entry, run the duplication
+> detector to ensure you're not recreating something that already exists. This is the same
+> gate used by the Python pipeline's `static_analysis_gate.py` — now available to the VS Code agent.
+
+**For each NEW util method you plan to create**, check against inventory:
+
+```bash
+.venv/bin/python << 'CHECK_DUP'
+import yaml, sys
+
+module = "<module>"     # e.g. "problems"
+entity = "<entity>"     # e.g. "problem"
+new_methods = ["methodName1", "methodName2"]  # methods you plan to create
+
+inv_path = f"config/entity_inventory/{module}_{entity}.yaml"
+try:
+    with open(inv_path) as f:
+        inv = yaml.safe_load(f)
+except FileNotFoundError:
+    print(f"No inventory at {inv_path} — skipping duplication check")
+    sys.exit(0)
+
+# Collect all existing method names
+existing = set()
+for m in inv.get("actions_util", {}).get("methods", []):
+    existing.add(m["name"])
+for m in inv.get("api_util", {}).get("methods", []):
+    existing.add(m["name"])
+for m in inv.get("actions_util_deep", []):
+    existing.add(m["name"])
+for m in inv.get("api_util_deep", []):
+    existing.add(m["name"])
+
+blocked = False
+for method in new_methods:
+    if method in existing:
+        print(f"❌ BLOCKED: '{method}' already exists in {module}/{entity} utils — REUSE it")
+        blocked = True
+    else:
+        print(f"✅ OK: '{method}' is genuinely new")
+
+if blocked:
+    print("\n⚠️  Fix: use the existing method instead of creating a new one.")
+    print("   Check the inventory YAML for parameters and behavior.")
+CHECK_DUP
+```
+
+**For each NEW data.json entry you plan to create**, check for collisions and similarity:
+
+```bash
+.venv/bin/python << 'CHECK_DATA'
+import yaml, json, sys
+
+module = "<module>"
+entity = "<entity>"
+new_key = "my_new_data_key"          # the key you plan to add
+new_fields = ["title", "priority", "impact"]  # fields in your new entry
+
+inv_path = f"config/entity_inventory/{module}_{entity}.yaml"
+try:
+    with open(inv_path) as f:
+        inv = yaml.safe_load(f)
+except FileNotFoundError:
+    print(f"No inventory — skipping"); sys.exit(0)
+
+# Check exact key collision
+existing_keys = inv.get("data_json_keys", [])
+if new_key in existing_keys:
+    print(f"❌ BLOCKED: key '{new_key}' already exists in {entity}_data.json — REUSE it")
+    sys.exit(1)
+
+# Check field similarity (Jaccard >= 80%)
+new_set = set(new_fields)
+deep = inv.get("data_json_deep", {})
+for key, info in deep.items():
+    if isinstance(info, dict) and "fields" in info:
+        existing_set = set(info["fields"])
+        if not existing_set:
+            continue
+        union = len(new_set | existing_set)
+        inter = len(new_set & existing_set)
+        if union > 0 and inter / union >= 0.8:
+            sim = int(inter / union * 100)
+            print(f"⚠️  WARNING: new entry has {sim}% field overlap with '{key}'")
+            print(f"   Shared: {new_set & existing_set}")
+            print(f"   Consider reusing '{key}' with $(custom_*) placeholders")
+
+print(f"✅ Key '{new_key}' is new and does not closely duplicate existing entries")
+CHECK_DATA
+```
+
+**Decision rules:**
+- `❌ BLOCKED` on method → STOP, reuse the existing method (check inventory for params)
+- `❌ BLOCKED` on data key → STOP, reuse the existing data entry
+- `⚠️ WARNING` on similarity → prefer reusing with `$(custom_*)` placeholders; create new only if field sets are genuinely different in purpose
+- `✅ OK` → proceed to create
 
 ### Step 4 — Read Existing preProcess Groups
 Open the **parent class** (e.g., `Change.java`, `Solution.java`) and read `preProcess()` for all `equalsIgnoreCase` branches. Reuse existing groups — do NOT add new else-if blocks needlessly.
@@ -870,14 +1095,48 @@ Does this plan look correct? (yes / suggest changes)
 > After user approval, proceed with code generation using EXACTLY the decisions in the table.
 > Any deviation from the approved table must be flagged to the user.
 
-### Step 5 — Consult API Reference for preProcess / APIUtil Methods
-Before writing any REST API call (in `preProcess`, APIUtil, or `sdpAPICall()` during debugging), **read the relevant module section** in `docs/api-doc/SDP_API_Endpoints_Documentation.md`. This document contains:
+### Step 5 — Consult API Reference + API Registry for preProcess / APIUtil Methods
+Before writing any REST API call (in `preProcess`, APIUtil, or `sdpAPICall()` during debugging), **check TWO sources**:
+
+**Source 1 — API Registry (verified endpoints):**
+```bash
+.venv/bin/python << 'CHECK_API'
+import yaml
+with open("config/api_registry.yaml") as f:
+    registry = yaml.safe_load(f)
+
+module = "<module>"  # e.g. "problems", "changes", "requests"
+mod_info = registry.get("modules", {}).get(module, {})
+
+if not mod_info:
+    print(f"⚠️  Module '{module}' not in API registry — check docs manually")
+else:
+    print(f"Module: {module}")
+    print(f"  Base path: {mod_info.get('base_path', '?')}")
+    print(f"  Input wrapper: {mod_info.get('input_wrapper', '?')}")
+    for ep_name, ep in mod_info.get('endpoints', {}).items():
+        status = ep.get('status', 'UNKNOWN')
+        path = ep.get('path', '?')
+        flag = '✅' if 'VERIFIED' in status else '❌' if 'NOT_EXIST' in status else '❓'
+        print(f"  {flag} {ep_name}: {ep.get('method', '?')} {path} [{status}]")
+CHECK_API
+```
+
+**Decision rules from API Registry:**
+- `VERIFIED_WORKING` → safe to use in preProcess/APIUtil
+- `DOES_NOT_EXIST` → **FORBIDDEN** — do NOT generate code using this path (it will fail silently)
+- Not in registry → check Source 2 (API doc), then verify via Playwright if unsure
+
+**Source 2 — API Documentation** (for paths not in registry):
+Read the relevant module section in `docs/api-doc/SDP_API_Endpoints_Documentation.md`. This document contains:
 - Exact V3 API paths (e.g., `api/v3/changes`, `api/v3/requests/{id}/notes`)
 - HTTP methods and input wrapper keys (e.g., `{"change": {...}}`)
 - Available sub-resource paths (notes, tasks, worklogs, approvals, etc.)
 - Worked automation examples
 
-> **MANDATORY**: Do NOT guess API paths or input wrappers. Always verify against this doc.
+> **MANDATORY**: Do NOT guess API paths or input wrappers. Always verify against registry first, then docs.
+> If the registry says `DOES_NOT_EXIST` for a sub-resource path (e.g., `changes/{id}/link_parent_change`),
+> that means the SDP instance does NOT support it — use UI-based flow instead.
 
 ### Step 6 — Backup Module Files Before Writing (Rollback Safety Net)
 
@@ -938,6 +1197,24 @@ ls -la "$BACKUP_DIR/src/" "$BACKUP_DIR/resources/" 2>/dev/null
 > for newly created files (they can be deleted manually).
 
 ## Code Generation Rules
+
+> **Prompt Templates Available**: Use these templates as structural guides when generating code.
+> They encode the framework's exact patterns and prevent common violations.
+>
+> | Template | Use when generating... |
+> |----------|------------------------|
+> | `#generate-scenario` | New `@AutomaterScenario` test method (annotation + method body) |
+> | `#generate-preprocess-group` | New `else-if` block in `preProcess()` |
+> | `#generate-data-entry` | New entry in `*_data.json` |
+> | `#generate-actionsutil-method` | New `public static` method in `*ActionsUtil.java` |
+> | `#generate-locator` | New locator constant in `*Locators.java` |
+> | `#generate-rbac-scenario` | RBAC test (role user creation + session switch + test) |
+>
+> **Skills Auto-Loaded**: VS Code loads relevant SKILL.md files based on task context.
+> These provide few-shot examples from REAL production code (Change, Solution modules).
+> If generating preProcess code → `preprocess-patterns` skill provides correct/incorrect examples.
+> If generating data entries → `data-layer` skill shows JSON format with real data.
+> If generating RBAC tests → `rbac-testing` skill shows the full 3-phase lifecycle.
 
 ### @AutomaterScenario — Always Include All 9 Fields
 
@@ -1045,6 +1322,42 @@ Also include any other files you edited (DataConstants, ActionsUtil, APIUtil, et
 
 If compile **fails**: show the errors, fix them, and recompile before proceeding.
 
+### Step P1.4 — Self-Verification Checklist (Semantic Review)
+
+> **Purpose**: Catch SEMANTIC rule violations that regex/static analysis cannot detect.
+> Review your own generated code against this checklist. For ANY failure, fix and re-check.
+
+**Run this mental checklist against EVERY generated file BEFORE proceeding:**
+
+**Annotation rules:**
+- [ ] All 9 `@AutomaterScenario` fields present? (`id`, `group`, `priority`, `dataIds`, `tags`, `description`, `owner`, `runType`, `switchOn`)
+- [ ] `runType = ScenarioRunType.USER_BASED` explicitly set? (default PORTAL_BASED is wrong 95% of the time)
+- [ ] `group` value matches an EXISTING preProcess group? (verified against Step 1.5 inventory)
+- [ ] `group` is the MINIMAL group for this method's data needs? (D2 — not heavier than needed)
+
+**Data layer rules:**
+- [ ] All data loaded from `*_data.json`? (no `new JSONObject().put(...)` chains for entity creation)
+- [ ] Test method uses `getTestCaseData(DataConstants.X)` — not raw string?
+- [ ] preProcess uses `getTestCaseDataUsingCaseId(dataIds[N])` — not DataUtil.getTestCaseDataUsingFilePath?
+- [ ] New `*_data.json` entries use `{"data": {...}}` wrapper?
+- [ ] Lookup fields use `{"name": "Value"}` format — not flat strings?
+
+**Test method rules:**
+- [ ] ZERO `restAPI.*` or `*APIUtil.*` calls in test method body? (API = preProcess only)
+- [ ] All multi-step UI actions delegate to ActionsUtil methods? (no inline `actions.click` sequences)
+- [ ] Every negative assertion (`!isElementPresent`) preceded by a positive anchor? (D23)
+- [ ] `report.startMethodFlowInStepsToReproduce` / `endMethodFlowInStepsToReproduce` wrapping present?
+
+**preProcess rules:**
+- [ ] `catch` blocks use `addFailureReport()` — not silent `return false`? (D16)
+- [ ] No new `else-if` block when an existing group already creates the same entity? (D3)
+
+**Locator rules:**
+- [ ] All locators defined in `*Locators.java` — none hardcoded in Base files? (D18)
+- [ ] Exact-match buttons use `normalize-space(text())='X'` — not `contains(text(),'X')`?
+
+**If any item fails**: fix the generated code immediately, then re-run this checklist. Do NOT proceed to P1.5 with known violations.
+
 ### Step P1.5 — Validate Generated Code Quality (Static Review)
 
 > **Purpose**: Catch convention violations BEFORE running the test — fixes are cheaper at
@@ -1127,6 +1440,88 @@ grep -A2 'public void' "$WRAPPER_FILE" | grep -v 'preProcess\|postProcess' | \
 ```
 
 **If ANY check fails**: Fix the issue in the generated code, recompile (re-run Step P1), and re-validate. Do NOT proceed to Step P2 with failing checks.
+
+### Step P1.6 — Run Python Static Analysis Gate (Deep Checks)
+
+> **Purpose**: The bash regex checks in P1.5 catch structural issues. This step runs the
+> full `static_analysis_gate.py` which includes 12+ checks and the **duplication detection
+> gates** that cross-reference against the deep entity inventory.
+
+```bash
+.venv/bin/python << 'RUN_GATE'
+import sys
+sys.path.insert(0, ".")
+from static_analysis_gate import StaticAnalysisGate
+
+gate = StaticAnalysisGate()
+module = "<module>"  # e.g. "problems"
+entity = "<entity>"  # e.g. "problem"
+
+# Check each generated Java file
+for filepath in [
+    "<path/to/EntityBase.java>",
+    "<path/to/ActionsUtil.java>",   # only if modified
+    "<path/to/APIUtil.java>",       # only if modified
+]:
+    try:
+        with open(filepath) as f:
+            code = f.read()
+        result = gate.analyze(code, filepath.split("/")[-1], module=module, entity=entity)
+        errors = [v for v in result.get("violations", []) if v.get("severity") == "ERROR"]
+        warnings = [v for v in result.get("violations", []) if v.get("severity") == "WARNING"]
+        if errors:
+            print(f"❌ {filepath}: {len(errors)} ERROR(s)")
+            for e in errors:
+                print(f"   ERROR: [{e['rule']}] {e['message']}")
+        elif warnings:
+            print(f"⚠️  {filepath}: {len(warnings)} WARNING(s)")
+            for w in warnings:
+                print(f"   WARN: [{w['rule']}] {w['message']}")
+        else:
+            print(f"✅ {filepath}: all checks passed")
+    except FileNotFoundError:
+        print(f"⏭️  {filepath}: skipped (not modified)")
+
+# Check data.json additions
+import json, os
+data_file = "<path/to/entity_data.json>"  # only if modified
+if os.path.exists(data_file):
+    with open(data_file) as f:
+        data = json.load(f)
+    # Get just the new keys you added (compare with inventory)
+    import yaml
+    inv_path = f"config/entity_inventory/{module}_{entity}.yaml"
+    existing_keys = set()
+    if os.path.exists(inv_path):
+        with open(inv_path) as fi:
+            inv = yaml.safe_load(fi)
+        existing_keys = set(inv.get("data_json_keys", []))
+    new_entries = {k: v for k, v in data.items() if k not in existing_keys}
+    if new_entries:
+        result = gate.analyze_data_json_additions(new_entries, module, entity)
+        for v in result.get("violations", []):
+            sev = v.get("severity", "INFO")
+            flag = "❌" if sev == "ERROR" else "⚠️"
+            print(f"{flag} data.json: [{v['rule']}] {v['message']}")
+        if not result.get("violations"):
+            print(f"✅ data.json: {len(new_entries)} new entries — all checks passed")
+RUN_GATE
+```
+
+**Key checks this gate runs (that P1.5 bash checks do NOT):**
+
+| Gate | Severity | What it catches |
+|------|----------|----------------|
+| `DUPLICATE_UTIL_METHOD` | ERROR | New method with same name as existing in ActionsUtil/APIUtil |
+| `DUPLICATE_DATA_KEY` | ERROR | New data.json key that already exists |
+| `SIMILAR_DATA_ENTRY` | WARNING | New entry with ≥80% field overlap — suggests reuse |
+| `INLINE_JSON_CONSTRUCTION` | ERROR | `new JSONObject().put()` chains (should use data.json) |
+| `RAW_STRING_DATA_LOAD` | ERROR | `getTestCaseData("raw_string")` instead of DataConstants |
+| `MISSING_WAIT_AFTER_AJAX` | WARNING | Missing `waitForAjaxComplete()` where needed |
+| `REDUNDANT_WAIT` | WARNING | Unnecessary `waitForAjaxComplete()` between clicks |
+
+**If ANY ERROR**: Fix the code and re-run. Errors are hard blocks — the test WILL fail at runtime.
+**If only WARNINGs**: Review and fix if possible, but can proceed to P2.
 
 ### Step P2 — Write `$PROJECT_NAME/tests_to_run.json` + Generate Execution Plan + Hand off
 

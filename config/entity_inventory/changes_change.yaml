@@ -1,0 +1,4904 @@
+module: changes
+entity: change
+actions_util:
+  file: com/zoho/automater/selenium/modules/changes/change/utils/ChangeActionsUtil.java
+  methods:
+  - name: clickNoteDropdown
+    return_type: void
+    params: String noteID
+    purpose: ''
+  - name: addValueToEditor
+    return_type: void
+    params: String message
+    purpose: ''
+  - name: clickLHSSubtab
+    return_type: void
+    params: String subtab
+    purpose: ''
+  - name: clickStage
+    return_type: void
+    params: String stage
+    purpose: ''
+  - name: uploadFile
+    return_type: void
+    params: String fileName, String mode
+    purpose: '@param  fileName'
+  - name: uploadFileInRHS
+    return_type: void
+    params: String fileName
+    purpose: ''
+  - name: uploadFileInDetails
+    return_type: void
+    params: String fileName
+    purpose: ''
+  - name: verifyDetailsAttachment
+    return_type: Boolean
+    params: int count, ArrayList<String> filenames
+    purpose: ''
+  - name: verifyRHSAttachment
+    return_type: Boolean
+    params: int count, ArrayList<String> filenames
+    purpose: ''
+  - name: pressEscapeKey
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: verifyAjaxMessage
+    return_type: Boolean
+    params: String text
+    purpose: ''
+  - name: getChangeId
+    return_type: String
+    params: (none)
+    purpose: ''
+  - name: selectListviewExportIcon
+    return_type: void
+    params: String moduleName, String filters
+    purpose: siva
+  - name: selectedDataInListviewExportIcon
+    return_type: void
+    params: String moduleName, String filters
+    purpose: export 3rd option
+  - name: selectTrashListviewExportIcon
+    return_type: void
+    params: String moduleName, String trashfilters
+    purpose: ''
+  - name: selectOptionsinDataExportPopup
+    return_type: void
+    params: String optionsToExport
+    purpose: ''
+  - name: resetListViewFilter
+    return_type: void
+    params: String filters
+    purpose: ''
+  - name: verifyExportNotifyVerification
+    return_type: boolean
+    params: String moduleName
+    purpose: ''
+  - name: goToTrash
+    return_type: void
+    params: String filterName
+    purpose: ''
+  - name: createReleaseSchedule
+    return_type: void
+    params: Long startDate, Long endDate
+    purpose: ''
+  - name: changeReleaseAssociation
+    return_type: void
+    params: String changeName
+    purpose: ''
+  - name: changeReleaseDissociation
+    return_type: void
+    params: (none)
+    purpose: //
+  - name: changeAssociation
+    return_type: void
+    params: (none)
+    purpose: actions.click(ChangeLocators.ChangeDetailsview.STAGES.apply("release"));
+  - name: changeDissociation
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: choseTemplateFromNewChangeDropDown
+    return_type: void
+    params: String templateName
+    purpose: ''
+  - name: pageSetup
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: gotoChangeDetailsPage
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: deleteWorklog
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: addWorklog
+    return_type: void
+    params: JSONObject inputData
+    purpose: ''
+  - name: editWorklog
+    return_type: void
+    params: JSONObject inputData
+    purpose: ''
+  - name: navigateToAddChangePage
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: selectWorklogType
+    return_type: void
+    params: String value
+    purpose: ''
+  - name: areListsExactlyEqual
+    return_type: boolean
+    params: List<String> list1, List<String> list2
+    purpose: ''
+  - name: attachmentsInDetailsPage
+    return_type: void
+    params: String fileName
+    purpose: ''
+  - name: addAdditionalFieldsToGeneralTemplate
+    return_type: void
+    params: JSONObject tabelset, JSONObject fieldsData
+    purpose: pressEscapeKey();
+  - name: uploadFileinSubTab
+    return_type: void
+    params: String fileName, String subtab
+    purpose: ''
+  - name: createApprovalLevelsInUI
+    return_type: void
+    params: int count
+    purpose: ''
+  - name: changeStatusFromDetailsPageRHS
+    return_type: void
+    params: JSONObject inputData
+    purpose: ''
+  - name: searchAndSelectNotifyFieldInPopUp
+    return_type: void
+    params: String name
+    purpose: ''
+  - name: searchAndSelectNotifyField
+    return_type: void
+    params: String name, String id
+    purpose: ''
+  - name: createChangeAndFillInputData
+    return_type: void
+    params: JSONObject inputData
+    purpose: ''
+  - name: verifyHistoryTextContent
+    return_type: boolean
+    params: String operation, String expectedDescription
+    purpose: ''
+  - name: retryAndPerformApprovalAction
+    return_type: void
+    params: String approvalLevelName, ApprovalAction action, String comment, int retryCount, int waitSeconds
+    purpose: ''
+  - name: addChangeApprovalLevelWithAutoApproveIfSameApprover
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: navigateToChangesListView
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: navigateToAssociationsTab
+    return_type: void
+    params: (none)
+    purpose: ============================================================
+  - name: openAttachDropdown
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: openParentChangePopup
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: openChildChangesPopup
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: openChildChangesPopupFromParentPage
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: associateParentChangeViaUI
+    return_type: void
+    params: String parentEntityId, String comments
+    purpose: ''
+  - name: associateChildChangesViaUI
+    return_type: void
+    params: String[] childEntityIds, String comments
+    purpose: ''
+  - name: detachParentChange
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: detachChildChanges
+    return_type: void
+    params: String[] childEntityIds
+    purpose: ''
+  - name: selectPopupFilter
+    return_type: void
+    params: String filterName
+    purpose: ''
+  - name: searchInLinkingPopup
+    return_type: void
+    params: String searchText
+    purpose: ''
+  - name: setChangeStatusViaUI
+    return_type: void
+    params: String changeId, String statusName
+    purpose: ''
+  - name: navigateToHistoryTab
+    return_type: void
+    params: (none)
+    purpose: Navigate to History tab in change details page.
+api_util:
+  file: com/zoho/automater/selenium/modules/changes/change/utils/ChangeAPIUtil.java
+  methods:
+  - name: createNoteAndGetId
+    return_type: String
+    params: String apiPath, JSONObject inputData
+    purpose: ''
+  - name: createProject
+    return_type: String
+    params: String apiPath, JSONObject inputData
+    purpose: ''
+  - name: createProblem
+    return_type: String
+    params: String apiPath, JSONObject inputData
+    purpose: ''
+  - name: createRelease
+    return_type: String
+    params: String apiPath, JSONObject inputData
+    purpose: ''
+  - name: createCabName
+    return_type: void
+    params: String testCase
+    purpose: select CAB in change detailview in add approval level -in popup select CAB from approvers dropdown.
+  - name: getApproversId
+    return_type: void
+    params: String changeApproverRoles
+    purpose: select Approvers in change detailview or trigger or approvals(custom actions) in add approval level -in popup
+      from approvers dropdown.
+  - name: createChange
+    return_type: void
+    params: String testCase
+    purpose: ''
+  - name: createChangeWithDescription
+    return_type: void
+    params: String descriptionData
+    purpose: CH-1
+  - name: addApprovalLevel
+    return_type: void
+    params: JSONObject testCase
+    purpose: add approval level in detailview
+  - name: addStageAndStatus
+    return_type: void
+    params: String stageData, String statusData
+    purpose: change stage and status in RHS
+  - name: createChangeWithDowntimeInForm
+    return_type: void
+    params: String testCase
+    purpose: create change with downtime via form -by enabling the planning option in template
+  - name: changePersonalization
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: createChangeForConflictDetection
+    return_type: JSONObject
+    params: String inputData, String applicableFor, String data
+    purpose: ''
+  - name: releaseScheduleAPI
+    return_type: void
+    params: String data
+    purpose: ''
+  - name: createDowntime
+    return_type: void
+    params: String downtimeData
+    purpose: ''
+  - name: createDowntimeAssociation
+    return_type: void
+    params: String downtimeData
+    purpose: ''
+  - name: associateReleaseWithChange
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: createApprovalLevel
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: createFifteenApprovalLevelInApi
+    return_type: void
+    params: int n, JSONObject testCase
+    purpose: ''
+  - name: linkParentChange
+    return_type: void
+    params: String sourceChangeId, String parentChangeId, String comments
+    purpose: ''
+  - name: linkChildChange
+    return_type: void
+    params: String sourceChangeId, String childChangeId, String comments
+    purpose: ''
+  - name: delinkParentChange
+    return_type: void
+    params: String sourceChangeId
+    purpose: ''
+  - name: delinkChildChange
+    return_type: void
+    params: String sourceChangeId, String childChangeId
+    purpose: ''
+  - name: createChangeAndGetResponse
+    return_type: String
+    params: String testCase
+    purpose: ''
+  - name: createChangeGetFullResponse
+    return_type: JSONObject
+    params: String testCase
+    purpose: ''
+  - name: createAndCloseChange
+    return_type: JSONObject
+    params: String dataId
+    purpose: Creates a new change via API, closes it via list view Close action,
+  - name: closeChange
+    return_type: void
+    params: String changeId
+    purpose: Closes an existing change via the list view Close action.
+  - name: trashChange
+    return_type: void
+    params: String changeId
+    purpose: ''
+  - name: restoreChange
+    return_type: void
+    params: String changeId
+    purpose: ''
+  - name: permanentDeleteChange
+    return_type: void
+    params: String changeId
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/changes/change/common/ChangeLocators.java
+  interfaces:
+    ChangeLocators:
+    - SELECT_CHECKBOX_ENTITYID_CHANGE
+    - FRAME_ZE_NOTIFICATION_MESSAGE
+    - CLICK_ROW_ACTIONS_WITH_ENTITYID
+    - CLICK_ROW_ACTIONS_EDIT
+    - CLICK_ROW_ACTIONS_DELETE
+    - SELECT_CHECKBOX_WITH_ENTITYID
+    - CLICK_VIEW_NOTES_WITH_ENTITYID
+    - CLICK_WORKFLOW_WITH_ENTITYID
+    - SELECTED_NOTE
+    - SELECT_NOTE
+    - UI_NOTE_TEXT
+    - API_NOTE_TEXT
+    - ROW_USING_ENTITYID
+    - BULK_SELECT_CHECKBOX
+    - ACTIONS_LIST
+    - VIEW_NOTES
+    - LISTVIEW_SEARCH_INPUT
+    - CLICK_SEARCH_ICON
+    - NEW_CHANGE_DROPDOWN
+    - NEW_CHANGE_BUTTON
+    - CHANGE_REQUESTER_ICON_IN_FORM
+    - SELECT_RADIO_BTN_IN_POPUP
+    - CLICK_SAVE_BUTTON_USING_SUBMIT
+    - VERIFY_USER
+    - SELECT_FILTER
+    - SELECT_EXPORT_OPTIONS
+    - VERIFY_SELECTED_DATA_OPTIONS_DISABLED_IN_EXPORT
+    - SELECT_ALL_CHECKBOX
+    - CLICK_ADD_DOWNTIME_IN_CHANGE_FORM
+    - VERIFY_ADD_DOWNTIME_BTN_DISABLED
+    - VERIFY_ADD_DOWNTIME_HOVER_TEXT
+    - SEARCH_TEMP_IN_REQUESTER_LOGIN
+    - VERIFY_STATUS_IN_LISTIVEW
+    - VERIFY_FIELD_NAME_IN_POPUP
+    - TITLE_NAME
+    - VERIFY_ROLES_ICON_IN_CHANGELISTVIEW
+    - VERIFY_ROLES_AND_ASSIGNED_USERS_IN_CHANGELISTVIEW
+    - REMOVE_HASH_REQUEST_ID
+    - DATAEXP
+    - EXPNOTIFICATION
+    - DELETE_EXP_NOTIFCATION
+    - TRASH_FILTER
+    - CLICK_LISTVIEW_FILTERS
+    - CHECKLIST_DROP_DRAG
+    - CONFLICT_ALERT_BUTTON
+    - CHANGE_REQUESTER_FIELD
+    - SEARCH_CIS_INVOLVED
+    - CLICK_ENTITY
+    - VIEW_TYPE
+    - LISTVIEW_FILTER_NAME
+    - IFRAME_APPROVAL_RHS
+    - TRASH_DETAILS_VIEW
+    - DELETE_CHANGE
+    - LISTVIEW_DISPLAY_ID
+    ChangeDetailsview:
+    - CAB_NAME
+    - ADD_APPROVAL_LEVEL_NAME
+    - ADD_APPROVAL_ABORT_MSG
+    - CHANGE_ID_TXT
+    - TASK_ACTION_BTN
+    - TASK_CHANGE_STAGE
+    - NOTES_TEXT
+    - NOTES_EDIT_BTN
+    - ATTACHMENT_ICON
+    - ATTACHMENT_FILE_NAME
+    - FILE_INPUT
+    - CLICK_ATTACHMENT_ICON
+    - ATTACHMENT_COUNT_DETAILS
+    - CLICK_RHS_FIELD_DROPDOWN
+    - STATUS_COMMENT
+    - LHS_SUBTAB
+    - GO_BACK
+    - SPOT_EDIT
+    - SPOT_EDIT_ASSET
+    - ADDED_TASKS
+    - STAGES
+    - VERIFY_STAGES_OPENED
+    - PLANNING_DETAILS_SUBTAB
+    - CLICK_PLUS_ICON
+    - EXPAND_FIELDNAME_IN_DETAILS_SUBTAB
+    - VERFIY_ADDED_TEXT_IN_DETAILS_SUBTAB
+    - CLICK_EDIT_ICON_IN_DETAILS_SUBTAB
+    - VERFIY_EDITED_TEXT_IN_DETAILS_SUBTAB
+    - EXPANDED_DETAILS_SUBTAB
+    - VERIFY_NOT_AVAILABLE_DETAILS_SUBTAB
+    - PLANNING_DETAILS_BI_FUNCTION
+    - EXPAND_COLLAPSE_DETAILS_SUBTAB
+    - RHS_ASSOCIATIONS
+    - VERIFY_ASSOCIATIONS_TAB_OPENED_REQUEST
+    - VERIFY_ASSOCIATIONS_TAB_OPENED_PROBLEMS
+    - VERIFY_ASSOCIATIONS_TAB_OPENED_PROJECTS
+    - VERIFY_ASSOCIATIONS_TAB_OPENED_RELEASE
+    - ATTACH_DETACH_REQUEST
+    - ATTACH_DETACH_REQUEST_INITIATED_CHANGE
+    - ATTACH_DETACH_PROBLEM
+    - ATTACH_DETACH_PROJECTS_CAUSED_BY_CHANGE
+    - ATTACH_DETACH_PROJECTS_THAT_INITIATED_CHANGE
+    - ATTACH_DETACH_RELEASE
+    - CLICK_CHANGE_RHS_STATUS
+    - VERIFY_CHANGE_RHS_STATUS
+    - PLANNING_SUBTAB
+    - CLICK_SAVE_BUTTON_USING_SUBMIT
+    - LHS_STAGES_SUBTABS
+    - VERIFY_APPROVALS_NOT_ADDED_TEXT
+    - VERIFY_NO_APPROVAL_CONFIGURED_TEXT
+    - BTN_ADD_CAB_MEMBER
+    - BTN_ADD_APPORVAL_LEVEL
+    - CLICK_SELECT_CAB_DROPDOWN
+    - CLICK_SELECT_CAB_MEMBERS_DROPDOWN
+    - CLICK_SAVE_IN_POPUP
+    - VERIFY_CAB_MEMBERS_ADDED
+    - CLICK_STAGE_DROPDOWN
+    - CLICK_STATUS_DROPDOWN
+    - BUTTONS
+    - VERIFY_PENDING_APPROVAL_STATUS
+    - CLICK_DESCRIPTION_PLUS_ICON
+    - CLICK_DESCRIPTION_EDIT_ICON
+    - VERIFY_DESCRIPTION_IN_DETAILS_SUBTAB
+    - CLICK_NOT_CONFIGURED_IN_DATE_FIELD
+    - NOT_CONFIG_DATE
+    - VERIFY_RELEASE_TITLE_IN_CHANGE_ASSOCIATION
+    - ATTACHMENT_COUNT
+    - ATTACHMENT_IN_FORM
+    - ATTACHMENT_IN_RHS
+    - CLICK_PROJECT_TITLE_IN_PROJECT_CAUSED_BY_CHANGE
+    - VERIFY_PROJECT_TITLE_IN_PROJECT_INITIATED_BY_CHANGE
+    - VERIFY_APPROVAL_LEVEL_NAME_IN_STAGES
+    - CLICK_APPROVE_OR_REJECT
+    - CLICK_DELETE_APPROVAL
+    - VERIFY_APPROVED_OR_REJECTED_STATUS
+    - VERIFY_APPROVAL_LEVEL_COMMENTS
+    - VERIFY_APPROVAL_RULE_NAME_IN_STAGES
+    - VERIFY_APPROVAL_LEVEL_2_IN_STAGES
+    - SWITCH_TO_PRINT_FRAME
+    - VERIFY_PRINT_FORM_LOADED
+    - VERIFY_NO_DATA_PRESENT_IN_PRINT_FORM
+    - UNCHECK_RHS_PRINT_PREVIEW
+    - VERIFY_SECTION_NAME_NOT_PRESENT_PRINT_PREVIEW
+    - VERIFY_CHANGE_DETAILS_VERIFY_NOT_VERIFY_IN_PRINT_FORM
+    - CLICK_VERIFY_ARCHIEVED_INCIDENTS
+    - ASSOCIATED_REQUEST_CAUSED_IN_CHANGE
+    - TABLE_SETTINGS_IN_ASSOCIATION
+    - CHANGE_APPROVELS_DELETE_ICON_LOCATOR
+    - CHANGE_DOWNTIME_ACTIONS_LOCATOR
+    - VERIFY_CHANGE_DETAILS_POPUP_OPENED_FROM_LISTVIEW
+    - CLICK_CAB_APPROVAL
+    - CLICK_STATUS_DROPDOWN_IN_POPUP
+    - TYPE_STATUS_TEXTAREA
+    - CLICK_SAVE_BUTTON_USING_ID_SUBMIT
+    - SCHEDULER_BUTTON
+    - SCHEDULER_PAGE_CHANGE_ID
+    - CLICK_SPOT_EDIT_DROPDOWN
+    - SCHEDULE_EDIT
+    - SELECT_CHECKBOX_USING_NAME
+    - VERIFY_ASSOCIATIONS_TAB_OPENED_CHANGES_CAUSED_BY_PROJECT
+    - DETAILVIEW_ACTIONS_DROPDOWN
+    - NOTIFICATION_TO_FIELD
+    - GOBACK_BUTTON_LOCATOR
+    - CLICK_VERIFY_RECENT_INCIDENTS
+    - BTN_ATTACH_INCIDENT
+    - BTN_DETACH_INCIDENT
+    - DEPENDENCY_NODE
+    - BTN_CLOSEDEPENDENCY
+    - ENABLE_CHECKBOX_CHANGE_ATTACHED_WITH_DISPLAY_ID
+    - IFRAME_NOTIFICATION
+    - POPU_OUT_ICON
+    - VIEW_DETAILS_ICON
+    - VERIFY_CHANGE_DETAILS_PAGE_RHS
+    - ATTACH
+    - DOWNTIMESPAGE
+    - VERIFY_DOWNTIMES
+    - ASSOCIATIONS_DETAILSPAGE
+    - NEW_RELEASE_DETAILSPAGE
+    - CREATE_RELEASE_OPTIONS
+    - NEW_RELEASE_APPLY
+    - ASSOCIATE_RELEASE
+    - ATTACHMENT_DOWNLOAD
+    - ATTACHMENT_DELETE
+    - NOTES_DELETE
+    - SYSTEM_ERROR
+    - SAVE_BUTTON
+    - VERIFY_APPROVAL_LEVEL_NUMBER_IN_STAGES
+    - IMPACT_DETAILS
+    - ATTACHMENTS_IN_PLANNING_STAGE
+    - EDIT_BUTTON_IMPACT_DETAILS
+    - OPTIONS_ON_CHANGE_LHS
+    - EXPAND_APPROVAL_STAGES
+    Popup:
+    - VERIFY_ATTACH_REQUEST_TEXT_IN_POPUP
+    - BTN_ASSOCIATE
+    - CLICK_LISTVIEW_FILTERS
+    - CLICK_ALL_REQUESTS_FILTERS
+    - CLICK_ALL_CANCELED_REQ_FILTERS
+    - VERIFY_ATTACH_PROBLEM_TEXT_IN_POPUP
+    - CLICK_ALL_PROBLEMS_FILTERS
+    - VERIFY_ATTACH_PROJECTS_TEXT_IN_POPUP
+    - CLICK_ALL_PROJECTS_FILTERS
+    - VERIFY_ASSOCIATE_RELEASE_TEXT_IN_POPUP
+    - CLICK_PROJECTS_LISTVIEW_FILTERS
+    - TEXT_IN_POPUP
+    - SELECT_RADIOBTN_WITH_ENTITYID
+    - SEARCH_IN_BELL_NOTIFICATION
+    - CLICK_TEMP_ID_IN_REQUESTER_LOGIN
+    - CLICK_VIEW_DETAILS_IN_BELL_NOTIFICATION
+    - VERIFY_TABLE_HEADER
+    - SELECT_CHECKBOX_WITH_ENTITYID
+    - NEW_RELEASE_APPLY
+    - ATTACH_DOWNTIME
+    - VERIFY_NEW_RELEASE_FORM_FIELDS
+    - SELECT_CHECKBOX_BY_TITLE
+    ChangeWorkflow:
+    - WORKFLOW_BY_NAME
+    - WORKFLOW_HEADER_ICON
+    Ajax:
+    - TEXT_AJAXMESSAGETEXT
+    CustomerIssue:
+    - CHANGE_SUB_HEADING
+    - FILL_TITLE
+    - SEARCH_CHANGE_TEMPLATE
+    - NO_TASKS_FOUND_IN_THIS_VIEW
+    - NOTIFICAITON_POPUP
+    LinkingChange:
+    - LHS_ASSOCIATIONS_TAB
+    - ASSOCIATED_CHANGES_CONTAINER
+    - ATTACH_BUTTON_DROPDOWN
+    - ATTACH_DROPDOWN_OPTION
+    - POPUP_TITLE
+    - POPUP_FILTER_DROPDOWN
+    - POPUP_FILTER_OPTION
+    - POPUP_RADIO_BY_ENTITYID
+    - POPUP_CHECKBOX_BY_ENTITYID
+    - POPUP_SELECT_ALL_CHECKBOX
+    - POPUP_COMMENTS_TEXTAREA
+    - POPUP_ASSOCIATE_BUTTON
+    - POPUP_CANCEL_BUTTON
+    - POPUP_CLOSE_BUTTON
+    - POPUP_SEARCH_ICON
+    - POPUP_SEARCH_INPUT
+    - POPUP_PAGINATION_TEXT
+    - POPUP_VIEW_TOGGLE
+    - POPUP_NO_DATA
+    - POPUP_ROW_BY_ENTITYID
+    - POPUP_ROW_BY_TITLE
+    - POPUP_CHECKBOX_BY_TITLE
+    - POPUP_RADIO_BY_TITLE
+    - SECTION_ASSOCIATED_PARENT
+    - SECTION_ASSOCIATED_CHILD
+    - SECTION_ASSOCIATED_CHANGES
+    - ASSOCIATIONS_HEADING
+    - DETACH_PARENT_BUTTON
+    - DETACH_CHILD_BUTTON
+    - CONFIRM_DETACH_BUTTON
+    - CANCEL_DETACH_BUTTON
+    - NO_CHANGES_FOUND
+    - ASSOCIATIONS_PAGINATION_TEXT
+    - ASSOCIATIONS_TABLE_COLUMN
+    - LINKED_CHANGE_ROW
+    - LINKED_CHANGE_CHECKBOX
+    - RHS_LINKED_CHANGES
+    - RHS_LINKED_CHANGES_COUNT
+    - TITLE_BADGE
+    - EXTERNAL_LINK_ICON
+    - ATTACH_BUTTON_VISIBLE
+    - ATTACH_BUTTON_CHILD_SECTION
+    - POPUP_VALIDATION_MESSAGE
+    - ALERT_OK_BUTTON
+    - LHS_STAGE_ITEM
+    - BREADCRUMB_CONTAINER
+    - LISTVIEW_ASSOCIATED_CHANGES_CELL
+    - LISTVIEW_LINKED_CHANGES_SPAN
+    - LISTVIEW_ASSOCIATED_CHANGES_TEXT
+    - LISTVIEW_OVERLAY_POPUP
+    - LISTVIEW_OVERLAY_CLOSE
+    - LISTVIEW_OVERLAY_TITLE
+    - LISTVIEW_OVERLAY_ROW
+    - LISTVIEW_OVERLAY_EXTERNAL_LINK
+    - LISTVIEW_OVERLAY_PAGINATION
+    - LISTVIEW_LINKED_CHANGES_HEADER
+    - RHS_ASSOCIATIONS_SECTION
+    - DETACH_VALIDATION_MESSAGE
+    - HISTORY_FILTER_SELECT2
+    - HISTORY_OPERATIONS_FILTER
+    - HISTORY_ENTRY_TEXT
+    - CLOSURE_RULE_MESSAGE
+    - TRASH_RESTORE_BUTTON
+    - TRASH_DELETE_PERMANENTLY
+    - TRASH_CONFIRM_MESSAGE
+    - TRASH_CONFIRM_YES
+    - TRASH_CONFIRM_NO
+    - EXPORT_DIALOG_COLUMN_LABEL
+    - EXPORT_DIALOG_CLOSE
+data_constants:
+  file: com/zoho/automater/selenium/modules/changes/change/common/ChangeDataConstants.java
+  classes:
+    ChangeDataConstants:
+    - DETAILS_SPOT_EDIT_CATEGORY_DEPENDENT_FIELDS_INPUT
+    - DETAILS_SPOT_EDIT_DATE_TIME_FIELDS_UAT_INPUT
+    - GET_PLANNING_APPROVED_ID
+    - VALID_INPUT_NO_WORKFLOW
+    - CHANGE_SUBMISSION_STAGE_STATUS
+    - CHANGE_CLOSE_STAGE_STATUS_INPROGRESS
+    - CHANGE_PLANNING_STAGE_STATUS
+    - API_CHANGE_FOR_TRIGGER_WITH_CSI
+    - GET_CHANGE_MODULE_ID
+    - CHANGE_UI_SITE
+    - CHANGE_DATA_ASSOCIATION
+    - UPDATE_INPUT
+    - DOWNTIME_API
+    - CHANGE_STAGE_CHANGE
+    - GET_CLOSE_ID
+    - CHANGE_WITH_ALL_TIME_FIELDS
+    - SELECT_CI_INVOLVED_SPOTEDIT
+    - CHANGE_STATUS_STAGE_DEFAULT
+    - ADD_DESCRIPTION_IN_DETAILS_SUBTAB_IN_RELEASE
+    - API_ADD_DESCRIPTION_IN_DETAILS_SUBTAB_IN_SUBMISSION
+    - CHANGE_NOTE_INPUT
+    - DETAILS_SPOT_EDIT_WITHOUT_SEARCH_INPUT
+    - CHANGE_API_GROUP_DEFAULT_TEMP
+    - API_VALID_INPUT_GENERAL_TEMPLATE_COUNT_100
+    - POST_TIMER
+    - CHANGE_CABEVALUATION_PENDINGAPPROVAL_STATUS
+    - INVALID_REGEX_INPUT_FOR_TITLE
+    - GET_CLOSE_CANCELLED_ID
+    - CHANGE_WITH_STAGE_STATUS_COUNT_10
+    - CHANGE_API_CUSTOM_SITE_DEFAULT_TEMP
+    - CREATE_RELEASE_FOR_CHANGE
+    - EDIT_CHANGE_MANAGER
+    - PROJECT_CAUSED_BY_CHANGE_VIA_NEW_PROJECT_BUTTON
+    - API_VALID_INPUT_GENERAL_TEMPLATE_WITH_SITE_LIMITED_FIELDS
+    - CHANGE_UAT_STAGE_STATUS
+    - GET_PLANNING_REJECTED_ID
+    - ADD_DESCRIPTION_FOR_REVIEW
+    - CHANGE_CABEVALUATION_STAGE_STATUS_FOR_APPROVAL_PENDING
+    - CHANGE_IMPLEMENTATION_STAGE_STATUS_INPROGRESS
+    - CHANGE_REVIEW_STAGE_STATUS
+    - ACCESS_POINT_PRODUCT_TYPE
+    - CHANGE_UI
+    - CHANGE_CABEVALUATION_STAGE_STATUS
+    - API_VALID_INPUT_GENERAL_TEMPLATE
+    - ROW_COUNT_TABLE_SETTING
+    - EDIT_DESCRIPTION_FOR_UAT
+    - UAT_OWNER
+    - ADD_DOWNTIME_UI
+    - API_VALID_INPUT_GENERAL_TEMPLATE_UNASSIGNED_COUNT_5
+    - GET_IMPLEMENTATION_ID
+    - API_VALID_INPUT_GENERAL_TEMPLATE_COUNT_10
+    - TRANSITION_MANDATORY_FIELDS
+    - DETAILS_SPOT_EDIT_CLOSURE_FIELDS_INPUT
+    - POST_CHANGE_WF_IMPLEMENTATION_TASK
+    - API_CHANGE_FOR_TRIGGER_WITH_CSI_WITH_APPROVER
+    - CREATE_REQUEST
+    - EDIT_DESCRIPTION_FOR_REVIEW
+    - ADD_DESCRIPTION_FOR_UAT
+    - API_CREATE_CHANGE_WITH_ROLE_CUSTOM_TEMPLATE
+    - API_VALID_INPUT_GENERAL_TEMPLATE_WITH_SITE_AND_GROUP
+    - API_VALID_INPUT_GENERAL_TEMPLATE_FOR_CUSTOMER_ISSUE
+    - CHANGE_API_BASE_SITE_DEFAULT_TEMP
+    - EDIT_DESCRIPTION_IN_DETAILS_SUBTAB_IN_RELEASE
+    - CREATE_ACCESS_POINT_ASSET
+    - GET_SUBMISSION_ID
+    - GET_GENERAL_TEMPLATE_DATA
+    - CHANGE_RELEASE_STAGE_STATUS
+    - ASSOCIATED_GROUP
+    - CHANGE_NOTIFICATION_TEMPLATE
+    - DETAILS_SPOT_EDIT_DATE_TIME_FIELDS_RELEASE_STAGE_INPUT
+    - CREATE_PROJECTS_FOR_CHANGE
+    - GET_IMPACT_AFFECTS_BUSINESS_ID
+    - REVIEWER
+    - STAGE_AND_STATUS_DATA_API
+    - CHANGE_MANDATORY_FIELDS_WITH_LINE_MANAGER_ROLES
+    - API_VALID_INPUT_GENERAL_TEMPLATE_WITH_SITE
+    - CHANGE_UI_SITE_CATEGORY_EDIT
+    - CHANGE_RELEASE_STAGE_STATUS_INPROGRESS
+    - CHANGE_DATA_WITH_CUSTOM_TEMPLATE_AND_APPROVER
+    - CREATE_PROBLEMS_FOR_CHANGE
+    - SAMPLE_WORKFLOW_DATA
+    - ADD_DESCRIPTION_IN_DETAILS_SUBTAB_IN_SUBMISSION
+    - MODULEID
+    - SELECT_ROLES_COLUMN_CHOOSER_LISTVIEW
+    - GET_CHANGE_RISK_HIGH_ID
+    - CHANGE_APPROVER
+    - GET_STATUS_DATA
+    - POST_CONDITION_CUSTOM_FUNCTION
+    - IMPACT_DETAILS_PLUS_ICON
+    - CHANGE_MAINTENANCE_ONLY_TITLE
+    - IMPLEMENTER
+    - CHANGE_REVIEW_STAGE_STATUS_INPROGRESS
+    - POST_NOTIFICATION
+    - CHANGE_CLOSE_STAGE_STATUS
+    - CHANGE_FOR_TRIGGER
+    - CHANGE_CREATE_API
+    - CREATE_CHANGE_WITH_REQUESTER_PERMISSION_CHANGE_TEMPLATE
+    - LISTVIEW_SEARCH_BY_COLUMN_INPUT
+    - API_CREATE_CHANGE_WITHOUT_UNIQUE_STRING
+    - API_CREATE_CHANGE_WITH_ROLE
+    - GET_SUBMISSION_ACCEPTED_ID
+    - API_CHANGE_FOR_TRIGGER
+    - API_VALID_INPUT_GENERAL_TEMPLATE_MANDATORY_FIELDS
+    - GET_CHANGE_APPROVER
+    - MANDATORY_CHANGE_FIELDS_WITH_CUSTOM_TEMPLATE
+    - GET_LINE_MANAGER
+    - API_VALID_INPUT_GENERAL_TEMPLATE_WITH_SUBJECT
+    - API_VALID_INPUT_GENERAL_TEMPLATE_CHANGE_FOR_TASK
+    - GET_CLOSE_COMPLETED_ID
+    - GET_NETWORK_CATEGORY
+    - DEFAULT_CHANGEPERSONALIZATION
+    - DETAILS_SPOT_EDIT_DATE_TIME_FIELDS_RELEASE_INPUT
+    - UPDATE_FORM
+    - API_VALID_INPUT_GENERAL_TEMPLATE_COUNT_5
+    - ADD_APPROVAL_LEVEL_IN_CAB_CHANGE_DETAILVIEW
+    - CHANGE_FOR_ASSOCIATION
+    - API_VALID_INPUT_GENERAL_TEMPLATE_WITHGROUP
+    - API_VALID_INPUT_GENERAL_TEMPLATE_UNASSIGNED
+    - CHANGE_DATA_WITH_CUSTOM_TEMPLATE
+    - PLANNING_DETAILS_SUBTAB
+    - GET_PLANNING_IN_PROGRESS_ID
+    - ADD_TASKS_FROM_TASK_SUBTAB
+    - CREATE_REQUESTS_FOR_CHANGE
+    - POST_WEBHOOK
+    - LINE_MANAGER
+    - CHANGE_DATA_WITH_CHANGE_APPROVER
+    - CHANGE_UAT_STAGE_IN_PROGRESS_STATUS
+    - CHANGE_RELEASESCHEDULE_FROZEN
+    - ADD_CAB_NAME_API
+    - GET_SUBMISSION_REJECTED_ID
+    - DESCRIPTION
+    - CHANGE_STATUS_STAGE_EDIT
+    - EDIT_DESCRIPTION_IN_DETAILS_SUBTAB_IN_SUBMISSION
+    - CREATE_REQUEST_FOR_NR
+    - ASSOCIATE_RELEASE_WITH_CHANGE_API
+    - CHANGE_RELEASESCHEDULE_FREEZE
+    - ADD_CHANGE_TITLE
+    - GET_STAGE_DATA
+    - VALID_INPUT_EMERGENCY_TEMPLATE
+    - DETAILS_SPOT_EDIT_SITE_DEPENDENT_FIELDS_INPUT
+    - CHANGE_SITE_REQUESTER
+    - GET_COPYSITE_DATA
+    - ROW_COUNT_TABLE_SETTING_10
+    - API_CREATE_CHANGE_WITH_ROLE_WITH_SITE
+    - GET_ANYONE_APPROVES_APPROVAL_RULE
+    - CHANGE_UI_SITE_CATEGORY
+    - DETAILS_SPOT_EDIT_STAGE_STATUS_COMMENT_INPUT
+    - CHANGE_API_SITE_WITH_REGION_DEFAULT_TEMP
+    - GET_IMPACT_AFFECTS_DEPARTMENT_ID
+    - SAMPLE_WORKFLOW_WITHOUT_CF
+    - GET_CHANGEPERSONALIZATION_ID
+    - GET_IMPACT_AFFECTS_GROUP_ID
+    - MANDATORY_CHANGE_FIELDS_WITH_CUSTOM_TEMPLATE2
+    - API_CREATE_CHANGE_WITH_ROLE_COUNT_5
+    - API_VALID_INPUT_GENERAL_TEMPLATE1
+    - DETAILS_SPOT_EDIT_USING_SEARCH_INPUT
+    - GET_SUBMISSION_REQUESTED_ID
+    - DETAILS_SPOT_EDIT_MULTISELECT_INPUT
+    - GET_PLANNING_ID
+    - GET_CLOSE_IN_PROGRESS_ID
+    - COLUMN_CHOOSER_LISTVIEW
+    - API_CREATE_CHANGE_WITH_CM_CO_CA
+    - DETAILS_SPOT_EDIT_DATE_TIME_FIELDS_INPUT
+    - ASSOCIATED_CUSTOM_SITE
+    - CREATE_CHANGE_WITH_DOWNTIME
+    - CHANGE_API
+    - API_ADD_DESCRIPTION_IN_DETAILS_SUBTAB_IN_RELEASE
+    - POST_ACTION_CUSTOM_FUNCTION
+    - VALID_INPUT_GENERAL_TEMPLATE
+    - EDIT_DESCRIPTION
+    - POST_FIELD_UPDATE
+    - CHANGE_IMPLEMENTATION_STAGE_STATUS
+    - POST_TIMER_WITHOUT_CF
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/changes/change/common/ChangeAnnotationConstants.java
+  groups:
+  - constant: CREATE
+    value: create
+  - constant: CREATE_CHANGE_AND_ASSET
+    value: createChangeAndAsset
+  - constant: CREATE_AND_ADD_NOTE
+    value: createAndAddNote
+  - constant: CREATE_AND_GET_DISPLAY_ID
+    value: createAndGetDisplayID
+  - constant: CREATE_MULTIPLE_CHANGE
+    value: createMultipleChange
+  - constant: CREATE_CHANGE_WITH_DESCRIPTION
+    value: createChangeWithDescription
+  - constant: CREATE_REQUEST_FOR_CHANGE
+    value: createrequestforchange
+  - constant: CREATE_PROBLEM_FOR_CHANGE
+    value: createproblemforchange
+  - constant: CREATE_PROJECT_FOR_CHANGE
+    value: createprojectsforchange
+  - constant: CREATE_RELEASE_FOR_CHANGE
+    value: createreleaseforchange
+  - constant: CREATE_CHANGE_WITH_CHANGE_APPROVER
+    value: createChangeWithChangeApprover
+  - constant: CREATE_MULTIPLE_CHANGE_WITH_CHANGE_APPROVER
+    value: createMultipleChangeWithChangeApprover
+  - constant: CREATE_CAB
+    value: createcab
+  - constant: CREATE_DOWNTIME_FOR_CHANGE
+    value: createdowntimeforchange
+  data:
+  - constant: API_ADD_DESCRIPTION_IN_DETAILS_SUBTAB_IN_SUBMISSION_STAGE
+    value: api_add_description_in_details_subtab_in_submission
+  - constant: API_ADD_DESCRIPTION_IN_DETAILS_SUBTAB_IN_RELEASE_STAGE
+    value: api_add_description_in_details_subtab_in_release
+  - constant: VALID_INPUT_GENERAL_TEMPLATE
+    value: valid_input_general_template
+  - constant: VALID_INPUT_EMERGENCY_TEMPLATE
+    value: valid_input_emergency_template
+  - constant: CHANGE_NOTE_INPUT
+    value: change_note_input
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE
+    value: api_valid_input_general_template
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_COUNT_5
+    value: api_valid_input_general_template_count_5
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_COUNT_10
+    value: api_valid_input_general_template_count_10
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_COUNT_100
+    value: api_valid_input_general_template_count_100
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_UNASSIGNED
+    value: api_valid_input_general_template_unassigned
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_UNASSIGNED_COUNT_5
+    value: api_valid_input_general_template_unassigned_count_5
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_MANDATORY_FIELDS
+    value: api_valid_input_general_template_mandatory_fields
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_CHANGE_FOR_TASK
+    value: api_valid_input_general_template_change_for_task
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_WITHGROUP
+    value: api_valid_input_general_template_WithGroup
+  - constant: API_CREATE_CHANGE_WITH_ROLE_COUNT_5
+    value: api_create_change_with_role_count_5
+  - constant: API_CREATE_CHANGE_WITH_ROLE
+    value: api_create_change_with_role
+  - constant: CREATE_PROBLEM_FOR_CHANGE
+    value: create_problems_for_change
+  - constant: CREATE_PROJECT_FOR_CHANGE
+    value: create_projects_for_change
+  - constant: CREATE_RELEASE_FOR_CHANGE
+    value: create_release_for_change
+  - constant: GET_CHANGE_APPROVER
+    value: get_change_approver
+  - constant: GET_LINE_MANAGER
+    value: get_line_manager
+  - constant: VALID_INPUT_NO_WORKFLOW
+    value: valid_input_No_Workflow
+  - constant: ADD_CAB_NAME_API
+    value: Add_cab_name_API
+  - constant: CREATE_REQUEST_FOR_CHANGE
+    value: create_requests_for_change
+  - constant: CREATE_REQUEST_FOR_NR
+    value: create_request_for_NR
+  - constant: ACCESS_POINT_PRODUCT_TYPE
+    value: access_point_product_type
+  - constant: CREATE_ACCESS_POINT_ASSET
+    value: create_access_point_asset
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_FOR_CUSTOMER_ISSUE
+    value: api_valid_input_general_template_for_customer_issue
+  - constant: API_CREATE_CHAGNE_WITHOUT_UNIQUE_STRING
+    value: api_create_change_without_unique_string
+  - constant: ADD_DOWNTIME_API
+    value: Add_downtime_API
+preprocess_groups:
+- name: create
+  creates_count: 3
+  local_storage_keys:
+  - display_id
+  - note
+- name: createAndGetDisplayID
+  creates_count: 2
+  local_storage_keys:
+  - display_id
+  - note
+  - change_count
+- name: createAndAddNote
+  creates_count: 1
+  local_storage_keys:
+  - note
+  - change_count
+- name: createMultipleChange
+  creates_count: 0
+  local_storage_keys:
+  - change_count
+  - changes
+- name: createrequestforchange
+  creates_count: 1
+  local_storage_keys:
+  - requestid
+  - subject
+  - projectid
+- name: createChangeWithAssociatedSiteGroupTechnician
+  creates_count: 1
+  local_storage_keys:
+  - projectid
+  - subject
+  - problemid
+  - subject
+- name: createprojectsforchange
+  creates_count: 2
+  local_storage_keys:
+  - projectid
+  - subject
+  - problemid
+  - subject
+- name: createproblemforchange
+  creates_count: 2
+  local_storage_keys:
+  - problemid
+  - subject
+  - releaseId
+  - releaseName
+- name: createreleaseforchange
+  creates_count: 2
+  local_storage_keys:
+  - releaseId
+  - releaseName
+  - changeapprover
+- name: createChangeWithChangeApprover
+  creates_count: 1
+  local_storage_keys:
+  - changeapprover
+  - changeapprover
+  - change_count
+- name: createMultipleChangeWithChangeApprover
+  creates_count: 0
+  local_storage_keys:
+  - changeapprover
+  - change_count
+  - changes
+- name: createcab
+  creates_count: 0
+  local_storage_keys:
+  - changeapprover
+  - approvalsA2AId
+- name: createChangeWithDescription
+  creates_count: 2
+  local_storage_keys:
+  - workflow
+  - workflowName
+- name: createWorkflow
+  creates_count: 2
+  local_storage_keys:
+  - workflow
+  - workflowName
+- name: createChangeAndAsset
+  creates_count: 1
+  local_storage_keys:
+  - changeapprover
+- name: createmultiplerequestandchange
+  creates_count: 0
+  local_storage_keys:
+  - changeapprover
+  - change_count
+- name: addmultiplechange
+  creates_count: 0
+  local_storage_keys:
+  - changeapprover
+  - change_count
+  - changeid
+  - changes
+- name: changeci
+  creates_count: 1
+  local_storage_keys:
+  - TechDisplayId
+  - techName
+  - changeapprover
+- name: associatechangeapprover
+  creates_count: 1
+  local_storage_keys:
+  - techName
+  - changeapprover
+- name: associatelineManagerforChangeNR
+  creates_count: 1
+  local_storage_keys:
+  - techName
+  - lineManager
+- name: enabletechtonotifyforChangeNR
+  creates_count: 2
+  local_storage_keys:
+  - display_id
+- name: notifywhenremovedchangeroleforChangeNR
+  creates_count: 1
+  local_storage_keys:
+  - display_id
+  - techName
+- name: createrequestandchangeforChangeNR
+  creates_count: 1
+  local_storage_keys:
+  - techName
+  - requestid
+  - subject
+  - display_id
+- name: createprojectandchangeforChangeNR
+  creates_count: 1
+  local_storage_keys:
+  - techId
+  - techName
+  - display_id
+- name: changedowntimescheduledforChangeNR
+  creates_count: 0
+  local_storage_keys:
+  - techId
+  - techName
+- name: changedowntimecanceledforChangeNR
+  creates_count: 0
+  local_storage_keys:
+  - techId
+  - techName
+- name: notifyCMCOCAwhenapprovalforChangeNR
+  creates_count: 1
+  local_storage_keys:
+  - techId
+  - techName
+  - technician
+  - changeapprover
+- name: notifychangeroleswhenchangeeditedforChangeNR
+  creates_count: 1
+  local_storage_keys:
+  - changeapprover
+  - techId
+  - techName
+- name: changetemplatewithroles
+  creates_count: 1
+  local_storage_keys:
+  - changeID
+  - apiPath
+  - notificationTemplateType
+- name: changemultipleassociation
+  creates_count: 1
+  local_storage_keys:
+  - changeID
+  - apiPath
+  - notificationTemplateType
+- name: changeWithValuesInAllTimeField
+  creates_count: 0
+  local_storage_keys:
+  - notificationTemplateType
+- name: createchangetemplatesectionmandatory
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys:
+- Add_cab_name_API
+- Add_downtime_UI
+- Change_CABEvaluation_PendingApproval_Status
+- Change_CABEvaluation_Stage_Status
+- Change_CABEvaluation_Stage_Status_for_approval_pending
+- Change_Close_Stage_Status
+- Change_Close_Stage_Status_InProgress
+- Change_Implementation_Stage_Status
+- Change_Implementation_Stage_Status_InProgress
+- Change_Planning_Stage_Status
+- Change_Release_Stage_Status
+- Change_Release_Stage_Status_InProgress
+- Change_Review_Stage_Status
+- Change_Review_Stage_Status_InProgress
+- Change_Stage_Change
+- Change_Status_Stage_Default
+- Change_Status_Stage_Edit
+- Change_Submission_Stage_Status
+- Change_UAT_Stage_In_Progress_Status
+- Change_UAT_Stage_Status
+- Change_for_association
+- Change_maintenance_Only_Title
+- Change_site_requester
+- Column_Chooser_Listview
+- access_point_product_type
+- add_approval_level_in_CAB_change_detailview
+- add_change_title
+- add_description_for_review
+- add_description_for_uat
+- add_description_in_details_subtab_in_release
+- add_description_in_details_subtab_in_submission
+- add_tasks_from_task_subtab
+- api_add_description_in_details_subtab_in_release
+- api_add_description_in_details_subtab_in_submission
+- api_change_for_trigger
+- api_change_for_trigger_with_CSI
+- api_change_for_trigger_with_CSI_with_approver
+- api_create_change_with_CM_CO_CA
+- api_create_change_with_role
+- api_create_change_with_role_Custom_template
+- api_create_change_with_role_count_5
+- api_create_change_with_role_with_site
+- api_create_change_without_unique_string
+- api_valid_input_general_template
+- api_valid_input_general_template1
+- api_valid_input_general_template_WithGroup
+- api_valid_input_general_template_change_for_task
+- api_valid_input_general_template_count_10
+- api_valid_input_general_template_count_100
+- api_valid_input_general_template_count_5
+- api_valid_input_general_template_for_customer_issue
+- api_valid_input_general_template_mandatory_fields
+- api_valid_input_general_template_unassigned
+- api_valid_input_general_template_unassigned_count_5
+- api_valid_input_general_template_with_site
+- api_valid_input_general_template_with_site_and_group
+- api_valid_input_general_template_with_site_limited_fields
+- api_valid_input_general_template_with_subject
+- associate_release_with_change_api
+- associated_custom_site
+- associated_group
+- change_Api_Base_Site_Default_Temp
+- change_Api_Custom_Site_Default_Temp
+- change_Api_Group_Default_Temp
+- change_Api_Site_with_Region_Default_Temp
+- change_api
+- change_approver
+- change_create_Api
+- change_data_association
+- change_data_with_change_approver
+- change_data_with_custom_template
+- change_data_with_custom_template_and_approver
+- change_for_trigger
+- change_mandatory_fields_with_line_manager_roles
+- change_note_input
+- change_notification_template
+- change_releaseSchedule_Freeze
+- change_releaseSchedule_Frozen
+- change_ui
+- change_ui_site
+- change_ui_site_category
+- change_ui_site_category_Edit
+- change_with_all_time_fields
+- change_with_stage_status_count_10
+- create_access_point_asset
+- create_change_with_downtime
+- create_change_with_requester_permission_change_template
+- create_problems_for_change
+- create_projects_for_change
+- create_release_for_change
+- create_request
+- create_request_for_NR
+- create_requests_for_change
+- default_ChangePersonalization
+- description
+- details_spot_edit_category_dependent_fields_input
+- details_spot_edit_closure_fields_input
+- details_spot_edit_date_time_fields_input
+- details_spot_edit_date_time_fields_release_input
+- details_spot_edit_date_time_fields_release_stage_input
+- details_spot_edit_date_time_fields_uat_input
+- details_spot_edit_multiselect_input
+- details_spot_edit_site_dependent_fields_input
+- details_spot_edit_stage_status_comment_input
+- details_spot_edit_using_search_input
+- details_spot_edit_without_search_input
+- downtime_api
+- edit_change_manager
+- edit_description
+- edit_description_for_review
+- edit_description_for_uat
+- edit_description_in_details_subtab_in_release
+- edit_description_in_details_subtab_in_submission
+- get_ChangePersonalization_Id
+- get_anyone_approves_approval_rule
+- get_change_approver
+- get_change_module_id
+- get_change_risk_high_id
+- get_close_cancelled_id
+- get_close_completed_id
+- get_close_id
+- get_close_in_progress_id
+- get_copysite_data
+- get_general_template_data
+- get_impact_affects_business_id
+- get_impact_affects_department_id
+- get_impact_affects_group_id
+- get_implementation_id
+- get_line_manager
+- get_network_category
+- get_planning_approved_id
+- get_planning_id
+- get_planning_in_progress_id
+- get_planning_rejected_id
+- get_stage_data
+- get_status_data
+- get_submission_accepted_id
+- get_submission_id
+- get_submission_rejected_id
+- get_submission_requested_id
+- impact_details_plus_icon
+- implementer
+- invalid_regex_input_for_title
+- line_manager
+- listview_search_by_column_input
+- mandatory_change_fields_with_custom_template
+- mandatory_change_fields_with_custom_template2
+- moduleID
+- planning_details_subtab
+- post_action_custom_function
+- post_change_wf_implementation_task
+- post_condition_custom_function
+- post_field_update
+- post_notification
+- post_timer
+- post_timer_without_cf
+- post_webhook
+- project_caused_by_change_via_new_project_button
+- reviewer
+- row_count_table_setting
+- row_count_table_setting_10
+- sample_workflow_data
+- sample_workflow_without_cf
+- select_CI_involved_spotedit
+- select_roles_Column_Chooser_Listview
+- stage_and_status_data_api
+- transition_mandatory_fields
+- uat_owner
+- update_form
+- update_input
+- valid_input_No_Workflow
+- valid_input_emergency_template
+- valid_input_general_template
+data_json_deep:
+  total_entries: 173
+  field_frequency:
+    title: 51
+    template: 45
+    description: 37
+    category: 27
+    priority: 25
+    change_requester: 24
+    scheduled_start_time: 24
+    impact: 23
+    subcategory: 23
+    item: 23
+    risk: 22
+    change_type: 22
+    scheduled_end_time: 22
+    urgency: 22
+    services: 22
+    search_criteria: 21
+    reason_for_change: 20
+    assets: 20
+    comment: 20
+    stage: 19
+  all_placeholders:
+  - custom_CmdbName
+  - custom_UserId
+  - custom_approvalsA2AId
+  - custom_approverId
+  - custom_assetName
+  - custom_associated_group_name
+  - custom_associated_site_name
+  - custom_cabId
+  - custom_change_TempId
+  - custom_change_Template_Name
+  - custom_changeapprover
+  - custom_downtimeType_Id
+  - custom_entitiesId
+  - custom_lineManager
+  - custom_releaseId
+  - custom_siteID
+  - custom_siteId
+  - custom_stageName
+  - custom_statusName
+  - custom_taskId
+  - custom_taskId2
+  - custom_techId
+  - custom_techName
+  - custom_technician
+  - custom_temp_stage
+  - custom_triggerCriteriaTitle
+  - custom_userId
+  - datetime
+  - datetime, 0Y 0M 0D 0h 0m, true
+  - datetime, 0Y 0M 0D 0h 10m, true
+  - datetime, 0Y 0M 0D 0h 1m, true
+  - datetime, 0Y 0M 0D 0h 20m, true
+  - datetime, 0Y 0M 0D 0h 5m, true
+  - datetime, 2Y 10M 100D 10h 10m, false
+  - datetime, 2Y 10M 100D 10h 10m, true
+  - datetime, 2Y 10M 50D 10h 10m, false
+  - datetime, 2Y 11M 100D 10h 10m, true
+  - datetime, 2Y 11M 110D 10h 10m, true
+  - datetime, 2Y 5M 50D 10h 10m, true
+  - rest_api, get, approval_rules, approval_rules, get_anyone_approves_approval_rule
+  - rest_api, get, categories, categories, get_network_category
+  - rest_api, get, change_risks, change_risks, get_change_risk_high_id
+  - rest_api, get, change_roles, change_roles, get_change_approver
+  - rest_api, get, change_stages, change_stages, get_close_id
+  - rest_api, get, change_stages, change_stages, get_implementation_id
+  - rest_api, get, change_stages, change_stages, get_planning_id
+  - rest_api, get, change_stages, change_stages, get_stage_data
+  - rest_api, get, change_stages, change_stages, get_submission_id
+  - rest_api, get, change_statuses, change_statuses, get_status_data
+  - rest_api, get, impacts, impacts, get_impact_affects_business_id
+  - rest_api, get, impacts, impacts, get_impact_affects_department_id
+  - rest_api, get, impacts, impacts, get_impact_affects_group_id
+  - rest_api, get, modules, modules, get_change_module_id
+  - rest_api, get, sites, sites, get_copysite_data
+  - rest_api, get, statuses, change_stages/$[custom_get_close_id]/statuses,get_close_cancelled_id
+  - rest_api, get, statuses, change_stages/$[custom_get_close_id]/statuses,get_close_completed_id
+  - rest_api, get, statuses, change_stages/$[custom_get_close_id]/statuses,get_close_in_progress_id
+  - rest_api, get, statuses, change_stages/$[custom_get_planning_id]/statuses,get_planning_approved_id
+  - rest_api, get, statuses, change_stages/$[custom_get_planning_id]/statuses,get_planning_in_progress_id
+  - rest_api, get, statuses, change_stages/$[custom_get_planning_id]/statuses,get_planning_rejected_id
+  - rest_api, get, statuses, change_stages/$[custom_get_submission_id]/statuses, get_submission_accepted_id
+  - rest_api, get, statuses, change_stages/$[custom_get_submission_id]/statuses, get_submission_rejected_id
+  - rest_api, get, statuses, change_stages/$[custom_get_submission_id]/statuses, get_submission_requested_id
+  - rest_api, get, wfaction, wfactions, post_change_wf_implementation_task
+  - rest_api, get, wfaction, wfactions, post_notification
+  - rest_api, post, wfaction, wfactions, post_action_custom_function
+  - rest_api, post, wfaction, wfactions, post_change_wf_implementation_task
+  - rest_api, post, wfaction, wfactions, post_condition_custom_function
+  - rest_api, post, wfaction, wfactions, post_field_update
+  - rest_api, post, wfaction, wfactions, post_notification
+  - rest_api, post, wfaction, wfactions, post_timer
+  - rest_api, post, wfaction, wfactions, post_timer_without_cf
+  - rest_api, post, wfaction, wfactions, post_webhook
+  - rest_api, search, sites, name, Site $(custom_uniqueString
+  - unique_string
+  - user_email_id
+  - user_id
+  - user_name
+  reuse_groups_count: 22
+  entries:
+    valid_input_general_template:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - change_owner
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      placeholders:
+      - unique_string
+      - user_name
+      - user_name
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_valid_input_general_template:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      placeholders:
+      - unique_string
+      - user_name
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    api_valid_input_general_template_with_site:
+      fields:
+      - title
+      - template
+      - site
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      placeholders:
+      - unique_string
+      - user_name
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    api_valid_input_general_template_with_subject:
+      fields:
+      - title
+      - template
+      - site
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      placeholders:
+      - user_name
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    api_valid_input_general_template_with_site_and_group:
+      fields:
+      - title
+      - template
+      - site
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - group
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      placeholders:
+      - unique_string
+      - user_name
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    api_valid_input_general_template_with_site_limited_fields:
+      fields:
+      - title
+      - template
+      - site
+      - description
+      - change_requester
+      - priority
+      placeholders:
+      - unique_string
+      - user_name
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    api_valid_input_general_template_WithGroup:
+      fields:
+      - title
+      - template
+      - description
+      - site
+      - risk
+      - change_type
+      - change_requester
+      - change_owner
+      - group
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      placeholders:
+      - unique_string
+      - custom_associated_site_name
+      - user_name
+      - user_email_id
+      - custom_associated_group_name
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required:
+      - associated_site_name
+      - associated_group_name
+      purpose: api_preprocess
+    valid_input_emergency_template:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - change_owner
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      placeholders:
+      - unique_string
+      - user_name
+      - user_name
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    invalid_regex_input_for_title:
+      fields:
+      - title
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    update_input:
+      fields:
+      - title
+      - change_type
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_note_input:
+      fields:
+      - description
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    details_spot_edit_using_search_input:
+      fields:
+      - data_array
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    details_spot_edit_without_search_input:
+      fields:
+      - data_array
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    details_spot_edit_multiselect_input:
+      fields:
+      - data_array
+      placeholders:
+      - custom_assetName
+      - custom_assetName
+      local_storage_keys_required:
+      - assetName
+      - assetName
+      purpose: ui_form
+    details_spot_edit_site_dependent_fields_input:
+      fields:
+      - data_array
+      placeholders:
+      - custom_associated_site_name
+      - custom_associated_group_name
+      - user_name
+      local_storage_keys_required:
+      - associated_site_name
+      - associated_group_name
+      purpose: ui_form
+    details_spot_edit_category_dependent_fields_input:
+      fields:
+      - data_array
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    details_spot_edit_date_time_fields_input:
+      fields:
+      - data_array
+      placeholders:
+      - datetime, 2Y 10M 50D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 11M 100D 10h 10m, true
+      - datetime, 2Y 11M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    details_spot_edit_date_time_fields_release_input:
+      fields:
+      - data_array
+      placeholders:
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 50D 10h 10m, false
+      - datetime, 2Y 11M 100D 10h 10m, true
+      - datetime, 2Y 11M 110D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    details_spot_edit_closure_fields_input:
+      fields:
+      - data_array
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    listview_search_by_column_input:
+      fields:
+      - data_array
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_valid_input_general_template_count_100:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - change_owner
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      - change_count
+      placeholders:
+      - user_name
+      - user_email_id
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    row_count_table_setting:
+      fields:
+      - data_array
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    row_count_table_setting_10:
+      fields:
+      - data_array
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_valid_input_general_template_unassigned:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      placeholders:
+      - unique_string
+      - user_name
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    api_valid_input_general_template_count_5:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - change_owner
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      - change_count
+      placeholders:
+      - user_name
+      - user_email_id
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    api_valid_input_general_template_unassigned_count_5:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      - change_count
+      placeholders:
+      - user_name
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    change_approver:
+      fields:
+      - change_approver
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    line_manager:
+      fields:
+      - line_manager
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    reviewer:
+      fields:
+      - reviewer
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    implementer:
+      fields:
+      - implementer
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    uat_owner:
+      fields:
+      - uat_owner
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_tasks_from_task_subtab:
+      fields:
+      - title
+      - description
+      - priority
+      - additional_cost
+      - task_type
+      - percentage_completion
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    planning_details_subtab:
+      fields:
+      - planning_details
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    description:
+      fields:
+      - description
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    edit_description:
+      fields:
+      - description
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    impact_details_plus_icon:
+      fields:
+      - impact_details_plus
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    associated_custom_site:
+      fields:
+      - name
+      - settings
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    associated_group:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_requests_for_change:
+      fields:
+      - template
+      - subject
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_projects_for_change:
+      fields:
+      - template
+      - title
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_problems_for_change:
+      fields:
+      - template
+      - title
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_release_for_change:
+      fields:
+      - template
+      - title
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    valid_input_No_Workflow:
+      fields:
+      - workflow
+      - template
+      - change_requester
+      - site
+      - change_type
+      - group
+      - retrospective
+      - change_owner
+      - impact
+      - change_manager
+      - urgency
+      - priority
+      - risk
+      - comment
+      - category
+      - subcategory
+      - item
+      - scheduled_start_time
+      - scheduled_end_time
+      - services
+      - assets
+      - reason_for_change
+      - title
+      - description
+      - roles
+      - attachments
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_change_approver:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_create_change_with_role:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - change_owner
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - roles
+      - item
+      - urgency
+      - services
+      - assets
+      placeholders:
+      - unique_string
+      - user_name
+      - user_email_id
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      - custom_changeapprover
+      - custom_technician
+      local_storage_keys_required:
+      - changeapprover
+      - technician
+      purpose: api_preprocess
+    api_create_change_with_role_with_site:
+      fields:
+      - title
+      - template
+      - site
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - change_owner
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - roles
+      - item
+      - urgency
+      - services
+      - assets
+      placeholders:
+      - unique_string
+      - user_name
+      - user_email_id
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      - custom_changeapprover
+      - custom_technician
+      local_storage_keys_required:
+      - changeapprover
+      - technician
+      purpose: api_preprocess
+    api_create_change_with_role_count_5:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - change_owner
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - roles
+      - item
+      - urgency
+      - services
+      - assets
+      - change_count
+      placeholders:
+      - user_name
+      - user_email_id
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      - custom_changeapprover
+      - custom_technician
+      local_storage_keys_required:
+      - changeapprover
+      - technician
+      purpose: api_preprocess
+    Change_Planning_Stage_Status:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_Status_Stage_Edit:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_Status_Stage_Default:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Add_cab_name_API:
+      fields:
+      - name
+      - members
+      placeholders:
+      - unique_string
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_valid_input_general_template_mandatory_fields:
+      fields:
+      - title
+      - template
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    api_valid_input_general_template_change_for_task:
+      fields:
+      - title
+      - template
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    add_description_for_uat:
+      fields:
+      - uat_details
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    edit_description_for_uat:
+      fields:
+      - uat_details
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_description_for_review:
+      fields:
+      - review_details
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    edit_description_for_review:
+      fields:
+      - review_details
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_CABEvaluation_Stage_Status:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_Implementation_Stage_Status:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_UAT_Stage_Status:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_UAT_Stage_In_Progress_Status:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_Review_Stage_Status:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    edit_change_manager:
+      fields:
+      - change_manager
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    details_spot_edit_stage_status_comment_input:
+      fields:
+      - data_array
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_description_in_details_subtab_in_submission:
+      fields:
+      - description
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_description_in_details_subtab_in_release:
+      fields:
+      - description
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_add_description_in_details_subtab_in_submission:
+      fields:
+      - description
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    edit_description_in_details_subtab_in_submission:
+      fields:
+      - description
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_add_description_in_details_subtab_in_release:
+      fields:
+      - release_details
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    edit_description_in_details_subtab_in_release:
+      fields:
+      - description
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_Submission_Stage_Status:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_Release_Stage_Status:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_Close_Stage_Status:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    details_spot_edit_date_time_fields_uat_input:
+      fields:
+      - data_array
+      placeholders:
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 50D 10h 10m, false
+      - datetime, 2Y 5M 50D 10h 10m, true
+      - datetime, 2Y 11M 110D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    sample_workflow_data:
+      fields:
+      - workflow
+      placeholders:
+      - rest_api, get, change_stages, change_stages, get_submission_id
+      - rest_api, get, statuses, change_stages/$[custom_get_submission_id]/statuses, get_submission_accepted_id
+      - rest_api, get, statuses, change_stages/$[custom_get_submission_id]/statuses, get_submission_rejected_id
+      - rest_api, get, statuses, change_stages/$[custom_get_submission_id]/statuses, get_submission_requested_id
+      - rest_api, get, change_stages, change_stages, get_close_id
+      - rest_api, get, statuses, change_stages/$[custom_get_close_id]/statuses,get_close_cancelled_id
+      - rest_api, get, statuses, change_stages/$[custom_get_close_id]/statuses,get_close_completed_id
+      - rest_api, get, statuses, change_stages/$[custom_get_close_id]/statuses,get_close_in_progress_id
+      - rest_api, get, change_stages, change_stages, get_planning_id
+      - rest_api, get, statuses, change_stages/$[custom_get_planning_id]/statuses,get_planning_approved_id
+      - rest_api, get, statuses, change_stages/$[custom_get_planning_id]/statuses,get_planning_in_progress_id
+      - rest_api, get, statuses, change_stages/$[custom_get_planning_id]/statuses,get_planning_rejected_id
+      - rest_api, get, change_risks, change_risks, get_change_risk_high_id
+      - rest_api, get, impacts, impacts, get_impact_affects_business_id
+      - rest_api, get, impacts, impacts, get_impact_affects_department_id
+      - rest_api, get, impacts, impacts, get_impact_affects_group_id
+      - rest_api, post, wfaction, wfactions, post_notification
+      - user_id
+      - rest_api, get, approval_rules, approval_rules, get_anyone_approves_approval_rule
+      - rest_api, post, wfaction, wfactions, post_field_update
+      - rest_api, post, wfaction, wfactions, post_change_wf_implementation_task
+      - rest_api, post, wfaction, wfactions, post_condition_custom_function
+      - rest_api, post, wfaction, wfactions, post_timer
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_submission_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_close_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_planning_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_implementation_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_submission_accepted_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_submission_rejected_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_submission_requested_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_close_cancelled_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_close_completed_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_close_in_progress_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_planning_approved_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_planning_in_progress_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_planning_rejected_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_change_risk_high_id:
+      fields:
+      - search_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_impact_affects_business_id:
+      fields:
+      - search_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_impact_affects_department_id:
+      fields:
+      - search_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_impact_affects_group_id:
+      fields:
+      - search_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_change_module_id:
+      fields:
+      - search_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    post_notification:
+      fields:
+      - wfaction
+      placeholders:
+      - unique_string
+      - rest_api, get, modules, modules, get_change_module_id
+      - user_id
+      - rest_api, get, modules, modules, get_change_module_id
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_anyone_approves_approval_rule:
+      fields:
+      - search_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    post_field_update:
+      fields:
+      - wfaction
+      placeholders:
+      - unique_string
+      - rest_api, get, categories, categories, get_network_category
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_network_category:
+      fields:
+      - search_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    post_condition_custom_function:
+      fields:
+      - wfaction
+      placeholders:
+      - rest_api, get, modules, modules, get_change_module_id
+      - rest_api, get, modules, modules, get_change_module_id
+      local_storage_keys_required: []
+      purpose: ui_form
+    post_action_custom_function:
+      fields:
+      - wfaction
+      placeholders:
+      - unique_string
+      - rest_api, get, modules, modules, get_change_module_id
+      - unique_string
+      - rest_api, get, modules, modules, get_change_module_id
+      local_storage_keys_required: []
+      purpose: ui_form
+    post_change_wf_implementation_task:
+      fields:
+      - wfaction
+      placeholders:
+      - unique_string
+      - rest_api, get, modules, modules, get_change_module_id
+      - unique_string
+      - rest_api, get, change_stages, change_stages, get_implementation_id
+      local_storage_keys_required: []
+      purpose: ui_form
+    post_timer:
+      fields:
+      - wfaction
+      placeholders:
+      - unique_string
+      - rest_api, get, wfaction, wfactions, post_change_wf_implementation_task
+      - rest_api, post, wfaction, wfactions, post_webhook
+      - rest_api, get, wfaction, wfactions, post_notification
+      - rest_api, post, wfaction, wfactions, post_action_custom_function
+      - rest_api, get, wfaction, wfactions, post_change_wf_implementation_task
+      local_storage_keys_required: []
+      purpose: ui_form
+    post_webhook:
+      fields:
+      - wfaction
+      placeholders:
+      - unique_string
+      - rest_api, get, modules, modules, get_change_module_id
+      local_storage_keys_required: []
+      purpose: ui_form
+    sample_workflow_without_cf:
+      fields:
+      - workflow
+      placeholders:
+      - unique_string
+      - rest_api, get, change_stages, change_stages, get_submission_id
+      - rest_api, get, statuses, change_stages/$[custom_get_submission_id]/statuses, get_submission_accepted_id
+      - rest_api, get, statuses, change_stages/$[custom_get_submission_id]/statuses, get_submission_rejected_id
+      - rest_api, get, statuses, change_stages/$[custom_get_submission_id]/statuses, get_submission_requested_id
+      - rest_api, get, change_stages, change_stages, get_close_id
+      - rest_api, get, statuses, change_stages/$[custom_get_close_id]/statuses,get_close_cancelled_id
+      - rest_api, get, statuses, change_stages/$[custom_get_close_id]/statuses,get_close_completed_id
+      - rest_api, get, statuses, change_stages/$[custom_get_close_id]/statuses,get_close_in_progress_id
+      - rest_api, get, change_stages, change_stages, get_planning_id
+      - rest_api, get, statuses, change_stages/$[custom_get_planning_id]/statuses,get_planning_approved_id
+      - rest_api, get, statuses, change_stages/$[custom_get_planning_id]/statuses,get_planning_in_progress_id
+      - rest_api, get, statuses, change_stages/$[custom_get_planning_id]/statuses,get_planning_rejected_id
+      - rest_api, get, categories, categories, get_network_category
+      - rest_api, get, change_risks, change_risks, get_change_risk_high_id
+      - rest_api, get, impacts, impacts, get_impact_affects_business_id
+      - rest_api, get, impacts, impacts, get_impact_affects_department_id
+      - rest_api, get, impacts, impacts, get_impact_affects_group_id
+      - rest_api, post, wfaction, wfactions, post_notification
+      - user_id
+      - user_name
+      - rest_api, get, approval_rules, approval_rules, get_anyone_approves_approval_rule
+      - rest_api, post, wfaction, wfactions, post_field_update
+      - custom_taskId
+      - rest_api, post, wfaction, wfactions, post_timer_without_cf
+      local_storage_keys_required:
+      - taskId
+      purpose: ui_form
+    post_timer_without_cf:
+      fields:
+      - wfaction
+      placeholders:
+      - unique_string
+      - custom_taskId2
+      - rest_api, get, impacts, impacts, get_impact_affects_department_id
+      - rest_api, post, wfaction, wfactions, post_change_wf_implementation_task
+      local_storage_keys_required:
+      - taskId2
+      purpose: ui_form
+    create_access_point_asset:
+      fields:
+      - name
+      - product
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    access_point_product_type:
+      fields:
+      - name
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    details_spot_edit_date_time_fields_release_stage_input:
+      fields:
+      - data_array
+      placeholders:
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 11M 110D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_valid_input_general_template_for_customer_issue:
+      fields:
+      - title
+      - template
+      - description
+      - site
+      - risk
+      - change_type
+      - change_owner
+      - group
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      placeholders:
+      - unique_string
+      - custom_associated_site_name
+      - user_email_id
+      - custom_associated_group_name
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required:
+      - associated_site_name
+      - associated_group_name
+      purpose: api_preprocess
+    add_change_title:
+      fields:
+      - title
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_create_change_without_unique_string:
+      fields:
+      - title
+      - template
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    project_caused_by_change_via_new_project_button:
+      fields:
+      - template
+      - title
+      - description
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_change_for_trigger:
+      fields:
+      - title
+      - template
+      - category
+      placeholders:
+      - custom_triggerCriteriaTitle
+      local_storage_keys_required:
+      - triggerCriteriaTitle
+      purpose: api_preprocess
+    create_change_with_requester_permission_change_template:
+      fields:
+      - title
+      - template
+      - category
+      placeholders:
+      - custom_triggerCriteriaTitle
+      - custom_change_TempId
+      local_storage_keys_required:
+      - triggerCriteriaTitle
+      - change_TempId
+      purpose: api_preprocess
+    add_approval_level_in_CAB_change_detailview:
+      fields:
+      - approval_level
+      placeholders:
+      - custom_approvalsA2AId
+      - custom_cabId
+      local_storage_keys_required:
+      - approvalsA2AId
+      - cabId
+      purpose: ui_form
+    Change_CABEvaluation_Stage_Status_for_approval_pending:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_change_for_trigger_with_CSI:
+      fields:
+      - title
+      - template
+      - category
+      - subcategory
+      - item
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    api_change_for_trigger_with_CSI_with_approver:
+      fields:
+      - title
+      - template
+      - category
+      - subcategory
+      - item
+      - description
+      - roles
+      placeholders:
+      - custom_triggerCriteriaTitle
+      - custom_approverId
+      - custom_technician
+      local_storage_keys_required:
+      - triggerCriteriaTitle
+      - approverId
+      - technician
+      purpose: api_preprocess
+    create_request:
+      fields:
+      - request
+      placeholders:
+      - unique_string
+      - user_name
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    Change_maintenance_Only_Title:
+      fields:
+      - title
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_for_trigger:
+      fields:
+      - title
+      - impact
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_valid_input_general_template_count_10:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - change_owner
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - services
+      - assets
+      - change_count
+      placeholders:
+      - user_name
+      - user_email_id
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    Column_Chooser_Listview:
+      fields:
+      - columns
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_with_stage_status_count_10:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - change_owner
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - item
+      - urgency
+      - roles
+      - services
+      - assets
+      - change_count
+      placeholders:
+      - user_name
+      - user_email_id
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      - custom_changeapprover
+      - custom_technician
+      local_storage_keys_required:
+      - changeapprover
+      - technician
+      purpose: ui_form
+    get_status_data:
+      fields:
+      - search_criteria
+      placeholders:
+      - custom_stageName
+      - custom_statusName
+      local_storage_keys_required:
+      - stageName
+      - statusName
+      purpose: ui_form
+    get_stage_data:
+      fields:
+      - search_criteria
+      placeholders:
+      - custom_stageName
+      local_storage_keys_required:
+      - stageName
+      purpose: ui_form
+    stage_and_status_data_api:
+      fields:
+      - change
+      placeholders:
+      - rest_api, get, change_stages, change_stages, get_stage_data
+      - rest_api, get, change_statuses, change_statuses, get_status_data
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_for_association:
+      fields:
+      - change
+      placeholders:
+      - unique_string
+      - custom_userId
+      - custom_siteID
+      local_storage_keys_required:
+      - userId
+      - siteID
+      purpose: ui_form
+    mandatory_change_fields_with_custom_template:
+      fields:
+      - title
+      - template
+      placeholders:
+      - unique_string
+      - custom_change_Template_Name
+      local_storage_keys_required:
+      - change_Template_Name
+      purpose: ui_form
+    create_change_with_downtime:
+      fields:
+      - workflow
+      - template
+      - title
+      - roles
+      - impact_details
+      - roll_out_plan
+      - back_out_plan
+      - checklist
+      - release_details
+      - attachments
+      - downtimes_data
+      placeholders:
+      - custom_change_TempId
+      - unique_string
+      - unique_string
+      - custom_downtimeType_Id
+      local_storage_keys_required:
+      - change_TempId
+      - downtimeType_Id
+      purpose: api_preprocess
+    mandatory_change_fields_with_custom_template2:
+      fields:
+      - template
+      placeholders:
+      - custom_change_Template_Name
+      local_storage_keys_required:
+      - change_Template_Name
+      purpose: ui_form
+    get_ChangePersonalization_Id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    default_ChangePersonalization:
+      fields:
+      - personalization
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Add_downtime_UI:
+      fields:
+      - description_text
+      - scheduled_start_time
+      - scheduled_end_time
+      placeholders:
+      - unique_string
+      - datetime, 0Y 0M 0D 0h 5m, true
+      - datetime, 0Y 0M 0D 0h 20m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_api:
+      fields:
+      - change
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_ui:
+      fields:
+      - template
+      - services
+      - title
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_copysite_data:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_ui_site:
+      fields:
+      - template
+      - title
+      - site
+      placeholders:
+      - unique_string
+      - rest_api, get, sites, sites, get_copysite_data
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_ui_site_category:
+      fields:
+      - template
+      - title
+      - site
+      - category
+      placeholders:
+      - unique_string
+      - rest_api, get, sites, sites, get_copysite_data
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_ui_site_category_Edit:
+      fields:
+      - category
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_releaseSchedule_Frozen:
+      fields:
+      - change
+      placeholders:
+      - datetime, 0Y 0M 0D 0h 1m, true
+      - datetime, 0Y 0M 0D 0h 20m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_releaseSchedule_Freeze:
+      fields:
+      - change
+      placeholders:
+      - datetime, 0Y 0M 0D 0h 10m, true
+      - datetime, 0Y 0M 0D 0h 20m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    downtime_api:
+      fields:
+      - downtime
+      placeholders:
+      - unique_string
+      - datetime, 0Y 0M 0D 0h 0m, true
+      - datetime, 0Y 0M 0D 0h 20m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_Stage_Change:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_line_manager:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_mandatory_fields_with_line_manager_roles:
+      fields:
+      - title
+      - template
+      - description
+      - roles
+      placeholders:
+      - unique_string
+      - custom_lineManager
+      - custom_technician
+      local_storage_keys_required:
+      - lineManager
+      - technician
+      purpose: ui_form
+    create_request_for_NR:
+      fields:
+      - request
+      placeholders:
+      - unique_string
+      - custom_techName
+      local_storage_keys_required:
+      - techName
+      purpose: api_preprocess
+    api_create_change_with_CM_CO_CA:
+      fields:
+      - template
+      - change_requester
+      - change_type
+      - group
+      - retrospective
+      - change_owner
+      - impact
+      - change_manager
+      - urgency
+      - priority
+      - risk
+      - comment
+      - category
+      - subcategory
+      - item
+      - scheduled_start_time
+      - scheduled_end_time
+      - services
+      - assets
+      - reason_for_change
+      - title
+      - description
+      - roles
+      - attachments
+      placeholders:
+      - custom_techId
+      - custom_techId
+      - unique_string
+      - custom_changeapprover
+      - custom_techId
+      local_storage_keys_required:
+      - techId
+      - techId
+      - changeapprover
+      - techId
+      purpose: api_preprocess
+    update_form:
+      fields:
+      - urgency
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    select_roles_Column_Chooser_Listview:
+      fields:
+      - columns
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    select_CI_involved_spotedit:
+      fields:
+      - configuration_items
+      placeholders:
+      - custom_CmdbName
+      local_storage_keys_required:
+      - CmdbName
+      purpose: ui_form
+    Change_site_requester:
+      fields:
+      - title
+      - change_requester
+      - site
+      placeholders:
+      - unique_string
+      - user_name
+      - custom_siteId
+      local_storage_keys_required:
+      - siteId
+      purpose: ui_form
+    change_data_with_custom_template:
+      fields:
+      - title
+      - template
+      - stage
+      placeholders:
+      - unique_string
+      - custom_change_Template_Name
+      - custom_temp_stage
+      local_storage_keys_required:
+      - change_Template_Name
+      - temp_stage
+      purpose: ui_form
+    change_data_association:
+      fields:
+      - title
+      - template
+      - change_owner
+      - description
+      - change_requester
+      - priority
+      placeholders:
+      - unique_string
+      - user_email_id
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_data_with_custom_template_and_approver:
+      fields:
+      - title
+      - template
+      - roles
+      placeholders:
+      - unique_string
+      - custom_change_Template_Name
+      - rest_api, get, change_roles, change_roles, get_change_approver
+      - user_id
+      local_storage_keys_required:
+      - change_Template_Name
+      purpose: ui_form
+    associate_release_with_change_api:
+      fields:
+      - releases
+      placeholders:
+      - custom_releaseId
+      local_storage_keys_required:
+      - releaseId
+      purpose: ui_form
+    transition_mandatory_fields:
+      fields:
+      - urgency
+      - priority
+      - group
+      - impact
+      - category
+      - subcategory
+      - item
+      - reason_for_$(custom_workFlowModuleName)
+      - description
+      - risk
+      - scheduled_start_time
+      - scheduled_end_time
+      - services
+      placeholders:
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_data_with_change_approver:
+      fields:
+      - title
+      - roles
+      placeholders:
+      - unique_string
+      - rest_api, get, change_roles, change_roles, get_change_approver
+      - user_id
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_CABEvaluation_PendingApproval_Status:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_create_change_with_role_Custom_template:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - change_owner
+      - impact
+      - priority
+      - scheduled_start_time
+      - scheduled_end_time
+      - reason_for_change
+      - category
+      - subcategory
+      - roles
+      - item
+      - urgency
+      - services
+      - assets
+      placeholders:
+      - unique_string
+      - custom_change_Template_Name
+      - user_name
+      - user_email_id
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      - custom_changeapprover
+      - custom_technician
+      local_storage_keys_required:
+      - change_Template_Name
+      - changeapprover
+      - technician
+      purpose: api_preprocess
+    change_Api_Base_Site_Default_Temp:
+      fields:
+      - change
+      placeholders:
+      - unique_string
+      - custom_UserId
+      - custom_UserId
+      local_storage_keys_required:
+      - UserId
+      - UserId
+      purpose: ui_form
+    change_Api_Custom_Site_Default_Temp:
+      fields:
+      - change
+      placeholders:
+      - unique_string
+      - custom_UserId
+      - custom_UserId
+      - custom_entitiesId
+      local_storage_keys_required:
+      - UserId
+      - UserId
+      - entitiesId
+      purpose: ui_form
+    change_Api_Site_with_Region_Default_Temp:
+      fields:
+      - change
+      placeholders:
+      - unique_string
+      - custom_UserId
+      - custom_UserId
+      - rest_api, search, sites, name, Site $(custom_uniqueString
+      local_storage_keys_required:
+      - UserId
+      - UserId
+      purpose: ui_form
+    change_Api_Group_Default_Temp:
+      fields:
+      - change
+      placeholders:
+      - unique_string
+      - custom_UserId
+      - custom_UserId
+      - custom_entitiesId
+      local_storage_keys_required:
+      - UserId
+      - UserId
+      - entitiesId
+      purpose: ui_form
+    change_create_Api:
+      fields:
+      - change
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_Implementation_Stage_Status_InProgress:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_Release_Stage_Status_InProgress:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_Review_Stage_Status_InProgress:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Change_Close_Stage_Status_InProgress:
+      fields:
+      - stage
+      - status
+      - comment
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_with_all_time_fields:
+      fields:
+      - title
+      - template
+      - description
+      - change_requester
+      - change_owner
+      - scheduled_start_time
+      - udf_fields
+      placeholders:
+      - unique_string
+      - user_name
+      - user_name
+      - datetime
+      - datetime
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_notification_template:
+      fields:
+      - subject
+      - content
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    moduleID:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_general_template_data:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    api_valid_input_general_template1:
+      fields:
+      - title
+      - template
+      - description
+      - risk
+      - change_type
+      - change_requester
+      - impact
+      - priority
+      - scheduled_start_time
+      placeholders:
+      - unique_string
+      - user_name
+      - datetime
+      local_storage_keys_required: []
+      purpose: api_preprocess
+actions_util_deep:
+- name: clickNoteDropdown
+  params: String noteID
+  locators_used:
+  - ChangeLocators.ChangeListview.SELECTED_NOTE
+  - ChangeLocators.ChangeListview.SELECT_NOTE
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.isElementPresent
+  - actions.click
+  line_count: 3
+- name: addValueToEditor
+  params: String message
+  locators_used:
+  - ClientFrameworkLocators.FormBuilderLocators.FRAME_ZE
+  - ClientFrameworkLocators.FormBuilderLocators.TXT_EDITOR
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.switchFrame
+  - actions.type
+  - actions.switchToDefaultFrame
+  line_count: 3
+- name: clickLHSSubtab
+  params: String subtab
+  locators_used:
+  - ChangeLocators.ChangeDetailsview.LHS_SUBTAB
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 1
+- name: clickStage
+  params: String stage
+  locators_used:
+  - ChangeLocators.ChangeDetailsview.STAGES
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 1
+- name: uploadFile
+  params: String fileName, String mode
+  locators_used:
+  - ChangeLocators.ChangeDetailsview.FILE_INPUT
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.executeScript
+  - actions.type
+  line_count: 11
+- name: uploadFileInRHS
+  params: String fileName
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain: []
+  line_count: 1
+- name: uploadFileInDetails
+  params: String fileName
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain: []
+  line_count: 1
+- name: verifyDetailsAttachment
+  params: int count, ArrayList<String> filenames
+  locators_used:
+  - ChangeLocators.ChangeDetailsview.ATTACHMENT_COUNT_DETAILS
+  - ChangeLocators.ChangeDetailsview.ATTACHMENT_FILE_NAME
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.getText
+  - actions.waitForAnElementToAppear
+  - actions.getAllElements
+  line_count: 22
+- name: verifyRHSAttachment
+  params: int count, ArrayList<String> filenames
+  locators_used:
+  - ChangeLocators.ChangeDetailsview.ATTACHMENT_COUNT
+  - ChangeLocators.ChangeDetailsview.ATTACHMENT_FILE_NAME
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.getText
+  - actions.click
+  - actions.waitForAnElementToAppear
+  - actions.getAllElements
+  line_count: 23
+- name: pressEscapeKey
+  params: (none)
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain: []
+  line_count: 10
+- name: verifyAjaxMessage
+  params: String text
+  locators_used:
+  - ChangeLocators.Ajax.TEXT_AJAXMESSAGETEXT
+  - ReleaseLocators.Ajax.TEXT_AJAXMESSAGETEXT
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.waitForAnElementToAppear
+  - actions.validate.textContent
+  line_count: 3
+- name: getChangeId
+  params: (none)
+  locators_used:
+  - ChangeLocators.ChangeListview.REMOVE_HASH_REQUEST_ID
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.getText
+  line_count: 3
+- name: selectListviewExportIcon
+  params: String moduleName, String filters
+  locators_used:
+  - ChangeLocators.ChangeListview.DATAEXP
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.setTableView
+  - actions.click
+  line_count: 4
+- name: selectedDataInListviewExportIcon
+  params: String moduleName, String filters
+  locators_used:
+  - ChangeLocators.ChangeListview.DATAEXP
+  - ChangeLocators.ChangeListview.SELECT_ALL_CHECKBOX
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.setTableView
+  - actions.click
+  line_count: 5
+- name: selectTrashListviewExportIcon
+  params: String moduleName, String trashfilters
+  locators_used:
+  - ChangeLocators.ChangeListview.DATAEXP
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.setTableView
+  - actions.click
+  line_count: 4
+- name: selectOptionsinDataExportPopup
+  params: String optionsToExport
+  locators_used:
+  - ChangeLocators.ChangeListview.SELECT_EXPORT_OPTIONS
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.justClick
+  line_count: 1
+- name: resetListViewFilter
+  params: String filters
+  locators_used:
+  - ChangeLocators.ChangeListview.SELECT_FILTER
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.isElementPresent
+  - actions.listView.selectFilter
+  line_count: 7
+- name: verifyExportNotifyVerification
+  params: String moduleName
+  locators_used:
+  - ChangeLocators.ChangeListview.DELETE_EXP_NOTIFCATION
+  - ChangeLocators.ChangeListview.EXPNOTIFICATION
+  - ChangeLocators.CustomerIssue.NOTIFICAITON_POPUP
+  - ChangeLocators.Popup.SEARCH_IN_BELL_NOTIFICATION
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.refreshPage
+  - actions.waitForAjaxComplete
+  - actions.click
+  - actions.isElementPresent
+  - actions.type
+  - actions.validate.textContent
+  - actions.waitForAjaxComplete
+  - actions.hoverElement
+  - actions.click
+  line_count: 21
+- name: goToTrash
+  params: String filterName
+  locators_used:
+  - ChangeLocators.ChangeListview.CLICK_LISTVIEW_FILTERS
+  - ChangeLocators.ChangeListview.TRASH_FILTER
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 2
+- name: createReleaseSchedule
+  params: Long startDate, Long endDate
+  locators_used:
+  - CDetectionLocators.Listview.ACKNOWLEDGEMENT_BUTTON
+  - ChangeLocators.ChangeDetailsview.SCHEDULE_EDIT
+  - ChangeLocators.ChangeDetailsview.STAGES
+  - ChangeLocators.ChangeWorkflow.WORKFLOW_BY_NAME
+  local_storage_reads:
+  - changeName
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.setTableView
+  - actions.listView.columnSearch
+  - actions.click
+  - actions.detailsView.clickSubTab
+  - actions.waitForAjaxComplete
+  - actions.click
+  - actions.formBuilder.fillDateTimeField
+  - actions.click
+  line_count: 11
+- name: changeReleaseAssociation
+  params: String changeName
+  locators_used:
+  - ChangeLocators.ChangeDetailsview.STAGES
+  - ChangeLocators.ChangeListview.CHECKLIST_DROP_DRAG
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.setTableView
+  - actions.click
+  line_count: 5
+- name: changeReleaseDissociation
+  params: (none)
+  locators_used:
+  - ChangeLocators.ChangeDetailsview.STAGES
+  - RequestLocators.Global.CHECKLIST_DROP_DRAG
+  local_storage_reads:
+  - changeName
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.click
+  line_count: 5
+- name: changeAssociation
+  params: (none)
+  locators_used:
+  - ChangeLocators.ChangeListview.CONFLICT_ALERT_BUTTON
+  - ChangeLocators.ChangeListview.SELECT_CHECKBOX_WITH_ENTITYID
+  local_storage_reads:
+  - releaseId
+  local_storage_writes: []
+  action_chain:
+  - actions.detailsView.clickSubTab
+  - actions.clickByName
+  - actions.isElementPresent
+  - actions.click
+  - actions.clickByName
+  - actions.click
+  - actions.clickByName
+  - actions.click
+  - actions.validate.successMessageInAlert
+  line_count: 12
+- name: changeDissociation
+  params: (none)
+  locators_used:
+  - ChangeLocators.ChangeListview.CONFLICT_ALERT_BUTTON
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.detailsView.clickSubTab
+  - actions.clickByName
+  - actions.click
+  - actions.validate.successMessageInAlert
+  line_count: 4
+- name: choseTemplateFromNewChangeDropDown
+  params: String templateName
+  locators_used:
+  - ChangeTaskLocators.Listview.ADD_TASK_DROPDOWN
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  line_count: 2
+- name: pageSetup
+  params: (none)
+  locators_used:
+  - ChangeLocators.ChangeListview.LISTVIEW_FILTER_NAME
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.isElementPresent
+  - actions.listView.selectFilter
+  - actions.isElementPresent
+  - actions.listView.selectFilter
+  - actions.isElementPresent
+  - actions.listView.selectFilter
+  - actions.isElementPresent
+  - actions.listView.selectFilter
+  line_count: 20
+- name: gotoChangeDetailsPage
+  params: (none)
+  locators_used: []
+  local_storage_reads:
+  - changeId
+  - changeName
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.listView.columnSearch
+  - actions.navigate.toDetailsPageUsingRecordId
+  line_count: 4
+- name: deleteWorklog
+  params: (none)
+  locators_used:
+  - ChangeTaskWorklogLocators.WorklogDetailview.EDIT_DELETE_WORKLOG
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toSubTabInDetailsPage
+  - actions.hoverElement
+  - actions.click
+  - actions.validate.confirmationBoxTitleAndConfirmationText
+  - actions.clickByNameSpan
+  line_count: 5
+- name: addWorklog
+  params: JSONObject inputData
+  locators_used:
+  - ChangeTaskWorklogLocators.WorklogPopup.TYPE_HOURS
+  - ChangeTaskWorklogLocators.WorklogPopup.TYPE_INCIDENT_COST
+  - ChangeTaskWorklogLocators.WorklogPopup.TYPE_MINUTES
+  - ChangeTaskWorklogLocators.WorklogPopup.TYPE_OTHER_CHARGES
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toSubTabInDetailsPage
+  - actions.clickByNameInput
+  - actions.type
+  - actions.popUp.formBuilder.fillHTMLField
+  - actions.popUp.clickByName
+  - actions.validate.successMessageInAlert
+  line_count: 9
+- name: editWorklog
+  params: JSONObject inputData
+  locators_used:
+  - ChangeTaskWorklogLocators.WorklogDetailview.EDIT_DELETE_WORKLOG
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toSubTabInDetailsPage
+  - actions.hoverElement
+  - actions.click
+  - actions.popUp.formBuilder.fillHTMLField
+  - actions.popUp.clickByName
+  line_count: 5
+- name: navigateToAddChangePage
+  params: (none)
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.setTableView
+  - actions.clickByNameSpan
+  line_count: 4
+- name: selectWorklogType
+  params: String value
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.fillSelectFieldUsingSearch
+  line_count: 2
+- name: areListsExactlyEqual
+  params: List<String> list1, List<String> list2
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain: []
+  line_count: 8
+- name: attachmentsInDetailsPage
+  params: String fileName
+  locators_used:
+  - ChangeLocators.ChangeDetailsview.ATTACHMENT_ICON
+  - SolutionLocators.SolutionDetailView.FILE_INPUT
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.executeScript
+  - actions.click
+  - actions.type
+  - actions.clickByName
+  - actions.validate.successMessageInAlert
+  line_count: 13
+- name: addAdditionalFieldsToGeneralTemplate
+  params: JSONObject tabelset, JSONObject fieldsData
+  locators_used:
+  - IncidentTemplateLocators.Editor.SAVE_BUTTON
+  local_storage_reads:
+  - udfName
+  local_storage_writes:
+  - fieldNames
+  action_chain:
+  - actions.click
+  line_count: 12
+- name: uploadFileinSubTab
+  params: String fileName, String subtab
+  locators_used:
+  - ReleaseTemplateLocators.Attachment.ADD_ATTACHMENT
+  - ReleaseTemplateLocators.Attachment.ADD_ATTACHMENT_PLUS_ICON
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.executeScript
+  - actions.click
+  - actions.type
+  line_count: 10
+- name: createApprovalLevelsInUI
+  params: int count
+  locators_used:
+  - SDPCommonLocators.ButtonLocators.BTN_BYNAME
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toSubTabInDetailsPage
+  - actions.click
+  - actions.popUp.formBuilder.fillTextField
+  - actions.popUp.formBuilder.submit
+  line_count: 9
+- name: changeStatusFromDetailsPageRHS
+  params: JSONObject inputData
+  locators_used:
+  - ChangeLocators.ChangeDetailsview.CLICK_CHANGE_RHS_STATUS
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.formBuilder.fillInputForAnEntity
+  line_count: 3
+- name: searchAndSelectNotifyFieldInPopUp
+  params: String name
+  locators_used:
+  - WorkflowsLocators.Listview.NOTIFY_SEARCH_LOCATOR_LAST
+  - WorkflowsLocators.Listview.SELECT_NOTIFIER_LOCATOR
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.getDriver
+  - actions.type
+  - actions.click
+  line_count: 5
+- name: searchAndSelectNotifyField
+  params: String name, String id
+  locators_used:
+  - ReleaseLocators.Conversations.NOTIFY_SEARCH_LOCATOR
+  - WorkflowsLocators.Listview.NOTIFY_SEARCH_LOCATOR
+  - WorkflowsLocators.Listview.SELECT_NOTIFIER_LOCATOR
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.getDriver
+  - actions.type
+  - actions.click
+  line_count: 5
+- name: createChangeAndFillInputData
+  params: JSONObject inputData
+  locators_used: []
+  local_storage_reads:
+  - Template_Name
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.navigate.toGlobalActionInListview
+  - actions.formBuilder.fillSelectField
+  - actions.formBuilder.fillInputForAnEntity
+  line_count: 5
+- name: verifyHistoryTextContent
+  params: String operation, String expectedDescription
+  locators_used:
+  - ProblemLocators.HistoryLocators.DESCRIPTION
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.getAllElements
+  line_count: 3
+- name: retryAndPerformApprovalAction
+  params: String approvalLevelName, ApprovalAction action, String comment, int retryCount, int waitSeconds
+  locators_used:
+  - ChangeLocators.ChangeDetailsview.CLICK_APPROVE_OR_REJECT
+  - WorkflowsLocators.Listview.APPROVAL_COMMENT_SUBMIT
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.detailsView.clickSubTab
+  - actions.waitForAjaxCompleteLoad
+  - actions.waitForAnElementToAppear
+  - actions.isElementPresent
+  - actions.click
+  - actions.admin.popupFormBuilder.fillTextAreaField
+  - actions.click
+  - actions.validate.successMessageInAlert
+  line_count: 23
+- name: addChangeApprovalLevelWithAutoApproveIfSameApprover
+  params: (none)
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.waitForAjaxComplete
+  line_count: 5
+api_util_deep:
+- name: createNoteAndGetId
+  params: String apiPath, JSONObject inputData
+  api_paths: []
+  rest_methods_used:
+  - triggerRestAPIUsingInputData
+  local_storage_writes: []
+  local_storage_reads: []
+- name: createProject
+  params: String apiPath, JSONObject inputData
+  api_paths: []
+  rest_methods_used:
+  - triggerRestAPIUsingInputData
+  local_storage_writes: []
+  local_storage_reads: []
+- name: createProblem
+  params: String apiPath, JSONObject inputData
+  api_paths: []
+  rest_methods_used:
+  - triggerRestAPIUsingInputData
+  local_storage_writes: []
+  local_storage_reads: []
+- name: createRelease
+  params: String apiPath, JSONObject inputData
+  api_paths: []
+  rest_methods_used:
+  - triggerRestAPIUsingInputData
+  local_storage_writes: []
+  local_storage_reads: []
+- name: createCabName
+  params: String testCase
+  api_paths: []
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - cabmember
+  - cabId
+  - cabname
+  local_storage_reads: []
+- name: getApproversId
+  params: String changeApproverRoles
+  api_paths:
+  - change_roles
+  rest_methods_used:
+  - getEntityIdUsingSearchCriteria
+  local_storage_writes:
+  - approverId
+  local_storage_reads: []
+- name: createChange
+  params: String testCase
+  api_paths:
+  - changes
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - changeDisplayID
+  - changeId
+  - createdDate
+  - changeDisplayValue
+  - changeName
+  local_storage_reads: []
+- name: createChangeWithDescription
+  params: String descriptionData
+  api_paths:
+  - changes
+  rest_methods_used:
+  - createAndGetResponse
+  - update
+  local_storage_writes:
+  - changeId
+  - changeName
+  local_storage_reads:
+  - changeId
+- name: addApprovalLevel
+  params: JSONObject testCase
+  api_paths:
+  - changes/*/approval_levels
+  rest_methods_used:
+  - createAndGetAPIResponse
+  local_storage_writes:
+  - approvalLevelName
+  local_storage_reads:
+  - changeId
+- name: addStageAndStatus
+  params: String stageData, String statusData
+  api_paths:
+  - changes/
+  rest_methods_used:
+  - update
+  local_storage_writes:
+  - statusName
+  - stageName
+  local_storage_reads:
+  - changeId
+- name: createChangeWithDowntimeInForm
+  params: String testCase
+  api_paths:
+  - changes
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - changeid
+  - changeName
+  local_storage_reads: []
+- name: changePersonalization
+  params: (none)
+  api_paths:
+  - personalization
+  - personalization/
+  rest_methods_used:
+  - createAndGetAPIResponse
+  - getDataUsingSearchCriteria
+  - update
+  local_storage_writes: []
+  local_storage_reads: []
+- name: createChangeForConflictDetection
+  params: String inputData, String applicableFor, String data
+  api_paths:
+  - changes
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - apiPath
+  - displayValue
+  - changeId
+  - changeName
+  local_storage_reads: []
+- name: releaseScheduleAPI
+  params: String data
+  api_paths: []
+  rest_methods_used:
+  - update
+  local_storage_writes: []
+  local_storage_reads:
+  - apiPath
+- name: createDowntime
+  params: String downtimeData
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - downtimeName
+  local_storage_reads:
+  - apiPath
+- name: createDowntimeAssociation
+  params: String downtimeData
+  api_paths:
+  - /changes/
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - downtimeName
+  - downtimeId
+  local_storage_reads:
+  - changeId
+- name: associateReleaseWithChange
+  params: (none)
+  api_paths:
+  - changes/
+  - changes/*/rel/releases
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes: []
+  local_storage_reads:
+  - changeId
+- name: createApprovalLevel
+  params: (none)
+  api_paths: []
+  rest_methods_used: []
+  local_storage_writes: []
+  local_storage_reads: []
+- name: createFifteenApprovalLevelInApi
+  params: int n, JSONObject testCase
+  api_paths:
+  - changes/*/approval_levels
+  rest_methods_used:
+  - createAndGetAPIResponse
+  - getEntityIDUsingFieldValue
+  local_storage_writes:
+  - approvalLevelName
+  local_storage_reads:
+  - changeId
+preprocess_deep:
+- group: create
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createAndGetDisplayID
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: display_id
+    source_type: display_id
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createAndAddNote
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeAPIUtil.createNoteAndGetId
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: note
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - Change.NoteAndGetId
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createMultipleChange
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: change_count
+    source_type: computed
+  - key: changes
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - getName
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createrequestforchange
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: requestid
+    source_type: computed
+  - key: subject
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - ModuleConstants
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createChangeWithAssociatedSiteGroupTechnician
+  source_file: Change.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprojectsforchange
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeAPIUtil.createProject
+  - ChangeAPIUtil.createChange
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: projectid
+    source_type: computed
+  - key: subject
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - Change.Project
+  - Change.Change
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createproblemforchange
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeAPIUtil.createProblem
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: problemid
+    source_type: computed
+  - key: subject
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - Change.Problem
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createreleaseforchange
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeAPIUtil.createRelease
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: releaseId
+    source_type: computed
+  - key: releaseName
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - Change.Release
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createChangeWithChangeApprover
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls: []
+  rest_direct_calls:
+  - getEntityIdUsingSearchCriteria
+  local_storage_stores:
+  - key: changeapprover
+    source_type: computed
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createMultipleChangeWithChangeApprover
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  - getEntityIdUsingSearchCriteria
+  local_storage_stores:
+  - key: changeapprover
+    source_type: computed
+  - key: change_count
+    source_type: computed
+  - key: changes
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - getName
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createcab
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ChangeAPIUtil.createCabName
+  - ChangeAPIUtil.createChange
+  - ChangeAPIUtil.createCabName
+  rest_direct_calls:
+  - getEntityIdUsingSearchCriteria
+  local_storage_stores:
+  - key: changeapprover
+    source_type: computed
+  - key: approvalsA2AId
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - Change.CabName
+  - Change.Change
+  - Change.CabName
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createChangeWithDescription
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createChangeWithDescription
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Change.ChangeWithDescription
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createWorkflow
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls:
+  - createAndGetResponse
+  local_storage_stores:
+  - key: workflow
+    source_type: api_response_field
+  - key: workflowName
+    source_type: api_response_field
+  local_storage_reads: []
+  entities_created:
+  - workflow
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createChangeAndAsset
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createmultiplerequestandchange
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeAPIUtil.createChange
+  rest_direct_calls:
+  - create
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - request
+  - Change.Change
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: addmultiplechange
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  dataids_count: 4
+  api_util_calls:
+  - ChangeAPIUtil.addStageAndStatus
+  rest_direct_calls:
+  - create
+  - getEntityIdUsingSearchCriteria
+  local_storage_stores:
+  - key: changeapprover
+    source_type: computed
+  - key: change_count
+    source_type: computed
+  - key: changeid
+    source_type: computed
+  - key: changes
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - getName
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: changeci
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  dataids_count: 4
+  api_util_calls:
+  - AdminAPIUtil.createFGAInAPI
+  - CmdbAPIUtil.createCmdb
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: TechDisplayId
+    source_type: user_display_id
+  local_storage_reads: []
+  entities_created:
+  - Admin.FGAInAPI
+  - Cmdb.Cmdb
+  creates_user: true
+  user_role: Change_FullControl_With_CMDB
+  calls_super: false
+- group: associatechangeapprover
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  dataids_count: 5
+  api_util_calls:
+  - ChangeAPIUtil.createChangeForConflictDetection
+  - ChangeAPIUtil.releaseScheduleAPI
+  - ReleaseAPIUtil.createRelease
+  - ChangeAPIUtil.createChangeForConflictDetection
+  - ChangeAPIUtil.releaseScheduleAPI
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls:
+  - getEntityIdUsingSearchCriteria
+  local_storage_stores:
+  - key: techName
+    source_type: user_display_id
+  - key: changeapprover
+    source_type: computed
+  local_storage_reads:
+  - changeName
+  entities_created:
+  - Change.ChangeForConflictDetection
+  - Release.Release
+  - Change.ChangeForConflictDetection
+  - Release.Release
+  creates_user: true
+  user_role: sdadmin
+  calls_super: false
+- group: associatelineManagerforChangeNR
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls: []
+  rest_direct_calls:
+  - getEntityIdUsingSearchCriteria
+  local_storage_stores:
+  - key: techName
+    source_type: user_display_id
+  - key: lineManager
+    source_type: computed
+  local_storage_reads: []
+  entities_created: []
+  creates_user: true
+  user_role: sdadmin
+  calls_super: false
+- group: enabletechtonotifyforChangeNR
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: display_id
+    source_type: display_id
+  local_storage_reads: []
+  entities_created: []
+  creates_user: true
+  user_role: sdadmin
+  calls_super: false
+- group: notifywhenremovedchangeroleforChangeNR
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: display_id
+    source_type: display_id
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createrequestandchangeforChangeNR
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: techName
+    source_type: user_display_id
+  - key: requestid
+    source_type: computed
+  - key: subject
+    source_type: hardcoded
+  - key: display_id
+    source_type: display_id
+  local_storage_reads: []
+  entities_created:
+  - ModuleConstants
+  creates_user: true
+  user_role: sdadmin
+  calls_super: false
+- group: createprojectandchangeforChangeNR
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ProjectAPIUtil.createProject
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: techId
+    source_type: computed
+  - key: techName
+    source_type: user_display_id
+  - key: display_id
+    source_type: display_id
+  local_storage_reads: []
+  entities_created:
+  - Project.Project
+  creates_user: true
+  user_role: sdadmin
+  calls_super: false
+- group: changedowntimescheduledforChangeNR
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  dataids_count: 4
+  api_util_calls:
+  - CmdbAPIUtil.createCmdbWithDefault
+  - DowntimeAPIUtil.changeDowntime
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: techId
+    source_type: computed
+  - key: techName
+    source_type: user_display_id
+  local_storage_reads: []
+  entities_created:
+  - Cmdb.CmdbWithDefault
+  creates_user: true
+  user_role: sdadmin
+  calls_super: false
+- group: changedowntimecanceledforChangeNR
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  dataids_count: 4
+  api_util_calls:
+  - CmdbAPIUtil.createCmdbWithDefault
+  - DowntimeAPIUtil.changeDowntime
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: techId
+    source_type: computed
+  - key: techName
+    source_type: user_display_id
+  local_storage_reads: []
+  entities_created:
+  - Cmdb.CmdbWithDefault
+  creates_user: true
+  user_role: sdadmin
+  calls_super: false
+- group: notifyCMCOCAwhenapprovalforChangeNR
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - CustomActionsAPIUtil.createApprovals
+  - ChangeAPIUtil.addApprovalLevel
+  rest_direct_calls:
+  - getEntityIdUsingSearchCriteria
+  local_storage_stores:
+  - key: techId
+    source_type: computed
+  - key: techName
+    source_type: user_display_id
+  - key: technician
+    source_type: computed
+  - key: changeapprover
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - CustomActions.Approvals
+  creates_user: true
+  user_role: sdchangemanager
+  calls_super: false
+- group: notifychangeroleswhenchangeeditedforChangeNR
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls: []
+  rest_direct_calls:
+  - getEntityIdUsingSearchCriteria
+  local_storage_stores:
+  - key: changeapprover
+    source_type: computed
+  - key: techId
+    source_type: computed
+  - key: techName
+    source_type: user_display_id
+  local_storage_reads: []
+  entities_created: []
+  creates_user: true
+  user_role: sdchangemanager
+  calls_super: false
+- group: changetemplatewithroles
+  source_file: Change.java
+  dataids_consumed:
+  - 1
+  dataids_count: 1
+  api_util_calls:
+  - ChangeTemplateAPIUtil.createChangeTemplateWithRequesterPermission
+  - ChangeTemplateAPIUtil.updateRolesInChangeTemplate
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTemplate.ChangeTemplateWithRequesterPermission
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: changemultipleassociation
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeAPIUtil.createDowntimeAssociation
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: changeID
+    source_type: hardcoded
+  - key: apiPath
+    source_type: hardcoded
+  local_storage_reads:
+  - changeId
+  entities_created:
+  - Change.DowntimeAssociation
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: changeWithValuesInAllTimeField
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ChangeAPIUtil.createChange
+  - NotificationRulesAPIUtil.notificationTemplateId
+  - NotificationRulesAPIUtil.customizeNotificationTemplate
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: notificationTemplateType
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - Change.Change
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createchangetemplatesectionmandatory
+  source_file: Change.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls:
+  - ChangeTemplateAPIUtil.createChangeTemplate
+  - ChangeAPIUtil.createChange
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads:
+  - change_Template_Name
+  - change_TempId
+  entities_created:
+  - ChangeTemplate.ChangeTemplate
+  - Change.Change
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create
+  source_file: ChangeManagerCases.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createMultipleChangeForLinking
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.createChangeGetFullResponse
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: linkChange_second_id
+    source_type: api_response_field
+  - key: linkChange_second_name
+    source_type: api_response_field
+  - key: linkChange_third_id
+    source_type: api_response_field
+  - key: linkChange_third_name
+    source_type: api_response_field
+  local_storage_reads: []
+  entities_created:
+  - Change.ChangeGetFullResponse
+  - Change.ChangeGetFullResponse
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createAndLinkParentChange
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.linkParentChange
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: linkChange_parent_id
+    source_type: computed
+  - key: linkChange_parent_name
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - Change.ChangeGetFullResponse
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createAndLinkChildChanges
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.linkChildChange
+  - ChangeAPIUtil.linkChildChange
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: linkChange_child1_id
+    source_type: computed
+  - key: linkChange_child1_name
+    source_type: hardcoded
+  - key: linkChange_child2_id
+    source_type: computed
+  - key: linkChange_child2_name
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - Change.ChangeGetFullResponse
+  - Change.ChangeGetFullResponse
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createLinkedChildrenAndFreshChange
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.linkChildChange
+  - ChangeAPIUtil.linkChildChange
+  - ChangeAPIUtil.createChangeGetFullResponse
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: linkChange_child1_id
+    source_type: computed
+  - key: linkChange_child1_name
+    source_type: hardcoded
+  - key: linkChange_child2_id
+    source_type: computed
+  - key: linkChange_child2_name
+    source_type: hardcoded
+  - key: freshChange_id
+    source_type: hardcoded
+  - key: freshChange_name
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - Change.ChangeGetFullResponse
+  - Change.ChangeGetFullResponse
+  - Change.ChangeGetFullResponse
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createChangeInCloseStage
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createAndCloseChange
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: changeName
+    source_type: hardcoded
+  - key: closedChange_id
+    source_type: hardcoded
+  - key: closedChange_name
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - Change.AndCloseChange
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createAndLinkChildThenTrash
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.linkChildChange
+  - ChangeAPIUtil.trashChange
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: linkChange_child1_id
+    source_type: computed
+  - key: linkChange_child1_name
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - Change.ChangeGetFullResponse
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createAndLinkParentThenTrash
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.linkParentChange
+  - ChangeAPIUtil.trashChange
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: linkChange_parent_id
+    source_type: computed
+  - key: linkChange_parent_name
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - Change.ChangeGetFullResponse
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createLinkChildAndCloseChildren
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.linkChildChange
+  - ChangeAPIUtil.linkChildChange
+  - ChangeAPIUtil.closeChange
+  - ChangeAPIUtil.closeChange
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: linkChange_child1_id
+    source_type: computed
+  - key: linkChange_child1_name
+    source_type: hardcoded
+  - key: linkChange_child2_id
+    source_type: computed
+  - key: linkChange_child2_name
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - Change.ChangeGetFullResponse
+  - Change.ChangeGetFullResponse
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: rbacViewOnly
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.linkChildChange
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: linkChange_child1_id
+    source_type: hardcoded
+  - key: linkChange_child1_name
+    source_type: hardcoded
+  - key: rbacUserDisplayId
+    source_type: user_display_id
+  local_storage_reads: []
+  entities_created:
+  - Change.ChangeGetFullResponse
+  creates_user: true
+  user_role: Change_ViewOnly
+  calls_super: false
+- group: rbacModifyOnly
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.linkChildChange
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: linkChange_child1_id
+    source_type: hardcoded
+  - key: linkChange_child1_name
+    source_type: hardcoded
+  - key: rbacUserDisplayId
+    source_type: user_display_id
+  local_storage_reads: []
+  entities_created:
+  - Change.ChangeGetFullResponse
+  creates_user: true
+  user_role: Change_ModifyOnly
+  calls_super: false
+- group: rbacChangeManager
+  source_file: Change.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createChangeGetFullResponse
+  - ChangeAPIUtil.linkChildChange
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: linkChange_child1_id
+    source_type: hardcoded
+  - key: linkChange_child1_name
+    source_type: hardcoded
+  - key: rbacUserDisplayId
+    source_type: user_display_id
+  local_storage_reads: []
+  entities_created:
+  - Change.ChangeGetFullResponse
+  creates_user: true
+  user_role: SDChangeManager
+  calls_super: false

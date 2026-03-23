@@ -1,0 +1,451 @@
+# API Registry — Verified SDP API Endpoints
+# ============================================
+# Authority: Playwright MCP probing + SDP API Documentation
+# This file is the SINGLE SOURCE OF TRUTH for whether an API endpoint exists.
+#
+# The AI code generator MUST check this registry before writing any RestAPI call.
+# If an endpoint is marked `status: DOES_NOT_EXIST`, the operation MUST be done via UI.
+#
+# Status values:
+#   VERIFIED_WORKING     — tested via Playwright sdpAPICall(), returns valid response
+#   DOES_NOT_EXIST       — returns "Invalid URL" or 404 — do NOT use
+#   UNTESTED             — not yet verified — verify before using in new code
+#   DEPRECATED           — was once working, no longer supported
+#
+# Last updated: 2026-06-14
+
+modules:
+
+  changes:
+    base_path: "api/v3/changes"
+    input_wrapper: "change"
+    plural_name: "changes"
+
+    endpoints:
+      create:
+        method: POST
+        path: "changes"
+        status: VERIFIED_WORKING
+        notes: "Creates a change. Returns change object with id."
+
+      get:
+        method: GET
+        path: "changes/{id}"
+        status: VERIFIED_WORKING
+
+      update:
+        method: PUT
+        path: "changes/{id}"
+        status: VERIFIED_WORKING
+        notes: "Used for stage transitions, field updates, etc."
+
+      delete:
+        method: DELETE
+        path: "changes/{id}"
+        status: VERIFIED_WORKING
+
+      list:
+        method: GET
+        path: "changes"
+        status: VERIFIED_WORKING
+
+      move_to_trash:
+        method: DELETE
+        path: "changes/{id}/move_to_trash"
+        status: VERIFIED_WORKING
+        notes: "Moves change to trash. Returns success."
+
+      restore_from_trash:
+        method: PUT
+        path: "changes/{id}/restore_from_trash"
+        status: VERIFIED_WORKING
+        notes: "Restores from trash."
+
+      permanent_delete:
+        method: DELETE
+        path: "changes/trash/{id}"
+        status: VERIFIED_WORKING
+        notes: "Permanently deletes a trashed change."
+
+      # === LINKING — ALL NON-EXISTENT IN V3 ===
+      link_parent_change:
+        method: PUT
+        path: "changes/{id}/link_parent_change"
+        status: DOES_NOT_EXIST
+        notes: "Returns 'Invalid URL'. Linking MUST be done via UI."
+        verified_date: "2026-03-13"
+        ui_alternative: "Open Associations tab → Attach → Parent Change → search → select → save"
+
+      link_child_changes:
+        method: PUT
+        path: "changes/{id}/link_child_changes"
+        status: DOES_NOT_EXIST
+        notes: "Returns 'Invalid URL'. Linking MUST be done via UI."
+        verified_date: "2026-03-13"
+        ui_alternative: "Open Associations tab → Attach → Child Changes → search → select → save"
+
+      delink_parent_change:
+        method: PUT
+        path: "changes/{id}/delink_parent_change"
+        status: DOES_NOT_EXIST
+        verified_date: "2026-03-13"
+        ui_alternative: "Open Associations tab → Detach parent via UI button"
+
+      delink_child_change:
+        method: PUT
+        path: "changes/{id}/delink_child_change"
+        status: DOES_NOT_EXIST
+        verified_date: "2026-03-13"
+        ui_alternative: "Open Associations tab → checkbox child → Detach"
+
+      associations:
+        method: GET
+        path: "changes/{id}/associations"
+        status: DOES_NOT_EXIST
+        verified_date: "2026-03-13"
+
+      parent_change:
+        method: GET
+        path: "changes/{id}/parent_change"
+        status: DOES_NOT_EXIST
+        verified_date: "2026-03-13"
+
+      child_changes:
+        method: GET
+        path: "changes/{id}/child_changes"
+        status: DOES_NOT_EXIST
+        verified_date: "2026-03-13"
+
+      # === SUB-RESOURCES ===
+      notes_create:
+        method: POST
+        path: "changes/{id}/notes"
+        status: VERIFIED_WORKING
+        input_wrapper: "note"
+
+      notes_list:
+        method: GET
+        path: "changes/{id}/notes"
+        status: VERIFIED_WORKING
+
+      tasks_create:
+        method: POST
+        path: "changes/{id}/tasks"
+        status: VERIFIED_WORKING
+        input_wrapper: "task"
+
+      tasks_list:
+        method: GET
+        path: "changes/{id}/tasks"
+        status: VERIFIED_WORKING
+
+      worklogs_create:
+        method: POST
+        path: "changes/{id}/worklogs"
+        status: VERIFIED_WORKING
+        input_wrapper: "worklog"
+
+      worklogs_list:
+        method: GET
+        path: "changes/{id}/worklogs"
+        status: VERIFIED_WORKING
+
+  requests:
+    base_path: "api/v3/requests"
+    input_wrapper: "request"
+    plural_name: "requests"
+
+    endpoints:
+      create:
+        method: POST
+        path: "requests"
+        status: VERIFIED_WORKING
+
+      get:
+        method: GET
+        path: "requests/{id}"
+        status: VERIFIED_WORKING
+
+      update:
+        method: PUT
+        path: "requests/{id}"
+        status: VERIFIED_WORKING
+
+      delete:
+        method: DELETE
+        path: "requests/{id}"
+        status: VERIFIED_WORKING
+
+      list:
+        method: GET
+        path: "requests"
+        status: VERIFIED_WORKING
+
+      move_to_trash:
+        method: DELETE
+        path: "requests/{id}/move_to_trash"
+        status: UNTESTED
+
+      notes_create:
+        method: POST
+        path: "requests/{id}/notes"
+        status: VERIFIED_WORKING
+        input_wrapper: "note"
+
+      notes_list:
+        method: GET
+        path: "requests/{id}/notes"
+        status: VERIFIED_WORKING
+
+      tasks_create:
+        method: POST
+        path: "requests/{id}/tasks"
+        status: VERIFIED_WORKING
+        input_wrapper: "task"
+
+      worklogs_create:
+        method: POST
+        path: "requests/{id}/worklogs"
+        status: VERIFIED_WORKING
+        input_wrapper: "worklog"
+
+      resolution:
+        method: POST
+        path: "requests/{id}/resolution"
+        status: VERIFIED_WORKING
+        input_wrapper: "resolution"
+
+  solutions:
+    base_path: "api/v3/solutions"
+    input_wrapper: "solution"
+    plural_name: "solutions"
+
+    endpoints:
+      create:
+        method: POST
+        path: "solutions"
+        status: VERIFIED_WORKING
+
+      get:
+        method: GET
+        path: "solutions/{id}"
+        status: VERIFIED_WORKING
+
+      update:
+        method: PUT
+        path: "solutions/{id}"
+        status: VERIFIED_WORKING
+
+      delete:
+        method: DELETE
+        path: "solutions/{id}"
+        status: VERIFIED_WORKING
+
+      list:
+        method: GET
+        path: "solutions"
+        status: VERIFIED_WORKING
+
+      topics_list:
+        method: GET
+        path: "solution_topics"
+        status: VERIFIED_WORKING
+
+      topics_create:
+        method: POST
+        path: "solution_topics"
+        status: VERIFIED_WORKING
+        input_wrapper: "topic"
+
+  problems:
+    base_path: "api/v3/problems"
+    input_wrapper: "problem"
+    plural_name: "problems"
+
+    endpoints:
+      create:
+        method: POST
+        path: "problems"
+        status: VERIFIED_WORKING
+
+      get:
+        method: GET
+        path: "problems/{id}"
+        status: VERIFIED_WORKING
+
+      update:
+        method: PUT
+        path: "problems/{id}"
+        status: VERIFIED_WORKING
+
+      delete:
+        method: DELETE
+        path: "problems/{id}"
+        status: VERIFIED_WORKING
+
+      list:
+        method: GET
+        path: "problems"
+        status: VERIFIED_WORKING
+
+      notes_create:
+        method: POST
+        path: "problems/{id}/notes"
+        status: VERIFIED_WORKING
+        input_wrapper: "note"
+
+  projects:
+    base_path: "api/v3/projects"
+    input_wrapper: "project"
+    plural_name: "projects"
+
+    endpoints:
+      create:
+        method: POST
+        path: "projects"
+        status: VERIFIED_WORKING
+
+      get:
+        method: GET
+        path: "projects/{id}"
+        status: VERIFIED_WORKING
+
+      delete:
+        method: DELETE
+        path: "projects/{id}"
+        status: VERIFIED_WORKING
+
+      list:
+        method: GET
+        path: "projects"
+        status: VERIFIED_WORKING
+
+  releases:
+    base_path: "api/v3/releases"
+    input_wrapper: "release"
+    plural_name: "releases"
+
+    endpoints:
+      create:
+        method: POST
+        path: "releases"
+        status: VERIFIED_WORKING
+
+      get:
+        method: GET
+        path: "releases/{id}"
+        status: VERIFIED_WORKING
+
+      update:
+        method: PUT
+        path: "releases/{id}"
+        status: VERIFIED_WORKING
+
+      delete:
+        method: DELETE
+        path: "releases/{id}"
+        status: VERIFIED_WORKING
+
+      list:
+        method: GET
+        path: "releases"
+        status: VERIFIED_WORKING
+
+  assets:
+    base_path: "api/v3/assets"
+    input_wrapper: "asset"
+    plural_name: "assets"
+
+    endpoints:
+      create:
+        method: POST
+        path: "assets"
+        status: VERIFIED_WORKING
+
+      get:
+        method: GET
+        path: "assets/{id}"
+        status: VERIFIED_WORKING
+
+      delete:
+        method: DELETE
+        path: "assets/{id}"
+        status: VERIFIED_WORKING
+
+      list:
+        method: GET
+        path: "assets"
+        status: VERIFIED_WORKING
+
+  tasks:
+    base_path: "api/v3/tasks"
+    input_wrapper: "task"
+    plural_name: "tasks"
+
+    endpoints:
+      create:
+        method: POST
+        path: "tasks"
+        status: VERIFIED_WORKING
+
+      get:
+        method: GET
+        path: "tasks/{id}"
+        status: VERIFIED_WORKING
+
+      delete:
+        method: DELETE
+        path: "tasks/{id}"
+        status: VERIFIED_WORKING
+
+  contracts:
+    base_path: "api/v3/contracts"
+    input_wrapper: "contract"
+    plural_name: "contracts"
+
+    endpoints:
+      create:
+        method: POST
+        path: "contracts"
+        status: VERIFIED_WORKING
+
+      get:
+        method: GET
+        path: "contracts/{id}"
+        status: VERIFIED_WORKING
+
+      delete:
+        method: DELETE
+        path: "contracts/{id}"
+        status: VERIFIED_WORKING
+
+  purchase_orders:
+    base_path: "api/v3/purchase_orders"
+    input_wrapper: "purchase_order"
+    plural_name: "purchase_orders"
+
+    endpoints:
+      create:
+        method: POST
+        path: "purchase_orders"
+        status: VERIFIED_WORKING
+
+      get:
+        method: GET
+        path: "purchase_orders/{id}"
+        status: VERIFIED_WORKING
+
+      delete:
+        method: DELETE
+        path: "purchase_orders/{id}"
+        status: VERIFIED_WORKING
+
+
+# ============================================
+# RULES FOR AI CODE GENERATOR
+# ============================================
+# 1. Before writing any RestAPI call, look up the endpoint here
+# 2. If status = DOES_NOT_EXIST → the operation MUST use UI (Selenium clicks)
+# 3. If status = UNTESTED → verify via Playwright before using
+# 4. If endpoint not listed → it's UNTESTED — treat as unavailable
+# 5. NEVER invent API paths — if it's not here, it probably doesn't exist

@@ -17,8 +17,46 @@ This file provides the primary overview. For deeper coverage, **read these files
 | `config/framework_knowledge.md` | Debugging failures, understanding framework internals, lifecycle questions | Deep-dive knowledge — Entity/EntityCase lifecycle, REST API internals, compilation, worked examples |
 | `.github/instructions/java-test-conventions.instructions.md` | Editing any `*.java` file under `src/` (auto-loaded by `applyTo` pattern) | Concise Java-specific conventions — ActionsUtil/APIUtil patterns, data loading, locator rules |
 | `.github/instructions/test-data-format.instructions.md` | Editing `*_data.json` files (auto-loaded by `applyTo` pattern) | JSON data format rules — `{"data": {...}}` wrapper, placeholders, lookup field format |
+| `.github/instructions/token-budget-rules.instructions.md` | **ALWAYS** (auto-loaded for all files) | Token budget limits, session management, file reading rules, edit batching |
 
 > The `.github/instructions/` files are auto-loaded when editing matching files. The `config/` files are NOT auto-loaded — read them explicitly when the task involves annotations, preProcess groups, or framework internals.
+
+### Token-Efficient Context Loading (MANDATORY)
+
+> **Problem**: Framework files are 1500–2500 lines each. Reading them in full burns 12K–20K tokens
+> per read. Agents that read 3-4 files in full consume 50K+ tokens before writing a single line of code.
+
+**Loading order (from cheapest to most expensive):**
+
+| Step | File | Lines | ~Tokens | When to stop |
+|------|------|-------|---------|-------------|
+| 1 | `config/critical_rules_digest.md` | ~150 | ~1,200 | Covers 80% of rules — stop here if sufficient |
+| 2 | `config/framework_file_index.yaml` | ~140 | ~1,100 | Identifies exact chunks for targeted reads |
+| 3 | Targeted chunk from full file | 50-200 | ~400-1,600 | Read ONLY the chunk relevant to your task |
+| 4 | `CHANGELOG.md` (top 30 lines) | ~30 | ~250 | Understand recent changes |
+
+**NEVER read framework_rules.md, framework_knowledge.md, or copilot-instructions.md in full.**
+Use `config/framework_file_index.yaml` to find the relevant chunk, then `read_file(startLine, endLine)`.
+
+### Session Management Hard Rules
+
+1. **One phase per chat session** — planning, generation, execution, debugging are separate sessions
+2. **CHANGELOG.md checkpoint** — update at end of every session before closing
+3. **Batch edits** — use `multi_replace_string_in_file` for 3+ edits, never sequential single-edits
+4. **Compile once** — fix ALL errors in a batch, then recompile once (not per-error)
+5. **Never re-read** — after reading a file once, reference from memory; do not read again
+
+### Requirement-First Workflow (for tasks involving 3+ files)
+
+1. Create a requirement doc (template: `docs/templates/requirement_template.md`)
+2. Create an implementation plan (template: `docs/templates/implementation_plan_template.md`)
+3. Execute phase-by-phase, one session per phase
+4. Checkpoint to CHANGELOG.md between phases
+
+### Skills & Tools Inventory
+
+Before starting complex work, check `config/skills_manifest.yaml` for the full registry of
+available agents, LLM providers, knowledge base tools, scripts, and templates.
 
 ---
 
@@ -34,6 +72,7 @@ This file provides the primary overview. For deeper coverage, **read these files
 > **Affected agents** (require MCP tools — must run inline):
 > - `test-runner` — needs Playwright MCP for UI diagnosis
 > - `test-debugger` — needs Playwright MCP for locator inspection
+> - `product-discovery` — needs Playwright MCP to explore live SDP product
 >
 > **Safe to delegate via `runSubagent()`** (no MCP dependency):
 > - `test-generator` — only generates code, no browser needed
@@ -144,14 +183,31 @@ ai-automation-qa/
 
 ## Test Lifecycle
 
-1. **preProcess** (driven by `@AutomaterScenario(group=..., dataIds={...})`)
-   - Creates prerequisite data via REST API (templates, topics, solutions, etc.)
-   - Stores IDs/names in `LocalStorage` (e.g., `"solution_template"`, `"topic"`)
+> ⚠️ **UNIVERSAL RULE — UI Testing, NOT API Testing**: This is a UI automation framework. Every
+> `@AutomaterScenario` test method MUST exercise the actual UI flow (Selenium clicks, navigation,
+> form fills, validations). API calls in test method bodies are **FORBIDDEN** — they turn the test into
+> API testing. Only `preProcess` should use API calls for data setup. If no API exists for prerequisite
+> data, `preProcess` may use UI-based setup as a fallback. This applies to ALL features universally.
 
-2. **Test method** (in `<Entity>Base.java`)
+1. **preProcess** (driven by `@AutomaterScenario(group=..., dataIds={...})`)
+   - Creates prerequisite **entities** via REST API (changes, requests, templates, users, etc.)
+   - Sets prerequisite **state** via API (trash a change, close a change for testing something else)
+   - If API is unavailable for the prerequisite, UI-based setup is acceptable as fallback
+   - Stores IDs/names in `LocalStorage` (e.g., `"solution_template"`, `"topic"`)
+   - **NEVER performs the feature/action under test** — preProcess is for data/state setup ONLY
+
+2. **Test method** (in `<Entity>Base.java`) — **UI-ONLY**
    - Loads data: `getTestCaseData(DataConstants.SomeKey)` → resolves `$(placeholders)` from LocalStorage
-   - Navigates UI, fills form via `fillInputForAnEntity` + manual field calls
-   - Validates result
+   - **Performs the feature under test via UI** — linking, associations, form fills, status changes
+   - Validates result via UI (getText, isElementPresent, etc.)
+   - **NEVER** calls `restAPI.*` or `*APIUtil.*` methods — that would be API testing
+
+> ⚠️ **"Data creation" vs "Feature under test"**: preProcess API creates entities that need to
+> EXIST. The **action being tested** (linking, approving, associating, etc.) MUST be done via UI
+> in the test method. If a test verifies "link child change", preProcess creates the two changes,
+> the test method performs the linking via UI clicks. If a test verifies "trashed change not in
+> popup", preProcess creates + trashes one change, the test method opens the popup via UI and
+> verifies absence.
 
 3. **postProcess** — deletes created entities via REST API
 

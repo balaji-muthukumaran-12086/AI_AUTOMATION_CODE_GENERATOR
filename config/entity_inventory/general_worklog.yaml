@@ -1,0 +1,401 @@
+module: general
+entity: worklog
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/general/worklog/utils/WorklogAPIUtil.java
+  methods:
+  - name: createWorklog
+    return_type: String
+    params: TestCaseData worklogdata
+    purpose: ''
+  - name: worklogCreationInRequest
+    return_type: Map<String, JSONObject>
+    params: TestCaseData worklogdata
+    purpose: ''
+  - name: worklogCreationInProblem
+    return_type: Map<String, JSONObject>
+    params: TestCaseData worklogdata
+    purpose: ''
+  - name: worklogCreationInChange
+    return_type: Map<String, JSONObject>
+    params: TestCaseData worklogdata
+    purpose: ''
+  - name: worklogCreationInRelease
+    return_type: Map<String, JSONObject>
+    params: TestCaseData worklogdata
+    purpose: ''
+  - name: worklogCreationInProject
+    return_type: Map<String, JSONObject>
+    params: TestCaseData worklogdata
+    purpose: ''
+  - name: worklogCreationInRequestsTask
+    return_type: Map<String, JSONObject>
+    params: TestCaseData taskData, TestCaseData worklogdata
+    purpose: ''
+  - name: worklogCreationInProblemTask
+    return_type: Map<String, JSONObject>
+    params: TestCaseData taskData, TestCaseData worklogdata
+    purpose: ''
+  - name: worklogCreationInProjectTask
+    return_type: Map<String, JSONObject>
+    params: TestCaseData taskData, TestCaseData worklogdata
+    purpose: ''
+  - name: worklogCreationInChangeTask
+    return_type: Map<String, JSONObject>
+    params: TestCaseData taskData, TestCaseData worklogdata
+    purpose: ''
+  - name: worklogCreationInReleaseTask
+    return_type: Map<String, JSONObject>
+    params: TestCaseData taskData, TestCaseData worklogdata
+    purpose: ''
+  - name: worklogCreationInGeneralTask
+    return_type: Map<String, JSONObject>
+    params: TestCaseData taskData, TestCaseData worklogdata
+    purpose: ''
+  - name: editWorklogInRequest
+    return_type: Map<String, JSONObject>
+    params: TestCaseData worklogdata
+    purpose: ''
+  - name: editWorklogInProblem
+    return_type: Map<String, JSONObject>
+    params: TestCaseData worklogdata
+    purpose: ''
+  - name: editWorklogInProject
+    return_type: Map<String, JSONObject>
+    params: TestCaseData worklogdata
+    purpose: ''
+  - name: editWorklogInChange
+    return_type: Map<String, JSONObject>
+    params: TestCaseData worklogdata
+    purpose: ''
+  - name: editWorklogInRelease
+    return_type: Map<String, JSONObject>
+    params: TestCaseData worklogdata
+    purpose: ''
+  - name: editWorklogInGeneral
+    return_type: Map<String, JSONObject>
+    params: TestCaseData worklogdata
+    purpose: ''
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/general/worklog/common/WorklogDataConstants.java
+  classes:
+    WorklogDataConstants:
+    - API_WORKLOG1
+    - UI_WORKLOG1_EDITDATA
+    - API_WORKLOG2
+    - UI_WORKLOG1
+    - WOKLOG_FOR_PROJECT
+    - WOKLOG_FOR_MULTICURRENCY
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- API_Worklog1
+- API_Worklog2
+- UI_Worklog1
+- UI_Worklog1_EditData
+- Woklog_for_multicurrency
+- Woklog_for_project
+data_json_deep:
+  total_entries: 6
+  field_frequency:
+    time_spent: 6
+    owner: 4
+    description: 3
+    currency: 3
+    tech_charge: 2
+    other_charge: 2
+    exchange_rate: 2
+  all_placeholders:
+  - custom_currencyname
+  - unique_string
+  - user_id
+  - user_name
+  reuse_groups_count: 1
+  entries:
+    UI_Worklog1:
+      fields:
+      - time_spent
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    UI_Worklog1_EditData:
+      fields:
+      - time_spent
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    API_Worklog1:
+      fields:
+      - owner
+      - time_spent
+      - description
+      - currency
+      - tech_charge
+      - other_charge
+      - exchange_rate
+      placeholders:
+      - user_name
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    API_Worklog2:
+      fields:
+      - owner
+      - time_spent
+      - currency
+      - tech_charge
+      - other_charge
+      - exchange_rate
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    Woklog_for_multicurrency:
+      fields:
+      - owner
+      - time_spent
+      - description
+      - currency
+      placeholders:
+      - user_name
+      - unique_string
+      - custom_currencyname
+      local_storage_keys_required:
+      - currencyname
+      purpose: ui_form
+    Woklog_for_project:
+      fields:
+      - owner
+      - time_spent
+      - description
+      placeholders:
+      - user_id
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+api_util_deep:
+- name: createWorklog
+  params: TestCaseData worklogdata
+  api_paths:
+  - tasks
+  - tasks/
+  - tasks/*/worklogs
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - taskId
+  - taskName
+  - description
+  - worklog
+  local_storage_reads:
+  - taskId
+- name: worklogCreationInRequest
+  params: TestCaseData worklogdata
+  api_paths:
+  - requests/
+  - requests/*/worklogs
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - worklog
+  local_storage_reads:
+  - request
+- name: worklogCreationInProblem
+  params: TestCaseData worklogdata
+  api_paths:
+  - problems/
+  - problems/*/worklogs
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - worklog
+  local_storage_reads:
+  - problemId
+- name: worklogCreationInChange
+  params: TestCaseData worklogdata
+  api_paths:
+  - changes/
+  - changes/*/worklogs
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - worklog
+  local_storage_reads:
+  - changeId
+- name: worklogCreationInRelease
+  params: TestCaseData worklogdata
+  api_paths:
+  - releases/
+  - releases/*/worklogs
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - worklog
+  local_storage_reads:
+  - releaseId
+- name: worklogCreationInProject
+  params: TestCaseData worklogdata
+  api_paths:
+  - projects/
+  - projects/*/milestones/
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - worklog
+  local_storage_reads:
+  - projectId
+  - milestoneId
+  - taskId
+- name: worklogCreationInRequestsTask
+  params: TestCaseData taskData, TestCaseData worklogdata
+  api_paths:
+  - requests/
+  - requests/*/tasks/
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - worklog
+  local_storage_reads:
+  - request
+  - taskId
+- name: worklogCreationInProblemTask
+  params: TestCaseData taskData, TestCaseData worklogdata
+  api_paths:
+  - problems/
+  - problems/*/tasks/
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - worklog
+  local_storage_reads:
+  - taskId
+  - problemId
+- name: worklogCreationInProjectTask
+  params: TestCaseData taskData, TestCaseData worklogdata
+  api_paths:
+  - projects/
+  - projects/*/tasks/
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - worklog
+  local_storage_reads:
+  - projectId
+  - taskId
+- name: worklogCreationInChangeTask
+  params: TestCaseData taskData, TestCaseData worklogdata
+  api_paths:
+  - changes/
+  - changes/*/tasks/
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - worklog
+  local_storage_reads:
+  - taskId
+  - changeId
+- name: worklogCreationInReleaseTask
+  params: TestCaseData taskData, TestCaseData worklogdata
+  api_paths:
+  - releases/
+  - releases/*/tasks/
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - worklog
+  local_storage_reads:
+  - taskId
+  - releaseId
+- name: worklogCreationInGeneralTask
+  params: TestCaseData taskData, TestCaseData worklogdata
+  api_paths:
+  - tasks/
+  - tasks/*/worklogs
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - worklog
+  local_storage_reads:
+  - taskId
+- name: editWorklogInRequest
+  params: TestCaseData worklogdata
+  api_paths:
+  - requests/
+  - requests/*/worklogs/
+  rest_methods_used:
+  - update
+  local_storage_writes: []
+  local_storage_reads:
+  - request
+  - worklog
+- name: editWorklogInProblem
+  params: TestCaseData worklogdata
+  api_paths:
+  - problems/
+  - problems/*/worklogs/
+  rest_methods_used:
+  - update
+  local_storage_writes: []
+  local_storage_reads:
+  - problemId
+  - worklog
+- name: editWorklogInProject
+  params: TestCaseData worklogdata
+  api_paths:
+  - projects/
+  - projects/*/milestones/
+  rest_methods_used:
+  - update
+  local_storage_writes: []
+  local_storage_reads:
+  - projectId
+  - milestoneId
+  - taskId
+  - worklog
+- name: editWorklogInChange
+  params: TestCaseData worklogdata
+  api_paths:
+  - changes/
+  - changes/*/worklogs/
+  rest_methods_used:
+  - update
+  local_storage_writes: []
+  local_storage_reads:
+  - changeId
+  - worklog
+- name: editWorklogInRelease
+  params: TestCaseData worklogdata
+  api_paths:
+  - releases/
+  - releases/*/worklogs/
+  rest_methods_used:
+  - update
+  local_storage_writes: []
+  local_storage_reads:
+  - releaseId
+  - worklog
+- name: editWorklogInGeneral
+  params: TestCaseData worklogdata
+  api_paths:
+  - tasks/
+  - tasks/*/worklogs/
+  rest_methods_used:
+  - update
+  local_storage_writes: []
+  local_storage_reads:
+  - taskId
+  - worklog

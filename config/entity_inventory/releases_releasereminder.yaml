@@ -1,0 +1,101 @@
+module: releases
+entity: releasereminder
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/releases/releasereminder/utils/ReleaseReminderAPIUtil.java
+  methods:
+  - name: createReleaseWithReminder
+    return_type: HashMap<String, String>
+    params: String release, String reminder
+    purpose: ''
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/releases/releasereminder/common/ReleaseReminderDataConstants.java
+  classes:
+    ReleaseReminderDataConstants:
+    - EDIT_REMINDER
+    - API_VALID_INPUT_GENERAL_TEMPLATE
+    - ASSOCIATED_GROUP
+    - API_VALID_INPUT_GENERAL_TEMPLATE_WITHOUT_SITE_GROUP
+    - ASSOCIATED_CUSTOM_SITE
+    - CLOSED_REMINDER
+    - NEW_REMINDER
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/releases/releasereminder/common/ReleaseReminderAnnotationConstants.java
+  groups:
+  - constant: CREATE_RELEASE
+    value: createrelease
+  - constant: CREATE_RELEASE_WITH_REMINDER
+    value: createreleasewithreminder
+  data:
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE
+    value: api_valid_input_general_template
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_WITHOUT_SITE_GROUP
+    value: api_valid_input_general_template_without_site_group
+  - constant: ADD_REMINDER
+    value: new_reminder
+  - constant: EDIT_REMINDER
+    value: edit_reminder
+  - constant: CLOSED_REMINDER
+    value: closed_reminder
+preprocess_groups:
+- name: createrelease
+  creates_count: 0
+  local_storage_keys:
+  - releaseId
+  - reminderId
+- name: createreleasewithreminder
+  creates_count: 0
+  local_storage_keys:
+  - releaseId
+  - reminderId
+data_json_keys: []
+api_util_deep:
+- name: createReleaseWithReminder
+  params: String release, String reminder
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes: []
+  local_storage_reads:
+  - releaseId
+preprocess_deep:
+- group: createrelease
+  source_file: ReleaseReminder.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createreleasewithreminder
+  source_file: ReleaseReminder.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseReminderAPIUtil.createReleaseWithReminder
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: releaseId
+    source_type: hardcoded
+  - key: reminderId
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - ReleaseReminder.ReleaseWithReminder
+  creates_user: false
+  user_role: null
+  calls_super: false

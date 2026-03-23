@@ -1,0 +1,54 @@
+module: customers
+entity: customer
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/customers/customer/common/CustomerDataConstants.java
+  classes:
+    CustomerDataConstants:
+    - CREATE_CUSTOMER
+    - CREATE_CUSTOMER_USING_OTHER_CUSTOMER_SITE_NAME
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- create_customer
+- create_customer_using_other_customer_site_name
+data_json_deep:
+  total_entries: 2
+  field_frequency:
+    name: 2
+    default_site: 2
+  all_placeholders:
+  - custom_customerName
+  - unique_string
+  reuse_groups_count: 1
+  entries:
+    create_customer:
+      fields:
+      - name
+      - default_site
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_customer_using_other_customer_site_name:
+      fields:
+      - name
+      - default_site
+      placeholders:
+      - custom_customerName
+      - unique_string
+      local_storage_keys_required:
+      - customerName
+      purpose: api_preprocess

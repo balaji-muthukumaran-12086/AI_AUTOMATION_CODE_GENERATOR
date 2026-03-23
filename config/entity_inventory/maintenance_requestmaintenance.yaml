@@ -1,0 +1,75 @@
+module: maintenance
+entity: requestmaintenance
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/maintenance/requestmaintenance/common/RequestMaintenanceDataConstants.java
+  classes:
+    RequestMaintenanceDataConstants:
+    - API_DATA
+    - REQUEST_MAINTENANCE_WITH_HELPCARD
+    - API_DATA_ONCE
+    - CREATE_MAINTENANCE_WITH_HELPCARD_TEMPLATE
+    - API_DATA_DAILY
+    - CREATE_MAINTENNACE_USE_CUSTOM_TEMPLATE
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: create
+  creates_count: 1
+  local_storage_keys:
+  - criteriaValue
+  - CIsname
+  - template_Name
+data_json_keys: []
+preprocess_deep:
+- group: create
+  source_file: RequestMaintenance.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - IncidentTemplateAPIUtil.createIncidentTemplate
+  - IncidentTemplateAPIUtil.createIncidentTemplate
+  - ServiceCategoryAPIUtil.createServiceCategoryAPI
+  - IncidentTemplateAPIUtil.createIncidentTemplate
+  - ServiceCategoryAPIUtil.createServiceCategoryAPI
+  - IncidentTemplateAPIUtil.createIncidentTemplate
+  - IncidentTemplateAPIUtil.createIncidentTemplate
+  rest_direct_calls:
+  - create
+  - createAndGetAPIResponse
+  - createAndGetFullResponse
+  local_storage_stores:
+  - key: criteriaValue
+    source_type: computed
+  - key: CIsname
+    source_type: hardcoded
+  - key: template_Name
+    source_type: computed
+  - key: Id
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - ci_ibm_workstation
+  - request_templates
+  - sla
+  - IncidentTemplate.IncidentTemplate
+  - IncidentTemplate.IncidentTemplate
+  - ServiceCategory.ServiceCategoryAPI
+  - IncidentTemplate.IncidentTemplate
+  - ServiceCategory.ServiceCategoryAPI
+  - IncidentTemplate.IncidentTemplate
+  - IncidentTemplate.IncidentTemplate
+  creates_user: false
+  user_role: null
+  calls_super: false

@@ -1,0 +1,84 @@
+module: requests
+entity: task
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/requests/task/common/TaskDataConstants.java
+  classes:
+    TaskDataConstants:
+    - UI_REQUESTTASK1
+    - UI_REQUESTTASK2
+    - API_REQUESTTASK1
+    - API_REQUESTTASK2
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- API_RequestTask1
+- API_RequestTask2
+- UI_RequestTask1
+- UI_RequestTask2
+data_json_deep:
+  total_entries: 4
+  field_frequency:
+    title: 4
+    description: 4
+    owner: 2
+    priority: 2
+    status: 2
+    template: 1
+  all_placeholders:
+  - unique_string
+  - user_email_id
+  reuse_groups_count: 1
+  entries:
+    API_RequestTask1:
+      fields:
+      - title
+      - description
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    API_RequestTask2:
+      fields:
+      - title
+      - description
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    UI_RequestTask1:
+      fields:
+      - title
+      - description
+      - template
+      - owner
+      - priority
+      - status
+      placeholders:
+      - unique_string
+      - user_email_id
+      local_storage_keys_required: []
+      purpose: ui_form
+    UI_RequestTask2:
+      fields:
+      - title
+      - description
+      - owner
+      - priority
+      - status
+      placeholders:
+      - unique_string
+      - user_email_id
+      local_storage_keys_required: []
+      purpose: ui_form

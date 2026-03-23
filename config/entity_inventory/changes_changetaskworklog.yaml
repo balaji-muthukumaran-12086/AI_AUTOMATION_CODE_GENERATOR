@@ -1,0 +1,92 @@
+module: changes
+entity: changetaskworklog
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/changes/changetaskworklog/utils/ChangeTaskWorklogAPIUtil.java
+  methods:
+  - name: createChangeAndTaskWorklog
+    return_type: void
+    params: String changeDataID, String taskDataID, String worklogDataID
+    purpose: ''
+locators:
+  file: com/zoho/automater/selenium/modules/changes/changetaskworklog/common/ChangeTaskWorklogLocators.java
+  interfaces:
+    Listview: []
+    WorklogPopup:
+    - TYPE_HOURS
+    - TYPE_MINUTES
+    - TYPE_INCIDENT_COST
+    - TYPE_OTHER_CHARGES
+    WorklogDetailview:
+    - WORKLOG_ROW_DESCRIPTION
+    - EDIT_DELETE_WORKLOG
+    - WORKLOG_ROW
+data_constants:
+  file: com/zoho/automater/selenium/modules/changes/changetaskworklog/common/ChangeTaskWorklogDataConstants.java
+  classes:
+    ChangeTaskWorklogDataConstants:
+    - EDIT_WORKLOG
+    - ADD_WORKLOG
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/changes/changetaskworklog/common/ChangeTaskWorklogAnnotationConstants.java
+  groups: []
+  data:
+  - constant: ADD_WORKLOG
+    value: add_worklog
+preprocess_groups:
+- name: createChangeAndTask
+  creates_count: 0
+  local_storage_keys: []
+- name: createChangeAndTaskWorklog
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []
+api_util_deep:
+- name: createChangeAndTaskWorklog
+  params: String changeDataID, String taskDataID, String worklogDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - worklogId
+  - changeId
+  - worklogName
+  - changeName
+  local_storage_reads: []
+preprocess_deep:
+- group: createChangeAndTask
+  source_file: ChangeTaskWorklog.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createChangeAndTaskWorklog
+  source_file: ChangeTaskWorklog.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ChangeTaskWorklogAPIUtil.createChangeAndTaskWorklog
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTaskWorklog.ChangeAndTaskWorklog
+  creates_user: false
+  user_role: null
+  calls_super: false

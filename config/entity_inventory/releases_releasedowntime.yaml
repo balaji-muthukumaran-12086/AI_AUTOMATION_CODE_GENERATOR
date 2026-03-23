@@ -1,0 +1,221 @@
+module: releases
+entity: releasedowntime
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/releases/releasedowntime/utils/ReleaseDowntimeAPIUtil.java
+  methods:
+  - name: createDowntimeType
+    return_type: void
+    params: String testCase
+    purpose: create downtime type in the admin
+  - name: createReleaseWithDowntime
+    return_type: void
+    params: String downtimetype, String downtime
+    purpose: below lines for the getentityid
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/releases/releasedowntime/common/ReleaseDowntimeDataConstants.java
+  classes:
+    ReleaseDowntimeDataConstants:
+    - ADD_RELEASE_WITH_DOWNTIME_API_1
+    - API_VALID_INPUT_GENERAL_TEMPLATE
+    - ADD_RELEASE_WITH_DOWNTIME_API
+    - ADD_DOWNTIME_TYPE_API
+    - ADD_RELEASE_DOWNTIME_UI_FROM_POPUP_USING_PLUSICON
+    - ADD_RELEASE_WITH_DOWNTIME_UI
+    - EDIT_DOWNTIME
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/releases/releasedowntime/common/ReleaseDowntimeAnnotationConstants.java
+  groups:
+  - constant: CREATE
+    value: create
+  - constant: CREATE_AND_ADD_NOTE
+    value: createAndAddNote
+  - constant: CREATE_AND_GET_DISPLAY_ID
+    value: createAndGetDisplayID
+  - constant: CREATE_MULTIPLE_RELEASE
+    value: createMultipleRelease
+  - constant: ASSIGN_ROLE_AND_CREATE_RELEASE
+    value: assignRoleAndCreateRelease
+  - constant: ADD_DOWNTIME_TYPE_IN_RELEASE
+    value: adddowntimetypeinrelease
+  - constant: CREATE_DOWNTIME_WITH_RELEASE
+    value: createdowntimewithrelease
+  data:
+  - constant: VALID_INPUT_GENERAL_TEMPLATE
+    value: valid_input_general_template
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE
+    value: api_valid_input_general_template
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_COUNT_100
+    value: api_valid_input_general_template_count_100
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_COUNT_5
+    value: api_valid_input_general_template_count_5
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_UNASSIGNED
+    value: api_valid_input_general_template_unassigned
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_UNASSIGNED_COUNT_5
+    value: api_valid_input_general_template_unassigned_count_5
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_MANDATORY_FIELDS
+    value: api_valid_input_general_template_mandatory_fields
+  - constant: VALID_INPUT_EMERGENCY_TEMPLATE
+    value: valid_input_emergency_template
+  - constant: API_VALID_INPUT_EMERGENCY_TEMPLATE
+    value: api_valid_input_emergency_template
+  - constant: RELEASE_NOTE_INPUT
+    value: release_note_input
+  - constant: VALID_INPUT_GENERAL_TEMPLATE_COUNT_100
+    value: valid_input_general_template_count_100
+  - constant: VALID_INPUT_GENERAL_TEMPLATE_UNASSIGNED
+    value: valid_input_general_template_unassigned
+  - constant: VALID_INPUT_GENERAL_TEMPLATE_COUNT_5
+    value: valid_input_general_template_count_5
+  - constant: VALID_INPUT_GENERAL_TEMPLATE_UNASSIGNED_COUNT_5
+    value: valid_input_general_template_unassigned_count_5
+  - constant: API_CREATE_RELEASE_WITH_RELEASE_MANAGER
+    value: api_create_release_with_release_manager
+  - constant: API_ASSIGN_ROLE
+    value: api_assign_role
+  - constant: GET_RELEASE_MANAGER
+    value: get_release_manager
+  - constant: ADD_DOWNTIME_TYPE_API
+    value: Add_downtime_type_API
+  - constant: ADD_RELEASE_WITH_DOWNTIME_UI
+    value: Add_release_with_downtime_UI
+  - constant: ADD_RELEASE_WITH_DOWNTIME_API
+    value: Add_release_with_downtime_API
+  - constant: ADD_RELEASE_DOWNTIME_UI_FROM_POPUP_USING_PLUSICON
+    value: Add_release_downtime_UI_From_Popup_using_PlusIcon
+  - constant: ADD_RELEASE_WITH_DOWNTIME_API_1
+    value: Add_release_with_downtime_API_1
+  - constant: RELEASE_DATA_WITH_CIS_INVOLVED
+    value: release_data_with_CIs_involved
+preprocess_groups:
+- name: adddowntimetypeinrelease
+  creates_count: 0
+  local_storage_keys: []
+- name: createdowntimewithrelease
+  creates_count: 0
+  local_storage_keys: []
+- name: create
+  creates_count: 0
+  local_storage_keys: []
+- name: releasewithci
+  creates_count: 0
+  local_storage_keys: []
+- name: releasedowntime
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []
+api_util_deep:
+- name: createDowntimeType
+  params: String testCase
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - downtime_type_name
+  - downtime_type
+  local_storage_reads: []
+- name: createReleaseWithDowntime
+  params: String downtimetype, String downtime
+  api_paths:
+  - releases
+  rest_methods_used:
+  - create
+  - createAndGetResponse
+  local_storage_writes:
+  - downtimeName
+  - releaseId
+  - release
+  - releaseName
+  local_storage_reads:
+  - releaseId
+preprocess_deep:
+- group: adddowntimetypeinrelease
+  source_file: ReleaseDowntime.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseDowntimeAPIUtil.createDowntimeType
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseDowntime.DowntimeType
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createdowntimewithrelease
+  source_file: ReleaseDowntime.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseDowntimeAPIUtil.createReleaseWithDowntime
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseDowntime.ReleaseWithDowntime
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create
+  source_file: ReleaseDowntime.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: releasewithci
+  source_file: ReleaseDowntime.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  dataids_count: 4
+  api_util_calls:
+  - CmdbAPIUtil.createCmdb
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Cmdb.Cmdb
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: releasedowntime
+  source_file: ReleaseDowntime.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  dataids_count: 4
+  api_util_calls:
+  - CmdbAPIUtil.createCmdb
+  - ReleaseDowntimeAPIUtil.createReleaseWithDowntime
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Cmdb.Cmdb
+  - ReleaseDowntime.ReleaseWithDowntime
+  creates_user: false
+  user_role: null
+  calls_super: false

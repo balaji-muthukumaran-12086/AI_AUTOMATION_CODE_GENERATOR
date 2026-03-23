@@ -1139,6 +1139,7 @@ JSONObject inputData = DataUtil.getInputDataForRestAPI(getModuleName(), getName(
 5. **Form data encoding**: Values are JSON.stringify'd then encodeURIComponent'd
 6. **No direct HTTP**: Cannot use RestAPI outside browser context (no curl/OkHttp)
 7. **Auto-cleanup**: POST calls register for cleanup — be aware in postProcess to avoid double-delete
+8. **UI-only test methods + feature-under-test separation (UNIVERSAL RULE)**: This is a UI automation framework. Test method bodies must ONLY contain UI interactions (Selenium clicks, navigation, form fills, text validations). API calls in test methods turn it into API testing, which is NOT the purpose. **Critical distinction**: preProcess API is for **raw entity creation** (creating changes, users, templates that need to EXIST) and **state setup** (trashing, closing entities as prerequisite). The **feature/action being tested** (linking, associating, approval flow, status transitions) MUST be performed via UI in the test method — NEVER via API in preProcess. Example: if the test verifies "link child change", preProcess creates both changes (API), the test method performs the linking (UI). If the test verifies "trashed change not in popup", preProcess creates + trashes (API), the test method opens popup and verifies absence (UI).
 
 ---
 

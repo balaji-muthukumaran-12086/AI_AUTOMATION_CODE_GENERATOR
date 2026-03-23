@@ -1,0 +1,62 @@
+module: general
+entity: techavailabilitychart
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/general/techavailabilitychart/common/TechAvailabilityChartDataConstants.java
+  classes:
+    TechAvailabilityChartDataConstants:
+    - UNAVAILABILITY_API_DATA
+    - UNAVAILABILITY_API_DATA_REQUESTER
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: Create_requester_enable_delegation
+  creates_count: 0
+  local_storage_keys:
+  - UserId
+  - UserDisplayId
+- name: Create_technician_with_job_title
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []
+preprocess_deep:
+- group: Create_requester_enable_delegation
+  source_file: TechAvailabilityChart.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls:
+  - update
+  local_storage_stores:
+  - key: UserId
+    source_type: computed
+  - key: UserDisplayId
+    source_type: user_display_id
+  local_storage_reads: []
+  entities_created: []
+  creates_user: true
+  user_role: Requester
+  calls_super: false
+- group: Create_technician_with_job_title
+  source_file: TechAvailabilityChart.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: true
+  user_role: null
+  calls_super: false

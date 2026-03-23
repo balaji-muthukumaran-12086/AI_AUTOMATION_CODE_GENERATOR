@@ -1,0 +1,121 @@
+module: releases
+entity: releaseconversation
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/releases/releaseconversation/common/ReleaseConversationDataConstants.java
+  classes:
+    ReleaseConversationDataConstants:
+    - ADD_NOTE_IN_PLANNING_STAGE
+    - EDIT_NOTE_IN_REVIEW_STAGE
+    - ADD_NOTE_IN_SUBMISSION_STAGE
+    - ADD_NOTE_IN_DEVELOPMENT_STAGE
+    - EDIT_NOTE_IN_TESTING_STAGE
+    - CREATE_RELEASE_API
+    - EDIT_NOTE_IN_PLANNING_STAGE
+    - ADD_NOTE_IN_UAT_STAGE
+    - EDIT_NOTE_IN_TRAINING_STAGE
+    - ADD_NOTE_IN_REVIEW_STAGE
+    - EDIT_NOTE_IN_SUBMISSION_STAGE
+    - EDIT_NOTE_IN_DEPLOYMENT_STAGE
+    - EDIT_NOTE_IN_DEVELOPMENT_STAGE
+    - EDIT_NOTE_IN_CLOSURE_STAGE
+    - ADD_NOTE_IN_TRAINING_STAGE
+    - ADD_NOTE_IN_TESTING_STAGE
+    - EDIT_NOTE_IN_UAT_STAGE
+    - ADD_NOTE_IN_CLOSURE_STAGE
+    - ADD_NOTE_IN_DEPLOYMENT_STAGE
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/releases/releaseconversation/common/ReleaseConversationAnnotationConstants.java
+  groups:
+  - constant: CREATE
+    value: create
+  - constant: CREATE_RELEASE_WITH_CONVERSATION_NOTES
+    value: createreleasewithconversationnotes
+  data:
+  - constant: CREATE_RELEASE_API
+    value: create_release_api
+  - constant: ADD_NOTE_IN_SUBMISSION_STAGE
+    value: add_note_in_submission_stage
+  - constant: EDIT_NOTE_IN_SUBMISSION_STAGE
+    value: edit_note_in_submission_stage
+  - constant: ADD_NOTE_IN_PLANNING_STAGE
+    value: add_note_in_planning_stage
+  - constant: ADD_NOTE_IN_DEPLOYMENT_STAGE
+    value: add_note_in_deployment_stage
+  - constant: EDIT_NOTE_IN_DEPLOYMENT_STAGE
+    value: edit_note_in_deployment_stage
+  - constant: ADD_NOTE_IN_TRAINING_STAGE
+    value: add_note_in_training_stage
+  - constant: ADD_NOTE_IN_REVIEW_STAGE
+    value: add_note_in_review_stage
+  - constant: ADD_NOTE_IN_DEVELOPMENT_STAGE
+    value: add_note_in_development_stage
+  - constant: ADD_NOTE_IN_TESTING_STAGE
+    value: add_note_in_testing_stage
+  - constant: ADD_NOTE_IN_UAT_STAGE
+    value: add_note_in_uat_stage
+  - constant: ADD_NOTE_IN_CLOSURE_STAGE
+    value: add_note_in_closure_stage
+preprocess_groups:
+- name: createreleasewithconversationnotes
+  creates_count: 0
+  local_storage_keys:
+  - releaseId
+  - noteId
+  - release
+- name: create
+  creates_count: 0
+  local_storage_keys:
+  - release
+data_json_keys: []
+preprocess_deep:
+- group: createreleasewithconversationnotes
+  source_file: ReleaseConversation.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseAPIUtil.createNoteAndGetId
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: releaseId
+    source_type: computed
+  - key: noteId
+    source_type: computed
+  local_storage_reads:
+  - releaseId
+  entities_created:
+  - release
+  - Release.NoteAndGetId
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create
+  source_file: ReleaseConversation.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: release
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - release
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false

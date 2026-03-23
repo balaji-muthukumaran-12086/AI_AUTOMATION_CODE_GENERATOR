@@ -1,0 +1,324 @@
+module: reports
+entity: report
+actions_util:
+  file: com/zoho/automater/selenium/modules/reports/report/utils/ReportActionsUtil.java
+  methods:
+  - name: navigateTo
+    return_type: void
+    params: String reportTab, String folderName, String reportName
+    purpose: ''
+  - name: saveReportInSpeceficFolder
+    return_type: void
+    params: String folderName
+    purpose: ''
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/reports/report/common/ReportDataConstants.java
+  classes:
+    ReportDataConstants:
+    - CUSTOM_REPORT_WORKLOG
+    - MILESTONE_CRITERIA_CONDITION
+    - MILESTONESDESCRIPTION_CUSTOM_REPORT
+    - TASK_CRITERIA_CONDITION
+    - CUSTOM_REPORT_TASKCOMMENTS
+    - TASK_COLUMN_CHOOSER
+    - CHANGE_MAINTENCE_REPORT
+    - TASK_DESCRIPTION_CRITERIA_CONDITION
+    - TASKS_DESCRIPTION_CUSTOM_REPORT
+    - PROJECT_CUSTOM_REPORT_DESCRIPTION
+    - REQUEST_ALL_ACTIVE_REQUEST_REPORT
+    - WORKLOGDESCRIPTIONOFTASKS_CUSTOM_REPORT
+    - WORKLOG_CRITERIA_CONDITION
+    - DESCRIPTION_COLUMN_CHOOSER
+    - PROJECT_CRITERIA_CONDITION
+    - REQUEST_MAINTENANCE_REPORT
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- Request_All_Active_Request_Report
+- change_maintenance_report
+- custom_report_taskcomments
+- custom_report_worklog
+- description_column_Chooser
+- milestone_criteria_condition
+- milestonesDescription_custom_report
+- project_criteria_condition
+- project_custom_report_description
+- request_maintenance_report
+- task_column_Chooser
+- task_criteria_condition
+- task_description_criteria_condition
+- tasks_description_custom_report
+- worklogDescriptionOfTasks_custom_report
+- worklog_criteria_condition
+data_json_deep:
+  total_entries: 16
+  field_frequency:
+    columnName: 11
+    condition: 11
+    value: 11
+    title: 9
+    type: 9
+    module: 9
+    columns: 9
+    button: 1
+    dateColumn: 1
+    dateFilter: 1
+    dateFilterType: 1
+    criteria: 1
+    button1: 1
+    task_columns: 1
+    description_columns: 1
+  all_placeholders:
+  - custom_milestoneId
+  - custom_projectDisplayId
+  - custom_taskId
+  - custom_taskName
+  - custom_worklog
+  - unique_string
+  reuse_groups_count: 3
+  entries:
+    Request_All_Active_Request_Report:
+      fields:
+      - title
+      - type
+      - module
+      - button
+      - columns
+      - dateColumn
+      - dateFilter
+      - dateFilterType
+      - criteria
+      - button1
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    custom_report_taskcomments:
+      fields:
+      - title
+      - type
+      - module
+      - columnName
+      - condition
+      - value
+      - columns
+      placeholders:
+      - custom_taskId
+      local_storage_keys_required:
+      - taskId
+      purpose: ui_form
+    custom_report_worklog:
+      fields:
+      - title
+      - type
+      - module
+      - columnName
+      - condition
+      - value
+      - columns
+      placeholders:
+      - custom_worklog
+      local_storage_keys_required:
+      - worklog
+      purpose: ui_form
+    project_custom_report_description:
+      fields:
+      - title
+      - type
+      - module
+      - columnName
+      - condition
+      - value
+      - columns
+      placeholders:
+      - custom_projectDisplayId
+      local_storage_keys_required:
+      - projectDisplayId
+      purpose: ui_form
+    tasks_description_custom_report:
+      fields:
+      - title
+      - type
+      - module
+      - columnName
+      - condition
+      - value
+      - columns
+      placeholders:
+      - custom_taskId
+      local_storage_keys_required:
+      - taskId
+      purpose: ui_form
+    worklogDescriptionOfTasks_custom_report:
+      fields:
+      - title
+      - type
+      - module
+      - columnName
+      - condition
+      - value
+      - columns
+      placeholders:
+      - custom_worklog
+      local_storage_keys_required:
+      - worklog
+      purpose: ui_form
+    milestonesDescription_custom_report:
+      fields:
+      - title
+      - type
+      - module
+      - columnName
+      - condition
+      - value
+      - columns
+      placeholders:
+      - custom_milestoneId
+      local_storage_keys_required:
+      - milestoneId
+      purpose: ui_form
+    task_column_Chooser:
+      fields:
+      - task_columns
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    description_column_Chooser:
+      fields:
+      - description_columns
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    task_criteria_condition:
+      fields:
+      - columnName
+      - condition
+      - value
+      placeholders:
+      - custom_taskName
+      local_storage_keys_required:
+      - taskName
+      purpose: ui_form
+    task_description_criteria_condition:
+      fields:
+      - columnName
+      - condition
+      - value
+      placeholders:
+      - custom_taskId
+      local_storage_keys_required:
+      - taskId
+      purpose: ui_form
+    worklog_criteria_condition:
+      fields:
+      - columnName
+      - condition
+      - value
+      placeholders:
+      - custom_worklog
+      local_storage_keys_required:
+      - worklog
+      purpose: ui_form
+    project_criteria_condition:
+      fields:
+      - columnName
+      - condition
+      - value
+      placeholders:
+      - custom_projectDisplayId
+      local_storage_keys_required:
+      - projectDisplayId
+      purpose: ui_form
+    milestone_criteria_condition:
+      fields:
+      - columnName
+      - condition
+      - value
+      placeholders:
+      - custom_milestoneId
+      local_storage_keys_required:
+      - milestoneId
+      purpose: ui_form
+    change_maintenance_report:
+      fields:
+      - title
+      - type
+      - module
+      - columns
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    request_maintenance_report:
+      fields:
+      - title
+      - type
+      - module
+      - columns
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+actions_util_deep:
+- name: navigateTo
+  params: String reportTab, String folderName, String reportName
+  locators_used:
+  - ReportLocators.Listview.CLICKABLE_REPORTNAME
+  - ReportLocators.Listview.EXPAND_FOLDER
+  - ReportLocators.Listview.REPORTS_TAB
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.waitForAjaxComplete
+  - actions.navigate.toModule
+  - actions.click
+  line_count: 11
+- name: saveReportInSpeceficFolder
+  params: String folderName
+  locators_used:
+  - ReportLocators.saveReport.SAVE_IN_FOLDER_DROP_DOWN
+  - RequestLocators.Admin.TaskTemplate
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.clickByName
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.click
+  line_count: 4
+preprocess_deep:
+- group: UDFCheckinReport
+  source_file: ReportsBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls:
+  - AdditionalFieldsAPIUtil.createUDFInAPI
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - AdditionalFields.UDFInAPI
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createChangeMaintenanceReport
+  source_file: ReportsBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
