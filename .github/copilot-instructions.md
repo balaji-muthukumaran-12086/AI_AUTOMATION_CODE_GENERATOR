@@ -506,10 +506,11 @@ find $PROJECT_NAME/src -path "*modules/<module>/<entity>*" -name "*.java"
 > These contain manual test case IDs used directly as `@AutomaterScenario(id)`.
 > Template: `docs/templates/usecase_template.csv`
 >
-> **Feature documents** (`feature_*.md`) can also be placed in `$PROJECT_NAME/Testcase/` alongside
-> the use-case CSV. These provide product knowledge (UI flows, API endpoints, business rules,
-> edge cases) that the test-generator loads as context before generating code — leading to
-> significantly more accurate tests on the first pass.
+> **Feature documents** (optional) can be placed in `$PROJECT_NAME/Testcase/Feature_Document/`
+> alongside the use-case CSV. These provide **product knowledge only** (UI flows, API endpoints,
+> business rules, edge cases) that the test-generator loads as context before generating code.
+> They do NOT control what to generate — the CSV does. Feature docs improve generation accuracy.
+> Supported formats: `.md`, `.pdf`, `.docx`, `.doc`, `.txt` (PDF/DOCX are auto-converted to text).
 > Template: `docs/templates/feature_document_template.md`
 
 #### Use-Case Document Column Definitions

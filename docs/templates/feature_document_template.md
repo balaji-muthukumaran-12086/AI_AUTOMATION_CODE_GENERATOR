@@ -1,8 +1,15 @@
 # Feature Document: [Feature Name]
 
 > **Purpose**: This document gives the AI agent product knowledge about a feature's behavior,
-> UI flows, API endpoints, business rules, and edge cases. Place it alongside your use-case CSV
-> in `{PROJECT}/Testcase/` so the test-generator loads it as context before generating code.
+> UI flows, API endpoints, business rules, and edge cases. It is **optional** and provides
+> **supplementary knowledge only** — it does NOT control what test cases are generated (the
+> use-case CSV does that). Place it in `{PROJECT}/Testcase/Feature_Document/`.
+>
+> **Supported formats**: `.md`, `.pdf`, `.docx`, `.doc`, `.txt`
+> PDF and DOCX files are auto-converted to text before reading.
+>
+> **When to provide**: When the feature has complex UI flows, permission constraints,
+> non-obvious API paths, or edge cases that the generator might otherwise invent incorrectly.
 
 ---
 

@@ -157,18 +157,6 @@ fi
 USECASE_COUNT=$(find "$PROJECT/Testcase" -maxdepth 1 -type f \( -name "*.csv" -o -name "*.xls" -o -name "*.xlsx" -o -name "*.md" -o -name "*.txt" \) 2>/dev/null | wc -l)
 echo "Use-case documents in Testcase/: $USECASE_COUNT"
 ls "$PROJECT/Testcase/"*.{csv,xls,xlsx,md,txt} 2>/dev/null | head -20
-
-# Detect feature documents (naming convention: feature_*.md)
-FEATURE_DOCS=$(find "$PROJECT/Testcase" -maxdepth 1 -type f -name "feature_*.md" 2>/dev/null)
-FEATURE_DOC_COUNT=$(echo "$FEATURE_DOCS" | grep -c . 2>/dev/null || echo 0)
-if [ "$FEATURE_DOC_COUNT" -gt 0 ]; then
-  echo "📖 Feature documents found: $FEATURE_DOC_COUNT"
-  echo "$FEATURE_DOCS" | while read f; do echo "  $(basename "$f")"; done
-else
-  echo "📖 No feature documents found (feature_*.md). Generation will proceed without product context."
-  echo "   Tip: Add a feature_*.md file to Testcase/ for better generation quality."
-  echo "   Template: docs/templates/feature_document_template.md"
-fi
 ```
 
 **Step 2 — Check input sources IN PRIORITY ORDER (first match wins):**
@@ -251,7 +239,7 @@ You also did not attach a document or type a specific scenario description.
 
 I cannot generate tests without input. Please do ONE of the following:
 
-1. **Upload a Use-Case CSV** (recommended) — Place your use-case document in:
+1. **Upload a CSV** (recommended) — Place your use-case document in:
    📁 `{TARGET_PROJECT}/Testcase/`
    Then re-invoke `@test-generator`.
 
@@ -260,14 +248,6 @@ I cannot generate tests without input. Please do ONE of the following:
 
    The use case can be in **any sheet** in the workbook — all sheets are processed.
    Only rows with `UI To-be-automated = Yes` are picked for automation.
-
-   📎 **Also upload a Feature Document** (strongly recommended) — Place a `feature_*.md` file
-   alongside the CSV in the same `Testcase/` folder. This gives me **product knowledge** about
-   the feature's UI flows, API endpoints, business rules, and edge cases — leading to significantly
-   better test code on the first pass.
-
-   Feature doc template: `docs/templates/feature_document_template.md`
-   Naming convention: `feature_<descriptive_name>.md` (e.g., `feature_linking_changes.md`)
 
 2. **Attach a file** — Drag a `.csv`, `.xlsx`, `.md`, or `.txt` file directly into this chat.
 
@@ -343,47 +323,148 @@ except Exception as e:
 
 If the file is already `.csv`, skip conversion and read it directly — a single `.csv` = one sheet.
 
-#### Step A0.5 — Load Feature Documents as Product Context (STRONGLY RECOMMENDED)
+#### Step A0.5 — Feature Document Upload Prompt (OPTIONAL — Product Knowledge)
 
-Feature documents (`feature_*.md` files in `{TARGET_PROJECT}/Testcase/`) provide **product knowledge**
-that dramatically improves generation quality — accurate locators, correct API paths, valid business
-rules, and real UI flows instead of invented ones.
+> **Feature documents are NOT use-case input.** They don't control WHAT to generate (the CSV does).
+> They provide **product knowledge** that controls HOW to generate it correctly — accurate locators,
+> valid API paths, correct business rules, real UI flows. This prevents the #1 generation failure:
+> inventing behavior that doesn't exist in the product.
+>
+> Feature documents are also used during **Playwright debugging** — knowing real DOM selectors,
+> API endpoints, and edge cases makes diagnosis significantly faster.
 
-**Scan for feature docs and load them into working context:**
+**After the CSV is detected, prompt the user (ONCE) for an optional feature document:**
+
+```
+✅ Use-case document found in Testcase/.
+
+📖 **Optional: Do you have a Feature Document for this module/feature?**
+
+A feature document gives me product knowledge (UI flows, API endpoints, business rules,
+DOM locators, edge cases) that significantly improves generation accuracy.
+
+📁 Place it in: `{TARGET_PROJECT}/Testcase/Feature_Document/`
+   Supported formats: **.md, .pdf, .docx, .doc, .txt**
+   Template: `docs/templates/feature_document_template.md`
+
+Type **skip** to proceed without one, or place the file and type **continue**.
+```
+
+**Behavior by `{CMD_MODE}`:**
+- `batch_all` → Do NOT prompt. Silently check for feature docs and load if present.
+- `batch` / `interactive` / `description` → Show the prompt. Wait for `skip` or `continue`.
+
+**After the user responds (or in `batch_all` mode), scan for feature documents:**
 
 ```bash
 PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
-FEATURE_DOCS=$(find "$PROJECT/Testcase" -maxdepth 1 -type f -name "feature_*.md" 2>/dev/null)
-if [ -n "$FEATURE_DOCS" ]; then
-  echo "📖 Loading feature documents as product context..."
-  echo "$FEATURE_DOCS" | while read f; do echo "  ✓ $(basename "$f")"; done
+FEATURE_DIR="$PROJECT/Testcase/Feature_Document"
+
+if [ ! -d "$FEATURE_DIR" ]; then
+  echo "📖 No Feature_Document/ folder found. Proceeding without product context."
 else
-  echo "📖 No feature documents found (feature_*.md in Testcase/)."
-  echo "   Generation will proceed, but may invent API paths or locators."
-  echo "   For better quality, add: feature_<name>.md (template: docs/templates/feature_document_template.md)"
+  echo "📖 Scanning Feature_Document/ for product knowledge files..."
+  FEAT_COUNT=$(find "$FEATURE_DIR" -maxdepth 1 -type f \( -name "*.md" -o -name "*.pdf" -o -name "*.docx" -o -name "*.doc" -o -name "*.txt" \) 2>/dev/null | wc -l)
+  echo "   Found: $FEAT_COUNT document(s)"
+  find "$FEATURE_DIR" -maxdepth 1 -type f \( -name "*.md" -o -name "*.pdf" -o -name "*.docx" -o -name "*.doc" -o -name "*.txt" \) 2>/dev/null | while read f; do
+    echo "   • $(basename "$f")"
+  done
 fi
 ```
 
-**If feature docs are found, READ each one** using `read_file`. Extract and retain:
+**Convert non-text formats to readable text (if present):**
+
+```bash
+# Install converters if needed (only runs when PDF/DOCX files exist)
+PDF_FILES=$(find "$FEATURE_DIR" -maxdepth 1 -name "*.pdf" 2>/dev/null)
+DOCX_FILES=$(find "$FEATURE_DIR" -maxdepth 1 \( -name "*.docx" -o -name "*.doc" \) 2>/dev/null)
+
+if [ -n "$PDF_FILES" ] || [ -n "$DOCX_FILES" ]; then
+  .venv/bin/pip install pdfplumber python-docx -q 2>/dev/null
+fi
+
+# Convert all non-text feature docs to .md for uniform reading
+.venv/bin/python -c "
+import os, sys, glob
+
+feature_dir = sys.argv[1]
+converted = []
+
+# PDF → text
+for pdf in glob.glob(os.path.join(feature_dir, '*.pdf')):
+    out = os.path.splitext(pdf)[0] + '_converted.md'
+    if os.path.exists(out):
+        converted.append(('skip', os.path.basename(pdf), os.path.basename(out)))
+        continue
+    try:
+        import pdfplumber
+        text_parts = []
+        with pdfplumber.open(pdf) as p:
+            for page in p.pages:
+                t = page.extract_text()
+                if t:
+                    text_parts.append(t)
+        with open(out, 'w', encoding='utf-8') as f:
+            f.write('\n\n---\n\n'.join(text_parts))
+        converted.append(('ok', os.path.basename(pdf), os.path.basename(out)))
+    except Exception as e:
+        converted.append(('err', os.path.basename(pdf), str(e)))
+
+# DOCX/DOC → text
+for docx in glob.glob(os.path.join(feature_dir, '*.docx')) + glob.glob(os.path.join(feature_dir, '*.doc')):
+    out = os.path.splitext(docx)[0] + '_converted.md'
+    if os.path.exists(out):
+        converted.append(('skip', os.path.basename(docx), os.path.basename(out)))
+        continue
+    try:
+        from docx import Document
+        doc = Document(docx)
+        text_parts = [p.text for p in doc.paragraphs if p.text.strip()]
+        with open(out, 'w', encoding='utf-8') as f:
+            f.write('\n\n'.join(text_parts))
+        converted.append(('ok', os.path.basename(docx), os.path.basename(out)))
+    except Exception as e:
+        converted.append(('err', os.path.basename(docx), str(e)))
+
+for status, src, detail in converted:
+    if status == 'ok':    print(f'  ✓ Converted: {src} → {detail}')
+    elif status == 'skip': print(f'  ⏭ Already converted: {src}')
+    else:                  print(f'  ✗ Failed: {src} — {detail}')
+
+if not converted:
+    print('  (no PDF/DOCX files to convert)')
+" "$FEATURE_DIR"
+```
+
+**Read all feature documents** (original `.md`/`.txt` + converted `*_converted.md`) using `read_file`.
+Extract and retain as working context:
+
 1. **API Endpoints** → Use in `preProcess` groups and `*APIUtil.java` methods (prevents inventing API paths)
 2. **UI Flow steps** → Use in test method bodies and `*ActionsUtil.java` methods (correct click sequences)
 3. **Business Rules & Constraints** → Use for assertion logic and RBAC group setup
 4. **UI Elements / Locators** → Use in `*Locators.java` (real selectors, not guessed XPaths)
 5. **Edge Cases** → Inform which validation scenarios to generate
 
-> **This step prevents the #1 generation failure mode**: inventing API paths, locators, and UI flows
-> that don't exist in the product. With a feature doc, the generator has verified product knowledge.
+> **CRITICAL DISTINCTION**: The CSV drives WHAT scenarios to generate. The feature doc drives
+> HOW to generate them correctly. Feature docs are **supplementary product knowledge**, never
+> a substitute for use-case input. If no feature doc is provided, generation proceeds normally
+> but may invent API paths or locators that need fixing later during test execution.
 
-> **Feature docs are NOT use-case input** — they don't replace the CSV. They are **supplementary
-> product knowledge** that makes the CSV-driven generation more accurate. The CSV still controls
-> WHAT to generate; the feature doc controls HOW to generate it correctly.
-
-**Naming convention**: `feature_<descriptive_name>.md` (e.g., `feature_linking_changes.md`,
-`feature_solution_approval.md`). Template: `docs/templates/feature_document_template.md`
+> **Folder structure**:
+> ```
+> {TARGET_PROJECT}/Testcase/
+> ├── usecases.csv                    ← Use-case input (drives generation)
+> └── Feature_Document/               ← Product knowledge (optional)
+>     ├── linking_changes.md           ← .md (read directly)
+>     ├── approval_workflow.pdf        ← .pdf (auto-converted to _converted.md)
+>     ├── approval_workflow_converted.md  ← auto-generated from .pdf
+>     ├── field_rules.docx             ← .docx (auto-converted to _converted.md)
+>     └── field_rules_converted.md     ← auto-generated from .docx
+> ```
 
 ---
 
-**After conversion (and feature doc loading), run use-case analysis** to understand the requirement inventory before generating:
+**After conversion and optional feature doc loading, run use-case analysis** to understand the requirement inventory before generating:
 ```bash
 .venv/bin/python generate_batch_summary.py --mode usecase-analysis
 ```
