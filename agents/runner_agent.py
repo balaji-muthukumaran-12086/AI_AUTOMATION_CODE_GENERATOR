@@ -415,6 +415,25 @@ class RunnerAgent:
                 self._restore(self._standalone_default, default_backup)
                 self._restore(self._main_class, main_backup)
 
+                # Refresh entity inventory for the tested module/entity
+                try:
+                    fqcn = ENTITY_IMPORT_MAP.get(entity_class, '')
+                    parts = fqcn.split('.')
+                    if 'modules' in parts:
+                        idx = parts.index('modules')
+                        if idx + 2 < len(parts):
+                            mod, ent = parts[idx + 1], parts[idx + 2]
+                            import subprocess
+                            subprocess.run(
+                                [str(self._base / '.venv' / 'bin' / 'python'),
+                                 str(self._base / 'generate_entity_inventory.py'),
+                                 f"{mod}/{ent}"],
+                                cwd=str(self._base),
+                                capture_output=True, text=True, timeout=30,
+                            )
+                except Exception:
+                    pass  # non-critical — inventory refresh is best-effort
+
         except Exception as exc:
             return RunResult(
                 success=False,

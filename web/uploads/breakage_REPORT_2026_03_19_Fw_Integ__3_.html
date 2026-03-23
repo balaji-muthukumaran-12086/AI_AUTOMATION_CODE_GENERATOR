@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDPODQA Automation Report — 19 March 2026, 12:12 PM</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d2137'/><text y='.9em' font-size='70' x='15'>📊</text></svg>">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+:root {
+  --bg: #F2F4F7;
+  --surface: #ffffff;
+  --surface2: #F8FAFB;
+  --border: #E4E9F0;
+  --accent: #00B2BD;
+  --accent-dk: #008A93;
+  --accent2: #7C3AED;
+  --green: #10B981;
+  --red: #EF4444;
+  --orange: #F59E0B;
+  --text: #0A1A2A;
+  --muted: #6B7A8D;
+  --navy: #0A1A2A;
+  --teal: #00B2BD;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 24px rgba(0,0,0,0.10);
+  --radius: 12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+
+/* ── BANNER HEADER ── */
+#banner {
+  background: #ffffff;
+  border-top: 4px solid var(--teal);
+  border-bottom: 1px solid var(--border);
+  padding: 0; color: var(--text); position: relative; overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+#banner-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0; max-width: 1520px; margin: 0 auto; padding: 0 44px;
+}
+#banner-brand {
+  display: flex; align-items: center; gap: 13px;
+  padding: 20px 0; padding-right: 32px;
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#banner-brand .brand-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: linear-gradient(135deg, #00B2BD, #09C0A1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.35rem; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,178,189,0.35);
+}
+#banner-brand .brand-name { font-size: 1.0rem; font-weight: 800; letter-spacing: 0.2px; color: var(--text); }
+#banner-brand .brand-sub  { font-size: 0.64rem; color: var(--muted); margin-top: 2px; }
+#banner-title {
+  flex: 1; padding: 20px 36px; display: flex; flex-direction: column; justify-content: center;
+}
+#banner-title .report-label {
+  font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 2.5px; color: var(--teal); margin-bottom: 5px;
+}
+#banner-title h1 { font-size: 1.5rem; font-weight: 800; color: var(--text); line-height: 1.2; }
+#banner-title .banner-sub { font-size: 0.71rem; color: var(--muted); margin-top: 5px; }
+#banner-stats {
+  display: flex; gap: 10px; align-items: center; flex-shrink: 0;
+  padding: 20px 0; padding-left: 32px;
+  border-left: 1px solid var(--border);
+}
+.banner-stat {
+  padding: 10px 18px; text-align: center; min-width: 80px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.banner-stat .bval { font-size: 1.4rem; font-weight: 800; color: var(--teal); line-height: 1; }
+.banner-stat .blbl { font-size: 0.56rem; color: var(--muted); margin-top: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+
+/* ── MAIN CONTENT ── */
+#main { padding: 32px 44px 64px; max-width: 1520px; margin: 0 auto; }
+
+/* ── SECTION ── */
+.group-section { margin-bottom: 48px; scroll-margin-top: 60px; }
+.group-header {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 18px 24px; margin-bottom: 22px;
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--teal);
+  box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.group-header h2 {
+  font-size: 1.18rem; font-weight: 800; color: var(--text);
+  display: flex; align-items: center; gap: 10px; flex: 1;
+}
+.group-header h2 .g-index {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 8px;
+  background: linear-gradient(135deg, #00B2BD, #09C0A1);
+  color: #fff; font-size: 0.8rem; font-weight: 800; flex-shrink: 0;
+}
+.group-header .run-meta { font-size: 0.7rem; color: var(--muted); margin-left: auto; text-align: right; }
+
+/* ── HERO STATS ── */
+.hero-stats { display: flex; gap: 12px; flex-wrap: wrap; margin: 0 0 22px; }
+.hero-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
+  text-align: left; min-width: 115px; flex: 1;
+  position: relative; overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+  box-shadow: var(--shadow);
+}
+.hero-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.hero-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; border-radius: var(--radius) var(--radius) 0 0;
+}
+.hero-card.c-green::before  { background: linear-gradient(90deg, #10B981, #34D399); }
+.hero-card.c-red::before    { background: linear-gradient(90deg, #EF4444, #F87171); }
+.hero-card.c-blue::before   { background: linear-gradient(90deg, #00B2BD, #09C0A1); }
+.hero-card.c-orange::before { background: linear-gradient(90deg, #F59E0B, #FCD34D); }
+.hero-card.c-gray::before   { background: linear-gradient(90deg, #6B7A8D, #94A3B8); }
+.hero-card .val { font-size: 2rem; font-weight: 800; line-height: 1; margin-top: 4px; }
+.hero-card .lbl { font-size: 0.6rem; color: var(--muted); margin-top: 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+.hero-card.c-green  .val { color: var(--green); }
+.hero-card.c-red    .val { color: var(--red); }
+.hero-card.c-blue   .val { color: var(--teal); }
+.hero-card.c-orange .val { color: var(--orange); }
+.hero-card.c-gray   .val { color: var(--muted); }
+
+
+
+/* ── CARD (sub-section) ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); margin-bottom: 14px; overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px; cursor: pointer; user-select: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  transition: background 0.15s;
+}
+.card-head:hover { background: #EDF4F5; }
+.card-head h3 {
+  font-size: 0.86rem; font-weight: 700;
+  display: flex; align-items: center; gap: 9px; color: var(--text);
+}
+.card-head .card-icon { font-size: 1rem; }
+.card-head .toggle-arrow { color: var(--muted); font-size: 0.75rem; transition: transform 0.2s; }
+.card-body { padding: 18px 20px 16px; }
+.card.collapsed .card-body { display: none; }
+.card.collapsed .toggle-arrow { transform: rotate(-90deg); }
+.card-accent-blue   { border-top: 3px solid var(--teal); }
+.card-accent-orange { border-top: 3px solid var(--orange); }
+.card-accent-red    { border-top: 3px solid var(--red); }
+.card-accent-purple { border-top: 3px solid var(--accent2); }
+
+/* ── TABLES ── */
+.scroll-table { overflow: auto; max-height: 560px; border-radius: 10px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 0.79rem; }
+thead { position: sticky; top: 0; z-index: 2; }
+th {
+  background: var(--surface2);
+  color: var(--muted);
+  padding: 10px 12px; text-align: center;
+  font-weight: 700; font-size: 0.67rem; text-transform: uppercase;
+  letter-spacing: 0.6px; border-bottom: 2px solid var(--teal);
+  white-space: nowrap;
+}
+th:first-child { text-align: left; }
+td { padding: 8px 12px; text-align: center; border-bottom: 1px solid var(--border); color: var(--text); }
+td:first-child { text-align: left; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #EDF9FA; }
+.owner-row td { background: #E0F7F8 !important; color: #005f67; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.3px; border-top: 2px solid #9FE3E6; border-bottom: 1px solid #9FE3E6; }
+
+/* ── BADGES ── */
+.badge { display: inline-block; padding: 3px 9px; border-radius: 6px; font-size: 0.64rem; font-weight: 700; white-space: nowrap; letter-spacing: 0.3px; }
+.b-pass { background: #D1FAE5; color: #065F46; }
+.b-fail { background: #FEE2E2; color: #991B1B; }
+.b-warn { background: #FEF3C7; color: #92400E; }
+.b-ub   { background: #CCFBF1; color: #0F766E; }
+.b-pb   { background: #EDE9FE; color: #5B21B6; }
+.b-gray { background: #F1F5F9; color: #475569; }
+.b-cat  { background: #E0F2FE; color: #0369A1; }
+
+/* ── PROGRESS BAR ── */
+/* ── MODULE TABLE ── */
+.mod-table-wrap { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: #fff; }
+.mod-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.mod-table thead tr { background: #F8FAFC; border-bottom: 2px solid var(--border); }
+.mod-th { padding: 10px 20px; font-size: 0.67rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.7px; }
+.mod-th-name { text-align: left; min-width: 160px; }
+.mod-th-num  { text-align: center; width: 90px; }
+.mod-th-rate { text-align: center; width: 110px; }
+.mod-row { border-top: 1px solid var(--border); transition: background 0.12s; }
+.mod-row:nth-child(even) { background: #FAFBFC; }
+.mod-row:hover { background: #EDF9FA; }
+.mod-row-fail { border-left: 3px solid var(--red); }
+.mod-row-pass { border-left: 3px solid transparent; }
+.mod-total-row { background: #E6FDF9 !important; border-top: 2px solid var(--teal) !important; }
+.mod-total-row:hover { background: #D4F7F0 !important; }
+.mod-td-name { padding: 11px 20px; font-weight: 700; color: var(--text); font-size: 0.8rem; white-space: nowrap; }
+.mod-td-num  { padding: 11px 20px; text-align: center; font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+.mod-td-rate { padding: 8px 20px; text-align: center; }
+.mod-badge { display: inline-block; font-size: 0.72rem; font-weight: 800; padding: 4px 14px; border-radius: 999px; white-space: nowrap; min-width: 60px; text-align: center; }
+.mod-badge-green  { background: #D1FAE5; color: #065F46; }
+.mod-badge-orange { background: #FEF3C7; color: #92400E; }
+.mod-badge-red    { background: #FEE2E2; color: #991B1B; }
+
+/* ── NOTE / INFO BOX ── */
+.note {
+  background: #E6F9FA; border-left: 3px solid var(--teal);
+  padding: 10px 16px; margin: 10px 0; font-size: 0.78rem; color: #005f67;
+  border-radius: 0 8px 8px 0;
+}
+
+/* ── DIVIDER ── */
+.divider { border: none; height: 1px; background: var(--border); margin: 40px 0; }
+
+/* ── MONO ── */
+.mono { font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 0.72rem; }
+
+/* ── CROSS-GROUP SECTION ── */
+.cg-section { background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: var(--radius); padding: 18px; margin-bottom: 16px; }
+.cg-section h4 { font-size: 0.85rem; font-weight: 700; color: #5B21B6; margin-bottom: 10px; }
+
+/* ── ROW HIGHLIGHTS ── */
+.row-cross-group td { background: #F5F3FF !important; }
+.row-flaky td { background: #FFFBEB !important; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #C8D6E0; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9FB5C0; }
+
+/* ── DETAILS ── */
+details { margin: 8px 0; }
+summary { cursor: pointer; padding: 9px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; font-weight: 600; font-size: 0.79rem; color: var(--text); list-style: none; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: '▶  '; font-size: 0.62rem; color: var(--teal); }
+details[open] summary::before { content: '▼  '; }
+summary:hover { background: #EDF9FA; }
+details[open] summary { border-radius: 8px 8px 0 0; border-bottom: none; }
+details > div { background: var(--surface2); padding: 12px 16px; border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; }
+
+/* ── NAV BADGE ── */
+.nav-badge { font-size: 0.62rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<!-- BANNER HEADER -->
+<div id="banner">
+  <div id="banner-inner">
+    <div id="banner-brand">
+      <div class="brand-icon">&#128202;</div>
+      <div>
+        <div class="brand-name">SDPODQA</div>
+        <div class="brand-sub">Automation Platform</div>
+      </div>
+    </div>
+    <div id="banner-title">
+      <div class="report-label">Automation Quality Report</div>
+      <h1>SDPODQA Automation Report</h1>
+      <div class="banner-sub">Generated: 19 March 2026, 12:12 PM &nbsp;&#183;&nbsp; Server: sdpodqa-auto7.csez.zohocorpin.com:8443 &nbsp;&#183;&nbsp; vs 3 other report group(s)</div>
+    </div>
+    <div id="banner-stats">
+      <div class="banner-stat"><div class="bval">30,596</div><div class="blbl">Total Pass</div></div>
+      <div class="banner-stat"><div class="bval">64</div><div class="blbl">Total Fail</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+
+<div class="group-section" id="fw_integ">
+<div class="group-header">
+  <div>
+    <h2><span class="g-index">1</span>Fw_Integ (Mar 18, 2026)</h2>
+    <div class="run-meta">UB: <span class="mono">Mar_18_2026_Test_Fw_Integ_UserBased_14_03_59_rst_9_0_59</span> &nbsp;|&nbsp; PB: <span class="mono">Mar_18_2026_Test_Fw_Integ_PortalBased_14_03_59_rst_9_1_7</span></div>
+    <div class="run-meta" style="margin-top:4px">
+      Build Server: <a href="https://sdpodqa-auto1.csez.zohocorpin.com:9080" target="_blank" style="color:#00B2BD">https://sdpodqa-auto1.csez.zohocorpin.com:9080</a> &nbsp;|&nbsp; 
+      <a href="https://sdpodqa-auto7.csez.zohocorpin.com:8443/Qap/#/home/allRep/completed/all" target="_blank" style="color:#00B2BD">View in AALAM &#8599;</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero-stats">
+  <div class="hero-card c-green"><div class="val">30,596</div><div class="lbl">Total Pass</div></div>
+  <div class="hero-card c-red"><div class="val">64</div><div class="lbl">Total Fail</div></div>
+  <div class="hero-card c-blue"><div class="val">30,660</div><div class="lbl">Grand Total</div></div>
+  <div class="hero-card c-orange"><div class="val">2</div><div class="lbl">Flaky Still Failing</div></div>
+  <div class="hero-card c-red"><div class="val">62</div><div class="lbl">Consistent Failures</div></div>
+</div>
+
+
+<div class="card card-accent-purple">
+<div class="card-head" onclick="toggleCard(this)">
+  <h3><span class="card-icon">&#127758;</span> Cross-Group Failures — 3 Other Report Group(s)</h3>
+  <span class="toggle-arrow">&#9660;</span>
+</div>
+<div class="card-body cg-section">
+<p class="note" style="background:#f3f0ff;border-left-color:#7c3aed;color:#4c1d95">Tests that also failed in <b>other report groups</b> — likely environment or shared-component issues.</p>
+<div class="hero-stats"><div class="hero-card c-gray"><div class="val">3</div><div class="lbl">Other Report Groups Compared</div></div><div class="hero-card" style="border-bottom:3px solid #7c3aed"><div class="val" style="color:#6d28d9">54</div><div class="lbl">Also Failed in Other Report Groups</div></div><div class="hero-card c-green"><div class="val">10</div><div class="lbl">New Failures (not in other groups)</div></div></div>
+<div class="scroll-table"><table><thead><tr><th>Method Name</th><th>Class</th><th>Module</th><th>Cross-Group Occ</th><th>Seen In</th><th>Error</th></tr></thead><tbody><tr class="row-cross-group"><td style="text-align:left" class="mono">SelectAllUDFFieldinClosingRulesandCloseRequestinDV</td><td style="text-align:left" class="mono">RequestClosureRules</td><td style="text-align:left"><b>ADMIN</b></td><td style="font-weight:700;color:#4c1d95">3/3</td><td style="font-size:0.75rem;color:var(--muted)">Zsearch_Upgrade (Mar 6, 2026) (2026-03-06), ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">selectAllUDFandcloseRequestusingSpotEdit</td><td style="text-align:left" class="mono">RequestClosureRules</td><td style="text-align:left"><b>ADMIN</b></td><td style="font-weight:700;color:#4c1d95">3/3</td><td style="font-size:0.75rem;color:var(--muted)">Zsearch_Upgrade (Mar 6, 2026) (2026-03-06), ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkContractisAssociateinComputerCI</td><td style="text-align:left" class="mono">Cmdb</td><td style="text-align:left"><b>CMDB</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">Zsearch_Upgrade (Mar 6, 2026) (2026-03-06), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">createServiceRequestViaComputerCIDv</td><td style="text-align:left" class="mono">Cmdb</td><td style="text-align:left"><b>CMDB</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">Zsearch_Upgrade (Mar 6, 2026) (2026-03-06), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">modifyCitypeChildToDiffParentAndVerifyMultilineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td style="text-align:left"><b>CMDB</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">modifyCitypeChildToDiffParentAndVerifySingleLineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td style="text-align:left"><b>CMDB</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">modifyCitypeChildToParentAndVerifyMultilineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td style="text-align:left"><b>CMDB</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">modifyCitypeChildToParentAndVerifySingleLineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td style="text-align:left"><b>CMDB</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">modifyCitypeCustomChildToParentAndVerifyMultilineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td style="text-align:left"><b>CMDB</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">modifyCitypeCustomChildToParentAndVerifySingleLineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td style="text-align:left"><b>CMDB</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">modifyCitypeParenttoChildAndVerifyMultilineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td style="text-align:left"><b>CMDB</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">modifyCitypeParenttoChildAndVerifySingleLineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td style="text-align:left"><b>CMDB</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">modifyCitypeParenttoParentAndVerifyMultilineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td style="text-align:left"><b>CMDB</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">modifyCitypeParenttoParentAndVerifySingleLineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td style="text-align:left"><b>CMDB</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">addMyPendingSurveyWidget</td><td style="text-align:left" class="mono">Dashboard</td><td style="text-align:left"><b>GENERAL</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">adhocSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td style="text-align:left"><b>GENERAL</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">changeSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td style="text-align:left"><b>GENERAL</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">changeSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td style="text-align:left"><b>GENERAL</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkInRequesterPortal</td><td style="text-align:left" class="mono">RequesterHome</td><td style="text-align:left"><b>GENERAL</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkInRequesterPortal</td><td style="text-align:left" class="mono">RequesterHome</td><td style="text-align:left"><b>GENERAL</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">problemSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td style="text-align:left"><b>GENERAL</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">releaseSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td style="text-align:left"><b>GENERAL</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">releaseSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td style="text-align:left"><b>GENERAL</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">requestSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td style="text-align:left"><b>GENERAL</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">requestSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td style="text-align:left"><b>GENERAL</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">maxLengthCheckInPOCreatePage</td><td style="text-align:left" class="mono">PurchaseOrder</td><td style="text-align:left"><b>PURCHASEORDERS</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">Zsearch_Upgrade (Mar 6, 2026) (2026-03-06), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">addNotesInPopupAndLinkedRequest</td><td style="text-align:left" class="mono">IncidentRequestFullControl</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">Zsearch_Upgrade (Mar 6, 2026) (2026-03-06), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">addNotesInPopupAndLinkedRequest</td><td style="text-align:left" class="mono">IncidentRequest</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">Zsearch_Upgrade (Mar 6, 2026) (2026-03-06), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkArchivedRequestFiltersinRequesterPage</td><td style="text-align:left" class="mono">CustomerIssuesinRequest</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyLastupdatedByInctoService</td><td style="text-align:left" class="mono">IncidentRequest</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">Zsearch_Upgrade (Mar 6, 2026) (2026-03-06), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyLastupdatedByInctoServiceSDadminlogin</td><td style="text-align:left" class="mono">IncidentRequest</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">Zsearch_Upgrade (Mar 6, 2026) (2026-03-06), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyLastupdatedServiceTemplateFromIncidentTemp</td><td style="text-align:left" class="mono">IncidentRequest</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">Zsearch_Upgrade (Mar 6, 2026) (2026-03-06), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyLastupdatedServiceTemplateFromIncidentTemp</td><td style="text-align:left" class="mono">ServiceRequest</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">Zsearch_Upgrade (Mar 6, 2026) (2026-03-06), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">globalSearchCITypeSpecificFields</td><td style="text-align:left" class="mono">CustomerIssuesInCMDB</td><td style="text-align:left"><b>UNKNOWN</b></td><td style="font-weight:700;color:#7c3aed">2/3</td><td style="font-size:0.75rem;color:var(--muted)">ZSEARCH (Mar 12, 2026) (2026-03-12), RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyEnabledRequestDetailsInCopyTemp</td><td style="text-align:left" class="mono">ServiceCategory</td><td style="text-align:left"><b>ADMIN</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyEnabledRequestFormInCopyTemp</td><td style="text-align:left" class="mono">ServiceCategory</td><td style="text-align:left"><b>ADMIN</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyHelpcardInTrashedRequest</td><td style="text-align:left" class="mono">IncidentTemplate</td><td style="text-align:left"><b>ADMIN</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyHelpcardPresentWhenConvertIncidentToService</td><td style="text-align:left" class="mono">IncidentTemplate</td><td style="text-align:left"><b>ADMIN</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifySiteLookupUDFIsMandatoryInServiceReqesterLogin</td><td style="text-align:left" class="mono">ServiceCategory</td><td style="text-align:left"><b>ADMIN</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifySiteLookupUDFIsMandatoryInServiceReqesterLogin</td><td style="text-align:left" class="mono">HelpdeskConfig</td><td style="text-align:left"><b>ADMIN</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">WebDriver/Session Error</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkColumnChooser</td><td style="text-align:left" class="mono">IncidentRequestTask</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkColumnChooser</td><td style="text-align:left" class="mono">ServiceRequestTask</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkHomeTask</td><td style="text-align:left" class="mono">IncidentRequestTask</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkNumberTaskOrder</td><td style="text-align:left" class="mono">IncidentRequestTask</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkNumberTaskOrder</td><td style="text-align:left" class="mono">ServiceRequestTask</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkSaveTask</td><td style="text-align:left" class="mono">ServiceRequestTask</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkSaveTask</td><td style="text-align:left" class="mono">IncidentRequestTask</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkUpdateTask</td><td style="text-align:left" class="mono">ServiceRequestTask</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyHelpcardContentPresentInRequestForm</td><td style="text-align:left" class="mono">ServiceRequestFullControl</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyHelpcardContentPresentInRequestForm</td><td style="text-align:left" class="mono">ServiceRequest</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyHelpcardContentPresentInRequesterSRForm</td><td style="text-align:left" class="mono">ServiceRequest</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyHelpcardContentPresentInRequesterSRForm</td><td style="text-align:left" class="mono">ServiceRequestFullControl</td><td style="text-align:left"><b>REQUESTS</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">checkChecklistTriggerWithResourceViaUi</td><td style="text-align:left" class="mono">ServiceRequestTrigger</td><td style="text-align:left"><b>UNKNOWN</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="row-cross-group"><td style="text-align:left" class="mono">verifyingUnfollowOptionInUnscopedRequestfromRequesterLogin</td><td style="text-align:left" class="mono">Requester</td><td style="text-align:left"><b>UNKNOWN</b></td><td style="font-weight:700;color:#7c3aed">1/3</td><td style="font-size:0.75rem;color:var(--muted)">RS1_Hotfix (Mar 16, 2026) (2026-03-18)</td><td><span class="badge b-cat">Breakage</span></td></tr>
+</tbody></table></div>
+</div>
+</div>
+
+
+<!-- Card 1: Module-wise pass/fail -->
+<div class="card card-accent-blue">
+<div class="card-head" onclick="toggleCard(this)">
+  <h3><span class="card-icon">&#128202;</span> Module-wise Pass / Fail</h3>
+  <span class="toggle-arrow">&#9660;</span>
+</div>
+<div class="card-body">
+<p class="note">Pass = cumulative across ALL restart runs (dedup by uniqueKey, latest wins) &nbsp;|&nbsp; Fail = from final UB + PB report only</p>
+
+<div class="mod-table-wrap"><table class="mod-table">
+<thead><tr>
+  <th class="mod-th mod-th-name">Module</th>
+  <th class="mod-th mod-th-num">Pass</th>
+  <th class="mod-th mod-th-num">Fail</th>
+  <th class="mod-th mod-th-num">Total</th>
+  <th class="mod-th mod-th-rate">Pass Rate</th>
+</tr></thead>
+<tbody><tr class="mod-row mod-row-fail"><td class="mod-td-name">ADMIN</td><td class="mod-td-num" style="color:var(--green);font-weight:700">12,760</td><td class="mod-td-num"><span style="color:var(--red);font-weight:700">12</span></td><td class="mod-td-num" style="color:var(--muted)">12,772</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">99.9%</span></td></tr>
+<tr class="mod-row mod-row-pass"><td class="mod-td-name">ASSETS</td><td class="mod-td-num" style="color:var(--green);font-weight:700">1,238</td><td class="mod-td-num"><span style="color:var(--muted)">0</span></td><td class="mod-td-num" style="color:var(--muted)">1,238</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">100.0%</span></td></tr>
+<tr class="mod-row mod-row-pass"><td class="mod-td-name">CHANGES</td><td class="mod-td-num" style="color:var(--green);font-weight:700">741</td><td class="mod-td-num"><span style="color:var(--muted)">0</span></td><td class="mod-td-num" style="color:var(--muted)">741</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">100.0%</span></td></tr>
+<tr class="mod-row mod-row-fail"><td class="mod-td-name">CMDB</td><td class="mod-td-num" style="color:var(--green);font-weight:700">966</td><td class="mod-td-num"><span style="color:var(--red);font-weight:700">12</span></td><td class="mod-td-num" style="color:var(--muted)">978</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">98.7%</span></td></tr>
+<tr class="mod-row mod-row-pass"><td class="mod-td-name">CONTRACTS</td><td class="mod-td-num" style="color:var(--green);font-weight:700">667</td><td class="mod-td-num"><span style="color:var(--muted)">0</span></td><td class="mod-td-num" style="color:var(--muted)">667</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">100.0%</span></td></tr>
+<tr class="mod-row mod-row-fail"><td class="mod-td-name">GENERAL</td><td class="mod-td-num" style="color:var(--green);font-weight:700">599</td><td class="mod-td-num"><span style="color:var(--red);font-weight:700">12</span></td><td class="mod-td-num" style="color:var(--muted)">611</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">98.0%</span></td></tr>
+<tr class="mod-row mod-row-pass"><td class="mod-td-name">MAINTENANCE</td><td class="mod-td-num" style="color:var(--green);font-weight:700">14</td><td class="mod-td-num"><span style="color:var(--muted)">0</span></td><td class="mod-td-num" style="color:var(--muted)">14</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">100.0%</span></td></tr>
+<tr class="mod-row mod-row-pass"><td class="mod-td-name">PROBLEMS</td><td class="mod-td-num" style="color:var(--green);font-weight:700">1,478</td><td class="mod-td-num"><span style="color:var(--muted)">0</span></td><td class="mod-td-num" style="color:var(--muted)">1,478</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">100.0%</span></td></tr>
+<tr class="mod-row mod-row-pass"><td class="mod-td-name">PROJECTS</td><td class="mod-td-num" style="color:var(--green);font-weight:700">682</td><td class="mod-td-num"><span style="color:var(--muted)">0</span></td><td class="mod-td-num" style="color:var(--muted)">682</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">100.0%</span></td></tr>
+<tr class="mod-row mod-row-fail"><td class="mod-td-name">PURCHASEORDERS</td><td class="mod-td-num" style="color:var(--green);font-weight:700">280</td><td class="mod-td-num"><span style="color:var(--red);font-weight:700">2</span></td><td class="mod-td-num" style="color:var(--muted)">282</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">99.2%</span></td></tr>
+<tr class="mod-row mod-row-pass"><td class="mod-td-name">RELEASES</td><td class="mod-td-num" style="color:var(--green);font-weight:700">1,593</td><td class="mod-td-num"><span style="color:var(--muted)">0</span></td><td class="mod-td-num" style="color:var(--muted)">1,593</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">100.0%</span></td></tr>
+<tr class="mod-row mod-row-fail"><td class="mod-td-name">REQUESTS</td><td class="mod-td-num" style="color:var(--green);font-weight:700">6,798</td><td class="mod-td-num"><span style="color:var(--red);font-weight:700">21</span></td><td class="mod-td-num" style="color:var(--muted)">6,819</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">99.6%</span></td></tr>
+<tr class="mod-row mod-row-pass"><td class="mod-td-name">SOLUTIONS</td><td class="mod-td-num" style="color:var(--green);font-weight:700">503</td><td class="mod-td-num"><span style="color:var(--muted)">0</span></td><td class="mod-td-num" style="color:var(--muted)">503</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">100.0%</span></td></tr>
+<tr class="mod-row mod-row-pass"><td class="mod-td-name">CUSTOM_MODULE</td><td class="mod-td-num" style="color:var(--green);font-weight:700">29</td><td class="mod-td-num"><span style="color:var(--muted)">0</span></td><td class="mod-td-num" style="color:var(--muted)">29</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">100.0%</span></td></tr>
+<tr class="mod-row mod-row-fail"><td class="mod-td-name">UNKNOWN</td><td class="mod-td-num" style="color:var(--green);font-weight:700">2,248</td><td class="mod-td-num"><span style="color:var(--red);font-weight:700">5</span></td><td class="mod-td-num" style="color:var(--muted)">2,253</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">99.7%</span></td></tr>
+<tr class="mod-row mod-total-row"><td class="mod-td-name"><b>TOTAL</b></td><td class="mod-td-num" style="color:var(--green);font-weight:800">30,596</td><td class="mod-td-num" style="color:var(--red);font-weight:800">64</td><td class="mod-td-num" style="color:var(--muted);font-weight:800">30,660</td><td class="mod-td-rate"><span class="mod-badge mod-badge-green">99.7%</span></td></tr>
+</tbody></table></div>
+
+</div>
+</div>
+
+<!-- Card 2: Flaky still-failing -->
+<div class="card card-accent-orange">
+<div class="card-head" onclick="toggleCard(this)">
+  <h3><span class="card-icon">&#9888;</span> Flaky Cases — Still Failing <span class="nav-badge" style="background:#78350f;color:#fcd34d;border:1px solid #f97316">2</span></h3>
+  <span class="toggle-arrow">&#9660;</span>
+</div>
+<div class="card-body">
+<p class="note">Tests with mixed pass/fail history across restarts that <b>still fail</b> in the final run.</p>
+<details><summary>Error Category Breakdown</summary><div><div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="min-width:180px;text-align:right;font-size:0.8rem">Breakage</span><div style="height:18px;border-radius:3px;background:#e74c3c;width:300px;padding:0 6px;color:white;font-size:0.7rem;display:flex;align-items:center">2</div></div>
+</div></details>
+
+<div class="scroll-table"><table>
+<thead><tr><th>#</th><th>Method Name</th><th>Class</th><th>Type</th>
+<th>Fail%</th><th>Pass</th><th>Fail</th><th>Runs</th><th>Error</th><th>Run History</th></tr></thead>
+<tbody><tr class="row-flaky"><td>1</td><td style="text-align:left" class="mono">createFifteenApprovalsInChangeForEachStage</td><td style="text-align:left" class="mono">DetailsView</td><td><span class="badge b-ub">UB</span></td><td style="color:var(--green);font-weight:700">14%</td><td style="color:var(--green)">6</td><td style="color:var(--red)">1</td><td style="color:var(--muted)">7</td><td><span class="badge b-cat">Breakage</span></td><td class="mono" style="font-size:0.65rem"><span style="color:var(--green)" title="14_03_59: passed">&#10003;</span> <span style="color:var(--green)" title="rst_21_4_15: passed">&#10003;</span> <span style="color:var(--green)" title="rst_21_54_28: passed">&#10003;</span> <span style="color:var(--green)" title="rst_22_44_41: passed">&#10003;</span> <span style="color:var(--green)" title="rst_23_24_54: passed">&#10003;</span> <span style="color:var(--green)" title="rst_0_5_7: passed">&#10003;</span> <span style="color:var(--red)" title="rst_9_0_59: newcase_breakageRepeated">&#10007;</span></td></tr>
+<tr class="row-flaky"><td>2</td><td style="text-align:left" class="mono">checkforSLAViolationCriteriaTemplatCase</td><td style="text-align:left" class="mono">ServiceSla</td><td><span class="badge b-pb">PB</span></td><td style="color:var(--green);font-weight:700">14%</td><td style="color:var(--green)">6</td><td style="color:var(--red)">1</td><td style="color:var(--muted)">7</td><td><span class="badge b-cat">Breakage</span></td><td class="mono" style="font-size:0.65rem"><span style="color:var(--green)" title="14_03_59: passed">&#10003;</span> <span style="color:var(--green)" title="rst_21_54_17: passed">&#10003;</span> <span style="color:var(--green)" title="rst_22_34_30: passed">&#10003;</span> <span style="color:var(--green)" title="rst_23_4_42: passed">&#10003;</span> <span style="color:var(--green)" title="rst_23_34_54: passed">&#10003;</span> <span style="color:var(--green)" title="rst_0_5_6: passed">&#10003;</span> <span style="color:var(--red)" title="rst_9_1_7: newcase_breakageRepeated">&#10007;</span></td></tr>
+</tbody></table></div>
+
+</div>
+</div>
+
+<!-- Card 3: Failure run history -->
+<div class="card card-accent-red">
+<div class="card-head" onclick="toggleCard(this)">
+  <h3><span class="card-icon">&#128683;</span> Failed Cases — Run History <span class="nav-badge" style="background:#7f1d1d;color:#fca5a5;border:1px solid #ef4444">64</span></h3>
+  <span class="toggle-arrow">&#9660;</span>
+</div>
+<div class="card-body">
+<p class="note">
+  <span class="badge b-warn">FLAKY</span> = passed in some restart &nbsp;|&nbsp;
+  <span class="badge b-fail">CONSISTENT</span> = never passed across restarts
+  &nbsp;|&nbsp; <b>Cross-Group</b> = seen in other report groups (3 compared)
+</p>
+<details><summary>Failure Category Breakdown</summary><div><div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="min-width:180px;text-align:right;font-size:0.8rem">Breakage</span><div style="height:18px;border-radius:3px;background:#3498db;width:295px;padding:0 6px;color:white;font-size:0.7rem;display:flex;align-items:center">63</div></div>
+<div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="min-width:180px;text-align:right;font-size:0.8rem">WebDriver/Session Error</span><div style="height:18px;border-radius:3px;background:#3498db;width:20px;padding:0 6px;color:white;font-size:0.7rem;display:flex;align-items:center">1</div></div>
+</div></details>
+
+<div class="scroll-table"><table>
+<thead><tr><th>#</th><th>Module</th><th>Type</th><th>Method Name</th><th>Class</th>
+<th>Pattern</th><th>Error</th></tr></thead>
+<tbody><tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; balaji.mr &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(1 failure)</span></td></tr>
+<tr><td style="color:var(--muted)">1</td><td style="text-align:left"><b>UNKNOWN</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">createFifteenApprovalsInChangeForEachStage</td><td style="text-align:left" class="mono">DetailsView</td><td><span class="badge b-warn">FLAKY</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; balaji.muthukumaran &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(1 failure)</span></td></tr>
+<tr><td style="color:var(--muted)">2</td><td style="text-align:left"><b>ADMIN</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">checkforSLAViolationCriteriaTemplatCase</td><td style="text-align:left" class="mono">ServiceSla</td><td><span class="badge b-warn">FLAKY</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; binesh.nb &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(14 failures)</span></td></tr>
+<tr><td style="color:var(--muted)">3</td><td style="text-align:left"><b>CMDB</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">modifyCitypeChildToDiffParentAndVerifyMultilineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">4</td><td style="text-align:left"><b>CMDB</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">modifyCitypeChildToDiffParentAndVerifySingleLineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">5</td><td style="text-align:left"><b>CMDB</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">modifyCitypeChildToParentAndVerifyMultilineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">6</td><td style="text-align:left"><b>CMDB</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">modifyCitypeChildToParentAndVerifySingleLineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">7</td><td style="text-align:left"><b>CMDB</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">modifyCitypeCustomChildToParentAndVerifyMultilineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">8</td><td style="text-align:left"><b>CMDB</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">modifyCitypeCustomChildToParentAndVerifySingleLineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">9</td><td style="text-align:left"><b>CMDB</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">modifyCitypeParenttoChildAndVerifyMultilineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">10</td><td style="text-align:left"><b>CMDB</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">modifyCitypeParenttoChildAndVerifySingleLineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">11</td><td style="text-align:left"><b>CMDB</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">modifyCitypeParenttoParentAndVerifyMultilineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">12</td><td style="text-align:left"><b>CMDB</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">modifyCitypeParenttoParentAndVerifySingleLineUdf</td><td style="text-align:left" class="mono">Cmdb</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">13</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">verifyLastupdatedByInctoService</td><td style="text-align:left" class="mono">IncidentRequest</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">14</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">verifyLastupdatedByInctoServiceSDadminlogin</td><td style="text-align:left" class="mono">IncidentRequest</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">15</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">verifyLastupdatedServiceTemplateFromIncidentTemp</td><td style="text-align:left" class="mono">IncidentRequest</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">16</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">verifyLastupdatedServiceTemplateFromIncidentTemp</td><td style="text-align:left" class="mono">ServiceRequest</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; jaya.kumar &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(5 failures)</span></td></tr>
+<tr><td style="color:var(--muted)">17</td><td style="text-align:left"><b>ADMIN</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">SelectAllUDFFieldinClosingRulesandCloseRequestinDV</td><td style="text-align:left" class="mono">RequestClosureRules</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">18</td><td style="text-align:left"><b>ADMIN</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">selectAllUDFandcloseRequestusingSpotEdit</td><td style="text-align:left" class="mono">RequestClosureRules</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">19</td><td style="text-align:left"><b>CMDB</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">checkContractisAssociateinComputerCI</td><td style="text-align:left" class="mono">Cmdb</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">20</td><td style="text-align:left"><b>CMDB</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">createServiceRequestViaComputerCIDv</td><td style="text-align:left" class="mono">Cmdb</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">21</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">checkArchivedRequestFiltersinRequesterPage</td><td style="text-align:left" class="mono">CustomerIssuesinRequest</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; karthika.ravichandran &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(1 failure)</span></td></tr>
+<tr><td style="color:var(--muted)">22</td><td style="text-align:left"><b>UNKNOWN</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">checkChecklistTriggerWithResourceViaUi</td><td style="text-align:left" class="mono">ServiceRequestTrigger</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; muthusivabalan.s &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(17 failures)</span></td></tr>
+<tr><td style="color:var(--muted)">23</td><td style="text-align:left"><b>ADMIN</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">notifyUserWhenAssignedAnyChangeRolesForEmailNotifications</td><td style="text-align:left" class="mono">ChangeNotification</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">24</td><td style="text-align:left"><b>ADMIN</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">verifySiteLookupUDFIsMandatoryInServiceReqesterLogin</td><td style="text-align:left" class="mono">ServiceCategory</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">25</td><td style="text-align:left"><b>ADMIN</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">verifySiteLookupUDFIsMandatoryInServiceReqesterLogin</td><td style="text-align:left" class="mono">HelpdeskConfig</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">26</td><td style="text-align:left"><b>ADMIN</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">verifySiteLookupUDFIsMandatoryInServiceReqesterLogin</td><td style="text-align:left" class="mono">HelpdeskConfig</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">WebDriver/Session Error</span></td></tr>
+<tr><td style="color:var(--muted)">27</td><td style="text-align:left"><b>ADMIN</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">violatedErrorsShouldNotShownWhileApproverApproved</td><td style="text-align:left" class="mono">ChangeClosureRules</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">28</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">addNotesInPopupAndLinkedRequest</td><td style="text-align:left" class="mono">IncidentRequestFullControl</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">29</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">addNotesInPopupAndLinkedRequest</td><td style="text-align:left" class="mono">IncidentRequest</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">30</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">checkColumnChooser</td><td style="text-align:left" class="mono">IncidentRequestTask</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">31</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">checkColumnChooser</td><td style="text-align:left" class="mono">ServiceRequestTask</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">32</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">checkColumnChooser</td><td style="text-align:left" class="mono">ServiceRequestTask</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">33</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">checkHomeTask</td><td style="text-align:left" class="mono">IncidentRequestTask</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">34</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">checkNumberTaskOrder</td><td style="text-align:left" class="mono">IncidentRequestTask</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">35</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">checkNumberTaskOrder</td><td style="text-align:left" class="mono">ServiceRequestTask</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">36</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">checkSaveTask</td><td style="text-align:left" class="mono">ServiceRequestTask</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">37</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">checkSaveTask</td><td style="text-align:left" class="mono">IncidentRequestTask</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">38</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">checkUpdateTask</td><td style="text-align:left" class="mono">ServiceRequestTask</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">39</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">checkUpdateTask</td><td style="text-align:left" class="mono">ServiceRequestTask</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; ompirakash.s &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(1 failure)</span></td></tr>
+<tr><td style="color:var(--muted)">40</td><td style="text-align:left"><b>PURCHASEORDERS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">attachPoAsPDFInInvoiceReceivedPO</td><td style="text-align:left" class="mono">PurchaseOrder</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; rajeshwaran.a &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(1 failure)</span></td></tr>
+<tr><td style="color:var(--muted)">41</td><td style="text-align:left"><b>PURCHASEORDERS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">maxLengthCheckInPOCreatePage</td><td style="text-align:left" class="mono">PurchaseOrder</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; santhosh.bd &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(9 failures)</span></td></tr>
+<tr><td style="color:var(--muted)">42</td><td style="text-align:left"><b>ADMIN</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">verifyEnabledRequestDetailsInCopyTemp</td><td style="text-align:left" class="mono">ServiceCategory</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">43</td><td style="text-align:left"><b>ADMIN</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">verifyEnabledRequestFormInCopyTemp</td><td style="text-align:left" class="mono">ServiceCategory</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">44</td><td style="text-align:left"><b>ADMIN</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">verifyHelpcardInTrashedRequest</td><td style="text-align:left" class="mono">IncidentTemplate</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">45</td><td style="text-align:left"><b>ADMIN</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">verifyHelpcardPresentWhenConvertIncidentToService</td><td style="text-align:left" class="mono">IncidentTemplate</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">46</td><td style="text-align:left"><b>GENERAL</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">columnChooserMultiple</td><td style="text-align:left" class="mono">Task</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">47</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">verifyHelpcardContentPresentInRequestForm</td><td style="text-align:left" class="mono">ServiceRequestFullControl</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">48</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">verifyHelpcardContentPresentInRequestForm</td><td style="text-align:left" class="mono">ServiceRequest</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">49</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">verifyHelpcardContentPresentInRequesterSRForm</td><td style="text-align:left" class="mono">ServiceRequest</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">50</td><td style="text-align:left"><b>REQUESTS</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">verifyHelpcardContentPresentInRequesterSRForm</td><td style="text-align:left" class="mono">ServiceRequestFullControl</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; sivanesh.muthukumar &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(1 failure)</span></td></tr>
+<tr><td style="color:var(--muted)">51</td><td style="text-align:left"><b>UNKNOWN</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">globalSearchCITypeSpecificFields</td><td style="text-align:left" class="mono">CustomerIssuesInCMDB</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; surendhar.sg &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(1 failure)</span></td></tr>
+<tr><td style="color:var(--muted)">52</td><td style="text-align:left"><b>UNKNOWN</b></td><td><span class="badge b-ub">UB</span></td><td style="text-align:left" class="mono">verifyingUnfollowOptionInUnscopedRequestfromRequesterLogin</td><td style="text-align:left" class="mono">Requester</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; surya.ramesh &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(11 failures)</span></td></tr>
+<tr><td style="color:var(--muted)">53</td><td style="text-align:left"><b>GENERAL</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">addMyPendingSurveyWidget</td><td style="text-align:left" class="mono">Dashboard</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">54</td><td style="text-align:left"><b>GENERAL</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">adhocSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">55</td><td style="text-align:left"><b>GENERAL</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">changeSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">56</td><td style="text-align:left"><b>GENERAL</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">changeSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">57</td><td style="text-align:left"><b>GENERAL</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">checkInRequesterPortal</td><td style="text-align:left" class="mono">RequesterHome</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">58</td><td style="text-align:left"><b>GENERAL</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">checkInRequesterPortal</td><td style="text-align:left" class="mono">RequesterHome</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">59</td><td style="text-align:left"><b>GENERAL</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">problemSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">60</td><td style="text-align:left"><b>GENERAL</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">releaseSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">61</td><td style="text-align:left"><b>GENERAL</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">releaseSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">62</td><td style="text-align:left"><b>GENERAL</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">requestSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr><td style="color:var(--muted)">63</td><td style="text-align:left"><b>GENERAL</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">requestSurvey</td><td style="text-align:left" class="mono">Dashboard</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+<tr class="owner-row"><td colspan="9" style="text-align:left;padding:8px 12px;">&#128100; veeravel.m &nbsp;<span style="font-weight:400;font-size:0.75rem;opacity:0.7">(1 failure)</span></td></tr>
+<tr><td style="color:var(--muted)">64</td><td style="text-align:left"><b>UNKNOWN</b></td><td><span class="badge b-pb">PB</span></td><td style="text-align:left" class="mono">duplicateCheckForservice</td><td style="text-align:left" class="mono">ServiceFAFR</td><td><span class="badge b-fail">CONSISTENT</span></td><td><span class="badge b-cat">Breakage</span></td></tr>
+</tbody></table></div>
+
+</div>
+</div>
+
+</div>
+<hr class="divider">
+
+
+</div>
+
+<script>
+function toggleCard(head) {
+  head.closest('.card').classList.toggle('collapsed');
+}
+</script>
+</body>
+</html>

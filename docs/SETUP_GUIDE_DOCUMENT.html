@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Automation Code Generator — Setup Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #dbeafe;
+    --accent: #6366f1;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warn: #d97706;
+    --warn-light: #fef3c7;
+    --danger: #dc2626;
+    --danger-light: #fee2e2;
+    --dark: #111827;
+    --gray-900: #1f2937;
+    --gray-700: #374151;
+    --gray-500: #6b7280;
+    --gray-300: #d1d5db;
+    --gray-100: #f3f4f6;
+    --bg: #ffffff;
+    --code-bg: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--dark);
+    background: var(--bg);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* Print styles */
+  @media print {
+    body { font-size: 12px; line-height: 1.5; }
+    .page-break { page-break-before: always; }
+    .no-print { display: none !important; }
+    .sidebar { display: none !important; }
+    .main-content { margin-left: 0 !important; max-width: 100% !important; }
+    pre { white-space: pre-wrap; word-break: break-all; }
+    .step-card { break-inside: avoid; }
+  }
+
+  /* Sidebar navigation */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 260px;
+    height: 100vh;
+    background: var(--gray-900);
+    color: #fff;
+    overflow-y: auto;
+    padding: 24px 0;
+    z-index: 100;
+  }
+  .sidebar-title {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 0 20px 16px;
+    color: var(--gray-300);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 12px;
+  }
+  .sidebar a {
+    display: block;
+    padding: 8px 20px;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+  .sidebar a:hover, .sidebar a.active {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border-left-color: var(--primary);
+  }
+  .sidebar a.sub { padding-left: 36px; font-size: 12px; color: #94a3b8; }
+
+  /* Main content */
+  .main-content {
+    margin-left: 260px;
+    max-width: 860px;
+    padding: 40px 48px 80px;
+  }
+
+  /* Header */
+  .doc-header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 2px solid var(--gray-100);
+  }
+  .doc-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 8px;
+  }
+  .doc-header .subtitle {
+    font-size: 17px;
+    color: var(--gray-500);
+    font-weight: 400;
+  }
+  .doc-header .version {
+    display: inline-block;
+    margin-top: 12px;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+  }
+
+  /* Sections */
+  section { margin-bottom: 48px; }
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary);
+    display: inline-block;
+  }
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 28px 0 12px;
+  }
+  h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin: 20px 0 10px;
+  }
+
+  p { margin-bottom: 14px; color: var(--gray-700); }
+
+  /* Flow diagram */
+  .flow-diagram {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #bae6fd;
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin: 20px 0 32px;
+    text-align: center;
+  }
+  .flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 8px 0;
+    flex-wrap: wrap;
+  }
+  .flow-box {
+    background: var(--bg);
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--primary-dark);
+    min-width: 140px;
+  }
+  .flow-box.highlight {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary-dark);
+  }
+  .flow-arrow {
+    color: var(--primary);
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .flow-label {
+    font-size: 12px;
+    color: var(--gray-500);
+    margin-top: 2px;
+  }
+
+  /* Step cards */
+  .step-card {
+    background: var(--bg);
+    border: 1px solid var(--gray-300);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 20px 0;
+    position: relative;
+    border-left: 4px solid var(--primary);
+  }
+  .step-card.green { border-left-color: var(--success); }
+  .step-card.orange { border-left-color: var(--warn); }
+  .step-number {
+    position: absolute;
+    top: -14px;
+    left: 20px;
+    background: var(--primary);
+    color: #fff;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .step-card.green .step-number { background: var(--success); }
+  .step-card.orange .step-number { background: var(--warn); }
+
+  /* Code blocks */
+  pre {
+    background: var(--code-bg);
+    color: #e2e8f0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0 16px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
+  }
+  p code, li code, td code {
+    background: var(--gray-100);
+    color: var(--danger);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  pre .comment { color: #64748b; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  thead th {
+    background: var(--gray-900);
+    color: #fff;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  thead th:first-child { border-radius: 8px 0 0 0; }
+  thead th:last-child { border-radius: 0 8px 0 0; }
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-700);
+  }
+  tr:hover td { background: #f9fafb; }
+
+  /* Ordered list styling */
+  ol { padding-left: 24px; margin: 12px 0; }
+  ol li {
+    margin-bottom: 10px;
+    color: var(--gray-700);
+    padding-left: 4px;
+  }
+  ul { padding-left: 24px; margin: 8px 0; }
+  ul li { margin-bottom: 6px; color: var(--gray-700); }
+
+  /* Callout boxes */
+  .callout {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .callout.info {
+    background: var(--primary-light);
+    border: 1px solid #93c5fd;
+    color: var(--primary-dark);
+  }
+  .callout.success {
+    background: var(--success-light);
+    border: 1px solid #86efac;
+    color: #15803d;
+  }
+  .callout.warn {
+    background: var(--warn-light);
+    border: 1px solid #fcd34d;
+    color: #92400e;
+  }
+  .callout.danger {
+    background: var(--danger-light);
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+  }
+
+  /* Checklist */
+  .checklist {
+    list-style: none;
+    padding-left: 0;
+    margin: 12px 0;
+  }
+  .checklist li {
+    padding: 8px 0 8px 32px;
+    position: relative;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .checklist li::before {
+    content: '☐';
+    position: absolute;
+    left: 4px;
+    font-size: 16px;
+    color: var(--gray-500);
+  }
+
+  /* Mode cards */
+  .mode-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .mode-card {
+    border: 2px solid var(--gray-300);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .mode-card:hover { border-color: var(--primary); }
+  .mode-card .icon { font-size: 32px; margin-bottom: 10px; }
+  .mode-card .name { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+  .mode-card .desc { font-size: 12px; color: var(--gray-500); line-height: 1.5; }
+
+  /* Keyboard shortcuts */
+  kbd {
+    background: var(--gray-100);
+    border: 1px solid var(--gray-300);
+    border-bottom: 2px solid var(--gray-300);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gray-700);
+  }
+
+  /* Link styling */
+  a { color: var(--primary); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  strong { color: var(--dark); }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--gray-100);
+    margin: 40px 0;
+  }
+
+  /* Top banner for returning users */
+  .returning-banner {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #f59e0b;
+    border-radius: 10px;
+    padding: 16px 22px;
+    margin: 24px 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .returning-banner .icon { font-size: 24px; }
+  .returning-banner .text { font-size: 14px; color: #92400e; }
+  .returning-banner code { background: #fff7ed; color: #9a3412; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar Navigation -->
+<nav class="sidebar no-print">
+  <div class="sidebar-title">Setup Guide</div>
+  <a href="#overview">Overview</a>
+  <a href="#how-it-works">How It Works</a>
+  <a href="#prerequisites">Before You Start</a>
+  <a href="#one-time-setup">One-Time Setup</a>
+  <a class="sub" href="#clone">Clone Repository</a>
+  <a class="sub" href="#install">Install Dependencies</a>
+  <a class="sub" href="#verify-playwright">Verify Playwright MCP</a>
+  <a href="#returning-users">Returning Users</a>
+  <a href="#step1">Step 1 — Setup Project</a>
+  <a class="sub" href="#setup-modes">Setup Modes</a>
+  <a class="sub" href="#generate-only">Generate Only / Generate &amp; Run</a>
+  <a class="sub" href="#reconfigure">Reconfigure</a>
+  <a class="sub" href="#server-commands">Server Commands</a>
+  <a href="#step2">Step 2 — Generate Tests</a>
+  <a class="sub" href="#upload-usecase">Upload Use-Case</a>
+  <a class="sub" href="#batch-generate">Batch Generate</a>
+  <a class="sub" href="#batch-all">Generate All</a>
+  <a class="sub" href="#quick-generate">Quick One-Offs</a>
+  <a href="#step3">Step 3 — Run Tests</a>
+  <a class="sub" href="#run-commands">Run Commands</a>
+  <a class="sub" href="#debug">Debug Failures</a>
+  <a class="sub" href="#reports">View Reports</a>
+  <a href="#quick-ref">Quick Reference</a>
+  <a href="#troubleshooting">Troubleshooting</a>
+  <a href="#security">Credential Security</a>
+</nav>
+
+<!-- Main Content -->
+<div class="main-content">
+
+  <!-- Header -->
+  <div class="doc-header" id="overview">
+    <h1>AI Automation Code Generator</h1>
+    <div class="subtitle">User Setup Guide</div>
+    <div class="version">Version 1.0 &middot; March 2026</div>
+    <p style="margin-top: 16px; font-size: 16px; color: var(--gray-500);">
+      Give use-case documents to Copilot agents &rarr; get fully generated Selenium test code.
+    </p>
+  </div>
+
+  <!-- How It Works -->
+  <section id="how-it-works">
+    <h2>How It Works</h2>
+    <div class="flow-diagram">
+      <div class="flow-row">
+        <div class="flow-box">One-Time Setup</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div>
+          <div class="flow-box">Clone repo, install deps</div>
+          <div class="flow-label">Run once per machine</div>
+        </div>
+      </div>
+      <div style="margin: 14px 0; color: var(--gray-500); font-size: 13px;">&#9660; Then repeat for each project / branch:</div>
+      <div class="flow-row">
+        <div>
+          <div class="flow-box highlight">1. Setup Project</div>
+          <div class="flow-label">Web UI &middot; localhost:9500</div>
+        </div>
+        <span class="flow-arrow">&rarr;</span>
+        <div>
+          <div class="flow-box highlight">2. Generate</div>
+          <div class="flow-label">@test-generator</div>
+        </div>
+        <span class="flow-arrow">&rarr;</span>
+        <div>
+          <div class="flow-box highlight">3. Run</div>
+          <div class="flow-label">@test-runner batch</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Before You Start -->
+  <section id="prerequisites">
+    <h2>Before You Start</h2>
+    <p>Complete these prerequisites on your machine:</p>
+    <ul class="checklist">
+      <li>Install <a href="https://code.visualstudio.com/" target="_blank">VS Code</a> (version 1.99 or later)</li>
+      <li>Install <strong>GitHub Copilot</strong> + <strong>Copilot Chat</strong> extensions from the VS Code marketplace</li>
+      <li>Download <strong>Dependencies</strong> and <strong>Drivers</strong> (Firefox + Geckodriver) zip files from
+        <a href="https://workdrive.zoho.in/folder/l5o5d7049285d45dd49ae80d7be1a209a6841" target="_blank">WorkDrive</a>
+      </li>
+    </ul>
+
+    <h4>Install System Packages</h4>
+    <p>Open VS Code, then open the Terminal (<kbd>Ctrl</kbd> + <kbd>`</kbd>) and run:</p>
+    <pre>sudo apt install openjdk-17-jdk git mercurial python3 python3-venv nodejs npm</pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- One-Time Setup -->
+  <section id="one-time-setup">
+    <h2>One-Time Setup &mdash; Clone &amp; Install</h2>
+
+    <div class="callout info">
+      <span class="callout-icon">&#8505;</span>
+      <div><strong>Run these once.</strong> After this, skip straight to <strong>Step 1</strong> for every new project or branch.</div>
+    </div>
+
+    <div class="step-card" id="clone">
+      <div class="step-number">1</div>
+      <h4>Clone the Repository</h4>
+      <p>In the VS Code terminal, run:</p>
+      <pre>git clone https://github.com/balaji-muthukumaran-12086/AI_AUTOMATION_CODE_GENERATOR.git</pre>
+      <p>Then open this folder in VS Code: <strong>File &rarr; Open Folder</strong> &rarr; select <code>AI_AUTOMATION_CODE_GENERATOR</code></p>
+    </div>
+
+    <div class="step-card" id="install">
+      <div class="step-number">2</div>
+      <h4>Install Dependencies</h4>
+      <p>In the VS Code terminal, run these two commands:</p>
+      <pre><span class="comment"># Python virtual environment + dependencies</span>
+python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements_vs.txt
+
+<span class="comment"># Playwright MCP + Chromium browser</span>
+npm install</pre>
+    </div>
+
+    <div class="step-card green" id="verify-playwright">
+      <div class="step-number">3</div>
+      <h4>Verify Playwright MCP Server</h4>
+      <p>This enables the self-healing feature in <code>@test-runner</code>. Verify it's registered:</p>
+      <ol>
+        <li>Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> to open the Command Palette</li>
+        <li>Type <strong>"MCP: List Servers"</strong> and press Enter</li>
+        <li>You should see <strong>"microsoft/playwright-mcp"</strong> in the list</li>
+      </ol>
+      <div class="callout warn" style="margin-top: 12px;">
+        <span class="callout-icon">&#9888;</span>
+        <div>If it doesn't appear, <strong>restart VS Code</strong>. The MCP config (from <code>.vscode/mcp.json</code>) is loaded on startup.</div>
+      </div>
+    </div>
+
+    <div class="callout success">
+      <span class="callout-icon">&#10003;</span>
+      <div><strong>Done!</strong> You won't need to repeat the above. From now on, just open the folder in VS Code and follow the 3 steps below.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Returning Users -->
+  <section id="returning-users">
+    <div class="returning-banner">
+      <span class="icon">&#128260;</span>
+      <div class="text">
+        <strong>Returning users:</strong> If the repository is already cloned, run
+        <code>git pull origin main</code> in the terminal before proceeding to generate or run test cases.
+        This ensures you have the latest framework updates and bug fixes.
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+  <div class="page-break"></div>
+
+  <!-- Step 1 -->
+  <section id="step1">
+    <h2>Step 1 &mdash; Setup Project</h2>
+    <p>Start the server and open the setup page:</p>
+    <pre>./server.sh start</pre>
+    <p>Open <a href="http://localhost:9500/setup"><strong>http://localhost:9500/setup</strong></a> in your browser.</p>
+
+    <h3 id="setup-modes">Setup Modes</h3>
+    <div class="mode-cards">
+      <div class="mode-card">
+        <div class="icon">&#128221;</div>
+        <div class="name">Generate Only</div>
+        <div class="desc">Generate Java test code from feature docs. You run tests manually.</div>
+      </div>
+      <div class="mode-card">
+        <div class="icon">&#128640;</div>
+        <div class="name">Generate &amp; Run</div>
+        <div class="desc">Generate code AND execute against a live SDP instance automatically.</div>
+      </div>
+      <div class="mode-card">
+        <div class="icon">&#9881;</div>
+        <div class="name">Reconfigure</div>
+        <div class="desc">Project already set up. Add or update SDP credentials &amp; environment.</div>
+      </div>
+    </div>
+
+    <h3 id="generate-only">Generate Only / Generate &amp; Run</h3>
+    <ol>
+      <li>Select your mode</li>
+      <li>Fill in:
+        <ul>
+          <li><strong>Hg Username</strong> &mdash; your zrepository username (e.g. <code>balaji-12086</code>)</li>
+          <li><strong>Branch Name</strong> &mdash; hg branch to clone (e.g. <code>feature/SDPLIVE_LINKING_CHANGE_AI</code>)</li>
+          <li><strong>Dependencies Path</strong> &mdash; absolute path to the JARs folder</li>
+        </ul>
+      </li>
+      <li>For <strong>Generate &amp; Run</strong>, also fill in:
+        <ul>
+          <li><strong>SDP URL</strong>, <strong>Portal</strong>, <strong>Admin Email</strong>, <strong>Tech Email</strong>, <strong>Password</strong>, <strong>Drivers Path</strong></li>
+        </ul>
+      </li>
+      <li>Click <strong>&#128640; Run Setup</strong></li>
+      <li>A <strong>password modal</strong> appears &mdash; enter your hg password (used once for cloning, never saved)</li>
+      <li>An <strong>owner selection modal</strong> appears &mdash; pick your name from the list
+        <ul>
+          <li><em>New to the team?</em> Click <strong>"&#10133; Not in the list? Register as new member"</strong> &mdash; enter your full name and Zoho email</li>
+        </ul>
+      </li>
+      <li>Watch the progress log &mdash; setup clones the branch, compiles the framework, and configures <code>.env</code></li>
+    </ol>
+
+    <h3 id="reconfigure">Reconfigure</h3>
+    <p>Use this when your project is already cloned and you need to add or update SDP connection details.</p>
+    <ol>
+      <li>Select <strong>Reconfigure</strong> mode</li>
+      <li>Pick your project from the <strong>Project Folder</strong> dropdown</li>
+      <li>Fill in / update SDP credentials and driver paths</li>
+      <li>Click <strong>&#128640; Run Setup</strong> &mdash; <code>.env</code> is updated, no re-clone needed</li>
+    </ol>
+
+    <div class="callout info">
+      <span class="callout-icon">&#128161;</span>
+      <div><strong>Upgrade workflow:</strong> Generate Only &rarr; (days later) &rarr; Reconfigure &rarr; <code>@test-runner batch</code>. Your generated tests are preserved. Reconfigure only adds the missing SDP environment.</div>
+    </div>
+
+    <h3 id="server-commands">Server Commands</h3>
+    <pre>./server.sh start     <span class="comment"># Start on port 9500</span>
+./server.sh stop      <span class="comment"># Stop the server</span>
+./server.sh restart   <span class="comment"># Restart</span>
+./server.sh status    <span class="comment"># Check if running</span>
+./server.sh logs      <span class="comment"># Tail live logs</span>
+PORT=8090 ./server.sh start   <span class="comment"># Custom port</span></pre>
+
+    <div class="callout success">
+      <span class="callout-icon">&#128274;</span>
+      <div><strong>Password security:</strong> The hg password is entered via a browser modal during setup and is never saved to <code>.env</code>, logs, or chat history.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+  <div class="page-break"></div>
+
+  <!-- Step 2 -->
+  <section id="step2">
+    <h2>Step 2 &mdash; Generate Tests</h2>
+
+    <h3 id="upload-usecase">Upload Your Use-Case Document</h3>
+    <p>Place your file (<code>.csv</code>, <code>.xlsx</code>, or <code>.xls</code>) in <code>&lt;PROJECT_NAME&gt;/Testcase/</code></p>
+    <p>Template available at: <code>docs/templates/usecase_template.csv</code></p>
+
+    <div class="callout info">
+      <span class="callout-icon">&#8505;</span>
+      <div>Only rows with <strong>UI To-be-automated = Yes</strong> are processed.</div>
+    </div>
+
+    <h3 id="batch-generate">Option A: Batch Generate (100+ test cases)</h3>
+    <p>Generate and run one batch at a time:</p>
+    <pre>@test-generator batch                       <span class="comment"># generates Batch 1 (up to 30 scenarios)</span>
+@test-runner batch                          <span class="comment"># runs Batch 1 (latest batch)</span>
+@test-generator batch                       <span class="comment"># generates Batch 2 (auto-resumes)</span>
+@test-runner batch                          <span class="comment"># runs Batch 2 (latest batch)</span>
+...                                         <span class="comment"># repeat until all batches done</span></pre>
+    <p>Each batch <strong>appends</strong> to <code>tests_to_run.json</code> with a batch tag &mdash; nothing is ever lost.</p>
+    <p><code>@test-runner batch</code> automatically runs the <strong>latest</strong> batch. Need a previous batch? Use <code>@test-runner batch 1</code>.</p>
+    <p>Progress is tracked in <code>&lt;PROJECT_NAME&gt;/ai_reports/batch_progress.md</code></p>
+
+    <h3 id="batch-all">Option B: Generate All (under 100 test cases)</h3>
+    <pre>@test-generator batch all                   <span class="comment"># generates ALL scenarios at once</span>
+@test-runner batch all                      <span class="comment"># runs ALL generated tests</span></pre>
+    <p>One command to generate, one command to run.</p>
+
+    <h3 id="quick-generate">Option C: Quick One-Offs (plain text description)</h3>
+    <pre>@test-generator Create an incident request, add a note, and verify it appears in the Notes tab</pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Step 3 -->
+  <section id="step3">
+    <h2>Step 3 &mdash; Run Tests</h2>
+
+    <h3 id="run-commands">Run Commands</h3>
+    <pre>@test-runner batch                          <span class="comment"># run latest batch</span>
+@test-runner batch 2                        <span class="comment"># run a specific batch</span>
+@test-runner batch all                      <span class="comment"># run ALL generated tests</span>
+@test-runner Solution.createSolution        <span class="comment"># run a single test</span></pre>
+    <p>The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 attempts).</p>
+
+    <h3 id="debug">Debug a Specific Failure</h3>
+    <pre>@test-debugger SDPOD_AUTO_SOL_DV_243 fails with NoSuchElementException on the approval button</pre>
+
+    <h3 id="reports">View Reports</h3>
+    <p>Reports are generated at:</p>
+    <pre>&lt;PROJECT_NAME&gt;/reports/LOCAL_&lt;methodName&gt;_&lt;timestamp&gt;/ScenarioReport.html</pre>
+  </section>
+
+  <hr class="divider">
+  <div class="page-break"></div>
+
+  <!-- Quick Reference -->
+  <section id="quick-ref">
+    <h2>Quick Reference</h2>
+    <table>
+      <thead>
+        <tr><th>Task</th><th>Command</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Start web server</td><td><code>./server.sh start</code></td></tr>
+        <tr><td>Step 1: Setup project</td><td><code>http://localhost:9500/setup</code></td></tr>
+        <tr><td>Step 1: Reconfigure project</td><td>Setup page &rarr; Reconfigure mode</td></tr>
+        <tr><td>Step 2: Generate (100+ cases)</td><td><code>@test-generator batch</code> &rarr; <code>@test-runner batch</code> &rarr; repeat</td></tr>
+        <tr><td>Step 2: Generate (under 100)</td><td><code>@test-generator batch all</code> &rarr; <code>@test-runner batch all</code></td></tr>
+        <tr><td>Step 2: Generate from text</td><td><code>@test-generator &lt;description&gt;</code></td></tr>
+        <tr><td>Step 3: Run latest batch</td><td><code>@test-runner batch</code></td></tr>
+        <tr><td>Step 3: Run specific batch</td><td><code>@test-runner batch N</code></td></tr>
+        <tr><td>Step 3: Run all tests</td><td><code>@test-runner batch all</code></td></tr>
+        <tr><td>Step 3: Run one test</td><td><code>@test-runner Entity.methodName</code></td></tr>
+        <tr><td>Debug a failure</td><td><code>@test-debugger &lt;test ID&gt; &lt;error&gt;</code></td></tr>
+        <tr><td>Recompile framework</td><td><code>./setup_framework_bin.sh</code></td></tr>
+        <tr><td>Setup Playwright MCP</td><td><code>npm install && npx playwright install chromium</code></td></tr>
+        <tr><td>Verify Playwright</td><td><code>./start_playwright_mcp.sh</code></td></tr>
+        <tr><td>Start dashboard</td><td><code>./orchestrator.sh start</code> &rarr; <code>http://localhost:9600</code></td></tr>
+        <tr><td>Stop web server</td><td><code>./server.sh stop</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Troubleshooting -->
+  <section id="troubleshooting">
+    <h2>Troubleshooting</h2>
+    <table>
+      <thead>
+        <tr><th>Problem</th><th>Fix</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>VPN / connection errors</td><td>Connect to Zoho VPN first</td></tr>
+        <tr><td><code>NullPointerException</code> in test</td><td>Run <code>./setup_framework_bin.sh</code></td></tr>
+        <tr><td><code>Testcase/</code> folder missing</td><td>Run <code>mkdir -p &lt;PROJECT_NAME&gt;/Testcase</code></td></tr>
+        <tr><td>Project not in Reconfigure dropdown</td><td>Project folder must be in the workspace root with <code>MSP_</code>/<code>SDP_</code>/<code>SDPLIVE_</code>/<code>AALAM_</code> prefix</td></tr>
+        <tr><td>Owner not in dropdown</td><td>Click <em>"&#10133; Not in the list? Register as new member"</em></td></tr>
+        <tr><td>Hg password prompt not appearing</td><td>Ensure server is running (<code>./server.sh status</code>); reload setup page</td></tr>
+        <tr><td>Test fails on first run</td><td>Normal &mdash; <code>@test-runner</code> auto-fixes and reruns</td></tr>
+        <tr><td>Wrong project targeted</td><td>Use <code>@test-generator project=BRANCH_NAME</code></td></tr>
+        <tr><td>Upgrade Generate Only &rarr; Run</td><td>Setup page &rarr; Reconfigure &rarr; add SDP URL/credentials/drivers</td></tr>
+        <tr><td>Playwright MCP not available</td><td><code>npm install && npx playwright install chromium</code> then restart VS Code</td></tr>
+        <tr><td><code>@test-runner</code> skips locator fixes</td><td>Playwright MCP not loaded &mdash; restart VS Code or run <code>./start_playwright_mcp.sh --start</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Why VS Code -->
+  <div class="callout info">
+    <span class="callout-icon">&#128187;</span>
+    <div><strong>Why VS Code?</strong> The <code>@agent</code> workflow requires VS Code Agent mode (v1.99+) &mdash; Eclipse and IntelliJ don't support it. You can still use Eclipse for regular Java work alongside VS Code for test generation.</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Security -->
+  <section id="security">
+    <h2>Hg Credential Security</h2>
+    <p>Repository credentials are handled <strong>transiently with zero persistence</strong>:</p>
+
+    <div class="step-card">
+      <h4>1. In-Browser Dialog</h4>
+      <p>Password is entered in a modal dialog on <code>localhost:9500</code>. It is sent via POST to the local FastAPI server and <strong>never leaves the machine</strong>.</p>
+    </div>
+
+    <div class="step-card">
+      <h4>2. Config-Flag Authentication</h4>
+      <p>Credentials are passed to <code>hg clone</code> via Mercurial's <code>--config auth.*</code> flags, <strong>not embedded in the URL</strong>:</p>
+      <pre>hg clone --config auth.tmp.prefix=zrepository.zohocorpcloud.in \
+         --config auth.tmp.username="user" \
+         --config auth.tmp.password="****" \
+         --config auth.tmp.schemes=https \
+         --branch BRANCH REPO_URL PROJECT/</pre>
+    </div>
+
+    <div class="step-card">
+      <h4>3. Log Masking</h4>
+      <p>All SSE log output replaces the password with <strong>&#9679;&#9679;&#9679;&#9679;</strong> before streaming to the browser. The raw password never appears in the progress log.</p>
+    </div>
+
+    <div class="step-card">
+      <h4>4. Memory Cleanup</h4>
+      <p>The password is cleared from the server's in-memory state immediately after the clone command is constructed &mdash; before the clone even finishes.</p>
+    </div>
+
+    <div class="step-card green">
+      <h4>5. No Disk Persistence</h4>
+      <p>The password is <strong>never</strong> written to <code>.env</code>, log files, <code>hgrc</code>, or any other file on disk. It exists only in-memory for the duration of the clone subprocess.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div style="margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--gray-100); text-align: center; color: var(--gray-500); font-size: 12px;">
+    AI Automation Code Generator &middot; Setup Guide &middot; March 2026
+  </div>
+
+</div>
+
+<!-- Sidebar active state script -->
+<script>
+  const links = document.querySelectorAll('.sidebar a');
+  const sections = [];
+  links.forEach(l => {
+    const id = l.getAttribute('href');
+    if (id && id.startsWith('#')) {
+      const el = document.querySelector(id);
+      if (el) sections.push({ link: l, el });
+    }
+  });
+  window.addEventListener('scroll', () => {
+    const container = document.querySelector('.main-content');
+    const scrollY = window.scrollY + 100;
+    let current = sections[0];
+    for (const s of sections) {
+      if (s.el.offsetTop <= scrollY) current = s;
+    }
+    links.forEach(l => l.classList.remove('active'));
+    if (current) current.link.classList.add('active');
+  });
+</script>
+</body>
+</html>

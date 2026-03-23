@@ -643,6 +643,27 @@ read_file config/framework_rules.md startLine=466 endLine=600   # FR_DATA_JSON
 - [ ] I know the `@AutomaterScenario` annotation rules (all 9 fields, runType trap, owner)
 - [ ] I know the Existing Method Protection rule for ActionsUtil/APIUtil
 
+### Step 0.4 — Refresh Entity Inventory (MANDATORY)
+
+> **Root cause of stale data**: Entity inventory YAMLs in `config/entity_inventory/` are
+> static snapshots. If code was added in a prior session, the YAML is stale — duplicate
+> detection (Step 0.5) and context building both read outdated information.
+
+Before checking for duplicates, regenerate the inventory for the target module/entity:
+
+```bash
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+# Regenerate inventory for the specific entity being worked on
+.venv/bin/python generate_entity_inventory.py "<module>/<entity>"
+# Example: .venv/bin/python generate_entity_inventory.py "changes/change"
+```
+
+Replace `<module>/<entity>` with the actual target derived from the use-case document or user request.
+
+> **Skip condition**: If this is the very first generation for a brand-new entity (skeleton
+> just created), the inventory will be near-empty anyway — but still run it to establish
+> the baseline YAML file.
+
 ### Step 0.5 — Check for Duplicate Scenarios (MANDATORY)
 
 > **Root cause of wasted work**: Without duplicate detection, the same scenario can be

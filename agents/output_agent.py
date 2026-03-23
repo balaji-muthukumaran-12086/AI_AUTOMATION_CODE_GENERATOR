@@ -231,6 +231,23 @@ class OutputAgent:
                 f"[OutputAgent] ✅ {len(pieces)} snippet(s) for [{module_path}] → {run_dir.name}/"
             ]
 
+            # ── Refresh Entity Inventory — ensure duplicate detection uses fresh data ──
+            try:
+                import subprocess
+                mod_parts = module_path.strip('/').split('/')
+                if len(mod_parts) >= 2:
+                    regen_target = f"{mod_parts[0]}/{mod_parts[1]}"
+                    subprocess.run(
+                        [str(self.base / '.venv' / 'bin' / 'python'),
+                         str(self.base / 'generate_entity_inventory.py'),
+                         regen_target],
+                        cwd=str(self.base),
+                        capture_output=True, text=True, timeout=30,
+                    )
+                    print(f"[OutputAgent] 🔄 Refreshed entity inventory for {regen_target}", flush=True)
+            except Exception as inv_err:
+                print(f"[OutputAgent] ⚠ Inventory refresh skipped: {inv_err}", flush=True)
+
             # ── Static Analysis Gate — validate before compilation ──────────
             try:
                 from static_analysis_gate import StaticAnalysisGate, format_report
