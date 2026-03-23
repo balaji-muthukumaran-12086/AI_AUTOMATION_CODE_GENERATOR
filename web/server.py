@@ -354,21 +354,30 @@ def _run_pipeline_thread(
 async def serve_index():
     """Serve the main Web UI."""
     html_path = Path(__file__).parent / "static" / "index.html"
-    return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
+    return HTMLResponse(
+        content=html_path.read_text(encoding="utf-8"),
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+    )
 
 
 @app.get("/setup", response_class=HTMLResponse)
 async def serve_setup():
     """Serve the project setup form (no LLM — pure HTML form)."""
     html_path = Path(__file__).parent / "static" / "setup.html"
-    return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
+    return HTMLResponse(
+        content=html_path.read_text(encoding="utf-8"),
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+    )
 
 
 @app.get("/breakage", response_class=HTMLResponse)
 async def serve_breakage():
     """Serve the breakage analyzer UI."""
     html_path = Path(__file__).parent / "static" / "breakage.html"
-    return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
+    return HTMLResponse(
+        content=html_path.read_text(encoding="utf-8"),
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+    )
 
 
 @app.get("/api/health")
