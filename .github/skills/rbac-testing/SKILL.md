@@ -1,3 +1,6 @@
+---
+applyTo: "**/roles/*.json"
+---
 # Skill: RBAC Testing Patterns
 
 > **When to load**: Generating test scenarios that verify role-based access control,

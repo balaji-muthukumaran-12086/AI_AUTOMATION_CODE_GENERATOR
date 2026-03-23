@@ -1,3 +1,6 @@
+---
+applyTo: "**/*_data.json,**/*DataConstants.java,**/*AnnotationConstants.java"
+---
 # Skill: Data Layer Patterns
 
 > **When to load**: Creating *_data.json entries, using DataConstants/AnnotationConstants,

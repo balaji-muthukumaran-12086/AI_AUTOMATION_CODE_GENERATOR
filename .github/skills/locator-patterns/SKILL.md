@@ -1,3 +1,6 @@
+---
+applyTo: "**/*Locators.java"
+---
 # Skill: Locator Patterns
 
 > **When to load**: Writing XPath locators, working with Select2 dropdowns, popup tables,

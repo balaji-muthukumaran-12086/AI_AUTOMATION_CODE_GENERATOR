@@ -1,3 +1,6 @@
+---
+applyTo: "**/*Base.java"
+---
 # Skill: preProcess Patterns
 
 > **When to load**: Writing or modifying preProcess() groups, choosing group values for

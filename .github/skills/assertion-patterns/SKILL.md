@@ -1,3 +1,6 @@
+---
+applyTo: "**/*Base.java"
+---
 # Skill: Assertion Patterns
 
 > **When to load**: Writing test validations, using addSuccessReport/addFailureReport,

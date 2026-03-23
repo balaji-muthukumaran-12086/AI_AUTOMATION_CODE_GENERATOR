@@ -5,6 +5,11 @@ model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
 argument-hint: "Entity.method to run (e.g. 'Solution.createSolution'), or 'batch' to run latest batch, 'batch N' for specific batch, 'batch all' for all tests, 'batch breakage' to run failures from breakage_rerun.json with self-healing"
 instructions:
   - .github/instructions/java-test-conventions.instructions.md
+  # Skills loaded when diagnosing/fixing failures:
+  # - .github/skills/assertion-patterns/SKILL.md — fix false-positive/negative assertions
+  # - .github/skills/locator-patterns/SKILL.md — fix broken XPaths, Select2, popup locators
+  # - .github/skills/preprocess-patterns/SKILL.md — fix preProcess group/data issues
+  # - .github/skills/data-layer/SKILL.md — fix data loading, placeholder resolution
 
 # ── VS Code 1.112: Agent Permissions ──
 # test-runner needs full autonomy to run→diagnose→fix→recompile→rerun loops.

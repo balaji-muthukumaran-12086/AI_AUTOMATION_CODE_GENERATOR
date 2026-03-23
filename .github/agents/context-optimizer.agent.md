@@ -94,3 +94,45 @@ files:
 | 10+ sequential `replace_string_in_file` calls | 2K overhead per call | Batch into 1-2 `multi_replace_string_in_file` calls |
 | No CHANGELOG update at end of session | Next session loses context | Always checkpoint before ending |
 | Full copilot-instructions.md read | 1584 lines = 12K tokens | It's auto-loaded — never read manually. Use chunk map for details |
+
+## Project-Specific File Sizes (token cost reference)
+
+> These are the actual sizes in this workspace. Use this to estimate token budgets.
+
+| File | Lines | ~Tokens | Safe to read in full? |
+|------|-------|---------|----------------------|
+| `config/critical_rules_digest.md` | 338 | ~2.7K | YES — always start here |
+| `config/framework_file_index.yaml` | 295 | ~2.4K | YES — chunk map |
+| `config/framework_grammar.yaml` | 198 | ~1.6K | YES |
+| `config/module_taxonomy.yaml` | 414 | ~3.3K | Borderline — use targeted read |
+| `.github/copilot-instructions.md` | 1,640 | ~13K | NEVER — auto-loaded by VS Code |
+| `config/framework_rules.md` | 2,657 | ~21K | NEVER — use chunk index |
+| `config/framework_knowledge.md` | 1,971 | ~16K | NEVER — use chunk index |
+| `test-generator.agent.md` | 1,819 | ~15K | NEVER — agent reads its own file |
+| `test-runner.agent.md` | 1,192 | ~10K | NEVER |
+| Entity inventory YAMLs | 50-400 each | ~0.4-3K | YES — one at a time |
+| `docs/api-doc/SDP_API_Endpoints_Documentation.md` | ~2,000 | ~16K | NEVER — use module-specific section |
+
+## Entity Inventory Integration
+
+When optimizing context for test generation workflows:
+
+1. **Check inventory freshness**: `ls -la config/entity_inventory/<module>_<entity>.yaml`
+2. **Regenerate if stale**: `.venv/bin/python generate_entity_inventory.py "<module>/<entity>"`
+3. **Prefer inventory over grep**: Reading one YAML (~1K tokens) replaces 5-10 grep searches (~5K tokens)
+4. **Deep mode for complex tasks**: `--deep` flag adds method bodies, data fields, placeholder analysis
+
+## Session Budget Calculator
+
+When asked to analyze a session, use these estimates:
+
+```
+Budget per session type:
+  Simple fix (1 file):     ~15K tokens available for file reads
+  Feature (3-5 files):     ~40K tokens available
+  Batch generation:        ~60K tokens available
+  Test run + debug:        ~30K tokens available
+
+Cost formula:
+  Total ≈ Σ(file_lines × 0.008) + (tool_calls × 2K) + (edits × 2K)
+```

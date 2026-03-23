@@ -5,6 +5,9 @@ model: ['Claude Opus 4.6 (copilot)', 'Claude Sonnet 4 (copilot)']
 argument-hint: "Feature to discover (e.g., 'changes/trash', 'changes/link_child', 'requests/notes', 'solutions/approval')"
 instructions:
   - docs/api-doc/SDP_API_Endpoints_Documentation.md
+  # Skills loaded when documenting discovered patterns:
+  # - .github/skills/locator-patterns/SKILL.md — validate discovered XPaths against conventions
+  # - .github/skills/data-layer/SKILL.md — document API payloads in correct JSON format
 
 permissions:
   read: "allow-always"
