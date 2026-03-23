@@ -751,6 +751,47 @@ Match the use-case noun to the correct module — NEVER default to whatever file
 
 If the input came from a **CSV document** (Mode A), use the `Module` and `Sub-Module` columns directly via the **Module Routing Table** and **Sub-Module Resolution** rules defined in Step A0 above. Do NOT re-derive the module from the description text — trust the CSV columns.
 
+### Step 1.5 — Load Deep Entity Inventory (MANDATORY — replaces manual grep)
+
+> **Purpose**: Instead of manually grepping Java source files for method names, load the
+> pre-indexed deep inventory YAML. This contains ALL existing methods (with parameters,
+> action chains, locators used, LocalStorage reads/writes), ALL preProcess groups (with
+> behavior, API calls, LocalStorage stores), ALL data.json entries (with field sets,
+> placeholders, purpose classification), and reuse-group suggestions.
+
+```bash
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+INVENTORY="config/entity_inventory/<module>_<entity>.yaml"  # e.g. problems_problem.yaml
+
+if [ -f "$INVENTORY" ]; then
+  echo "✅ Deep inventory found: $INVENTORY"
+  echo "=== ActionsUtil Methods ==="
+  grep -A2 '  - name:' "$INVENTORY" | head -60
+  echo ""
+  echo "=== PreProcess Groups ==="
+  grep '  group:' "$INVENTORY" | head -30
+  echo ""
+  echo "=== Data JSON Entry Count ==="
+  grep 'total_entries:' "$INVENTORY"
+else
+  echo "⚠️  No inventory for <module>/<entity>. Generating now..."
+  .venv/bin/python generate_entity_inventory.py --deep --module <module> --entity <entity>
+fi
+```
+
+**What the inventory provides (that manual grep does NOT):**
+
+| Inventory field | What it tells you | How it prevents mistakes |
+|----------------|-------------------|------------------------|
+| `actions_util_deep[].action_chain` | Exact sequence of `actions.click`, `actions.type`, etc. | Know if a method already does what you need — don't create a duplicate |
+| `actions_util_deep[].locators_used` | Which Locators constants the method references | Reuse existing locators instead of inventing new ones |
+| `api_util_deep[].api_paths` | REST API paths used (e.g., `problems/{id}/requests`) | Don't guess API paths — the util already has them |
+| `preprocess_deep[].local_storage_stores` | What keys preProcess stores | Know what `LocalStorage.getAsString("key")` is available in the test method |
+| `data_json_deep[].fields` + `purpose` | Field names + whether it's `api_preprocess` or `ui_form` | Reuse existing data entries, don't create duplicates |
+| `data_json_deep[].reuse_groups` | Entries with ≥80% field overlap (Jaccard similarity) | Explicit reuse suggestions — use `$(custom_*)` placeholders instead of new entries |
+
+**Store the inventory in working memory** — reference it in Steps 2–5 instead of re-reading files.
+
 ### Step 2 — Read Entity Util Files
 
 First resolve the project folder dynamically:
@@ -762,6 +803,10 @@ Then list the util files:
 find "$PROJECT/src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/" -name "*.java" | sort
 ```
 List every `public static` method in `*ActionsUtil.java` and `*APIUtil.java`.
+
+> **With Step 1.5 inventory loaded**: You already have all method names, parameters, action
+> chains, and locators. Only read the actual Java file if you need to see implementation
+> details not captured in the YAML (rare). This saves significant token budget.
 
 ### Step 2.5 — (Optional) Scout Live UI via Playwright MCP
 
@@ -827,6 +872,105 @@ List every `public static` method in `*ActionsUtil.java` and `*APIUtil.java`.
 
 ### Step 3 — Map Operations to Existing Methods
 For each operation in the scenario, check if a util method already exists. Only create new ones if genuinely needed.
+
+### Step 3.5 — Duplication Detection Gate (MANDATORY before writing code)
+
+> **Purpose**: Before writing ANY new util method or data.json entry, run the duplication
+> detector to ensure you're not recreating something that already exists. This is the same
+> gate used by the Python pipeline's `static_analysis_gate.py` — now available to the VS Code agent.
+
+**For each NEW util method you plan to create**, check against inventory:
+
+```bash
+.venv/bin/python << 'CHECK_DUP'
+import yaml, sys
+
+module = "<module>"     # e.g. "problems"
+entity = "<entity>"     # e.g. "problem"
+new_methods = ["methodName1", "methodName2"]  # methods you plan to create
+
+inv_path = f"config/entity_inventory/{module}_{entity}.yaml"
+try:
+    with open(inv_path) as f:
+        inv = yaml.safe_load(f)
+except FileNotFoundError:
+    print(f"No inventory at {inv_path} — skipping duplication check")
+    sys.exit(0)
+
+# Collect all existing method names
+existing = set()
+for m in inv.get("actions_util", {}).get("methods", []):
+    existing.add(m["name"])
+for m in inv.get("api_util", {}).get("methods", []):
+    existing.add(m["name"])
+for m in inv.get("actions_util_deep", []):
+    existing.add(m["name"])
+for m in inv.get("api_util_deep", []):
+    existing.add(m["name"])
+
+blocked = False
+for method in new_methods:
+    if method in existing:
+        print(f"❌ BLOCKED: '{method}' already exists in {module}/{entity} utils — REUSE it")
+        blocked = True
+    else:
+        print(f"✅ OK: '{method}' is genuinely new")
+
+if blocked:
+    print("\n⚠️  Fix: use the existing method instead of creating a new one.")
+    print("   Check the inventory YAML for parameters and behavior.")
+CHECK_DUP
+```
+
+**For each NEW data.json entry you plan to create**, check for collisions and similarity:
+
+```bash
+.venv/bin/python << 'CHECK_DATA'
+import yaml, json, sys
+
+module = "<module>"
+entity = "<entity>"
+new_key = "my_new_data_key"          # the key you plan to add
+new_fields = ["title", "priority", "impact"]  # fields in your new entry
+
+inv_path = f"config/entity_inventory/{module}_{entity}.yaml"
+try:
+    with open(inv_path) as f:
+        inv = yaml.safe_load(f)
+except FileNotFoundError:
+    print(f"No inventory — skipping"); sys.exit(0)
+
+# Check exact key collision
+existing_keys = inv.get("data_json_keys", [])
+if new_key in existing_keys:
+    print(f"❌ BLOCKED: key '{new_key}' already exists in {entity}_data.json — REUSE it")
+    sys.exit(1)
+
+# Check field similarity (Jaccard >= 80%)
+new_set = set(new_fields)
+deep = inv.get("data_json_deep", {})
+for key, info in deep.items():
+    if isinstance(info, dict) and "fields" in info:
+        existing_set = set(info["fields"])
+        if not existing_set:
+            continue
+        union = len(new_set | existing_set)
+        inter = len(new_set & existing_set)
+        if union > 0 and inter / union >= 0.8:
+            sim = int(inter / union * 100)
+            print(f"⚠️  WARNING: new entry has {sim}% field overlap with '{key}'")
+            print(f"   Shared: {new_set & existing_set}")
+            print(f"   Consider reusing '{key}' with $(custom_*) placeholders")
+
+print(f"✅ Key '{new_key}' is new and does not closely duplicate existing entries")
+CHECK_DATA
+```
+
+**Decision rules:**
+- `❌ BLOCKED` on method → STOP, reuse the existing method (check inventory for params)
+- `❌ BLOCKED` on data key → STOP, reuse the existing data entry
+- `⚠️ WARNING` on similarity → prefer reusing with `$(custom_*)` placeholders; create new only if field sets are genuinely different in purpose
+- `✅ OK` → proceed to create
 
 ### Step 4 — Read Existing preProcess Groups
 Open the **parent class** (e.g., `Change.java`, `Solution.java`) and read `preProcess()` for all `equalsIgnoreCase` branches. Reuse existing groups — do NOT add new else-if blocks needlessly.
@@ -909,14 +1053,48 @@ Does this plan look correct? (yes / suggest changes)
 > After user approval, proceed with code generation using EXACTLY the decisions in the table.
 > Any deviation from the approved table must be flagged to the user.
 
-### Step 5 — Consult API Reference for preProcess / APIUtil Methods
-Before writing any REST API call (in `preProcess`, APIUtil, or `sdpAPICall()` during debugging), **read the relevant module section** in `docs/api-doc/SDP_API_Endpoints_Documentation.md`. This document contains:
+### Step 5 — Consult API Reference + API Registry for preProcess / APIUtil Methods
+Before writing any REST API call (in `preProcess`, APIUtil, or `sdpAPICall()` during debugging), **check TWO sources**:
+
+**Source 1 — API Registry (verified endpoints):**
+```bash
+.venv/bin/python << 'CHECK_API'
+import yaml
+with open("config/api_registry.yaml") as f:
+    registry = yaml.safe_load(f)
+
+module = "<module>"  # e.g. "problems", "changes", "requests"
+mod_info = registry.get("modules", {}).get(module, {})
+
+if not mod_info:
+    print(f"⚠️  Module '{module}' not in API registry — check docs manually")
+else:
+    print(f"Module: {module}")
+    print(f"  Base path: {mod_info.get('base_path', '?')}")
+    print(f"  Input wrapper: {mod_info.get('input_wrapper', '?')}")
+    for ep_name, ep in mod_info.get('endpoints', {}).items():
+        status = ep.get('status', 'UNKNOWN')
+        path = ep.get('path', '?')
+        flag = '✅' if 'VERIFIED' in status else '❌' if 'NOT_EXIST' in status else '❓'
+        print(f"  {flag} {ep_name}: {ep.get('method', '?')} {path} [{status}]")
+CHECK_API
+```
+
+**Decision rules from API Registry:**
+- `VERIFIED_WORKING` → safe to use in preProcess/APIUtil
+- `DOES_NOT_EXIST` → **FORBIDDEN** — do NOT generate code using this path (it will fail silently)
+- Not in registry → check Source 2 (API doc), then verify via Playwright if unsure
+
+**Source 2 — API Documentation** (for paths not in registry):
+Read the relevant module section in `docs/api-doc/SDP_API_Endpoints_Documentation.md`. This document contains:
 - Exact V3 API paths (e.g., `api/v3/changes`, `api/v3/requests/{id}/notes`)
 - HTTP methods and input wrapper keys (e.g., `{"change": {...}}`)
 - Available sub-resource paths (notes, tasks, worklogs, approvals, etc.)
 - Worked automation examples
 
-> **MANDATORY**: Do NOT guess API paths or input wrappers. Always verify against this doc.
+> **MANDATORY**: Do NOT guess API paths or input wrappers. Always verify against registry first, then docs.
+> If the registry says `DOES_NOT_EXIST` for a sub-resource path (e.g., `changes/{id}/link_parent_change`),
+> that means the SDP instance does NOT support it — use UI-based flow instead.
 
 ### Step 6 — Backup Module Files Before Writing (Rollback Safety Net)
 
@@ -1166,6 +1344,88 @@ grep -A2 'public void' "$WRAPPER_FILE" | grep -v 'preProcess\|postProcess' | \
 ```
 
 **If ANY check fails**: Fix the issue in the generated code, recompile (re-run Step P1), and re-validate. Do NOT proceed to Step P2 with failing checks.
+
+### Step P1.6 — Run Python Static Analysis Gate (Deep Checks)
+
+> **Purpose**: The bash regex checks in P1.5 catch structural issues. This step runs the
+> full `static_analysis_gate.py` which includes 12+ checks and the **duplication detection
+> gates** that cross-reference against the deep entity inventory.
+
+```bash
+.venv/bin/python << 'RUN_GATE'
+import sys
+sys.path.insert(0, ".")
+from static_analysis_gate import StaticAnalysisGate
+
+gate = StaticAnalysisGate()
+module = "<module>"  # e.g. "problems"
+entity = "<entity>"  # e.g. "problem"
+
+# Check each generated Java file
+for filepath in [
+    "<path/to/EntityBase.java>",
+    "<path/to/ActionsUtil.java>",   # only if modified
+    "<path/to/APIUtil.java>",       # only if modified
+]:
+    try:
+        with open(filepath) as f:
+            code = f.read()
+        result = gate.analyze(code, filepath.split("/")[-1], module=module, entity=entity)
+        errors = [v for v in result.get("violations", []) if v.get("severity") == "ERROR"]
+        warnings = [v for v in result.get("violations", []) if v.get("severity") == "WARNING"]
+        if errors:
+            print(f"❌ {filepath}: {len(errors)} ERROR(s)")
+            for e in errors:
+                print(f"   ERROR: [{e['rule']}] {e['message']}")
+        elif warnings:
+            print(f"⚠️  {filepath}: {len(warnings)} WARNING(s)")
+            for w in warnings:
+                print(f"   WARN: [{w['rule']}] {w['message']}")
+        else:
+            print(f"✅ {filepath}: all checks passed")
+    except FileNotFoundError:
+        print(f"⏭️  {filepath}: skipped (not modified)")
+
+# Check data.json additions
+import json, os
+data_file = "<path/to/entity_data.json>"  # only if modified
+if os.path.exists(data_file):
+    with open(data_file) as f:
+        data = json.load(f)
+    # Get just the new keys you added (compare with inventory)
+    import yaml
+    inv_path = f"config/entity_inventory/{module}_{entity}.yaml"
+    existing_keys = set()
+    if os.path.exists(inv_path):
+        with open(inv_path) as fi:
+            inv = yaml.safe_load(fi)
+        existing_keys = set(inv.get("data_json_keys", []))
+    new_entries = {k: v for k, v in data.items() if k not in existing_keys}
+    if new_entries:
+        result = gate.analyze_data_json_additions(new_entries, module, entity)
+        for v in result.get("violations", []):
+            sev = v.get("severity", "INFO")
+            flag = "❌" if sev == "ERROR" else "⚠️"
+            print(f"{flag} data.json: [{v['rule']}] {v['message']}")
+        if not result.get("violations"):
+            print(f"✅ data.json: {len(new_entries)} new entries — all checks passed")
+RUN_GATE
+```
+
+**Key checks this gate runs (that P1.5 bash checks do NOT):**
+
+| Gate | Severity | What it catches |
+|------|----------|----------------|
+| `DUPLICATE_UTIL_METHOD` | ERROR | New method with same name as existing in ActionsUtil/APIUtil |
+| `DUPLICATE_DATA_KEY` | ERROR | New data.json key that already exists |
+| `SIMILAR_DATA_ENTRY` | WARNING | New entry with ≥80% field overlap — suggests reuse |
+| `INLINE_JSON_CONSTRUCTION` | ERROR | `new JSONObject().put()` chains (should use data.json) |
+| `RAW_STRING_DATA_LOAD` | ERROR | `getTestCaseData("raw_string")` instead of DataConstants |
+| `MISSING_WAIT_AFTER_AJAX` | WARNING | Missing `waitForAjaxComplete()` where needed |
+| `REDUNDANT_WAIT` | WARNING | Unnecessary `waitForAjaxComplete()` between clicks |
+
+**If ANY ERROR**: Fix the code and re-run. Errors are hard blocks — the test WILL fail at runtime.
+**If only WARNINGs**: Review and fix if possible, but can proceed to P2.
 
 ### Step P2 — Write `$PROJECT_NAME/tests_to_run.json` + Generate Execution Plan + Hand off
 
