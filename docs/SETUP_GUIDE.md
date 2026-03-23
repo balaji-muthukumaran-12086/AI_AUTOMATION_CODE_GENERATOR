@@ -12,7 +12,7 @@
   Then repeat for each project / branch:
        ↓
   1. Setup Project  →   Web UI (localhost:9500/setup)   →   Project ready
-  2. Generate       →   @test-generator                →   Java tests generated
+  2. Generate       →   @test-generator batch               →   Java tests generated
   3. Run            →   @test-runner batch              →   Tests executed & auto-fixed
 ```
 
@@ -23,11 +23,30 @@
 1. Install [VS Code](https://code.visualstudio.com/) with **GitHub Copilot** + **Copilot Chat** extensions (v1.99+)
 2. Download **Dependencies** and **Drivers** (Firefox + Geckodriver) zip files from [WorkDrive](https://workdrive.zoho.in/folder/l5o5d7049285d45dd49ae80d7be1a209a6841)
 
-Open VS Code, then open the **Terminal** (\`Ctrl+\`\`) and run:
+Open VS Code, then open the **Terminal** (\`Ctrl+\`\`) and install prerequisites for your OS:
 
-```
+#### Linux (Ubuntu / Debian)
+```bash
 sudo apt install openjdk-17-jdk git mercurial python3 python3-venv nodejs npm
 ```
+
+#### macOS
+```bash
+brew install openjdk@17 git mercurial python3 node
+# Add JDK to PATH (Homebrew doesn't do this automatically):
+sudo ln -sfn $(brew --prefix openjdk@17)/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
+```
+
+#### Windows
+```powershell
+# Install Chocolatey first (https://chocolatey.org/install), then:
+choco install openjdk17 git tortoisehg python3 nodejs-lts -y
+# Or use winget:
+winget install Microsoft.OpenJDK.17 Git.Git Python.Python.3.12 OpenJS.NodeJS.LTS
+# Mercurial: install TortoiseHg (includes hg CLI) from https://tortoisehg.bitbucket.io/
+```
+
+> **Windows users**: Use **Git Bash** (installed with Git) or **WSL 2** for all terminal commands below. PowerShell works for `git`, `python`, and `npm` but the `.sh` scripts require a Bash shell.
 
 ---
 
@@ -45,8 +64,17 @@ Now open this folder in VS Code: **File → Open Folder** → select `AI_AUTOMAT
 
 In the VS Code terminal, run:
 
-```
-python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements_vs.txt   # lightweight — 2 packages
+```bash
+# Linux / macOS:
+python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements_vs.txt
+
+# Windows (Git Bash):
+python -m venv .venv && source .venv/Scripts/activate && pip install -r requirements_vs.txt
+
+# Windows (PowerShell / cmd):
+python -m venv .venv && .venv\Scripts\activate && pip install -r requirements_vs.txt
+
+# Then (all platforms):
 npm install                      # installs @playwright/mcp + auto-downloads Chromium browser
 ```
 
@@ -57,8 +85,6 @@ npm install                      # installs @playwright/mcp + auto-downloads Chr
 > 2\. You should see **\*\*"microsoft/playwright-mcp"\*\*** in the list (configured via \`.vscode/mcp.json\`)
 >
 > 3\. If it doesn't appear, restart VS Code (the MCP config is read on startup)
->
-> 
 >
 > **Done!** You won't need to repeat the above. From now on, just open the folder in VS Code and follow the 3 steps below.
 
@@ -197,7 +223,7 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 
 |Task|Command|
 |---|---|
-|Start web server|`./server.sh start`|
+|Start web server|`./server.sh start` (Linux/macOS/Git Bash) or `bash server.sh start` (WSL)|
 |Step 1: Setup project|`http://localhost:9500/setup`|
 |Step 1: Reconfigure project|Setup page → Reconfigure mode|
 |Step 2: Generate (100+ cases)|`@test-generator batch` → `@test-runner batch` → repeat per batch|
@@ -231,10 +257,44 @@ The runner auto-diagnoses failures, fixes locators/code, and reruns (up to 3 att
 |Upgrade Generate Only → Run|Setup page → Reconfigure → add SDP URL/credentials/drivers|
 |Playwright MCP not available|`npm install && npx playwright install chromium` then `./start_playwright_mcp.sh`|
 |`@test-runner` skips locator fixes|Playwright MCP not loaded — restart VS Code or run `./start_playwright_mcp.sh --start`|
+|`.sh` scripts won't run (Windows)|Use Git Bash or WSL. Set VS Code default terminal: Terminal → Default Profile → Git Bash|
+|`python3` not found (Windows)|Use `python` instead of `python3` — Windows installs `python.exe` only|
+|Path errors on Windows|Use forward slashes (`/`) or double backslashes (`\\`) in `.env` paths|
 
 ---
 
 > **Why VS Code?** The `@agent` workflow requires VS Code Agent mode (1.99+) — Eclipse and IntelliJ don't support it. You can still use Eclipse for regular Java work alongside VS Code for test generation.
+
+---
+
+## OS Compatibility
+
+The framework is tested on **Linux** (Ubuntu 22.04+) and works on **macOS** and **Windows** with the notes below.
+
+| Component | Linux | macOS | Windows |
+|---|---|---|---|
+| VS Code + Copilot | ✅ | ✅ | ✅ |
+| Shell scripts (`.sh`) | ✅ native | ✅ native | ⚠️ Git Bash or WSL |
+| Python venv activation | `source .venv/bin/activate` | `source .venv/bin/activate` | `.venv\Scripts\activate` |
+| Java 17 (javac) | ✅ apt | ✅ brew | ✅ choco / winget |
+| Mercurial (hg) | ✅ apt | ✅ brew | ⚠️ TortoiseHg |
+| Playwright MCP | ✅ | ✅ | ✅ |
+| MCP Sandboxing (1.112) | ✅ | ✅ | ❌ not supported |
+| Zoho VPN (FortiClient CLI) | ✅ | ⚠️ FortiClient GUI | ⚠️ FortiClient GUI |
+| File paths in `.env` | `/home/user/...` | `/Users/user/...` | `C:\Users\user\...` or `/c/Users/...` (Git Bash) |
+
+### Windows-Specific Notes
+
+- **Recommended**: Use **WSL 2** (Ubuntu) for the smoothest experience — all Linux instructions work as-is
+- **Git Bash alternative**: All `.sh` scripts work in Git Bash. Set terminal in VS Code: `Terminal > Default Profile > Git Bash`
+- **Path separators**: The `.env` file and `project_config.py` use `os.path.join()` / `pathlib.Path` internally, so paths work on both `/` and `\` styles
+- **Mercurial**: TortoiseHg provides the `hg` CLI — ensure it's on your `PATH`
+
+### macOS-Specific Notes
+
+- **Homebrew JDK**: After `brew install openjdk@17`, symlink to `/Library/Java/` so `javac -version` works globally
+- **Xcode CLI tools**: `git` requires Xcode CLI tools — install with `xcode-select --install` if prompted
+- **FortiClient**: Use the GUI version from the App Store instead of the CLI binary
 
 ---
 
