@@ -499,4 +499,54 @@ class IngestionAgent:
                 f"[IngestionAgent] ❌ Failed to process document: {e}"
             ]
 
+        # ── Feature document (optional — product knowledge only) ──────────
+        # If a feature_document path is provided, extract its text and append
+        # as supplementary product knowledge to feature_description.
+        # This does NOT drive what scenarios are generated — it only provides
+        # context about UI flows, API endpoints, business rules, locators.
+        state = self._load_feature_document(state)
+
+        return state
+
+    def _load_feature_document(self, state: AgentState) -> AgentState:
+        """Load an optional feature document as supplementary product knowledge."""
+        feat_doc = state.get("feature_document", "")
+        if not feat_doc or not os.path.exists(feat_doc):
+            return state
+
+        try:
+            print(f"[IngestionAgent] 📖 Loading feature document: {Path(feat_doc).name}")
+            feat_text = extract_document_text(feat_doc)
+
+            if feat_text.strip():
+                # Truncate very large feature docs to avoid overwhelming the context
+                if len(feat_text) > MAX_CHARS:
+                    feat_text = feat_text[:MAX_CHARS] + "\n\n[... feature document truncated ...]"
+
+                knowledge_block = (
+                    "\n\n--- Product Knowledge (from feature document) ---\n"
+                    f"Source: {Path(feat_doc).name}\n\n"
+                    f"{feat_text}\n"
+                    "--- End Product Knowledge ---\n"
+                )
+
+                # Append to existing feature_description
+                existing = state.get("feature_description", "") or ""
+                state["feature_description"] = existing + knowledge_block
+
+                state["messages"].append(
+                    f"[IngestionAgent] 📖 Feature document loaded: "
+                    f"'{Path(feat_doc).name}' — "
+                    f"{len(feat_text):,} chars of product knowledge appended."
+                )
+            else:
+                state["messages"].append(
+                    f"[IngestionAgent] ⚠️ Feature document '{Path(feat_doc).name}' was empty — skipped."
+                )
+
+        except Exception as e:
+            state["messages"].append(
+                f"[IngestionAgent] ⚠️ Failed to load feature document '{Path(feat_doc).name}': {e}"
+            )
+
         return state

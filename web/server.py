@@ -210,6 +210,7 @@ def _run_pipeline_thread(
     run_id: str,
     feature_description: str,
     source_document: str,
+    feature_document: str,
     target_modules: list[str],
     generation_mode: str,
     hg_config: dict,
@@ -246,6 +247,8 @@ def _run_pipeline_thread(
                               metadata={"run_id": run_id, "mode": generation_mode, "modules": target_modules})
         if source_document:
             _log(f"[{datetime.now().strftime('%H:%M:%S')}] 📄 Document: {Path(source_document).name}")
+        if feature_document:
+            _log(f"[{datetime.now().strftime('%H:%M:%S')}] 📖 Feature Doc: {Path(feature_document).name}")
         if feature_description:
             _log(f"[{datetime.now().strftime('%H:%M:%S')}] 📝 Feature: {feature_description[:120]}...")
         mode_hint = " (⚡ direct — Planner+Coverage bypassed)" if generation_mode == "from_testcases" else ""
@@ -256,6 +259,7 @@ def _run_pipeline_thread(
             initial_state = _build_initial_state(
                 feature_description=feature_description,
                 source_document=source_document,
+                feature_document=feature_document,
                 target_modules=target_modules,
                 generation_mode=generation_mode,
                 hg_config=hg_config,
@@ -398,11 +402,13 @@ async def generate(
     hg_enabled: bool = Form(default=False),
     submitted_by: str = Form(default=""),
     file: Optional[UploadFile] = File(default=None),
+    feature_doc: Optional[UploadFile] = File(default=None),
 ):
     """
     Start a pipeline run. Accepts either:
       - A text feature description (form field: feature)
       - A document file upload (PDF/DOCX/XLSX/PPTX/TXT)
+      - An optional feature document (PDF/DOCX/DOC/MD/TXT) for product knowledge
       - Or both (document takes precedence, feature text is merged in)
     Returns immediately with a run_id. Client polls /api/stream/{run_id} for SSE.
     """
@@ -424,6 +430,21 @@ async def generate(
             shutil.copyfileobj(file.file, f_out)
         source_document = str(save_path)
 
+    # Handle optional feature document upload
+    feature_document = ""
+    if feature_doc and feature_doc.filename:
+        feat_ext = Path(feature_doc.filename).suffix.lower()
+        feat_allowed = {".pdf", ".docx", ".doc", ".md", ".txt"}
+        if feat_ext not in feat_allowed:
+            raise HTTPException(
+                400,
+                f"Unsupported feature doc type '{feat_ext}'. Allowed: {', '.join(feat_allowed)}"
+            )
+        feat_save_path = UPLOAD_DIR / f"{uuid.uuid4().hex}_featdoc{feat_ext}"
+        with open(feat_save_path, "wb") as f_out:
+            shutil.copyfileobj(feature_doc.file, f_out)
+        feature_document = str(feat_save_path)
+
     # Parse modules
     target_modules = [m.strip() for m in modules.split(",") if m.strip()]
 
@@ -437,6 +458,7 @@ async def generate(
         "status":          "queued",
         "feature":         feature[:200] if feature else "",
         "source_document": Path(source_document).name if source_document else "",
+        "feature_document": Path(feature_document).name if feature_document else "",
         "mode":            mode,
         "hg_enabled":      hg_enabled,
         "target_modules":  target_modules,
@@ -457,7 +479,7 @@ async def generate(
     # Launch pipeline in a background thread (it's sync)
     thread = threading.Thread(
         target=_run_pipeline_thread,
-        args=(run_id, feature.strip(), source_document, target_modules, mode, hg_config),
+        args=(run_id, feature.strip(), source_document, feature_document, target_modules, mode, hg_config),
         daemon=True,
     )
     thread.start()

@@ -347,6 +347,7 @@ def run_pipeline(
 def _build_initial_state(
     feature_description: str = "",
     source_document: str = "",
+    feature_document: str = "",
     target_modules: list[str] = None,
     generation_mode: str = "new_feature",
     run_config: dict = None,
@@ -356,6 +357,7 @@ def _build_initial_state(
     return {
         'feature_description': feature_description,
         'source_document':     source_document,
+        'feature_document':    feature_document,
         'document_metadata':   {},
         'target_modules': target_modules or [],
         'generation_mode': generation_mode,

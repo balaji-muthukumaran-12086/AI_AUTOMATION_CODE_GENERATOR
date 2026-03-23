@@ -91,12 +91,27 @@
       font-size: 13px; font-weight: 600; color: var(--green);
       margin-top: 8px; word-break: break-all;
     }
-    #file-input { display: none; }
-    #clear-file {
+    #file-input, #feat-file-input { display: none; }
+    #clear-file, #clear-feat-file {
       position: absolute; top: 8px; right: 8px;
       background: none; border: none; color: var(--text-dim);
       font-size: 16px; line-height: 1; padding: 2px 6px;
       border-radius: 4px;
+    }
+    /* Feature doc upload — compact variant */
+    #feat-drop-zone {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 14px 16px; text-align: center; cursor: pointer;
+      transition: .2s; background: var(--surface2); position: relative;
+    }
+    #feat-drop-zone:hover, #feat-drop-zone.drag-over { border-color: var(--blue); background: rgba(59,130,246,.06); }
+    #feat-drop-zone.has-file { border-color: var(--green); background: rgba(34,197,94,.06); }
+    #feat-drop-zone .dz-icon { font-size: 22px; margin-bottom: 4px; display: inline; }
+    #feat-drop-zone .dz-primary { font-size: 13px; font-weight: 500; display: inline; }
+    #feat-drop-zone .dz-secondary { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    #feat-drop-zone .dz-filename {
+      font-size: 12px; font-weight: 600; color: var(--green);
+      margin-top: 4px; word-break: break-all;
     }
     #clear-file:hover { color: var(--red); background: rgba(239,68,68,.1); }
 
@@ -341,6 +356,20 @@
                onchange="onFileSelected(event)" />
       </div>
 
+      <div>
+        <div class="section-title">📖 Feature Document <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional — product knowledge)</span></div>
+        <div id="feat-drop-zone" onclick="document.getElementById('feat-file-input').click()"
+             ondragover="onFeatDragOver(event)" ondragleave="onFeatDragLeave(event)" ondrop="onFeatDrop(event)">
+          <button id="clear-feat-file" onclick="clearFeatFile(event)" title="Remove file" style="display:none">✕</button>
+          <span class="dz-icon" id="feat-dz-icon">📖</span>
+          <span class="dz-primary" id="feat-dz-primary">Drop feature doc here or click to browse</span>
+          <div class="dz-secondary" id="feat-dz-secondary">PDF · DOCX · DOC · MD · TXT — UI flows, APIs, business rules</div>
+          <div class="dz-filename" id="feat-dz-filename"></div>
+        </div>
+        <input type="file" id="feat-file-input" accept=".pdf,.docx,.doc,.md,.txt"
+               onchange="onFeatFileSelected(event)" />
+      </div>
+
       <div class="or-divider">OR</div>
 
       <div class="field">
@@ -448,6 +477,7 @@
 let currentRunId  = null;
 let currentSource = null;   // EventSource
 let selectedFile  = null;
+let selectedFeatFile = null;
 let historyCollapsed = false;
 
 /* ─────────────────────────────────────────── Drag & Drop ── */
@@ -509,6 +539,42 @@ function formatBytes(b) {
   return (b/1048576).toFixed(1) + ' MB';
 }
 
+/* ───────────────────────── Feature Document (optional) ── */
+function onFeatDragOver(e) { e.preventDefault(); document.getElementById('feat-drop-zone').classList.add('drag-over'); }
+function onFeatDragLeave(e) { document.getElementById('feat-drop-zone').classList.remove('drag-over'); }
+function onFeatDrop(e) {
+  e.preventDefault();
+  document.getElementById('feat-drop-zone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) applyFeatFile(file);
+}
+function onFeatFileSelected(e) {
+  const file = e.target.files[0];
+  if (file) applyFeatFile(file);
+}
+function applyFeatFile(file) {
+  selectedFeatFile = file;
+  const dz = document.getElementById('feat-drop-zone');
+  dz.classList.add('has-file');
+  document.getElementById('feat-dz-icon').textContent = '✅';
+  document.getElementById('feat-dz-primary').textContent = 'Feature doc selected';
+  document.getElementById('feat-dz-secondary').textContent = formatBytes(file.size);
+  document.getElementById('feat-dz-filename').textContent = file.name;
+  document.getElementById('clear-feat-file').style.display = 'block';
+}
+function clearFeatFile(e) {
+  e.stopPropagation();
+  selectedFeatFile = null;
+  document.getElementById('feat-file-input').value = '';
+  const dz = document.getElementById('feat-drop-zone');
+  dz.classList.remove('has-file');
+  document.getElementById('feat-dz-icon').textContent = '📖';
+  document.getElementById('feat-dz-primary').textContent = 'Drop feature doc here or click to browse';
+  document.getElementById('feat-dz-secondary').textContent = 'PDF · DOCX · DOC · MD · TXT — UI flows, APIs, business rules';
+  document.getElementById('feat-dz-filename').textContent = '';
+  document.getElementById('clear-feat-file').style.display = 'none';
+}
+
 /* ─────────────────────────────────────────── Generation ── */
 async function startGeneration() {
   const feature = document.getElementById('feature-text').value.trim();
@@ -534,6 +600,7 @@ async function startGeneration() {
   fd.append('submitted_by', submittedBy);
   if (submittedBy) localStorage.setItem('ai_gen_submitted_by', submittedBy);
   if (selectedFile) fd.append('file', selectedFile);
+  if (selectedFeatFile) fd.append('feature_doc', selectedFeatFile);
 
   // UI: loading state
   setButtonLoading(true);

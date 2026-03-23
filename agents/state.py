@@ -17,6 +17,7 @@ class AgentState(TypedDict):
 
     # ── Ingestion Agent output ─────────────────────────────
     source_document: str              # Path to uploaded document (PDF/DOCX/XLSX/PPTX/TXT)
+    feature_document: str             # Path to optional feature doc (PDF/DOCX/MD/TXT) — product knowledge only
     document_metadata: dict           # { document_title, document_type, confidence, scenario_count, ... }
 
     # ── Planner Agent output ───────────────────────────────
