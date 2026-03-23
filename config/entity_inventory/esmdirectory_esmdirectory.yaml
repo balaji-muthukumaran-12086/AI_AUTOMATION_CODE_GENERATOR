@@ -1,0 +1,47 @@
+module: esmdirectory
+entity: esmdirectory
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/esmdirectory/esmdirectory/common/ESMdirectoryDataConstants.java
+  classes:
+    ESMdirectoryDataConstants:
+    - UPDATE_INSTANCE_ACTUAL_NAME
+    - UPDATE_INSTANCE_NAME
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- update_instance_actual_name
+- update_instance_name
+data_json_deep:
+  total_entries: 2
+  field_frequency:
+    portal: 2
+  all_placeholders:
+  - custom_instanceName
+  reuse_groups_count: 1
+  entries:
+    update_instance_actual_name:
+      fields:
+      - portal
+      placeholders:
+      - custom_instanceName
+      local_storage_keys_required:
+      - instanceName
+      purpose: ui_form
+    update_instance_name:
+      fields:
+      - portal
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form

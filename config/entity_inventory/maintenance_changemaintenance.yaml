@@ -1,0 +1,89 @@
+module: maintenance
+entity: changemaintenance
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/maintenance/changemaintenance/common/ChangeMaintenanceDataConstants.java
+  classes:
+    ChangeMaintenanceDataConstants:
+    - GET_CHANGE_TEMPLATE
+    - SCHEDULE_MAINTENANCE_WEEKLY
+    - API_DATA
+    - SCHEDULE_MAINTENANCE_YEARLY
+    - SCHEDULE_MAINTENANCE_DAILY
+    - SCHEDULE_MAINTENANCE_ONCE
+    - API_DATA_ONCE
+    - EDIT_CHANGE_MAINTENANCE_ONCE
+    - API_DATA_DAILY
+    - GET_SUBMISSION_REQUESTED_ID
+    - SCHEDULE_MAINTENANCE_MONTHLY
+    - CREATE_CHANGE_MAINTENANCE_ONCE
+    - CREATE_CHANGE_MAINTENANCE
+    - GET_SUBMISSION_STAGE_ID
+    - STAGE_NAME_TO_SCRIPT
+    - SCRIPT_TO_SUBMISSION
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups:
+- name: create
+  creates_count: 0
+  local_storage_keys: []
+- name: enabledowntimeintemplate
+  creates_count: 0
+  local_storage_keys: []
+- name: changeStageNameChange
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []
+preprocess_deep:
+- group: create
+  source_file: ChangeMaintenance.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: enabledowntimeintemplate
+  source_file: ChangeMaintenance.java
+  dataids_consumed:
+  - 2
+  dataids_count: 1
+  api_util_calls:
+  - ChangeTemplateAPIUtil.createChangeTemplateWithRequesterPermission
+  - ChangeTemplateAPIUtil.enablePlanningDetailsInTemplate
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTemplate.ChangeTemplateWithRequesterPermission
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: changeStageNameChange
+  source_file: ChangeMaintenance.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls:
+  - getEntityIdUsingSearchCriteria
+  - update
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false

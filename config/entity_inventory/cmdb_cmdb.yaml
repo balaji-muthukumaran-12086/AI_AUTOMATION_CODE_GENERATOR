@@ -1,0 +1,1824 @@
+module: cmdb
+entity: cmdb
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/cmdb/cmdb/utils/CmdbAPIUtil.java
+  methods:
+  - name: createCmdbWithDefault
+    return_type: void
+    params: String cmdbData, String cmdbTypes
+    purpose: without creating CI
+  - name: formatTypeName
+    return_type: String
+    params: String input
+    purpose: ''
+  - name: createCmdb
+    return_type: void
+    params: String cmdbData
+    purpose: ''
+  - name: createDowntime
+    return_type: void
+    params: String downtimeData
+    purpose: ''
+  - name: createRelationshipsInCI
+    return_type: void
+    params: String inputData, String path
+    purpose: ''
+  - name: createRelationship
+    return_type: void
+    params: String parentCitype, String targetCitype
+    purpose: ''
+  - name: addSuggestedRelationship
+    return_type: void
+    params: String parentEntityId, String targetEntityId, String relationshipId, String parentname
+    purpose: ''
+  - name: addCustomRelationship
+    return_type: void
+    params: String parentapiname, String parentCITypeId, String targetCIEntityId, String targetcitypeID
+    purpose: Store it using LocalStorage
+  - name: createMultipleCmdbWithDefault
+    return_type: void
+    params: String cmdbData, String cmdbTypes, int noofCI
+    purpose: without creating CI
+  - name: getCIIDUsingName
+    return_type: String
+    params: String ciName
+    purpose: ''
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/cmdb/cmdb/common/CmdbDataConstants.java
+  classes:
+    CmdbDataConstants:
+    - DOWNTIME_SUMMARY_TIMEFILTER
+    - CREATE_DOCUMENT
+    - DOWNTIME_API
+    - HISTORYTABSOPERATIONS
+    - ADD_CMDB
+    - EDIT_UDF_IN_UI
+    - SEARCH_CHANGE_STAGE
+    - CREATE_APPLICATION
+    - CMDB_VIEW_CRITERIA_WITH_DYNAMIC_LOOKUP_REPORTING_TO
+    - CREATE_SWITCH_NETWORK_GEAR
+    - GET_ENTITYID
+    - CREATE_CUSTOMCONTRACTTEMPLATE_WITH_CI
+    - CREATE_CMDB_FOR_IMPORT
+    - UPDATE_IBM_WORKSTATION
+    - DOWNTIME_SEARCH_FIELDS
+    - CREATE_COMPUTER
+    - UPDATE_NETWORK_GEAR
+    - CREATE_BUSINESS_VIEW
+    - UPDATE_PEOPLE
+    - CREATE_CI_WITH_CMDB_FIELDS
+    - SUGGEST_RELATIONSHIP
+    - CREATE_PEOPLE
+    - UPDATE_AIX_WORKSTATION
+    - CMDB_CREATE_WITH_LOOKUP_FIELD_VALUE
+    - SEARCH_CRITERIA_FOR_CORPORATE_WEBSITE
+    - SEARCH_DATA
+    - CREATE_EOL_STATE_CI
+    - CREATE_CUSTOM_CI
+    - ADD_CMDB_USING_APPLICATION
+    - CREATE_CI_WITH_ALL_FIELDS
+    - SEARCH_CRITERIA_FOR_CUSTOM_CI
+    - SEARCH_RELATIONSHIP_ID
+    - ADD_CMDB_FOR_NR
+    - CREATE_CMDB
+    - UPDATE_SUPPORT_GROUP
+    - CMDB_VIEW_CRITERIA_WITH_NULL_VALUE_IMPORT
+    - UPDATE_FIREWALL_NETWORK_GEAR
+    - CREATE_APPLICATION_IN_UI
+    - CREATE_TEAM
+    - CREATE_ACTIVE_STATE_CI
+    - UPDATE_RACK
+    - COPY_CI
+    - DOWNTIME_RHS
+    - ASSOCIATED_GROUP
+    - DOWNTIME_LISTVIEW_FIELDS
+    - SEARCH_CITYPE_ID
+    - CREATE_CONTRACT_IN_UI
+    - UPDATE_UNIX_WORKSTATION
+    - SEARCH_CRITERIA_FOR_REQUEST_A_CRMACCOUNT
+    - SET_TABLE_SETTING
+    - CREATE_APACHE_INSTANCE
+    - DOWNTIME_API_2
+    - DOWNTIME_API_1
+    - DOWNTIME_API_3
+    - CREATE_CI_IN_UI
+    - EDIT_CUSTOM_VIEW_WITH_ONECRITERIA
+    - CREATE_HPUX_WORKSTATION
+    - CREATE_SERVICE
+    - GET_BUSINESS_IMPACT_ID
+    - UPDATE_HPUX_WORKSTATION
+    - GET_PERSONALIZATION
+    - CMDB_VIEW_CRITERIA_WITH_DYNAMIC_USER_LOOKUP
+    - CREATE_ACCESS_POINT_NETWORK_GEAR
+    - ADD_RELATIONSHIPS
+    - ADD_CMDB_USING_ACCESSPOINT
+    - SUGGESTED_RELATIONSHIPS
+    - DOWNTIME_PERSONALIZATION
+    - CREATE_CHANGE
+    - CREATE_RACK
+    - UPDATE_DATA
+    - CREATE_UNIX_WORKSTATION
+    - CREATE_FIREWALL_NETWORK_GEAR
+    - CREATE_VIRTUAL_HOST_ASSET
+    - CREATE_LOOKUP_IN_UI
+    - CREATE_IBM_WORKSTATION
+    - CREATE_DATA_CENTER
+    - UPDATE_ROUTER_NETWORK_GEAR
+    - UPDATE_TEAM
+    - DOWNTIME_FIELDS
+    - UPDATE_COMPUTER
+    - CREATE_AIX_WORKSTATION
+    - CUSTOM_RELATIONSHIP
+    - UPDATE_DATA_CENTER
+    - SEARCH_CRITERIA
+    - CMDB_DEFAULT_NOTIFICATION
+    - CREATE_LOOKUP_VIA_API
+    - CREATE_DOWNTIME_WITH_FULL_DATA
+    - MODIFY_CI_TYPE_DATA
+    - CREATE_SUPPORT_GROUP
+    - REQUEST_VALID_INPUT_UI
+    - CREATE_APPLICATION_CI_TEMPLATE
+    - CREATE_NETWORK_GEAR
+    - CUSTOM_CI_TYPE
+    - UPDATE_ACCESS_POINT_NETWORK_GEAR
+    - DEMOSS
+    - CREATE_ROUTER_NETWORK_GEAR
+    - UPDATE_SERVICE
+    - CUSTOM_VIEW_WITH_ONECRITERIA
+    - UPDATE_SWITCH_NETWORK_GEAR
+    - MODIFY_DATACENTER_TEMPLATE
+    - CREATE_REGION
+    - CREATE_DOWNTIME_2
+    - COLUMN_CHOOSER_LISTVIEW
+    - RELATIONSHIP_IN_CI
+    - CREATE_VIRTUAL_MACHINE_ASSET
+    - ASSOCIATED_CUSTOM_SITE
+    - UPDATE_DOCUMENT
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- Column_Chooser_Listview
+- Copy_CI
+- Custom_View_With_OneCriteria
+- Edit_Custom_View_With_OneCriteria
+- HistoryTabsOperations
+- Relationship_in_CI
+- Request_Valid_Input_UI
+- Search_citype_id
+- Search_relationship_id
+- add_cmdb
+- add_cmdb_for_NR
+- add_cmdb_using_accesspoint
+- add_cmdb_using_application
+- add_relationships
+- associated_custom_site
+- associated_group
+- cmdb_create_with_lookup_field_value
+- cmdb_default_notification
+- cmdb_view_criteria_with_dynamic_lookup_reporting_to
+- cmdb_view_criteria_with_dynamic_user_lookup
+- cmdb_view_criteria_with_null_value_import
+- create_Application_CI_template
+- create_CI_with_all_fields
+- create_CustomcontractTemplate_with_CI
+- create_access_point_network_gear
+- create_active_state_ci
+- create_aix_workstation
+- create_apache_instance
+- create_application
+- create_application_in_ui
+- create_business_view
+- create_change
+- create_ci_in_ui
+- create_ci_with_cmdb_fields
+- create_cmdb
+- create_cmdb_for_import
+- create_computer
+- create_contract_in_UI
+- create_custom_ci
+- create_data_center
+- create_document
+- create_downtime_2
+- create_downtime_with_full_data
+- create_eol_state_ci
+- create_firewall_network_gear
+- create_hpux_workstation
+- create_ibm_workstation
+- create_lookup_in_UI
+- create_lookup_via_api
+- create_network_gear
+- create_people
+- create_rack
+- create_region
+- create_router_network_gear
+- create_service
+- create_support_group
+- create_switch_network_gear
+- create_team
+- create_unix_workstation
+- create_virtual_host_asset
+- create_virtual_machine_asset
+- custom_ci_type
+- custom_relationship
+- demoss
+- downtime_api
+- downtime_api_1
+- downtime_api_2
+- downtime_api_3
+- downtime_fields
+- downtime_listview_fields
+- downtime_personalization
+- downtime_rhs
+- downtime_search_fields
+- downtime_summary_timefilter
+- edit_udf_in_UI
+- 'get_business_impact_id '
+- get_entityid
+- get_personalization
+- modify_ci_type_data
+- modify_datacenter_template
+- search_change_stage
+- search_criteria
+- search_criteria_for_corporate_website
+- search_criteria_for_custom_ci
+- search_criteria_for_request_a_CRMaccount
+- search_data
+- set_table_setting
+- suggest_relationship
+- suggested_relationships
+- update_access_point_network_gear
+- update_aix_workstation
+- update_computer
+- update_data
+- update_data_center
+- update_document
+- update_firewall_network_gear
+- update_hpux_workstation
+- update_ibm_workstation
+- update_network_gear
+- update_people
+- update_rack
+- update_router_network_gear
+- update_service
+- update_support_group
+- update_switch_network_gear
+- update_team
+- update_unix_workstation
+data_json_deep:
+  total_entries: 107
+  field_frequency:
+    name: 64
+    ci_attributes: 13
+    search_criteria: 11
+    description: 5
+    criteria: 5
+    list: 5
+    row_count: 4
+    start_index: 4
+    fields_required: 4
+    get_total_count: 4
+    downtime: 4
+    relationship: 3
+    sort_fields: 3
+    ci_relationship: 3
+    template: 2
+    Criteria_InputName: 2
+    downtime_type: 2
+    state: 2
+    product: 2
+    purchase_cost: 2
+  all_placeholders:
+  - custom_CmdbId
+  - custom_FieldKeyInternaapplicationTemplateIDlName
+  - custom_FieldKeyInternalName
+  - custom_LookupFieldName
+  - custom_UserId
+  - custom_cientityId
+  - custom_cientityId1
+  - custom_cientityId2
+  - custom_corporateWebsiteEntityid
+  - custom_refEntityId
+  - custom_relationshipID
+  - custom_relationshipId
+  - custom_targetID
+  - custom_targetciID
+  - custom_targetcitypeID
+  - custom_techName
+  - custom_technician
+  - datetime, 0Y 0M 0D 0h 0m, true
+  - datetime, 0Y 0M 10D 0h 10m, true
+  - datetime, 0Y 0M 10D 1h 10m, false
+  - datetime, 0Y 0M 1D 0h 0m, false
+  - datetime, 0Y 0M 1D 0h 0m, true
+  - datetime, 0Y 0M 1D 0h 10m, false
+  - datetime, 0Y 0M 1D 1h 10m, true
+  - datetime, 0Y 0M 6D 10h 10m, true
+  - datetime, 1Y 10M 100D 10h 10m, false
+  - datetime, 2Y 10M 100D 10h 10m, true
+  - local_storage, get, name, null
+  - local_storage, get, vendorName, null
+  - logged_in_technician
+  - logged_in_user
+  - rest_api, get, impacts, impacts, get_business_impact_id
+  - unique_string
+  - user_email_id
+  reuse_groups_count: 14
+  entries:
+    create_computer:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_computer:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_CI_with_all_fields:
+      fields:
+      - name
+      - description
+      - ci_attributes
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_ibm_workstation:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_ibm_workstation:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_unix_workstation:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_unix_workstation:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_aix_workstation:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_aix_workstation:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_hpux_workstation:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_hpux_workstation:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_access_point_network_gear:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_access_point_network_gear:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_firewall_network_gear:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_firewall_network_gear:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_router_network_gear:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_router_network_gear:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_switch_network_gear:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_switch_network_gear:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_data_center:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_data_center:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_document:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_document:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_network_gear:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_network_gear:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_people:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_people:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_rack:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_rack:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_service:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_service:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_support_group:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_support_group:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_team:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_team:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    associated_custom_site:
+      fields:
+      - name
+      - settings
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    associated_group:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    update_data:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_apache_instance:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    suggested_relationships:
+      fields:
+      - relationship
+      placeholders:
+      - custom_cientityId1
+      local_storage_keys_required:
+      - cientityId1
+      purpose: ui_form
+    search_criteria_for_custom_ci:
+      fields:
+      - row_count
+      - start_index
+      - fields_required
+      - get_total_count
+      - search_criteria
+      - sort_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    search_criteria:
+      fields:
+      - row_count
+      - start_index
+      - fields_required
+      - get_total_count
+      - search_criteria
+      - sort_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    search_criteria_for_corporate_website:
+      fields:
+      - row_count
+      - start_index
+      - fields_required
+      - get_total_count
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    search_criteria_for_request_a_CRMaccount:
+      fields:
+      - row_count
+      - start_index
+      - fields_required
+      - get_total_count
+      - search_criteria
+      placeholders:
+      - custom_corporateWebsiteEntityid
+      local_storage_keys_required:
+      - corporateWebsiteEntityid
+      purpose: ui_form
+    demoss:
+      fields:
+      - relationship
+      placeholders:
+      - custom_cientityId2
+      - custom_cientityId1
+      local_storage_keys_required:
+      - cientityId2
+      - cientityId1
+      purpose: ui_form
+    custom_ci_type:
+      fields:
+      - ci_type
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      - custom_cientityId
+      - unique_string
+      local_storage_keys_required:
+      - cientityId
+      purpose: ui_form
+    create_application_in_ui:
+      fields:
+      - name
+      - ci_attributes
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    Request_Valid_Input_UI:
+      fields:
+      - subject
+      - requester
+      placeholders:
+      - unique_string
+      - user_email_id
+      local_storage_keys_required: []
+      purpose: ui_form
+    Column_Chooser_Listview:
+      fields:
+      - columns
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Copy_CI:
+      fields:
+      - copy
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_change:
+      fields:
+      - title
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    set_table_setting:
+      fields:
+      - sort_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_business_view:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_lookup_via_api:
+      fields:
+      - udf_field
+      placeholders:
+      - unique_string
+      - custom_refEntityId
+      - unique_string
+      local_storage_keys_required:
+      - refEntityId
+      purpose: api_preprocess
+    get_entityid:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_Application_CI_template:
+      fields:
+      - template
+      placeholders:
+      - custom_FieldKeyInternaapplicationTemplateIDlName
+      local_storage_keys_required:
+      - FieldKeyInternaapplicationTemplateIDlName
+      purpose: api_preprocess
+    modify_datacenter_template:
+      fields:
+      - template
+      placeholders:
+      - custom_FieldKeyInternalName
+      local_storage_keys_required:
+      - FieldKeyInternalName
+      purpose: ui_form
+    create_ci_in_ui:
+      fields:
+      - name
+      - ci_attributes
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_region:
+      fields:
+      - region
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_lookup_in_UI:
+      fields:
+      - reference_entity
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    edit_udf_in_UI:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    Custom_View_With_OneCriteria:
+      fields:
+      - Criteria_InputName
+      - criteria
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    Edit_Custom_View_With_OneCriteria:
+      fields:
+      - Criteria_InputName
+      - criteria
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_application:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_contract_in_UI:
+      fields:
+      - name
+      - active_from
+      - active_till
+      - vendor
+      - configuration_items
+      placeholders:
+      - unique_string
+      - datetime, 1Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      - local_storage, get, vendorName, null
+      - local_storage, get, name, null
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_CustomcontractTemplate_with_CI:
+      fields:
+      - contract_template
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    HistoryTabsOperations:
+      fields:
+      - OperationsName
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_cmdb_using_accesspoint:
+      fields:
+      - name
+      - description
+      - ci_attributes
+      placeholders:
+      - unique_string
+      - custom_technician
+      - rest_api, get, impacts, impacts, get_business_impact_id
+      local_storage_keys_required:
+      - technician
+      purpose: ui_form
+    'get_business_impact_id ':
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_cmdb:
+      fields:
+      - name
+      - ci_attributes
+      placeholders:
+      - unique_string
+      - custom_technician
+      - rest_api, get, impacts, impacts, get_business_impact_id
+      local_storage_keys_required:
+      - technician
+      purpose: ui_form
+    create_cmdb:
+      fields:
+      - name
+      - ci_attributes
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_downtime_2:
+      fields:
+      - downtime_type
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_downtime_with_full_data:
+      fields:
+      - downtime_type
+      - scheduled_start_time
+      - scheduled_end_time
+      - actual_start_time
+      - actual_end_time
+      placeholders:
+      - datetime, 0Y 0M 0D 0h 0m, true
+      - datetime, 0Y 0M 6D 10h 10m, true
+      - datetime, 0Y 0M 1D 1h 10m, true
+      - datetime, 0Y 0M 10D 0h 10m, true
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    downtime_personalization:
+      fields:
+      - personalization
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_personalization:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    search_data:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    downtime_fields:
+      fields:
+      - list
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    downtime_search_fields:
+      fields:
+      - list
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    downtime_rhs:
+      fields:
+      - list
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    downtime_api:
+      fields:
+      - downtime
+      placeholders:
+      - custom_CmdbId
+      - unique_string
+      local_storage_keys_required:
+      - CmdbId
+      purpose: ui_form
+    downtime_api_1:
+      fields:
+      - downtime
+      placeholders:
+      - custom_CmdbId
+      - unique_string
+      - datetime, 0Y 0M 1D 0h 0m, true
+      - datetime, 0Y 0M 6D 10h 10m, true
+      local_storage_keys_required:
+      - CmdbId
+      purpose: ui_form
+    downtime_api_2:
+      fields:
+      - downtime
+      placeholders:
+      - custom_CmdbId
+      - unique_string
+      - datetime, 0Y 0M 1D 0h 0m, false
+      - datetime, 0Y 0M 10D 0h 10m, true
+      local_storage_keys_required:
+      - CmdbId
+      purpose: ui_form
+    downtime_api_3:
+      fields:
+      - downtime
+      placeholders:
+      - custom_CmdbId
+      - unique_string
+      - datetime, 0Y 0M 10D 1h 10m, false
+      - datetime, 0Y 0M 1D 0h 10m, false
+      local_storage_keys_required:
+      - CmdbId
+      purpose: ui_form
+    downtime_listview_fields:
+      fields:
+      - list
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    cmdb_default_notification:
+      fields:
+      - notification_subject
+      - name
+      - notification_description
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    downtime_summary_timefilter:
+      fields:
+      - list
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_cmdb_using_application:
+      fields:
+      - name
+      - ci_attributes
+      placeholders:
+      - unique_string
+      - custom_technician
+      - custom_technician
+      - rest_api, get, impacts, impacts, get_business_impact_id
+      local_storage_keys_required:
+      - technician
+      - technician
+      purpose: ui_form
+    add_cmdb_for_NR:
+      fields:
+      - name
+      - ci_attributes
+      placeholders:
+      - unique_string
+      - custom_techName
+      - rest_api, get, impacts, impacts, get_business_impact_id
+      local_storage_keys_required:
+      - techName
+      purpose: ui_form
+    Relationship_in_CI:
+      fields:
+      - ci_relationship
+      placeholders:
+      - custom_relationshipId
+      - custom_CmdbId
+      local_storage_keys_required:
+      - relationshipId
+      - CmdbId
+      purpose: ui_form
+    modify_ci_type_data:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_relationships:
+      fields:
+      - relationship
+      placeholders:
+      - custom_targetID
+      local_storage_keys_required:
+      - targetID
+      purpose: ui_form
+    search_change_stage:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Search_citype_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    suggest_relationship:
+      fields:
+      - ci_relationship
+      placeholders:
+      - custom_relationshipID
+      - custom_targetID
+      local_storage_keys_required:
+      - relationshipID
+      - targetID
+      purpose: ui_form
+    Search_relationship_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    custom_relationship:
+      fields:
+      - ci_relationship
+      placeholders:
+      - custom_relationshipID
+      - custom_targetciID
+      - custom_targetcitypeID
+      local_storage_keys_required:
+      - relationshipID
+      - targetciID
+      - targetcitypeID
+      purpose: ui_form
+    create_custom_ci:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_ci_with_cmdb_fields:
+      fields:
+      - name
+      - description
+      - ci_attributes
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_active_state_ci:
+      fields:
+      - state
+      - name
+      - description
+      - ci_attributes
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_eol_state_ci:
+      fields:
+      - state
+      - name
+      - description
+      - ci_attributes
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_virtual_host_asset:
+      fields:
+      - name
+      - product
+      - vm_platform
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_virtual_machine_asset:
+      fields:
+      - name
+      - product
+      - vm_host
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    cmdb_view_criteria_with_dynamic_user_lookup:
+      fields:
+      - name
+      - criteria
+      placeholders:
+      - unique_string
+      - logged_in_user
+      - logged_in_user
+      - logged_in_user
+      - logged_in_user
+      - custom_LookupFieldName
+      - logged_in_user
+      local_storage_keys_required:
+      - LookupFieldName
+      purpose: ui_form
+    cmdb_view_criteria_with_dynamic_lookup_reporting_to:
+      fields:
+      - name
+      - criteria
+      placeholders:
+      - unique_string
+      - logged_in_technician
+      - logged_in_technician
+      - logged_in_technician
+      - logged_in_technician
+      - custom_LookupFieldName
+      - logged_in_technician
+      local_storage_keys_required:
+      - LookupFieldName
+      purpose: ui_form
+    cmdb_create_with_lookup_field_value:
+      fields:
+      - ci_attributes
+      - name
+      placeholders:
+      - custom_UserId
+      - custom_UserId
+      - custom_UserId
+      - unique_string
+      local_storage_keys_required:
+      - UserId
+      - UserId
+      - UserId
+      purpose: ui_form
+    create_cmdb_for_import:
+      fields:
+      - name
+      - ci_attributes
+      placeholders:
+      - custom_technician
+      - custom_technician
+      local_storage_keys_required:
+      - technician
+      - technician
+      purpose: api_preprocess
+    cmdb_view_criteria_with_null_value_import:
+      fields:
+      - name
+      - criteria
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+api_util_deep:
+- name: createCmdbWithDefault
+  params: String cmdbData, String cmdbTypes
+  api_paths: []
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - CiTypeDisplayName
+  - CmdbName
+  - CmdbId
+  local_storage_reads: []
+- name: formatTypeName
+  params: String input
+  api_paths: []
+  rest_methods_used: []
+  local_storage_writes: []
+  local_storage_reads: []
+- name: createCmdb
+  params: String cmdbData
+  api_paths: []
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - Name
+  - CMDBLocation
+  - cmdbPath
+  - CmdbId
+  local_storage_reads:
+  - ci_Name
+  - ciPath
+- name: createDowntime
+  params: String downtimeData
+  api_paths:
+  - downtimes
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - downtimeName
+  - downtimeId
+  local_storage_reads: []
+- name: createRelationshipsInCI
+  params: String inputData, String path
+  api_paths: []
+  rest_methods_used:
+  - createAndGetAPIResponse
+  local_storage_writes:
+  - relationshipTypeId
+  - relationshipIdci
+  local_storage_reads: []
+- name: createRelationship
+  params: String parentCitype, String targetCitype
+  api_paths:
+  - ci_types
+  - ci_types/
+  - ci_types/*/relationships
+  rest_methods_used:
+  - create
+  - getEntityIdUsingSearchCriteria
+  local_storage_writes:
+  - parentEntityID
+  - targetID
+  - relationshipID
+  local_storage_reads: []
+- name: addSuggestedRelationship
+  params: String parentEntityId, String targetEntityId, String relationshipId, String parentname
+  api_paths:
+  - /cmdb/
+  - ci_computer/*/ci_relationships
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - targetID
+  - relationshipID
+  local_storage_reads: []
+- name: addCustomRelationship
+  params: String parentapiname, String parentCITypeId, String targetCIEntityId, String targetcitypeID
+  api_paths:
+  - /cmdb/
+  - relationship_types
+  rest_methods_used:
+  - create
+  - getEntityIdUsingSearchCriteria
+  local_storage_writes:
+  - targetcitypeID
+  - relationshipID
+  - targetciID
+  local_storage_reads: []
+- name: createMultipleCmdbWithDefault
+  params: String cmdbData, String cmdbTypes, int noofCI
+  api_paths: []
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - CmdbName
+  - CmdbId
+  - cmdbCount
+  local_storage_reads: []
+- name: getCIIDUsingName
+  params: String ciName
+  api_paths: []
+  rest_methods_used:
+  - getEntityIDUsingFieldValue
+  local_storage_writes: []
+  local_storage_reads: []
+preprocess_deep:
+- group: construct_two_different_cmdb
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: entityid
+    source_type: computed
+  - key: name
+    source_type: hardcoded
+  - key: secondCmdbName
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - ci_apache_instance
+  - ci_it_service
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: suggested_relationships
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  - getEntityIdUsingSearchCriteria
+  local_storage_stores:
+  - key: name
+    source_type: hardcoded
+  - key: ci_entityId
+    source_type: computed
+  - key: cientityId1
+    source_type: computed
+  - key: cientityId2
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - ci_computer
+  - relationship
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_custom_ci
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  - getEntityIdUsingSearchCriteria
+  local_storage_stores:
+  - key: cientityId
+    source_type: computed
+  - key: created_custom_ci_type_name
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - ci_type
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: construct_computer_and_asset
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  dataids_count: 4
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  - createAndGetFullResponse
+  - getEntityIdUsingSearchCriteria
+  - update
+  local_storage_stores:
+  - key: name
+    source_type: hardcoded
+  - key: assetname
+    source_type: computed
+  - key: tempId
+    source_type: computed
+  - key: Template_Name
+    source_type: computed
+  - key: tempId
+    source_type: computed
+  - key: Template_Name
+    source_type: computed
+  - key: EditedTemplatedName
+    source_type: computed
+  - key: serviceCategoryTempId
+    source_type: computed
+  - key: serviceCategorytempName
+    source_type: computed
+  - key: ServiceTemplateName
+    source_type: computed
+  - key: ServiceTemplateid
+    source_type: computed
+  - key: serviceCategoryTempId
+    source_type: computed
+  - key: serviceCategorytempName
+    source_type: computed
+  - key: ServiceTemplateName
+    source_type: computed
+  - key: ServiceTemplateid
+    source_type: computed
+  - key: EditedTemplatedName
+    source_type: computed
+  - key: corporateWebsiteEntityid
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - ci_computer
+  - request_templates
+  - request_templates
+  - service_categories
+  - request_templates
+  - service_categories
+  - request_templates
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: construct_computer_CI_with_allfields
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls:
+  - createAndGetFullResponse
+  local_storage_stores:
+  - key: name
+    source_type: hardcoded
+  - key: Description
+    source_type: computed
+  - key: Location
+    source_type: computed
+  - key: BusinessImpact
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - cmdb
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: construct_two_Computer_CI
+  source_file: CmdbBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: construct_Change_Template_for_CMDB
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  - get
+  - update
+  local_storage_stores:
+  - key: LookupId
+    source_type: computed
+  - key: FieldKeyInternalName
+    source_type: computed
+  - key: LookupFieldName
+    source_type: computed
+  - key: ApplicationTemplateId
+    source_type: computed
+  - key: LookupFieldDisplayName
+    source_type: computed
+  - key: LookupFieldInternalName
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - udf_field
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: MakeandDeleteSite
+  source_file: CmdbBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: contractTemplateName
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - contract_template
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: addmultiplecmdb
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - CmdbAPIUtil.createCmdbWithDefault
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: cmdb
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - Cmdb.CmdbWithDefault
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: CIAPI
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - CmdbAPIUtil.createCmdb
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Cmdb.Cmdb
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: CIAPIMultiple
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - CmdbAPIUtil.createCmdb
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: ciNameList
+    source_type: computed
+  local_storage_reads:
+  - Name
+  entities_created:
+  - Cmdb.Cmdb
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: downtimeapi
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - CmdbAPIUtil.createCmdb
+  - CmdbAPIUtil.createDowntime
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Cmdb.Cmdb
+  - Cmdb.Downtime
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: releasedowntime
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  dataids_count: 4
+  api_util_calls:
+  - CmdbAPIUtil.createCmdb
+  - ReleaseDowntimeAPIUtil.createReleaseWithDowntime
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Cmdb.Cmdb
+  - ReleaseDowntime.ReleaseWithDowntime
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: changedowntime
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  dataids_count: 4
+  api_util_calls:
+  - CmdbAPIUtil.createCmdb
+  - DowntimeAPIUtil.changeDowntime
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Cmdb.Cmdb
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: techlogin
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: techlogincmdb
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  dataids_count: 4
+  api_util_calls:
+  - CmdbAPIUtil.createCmdb
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Cmdb.Cmdb
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: relationship
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  dataids_count: 7
+  api_util_calls:
+  - RelationshipTypesAPIUtil.createRelationshipAPI
+  - CmdbAPIUtil.createCmdb
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: relatedTo
+    source_type: computed
+  - key: cardinality
+    source_type: computed
+  - key: relationshipName
+    source_type: computed
+  - key: inverseRelationshipName
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - RelationshipTypes.RelationshipAPI
+  - Cmdb.Cmdb
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: CI
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - CmdbAPIUtil.createCmdb
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Cmdb.Cmdb
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: relationshipinci
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  dataids_count: 9
+  api_util_calls:
+  - RelationshipTypesAPIUtil.createRelationshipAPI
+  - CmdbAPIUtil.createCmdb
+  - CmdbAPIUtil.createCmdb
+  - CmdbAPIUtil.createRelationshipsInCI
+  - RelationshipTypesAPIUtil.createRelationshipAPI
+  - CmdbAPIUtil.createCmdb
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: relatedTo
+    source_type: computed
+  - key: cardinality
+    source_type: computed
+  - key: relationshipName
+    source_type: computed
+  - key: inverseRelationshipName
+    source_type: computed
+  - key: SourceId
+    source_type: hardcoded
+  - key: path
+    source_type: hardcoded
+  - key: TechDisplayId
+    source_type: user_display_id
+  - key: relatedTo
+    source_type: computed
+  - key: cardinality
+    source_type: computed
+  - key: relationshipName
+    source_type: computed
+  - key: inverseRelationshipName
+    source_type: computed
+  - key: SourceId
+    source_type: hardcoded
+  local_storage_reads:
+  - path
+  - cmdbPath
+  - CmdbId
+  entities_created:
+  - RelationshipTypes.RelationshipAPI
+  - Cmdb.Cmdb
+  - Cmdb.Cmdb
+  - Cmdb.RelationshipsInCI
+  - RelationshipTypes.RelationshipAPI
+  - Cmdb.Cmdb
+  creates_user: true
+  user_role: CMDB_FullControl
+  calls_super: false
+- group: association
+  source_file: CmdbBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls:
+  - IncidentTemplateAPIUtil.createIncidentTemplate
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: requestid
+    source_type: computed
+  - key: Subject
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - request
+  - IncidentTemplate.IncidentTemplate
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: fga_with_CI
+  source_file: CmdbBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - CmdbAPIUtil.createCmdbWithDefault
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: TechDisplayId
+    source_type: user_display_id
+  - key: entitiesId
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - Cmdb.CmdbWithDefault
+  creates_user: true
+  user_role: CustomRole_With_AllModule
+  calls_super: false

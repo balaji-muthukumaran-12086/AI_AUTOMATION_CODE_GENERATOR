@@ -1,0 +1,128 @@
+module: projects
+entity: projectmilestonetask
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/projects/projectmilestonetask/utils/ProjectMilestoneTaskAPIUtil.java
+  methods:
+  - name: createProjectWithTaskInMilestone
+    return_type: void
+    params: String projectDataID, String milestoneDataID, String taskDataID
+    purpose: ''
+  - name: createProjectWithMultipleTaskInMilestone
+    return_type: void
+    params: String projectDataID, String milestoneDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: ''
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/projects/projectmilestonetask/common/ProjectMilestoneTaskDataConstants.java
+  classes:
+    ProjectMilestoneTaskDataConstants:
+    - EDIT_TASK
+    - ADD_TASK_TASK_COUNT_2
+    - ADD_TASK
+    - CREATE_PROJECT_MANDATORY_FIELDS
+    - TRIGGER_TASK
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/projects/projectmilestonetask/common/ProjectMilestoneTaskAnnotationConstants.java
+  groups:
+  - constant: CREATE_PROJECT_AND_MILESTONE
+    value: createprojectandmilestone
+  - constant: CREATE_PROJECT_WITH_TASK_IN_MILESTONE
+    value: createprojectwithtaskinmilestone
+  - constant: CREATE_PROJECT_WITH_MULTIPLE_TASK_IN_MILESTONES
+    value: createprojectwithmultipletaskinmilestone
+  data:
+  - constant: ADD_MILESTONE
+    value: add_milestone
+  - constant: ADD_MILESTONE_MILESTONE_COUNT_2
+    value: add_milestone_milestone_count_2
+  - constant: ADD_MEMBERS
+    value: add_members
+  - constant: CREATE_PROJECT_MANDATORY_FIELDS
+    value: create_project_mandatory_fields
+  - constant: TRIGGER_TASK
+    value: trigger_task
+  - constant: ADD_TASK
+    value: add_task
+preprocess_groups: []
+data_json_keys: []
+api_util_deep:
+- name: createProjectWithTaskInMilestone
+  params: String projectDataID, String milestoneDataID, String taskDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - Milestone
+  - taskName
+  - MilestoneName
+  - taskId
+  local_storage_reads:
+  - projectId
+  - milestoneId
+- name: createProjectWithMultipleTaskInMilestone
+  params: String projectDataID, String milestoneDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - tasks
+  - taskNames
+  local_storage_reads:
+  - projectId
+  - milestoneId
+preprocess_deep:
+- group: createprojectandmilestone
+  source_file: ProjectMilestoneTaskBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ProjectAPIUtil.createProjectWithMilestone
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Project.ProjectWithMilestone
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprojectwithtaskinmilestone
+  source_file: ProjectMilestoneTaskBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ProjectMilestoneTaskAPIUtil.createProjectWithTaskInMilestone
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ProjectMilestoneTask.ProjectWithTaskInMilestone
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprojectwithmultipletaskinmilestone
+  source_file: ProjectMilestoneTaskBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ProjectMilestoneTaskAPIUtil.createProjectWithMultipleTaskInMilestone
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ProjectMilestoneTask.ProjectWithMultipleTaskInMilestone
+  creates_user: false
+  user_role: null
+  calls_super: false

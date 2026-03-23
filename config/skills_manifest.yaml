@@ -250,3 +250,33 @@ scripts:
   run_batch:
     file: "run_batch.py"
     purpose: "Batch test execution with parallel support"
+
+  generate_entity_inventory:
+    file: "generate_entity_inventory.py"
+    purpose: "Auto-generate YAML inventories per entity module (methods, locators, preProcess groups)"
+    usage: ".venv/bin/python generate_entity_inventory.py [module/entity]"
+
+  static_analysis_gate:
+    file: "static_analysis_gate.py"
+    purpose: "Pre-compilation validation — catches broken APIs, false positives, anti-patterns"
+    usage: ".venv/bin/python static_analysis_gate.py <java_file_or_dir>"
+
+# ╔═══════════════════════════════════════════════════════════╗
+# ║ Config/Knowledge Files                                    ║
+# ╚═══════════════════════════════════════════════════════════╝
+
+config_files:
+
+  api_registry:
+    file: "config/api_registry.yaml"
+    purpose: "Verified API endpoints per module — MUST check before any restAPI call"
+    status_values: ["VERIFIED_WORKING", "DOES_NOT_EXIST", "UNTESTED"]
+
+  entity_inventory:
+    dir: "config/entity_inventory/"
+    purpose: "Auto-generated YAML per entity — existing methods, locators, preProcess groups"
+    regenerate: ".venv/bin/python generate_entity_inventory.py"
+
+  test_patterns:
+    file: "docs/templates/test_patterns/patterns_reference.md"
+    purpose: "Standard test pattern templates (CRUD, linking, trash, RBAC, list view, spot edit)"

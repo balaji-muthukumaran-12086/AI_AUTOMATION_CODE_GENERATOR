@@ -1,0 +1,1018 @@
+module: releases
+entity: releasetask
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/releases/releasetask/utils/ReleaseTaskAPIUtil.java
+  methods:
+  - name: createReleaseAndTask
+    return_type: void
+    params: String releaseDataID, String taskDataID
+    purpose: ''
+  - name: createReleaseWithMultipleTask
+    return_type: void
+    params: String releaseDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: ''
+  - name: createReleaseWithMultipleTaskForDependency
+    return_type: HashMap<String, HashMap<String, String>>
+    params: String releaseDataID, String taskDataID
+    purpose: for task dependency
+  - name: createReleaseAndDiffMultipleTask
+    return_type: void
+    params: String[] dataIds
+    purpose: ''
+  - name: createReleaseWithMultipleTaskWithCustomStatus
+    return_type: void
+    params: String releaseDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: ''
+  - name: createTaskInRelease
+    return_type: String
+    params: TestCaseData taskdata
+    purpose: ''
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/releases/releasetask/common/ReleaseTaskDataConstants.java
+  classes:
+    ReleaseTaskDataConstants:
+    - ADD_DEVELOPMENT_TASK
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_DATE_FIELDS_DEPLOYMENT
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_TEXT_FIELDS_CLOSURE
+    - UPDATE_PLANNING_TASK
+    - API_ADD_RELEASE_TASK_COUNT_2
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_TEXT_FIELDS_TRAINING
+    - UPDATE_CLOSE_TASK
+    - API_ADD_MULTIPLE_TASKTEMPLATE
+    - ADD_TASK_IN_UAT_TASK_COUNT_2
+    - PICKUP_TASK_IN_REVIEW_TASK_COUNT_2
+    - TRIGGER_TASK_IN_DEPLOYMENT_TASK_COUNT_2
+    - API_ADD_SUBMISSION_TASK_COUNT_2
+    - API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_PLANNING
+    - ADD_TASK_IN_REVIEW_FOR_WORKLOG
+    - API_CLOSE_TRIGGER_TASK_COUNT_2
+    - UPDATE_TESTING_TASK
+    - API_ADD_DEVELOPMENT_TASK
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_TEXT_FIELDS_PLANNING
+    - API_SUBMISSION_PICKUP_TASK
+    - API_RELEASE_PICKUP_TASK
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_TEXT_FIELDS_REVIEW
+    - API_DEVELOPMENT_TRIGGER_TASK_COUNT_2
+    - ADD_TASK_IN_DEPLOYMENT
+    - GET_DEFAULT_TASK_LAYOUT_ID
+    - PICKUP_TASK_IN_TRAINING
+    - UPDATE_TRAINING_TASK
+    - API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_DEPLOYMENT
+    - ADD_TASK_IN_REVIEW_TASK_COUNT_2
+    - API_CLOSE_PICKUP_TASK_COUNT_2
+    - DETAILS_SPOT_EDIT_GROUP_DEPENDENT_FIELDS_INPUT
+    - VERIFY_VALIDATION_MSG_PERCENTAGE_COMPLETED_REVIEW_TASK
+    - ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_UAT
+    - API_DEVELOPMENT_TRIGGER_TASK
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_TEXT_FIELDS_DEVELOPMENT
+    - ADD_TESTING_TASK
+    - TRIGGER_TASK_IN_TRAINING
+    - API_CLOSE_TRIGGER_TASK
+    - API_SUBMISSION_PICKUP_TASK_COUNT_2
+    - API_ADD_TESTING_TASK_COUNT_15
+    - TRIGGER_TASK_IN_UAT_TASK_COUNT_2
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_DATE_FIELDS_UAT
+    - ADD_TASK_IN_UAT_FOR_WORKLOG
+    - TRIGGER_TASK_IN_REVIEW_TASK_COUNT_2
+    - API_ADD_REVIEW_TASK_COUNT_2
+    - VERIFY_VALIDATION_MSG_PERCENTAGE_COMPLETED_TRAINING_TASK
+    - API_ADD_SUBMISSION_TASK_CUSTOM_ONHOLD_STATUS_COUNT_2
+    - ADD_CLOSE_TASK
+    - API_CLOSE_PICKUP_TASK
+    - ADD_TASK_IN_TRAINING_FOR_WORKLOG
+    - API_ADD_REVIEW_TASK
+    - API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_CLOSURE
+    - API_PLANNING_TRIGGER_TASK
+    - TRIGGER_TASK_IN_DEPLOYMENT
+    - API_ADD_SUBMISSION_TASK_CLOSED
+    - ADD_SUBMISSION_TASK
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_DATE_FIELDS
+    - API_ADD_TESTING_TASK_COUNT_2
+    - DETAILS_SPOT_EDIT_ESTIMATED_EFFORT_FIELDS_INPUT
+    - API_ADD_SUBMISSION_TASK_CUSTOM_STATUS_COUNT_2
+    - API_TESTING_PICKUP_TASK_COUNT_2
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_DATE_FIELDS_DEVELOPMENT
+    - EDIT_TASK_IN_TRAINING
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_DATE_FIELDS_REVIEW
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_TEXT_FIELDS_UAT
+    - ADD_TASK_IN_UAT
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_TEXT_FIELDS_DEPLOYMENT
+    - PICKUP_TASK_IN_UAT
+    - UPDATE_TASK_WITH_ALL_FIELDS
+    - API_PLANNING_PICKUP_TASK_COUNT_2
+    - ADD_TASK_IN_DEPLOYMENT_TASK_COUNT_2
+    - API_ADD_TRAINING_TASK_COUNT_15
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_DATE_FIELDS_TRAINING
+    - API_SUBMISSION_TRIGGER_TASK_COUNT_2
+    - UPDATE_SUBMISSION_TASK
+    - API_PLANNING_PICKUP_TASK
+    - API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_REVIEW
+    - ADD_RELEASE_TASK
+    - EDIT_TASK_IN_REVIEW
+    - API_ADD_TRAINING_TASK
+    - API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_DEVELOPMENT
+    - API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_TESTING
+    - API_SUBMISSION_TRIGGER_TASK
+    - API_RELEASE_TRIGGER_TASK_COUNT_2
+    - API_ADD_TESTING_TASK
+    - TRIGGER_TASK_IN_TRAINING_TASK_COUNT_2
+    - ADD_TASK_IN_TRAINING
+    - TRIGGER_TASK_IN_UAT
+    - EDIT_TASK_IN_DEPLOYMENT
+    - API_ADD_REVIEW_TASK_COUNT_15
+    - API_ADD_CLOSE_TASK_COUNT_2
+    - VERIFY_VALIDATION_MSG_PERCENTAGE_COMPLETED_DEPLOYMENT_TASK
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_TEXT_FIELDS
+    - API_ADD_PLANNING_TASK
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_DATE_FIELDS_PLANNING
+    - API_TESTING_PICKUP_TASK
+    - ADD_TASK_FROM_TEMPLATE
+    - PICKUP_TASK_IN_TRAINING_TASK_COUNT_2
+    - ADD_TASK_IN_TRAINING_TASK_COUNT_2
+    - ADD_TASK_IN_REVIEW
+    - ADD_PLANNING_TASK
+    - VERIFY_VALIDATION_MSG_PERCENTAGE_COMPLETED_PLANNING_TASK
+    - API_ADD_PLANNING_TASK_COUNT_2
+    - UPDATE_DEVELOPMENT_TASK
+    - API_ADD_SUBMISSION_TASK_RESOLVED
+    - API_ADD_DEVELOPMENT_TASK_COUNT_2
+    - API_ADD_DEPLOYMENT_TASK
+    - DETAILS_SPOT_EDIT_PICKLIST_INPUT
+    - DETAILS_SPOT_EDIT_BY_TYPING_FIELDS_INPUT
+    - API_ADD_SUBMISSION_TASK_COUNT_15
+    - PICKUP_TASK_IN_DEPLOYMENT_TASK_COUNT_2
+    - API_ADD_UAT_TASK
+    - API_DEVELOPMENT_PICKUP_TASK_COUNT_2
+    - API_RELEASE_PICKUP_TASK_COUNT_2
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_DATE_FIELDS_TESTING
+    - TRIGGER_TASK_IN_REVIEW
+    - VERIFY_VALIDATION_MSG_IN_TASK_FOR_TEXT_FIELDS_TESTING
+    - UPDATE_RELEASE_TASK
+    - API_DEVELOPMENT_PICKUP_TASK
+    - UPDATE_REVIEW_TASK
+    - API_TESTING_TRIGGER_TASK
+    - API_ADD_CLOSE_TASK_COUNT_15
+    - PICKUP_TASK_IN_DEPLOYMENT
+    - EDIT_TASK_IN_UAT
+    - API_ADD_SUBMISSION_TASK
+    - API_ADD_SUBMISSION_TASK_CUSTOM_COMPLETED_STATUS
+    - UPDATE_UAT_TASK
+    - ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_SUBMISSION
+    - CREATE_TASK_IN_RELEASE_STAGES
+    - DETAILS_SPOT_EDIT_USING_SEARCH_INPUT
+    - API_ADD_RELEASE_TASK
+    - API_RELEASE_TRIGGER_TASK
+    - DETAILS_SPOT_EDIT_DATE_TIME_FIELDS_INPUT
+    - API_PLANNING_TRIGGER_TASK_COUNT_2
+    - API_TESTING_TRIGGER_TASK_COUNT_2
+    - API_ADD_CLOSE_TASK
+    - API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_TRAINING
+    - PICKUP_TASK_IN_REVIEW
+    - UPDATE_DEPLOYMENT_TASK
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/releases/releasetask/common/ReleaseTaskAnnotationConstants.java
+  groups:
+  - constant: CREATE_RELEASE
+    value: createRelease
+  - constant: CREATE_RELEASE_AND_TASK
+    value: createReleaseAndTask
+  - constant: CREATE_RELEASE_WITH_MULTIPLE_TASK
+    value: createReleaseWithMultipleTask
+  - constant: ADD_TASK_IN_CAB_EVALUATION
+    value: Add_Task_In_CAB_Evaluation
+  - constant: CREATE_REQUEST_FOR_RELEASE
+    value: createRequestForRelease
+  - constant: ADD_TASK_TEMPLATE
+    value: addtasktemplate
+  - constant: ADD_MULTIPLE_TASK_TEMPLATE
+    value: addmultipletasktemplate
+  - constant: CREATE_RELEASE_AND_TASK_EXCEPT_GROUP_AND_OWNER
+    value: createreleaseandtaskexceptgroupandowner
+  - constant: CREATE_TASK_TYPE_WITH_SPLCHAR
+    value: createtasktypewithsplchar
+  - constant: CREATE_RELEASE_WITH_MULTIPLE_TASK_FOR_DEPENDENCY
+    value: createreleasewithmultipletaskfordependency
+  - constant: CREATE_PRIORITY_WITH_SPLCHAR
+    value: createprioritywithsplchar
+  - constant: CREATE_STATUS_WITH_SPLCHAR
+    value: createstatuswithsplchar
+  - constant: CREATE_RELEASE_AND_TASK_WITH_TASKTYPE_SPLCHAR
+    value: createreleaseandtaskwithtasktypesplchar
+  - constant: CREATE_RELEASE_AND_TASK_WITH_STATUS_SPLCHAR
+    value: createreleaseandtaskwithstatussplchar
+  - constant: CREATE_RELEASE_AND_TASK_WITH_PRIORITY_SPLCHAR
+    value: createreleaseandtaskwithprioritysplchar
+  - constant: CREATE_RELEASE_AND_DIFF_MULTIPLE_TASK
+    value: createreleaseanddiffmultipletask
+  - constant: CREATE_RELEASE_AND_MULTIPLE_TASK_WITH_CUSTOM_STATUS
+    value: createreleaseandmultipletaskwithcustomstatus
+  - constant: CREATE_RELEASE_AND_DIFF_MULTIPLE_TASK2
+    value: createreleaseanddiffmultipletask2
+  data:
+  - constant: ADD_SUBMISSION_TASK
+    value: add_submission_task
+  - constant: API_ADD_SUBMISSION_TASK
+    value: api_add_submission_task
+  - constant: API_ADD_SUBMISSION_TASK_CLOSED
+    value: api_add_submission_task_closed
+  - constant: API_ADD_SUBMISSION_TASK_RESOLVED
+    value: api_add_submission_task_resolved
+  - constant: API_ADD_SUBMISSION_TASK_COUNT_2
+    value: api_add_submission_task_count_2
+  - constant: API_ADD_SUBMISSION_TASK_CUSTOM_STATUS_COUNT_2
+    value: api_add_submission_task_custom_status_count_2
+  - constant: API_ADD_SUBMISSION_TASK_COUNT_15
+    value: api_add_submission_task_count_15
+  - constant: API_SUBMISSION_TRIGGER_TASK
+    value: api_submission_trigger_task
+  - constant: API_SUBMISSION_PICKUP_TASK
+    value: api_submission_pickup_task
+  - constant: API_SUBMISSION_TRIGGER_TASK_COUNT_2
+    value: api_submission_trigger_task_count_2
+  - constant: API_SUBMISSION_PICKUP_TASK_COUNT_2
+    value: api_submission_pickup_task_count_2
+  - constant: API_ADD_SUBMISSION_TASK_CUSTOM_ONHOLD_STATUS_COUNT_2
+    value: api_add_submission_task_custom_onhold_status_count_2
+  - constant: API_ADD_SUBMISSION_TASK_CUSTOM_COMPLETED_STATUS
+    value: api_add_submission_task_custom_completed_status
+  - constant: ADD_RELEASE_TASK
+    value: add_release_task
+  - constant: API_ADD_RELEASE_TASK
+    value: api_add_release_task
+  - constant: API_ADD_RELEASE_TASK_COUNT_2
+    value: api_add_release_task_count_2
+  - constant: API_ADD_RELEASE_TASK_COUNT_15
+    value: api_add_release_task_count_15
+  - constant: API_RELEASE_TRIGGER_TASK
+    value: api_release_trigger_task
+  - constant: API_RELEASE_PICKUP_TASK
+    value: api_release_pickup_task
+  - constant: API_RELEASE_TRIGGER_TASK_COUNT_2
+    value: api_release_trigger_task_count_2
+  - constant: API_RELEASE_PICKUP_TASK_COUNT_2
+    value: api_release_pickup_task_count_2
+  - constant: ADD_PLANNING_TASK
+    value: add_planning_task
+  - constant: API_ADD_PLANNING_TASK
+    value: api_add_planning_task
+  - constant: API_ADD_PLANNING_TASK_COUNT_2
+    value: api_add_planning_task_count_2
+  - constant: API_ADD_PLANNING_TASK_COUNT_15
+    value: api_add_planning_task_count_15
+  - constant: API_PLANNING_TRIGGER_TASK
+    value: api_planning_trigger_task
+  - constant: API_PLANNING_PICKUP_TASK
+    value: api_planning_pickup_task
+  - constant: API_PLANNING_TRIGGER_TASK_COUNT_2
+    value: api_planning_trigger_task_count_2
+  - constant: API_PLANNING_PICKUP_TASK_COUNT_2
+    value: api_planning_pickup_task_count_2
+  - constant: ADD_CLOSE_TASK
+    value: add_close_task
+  - constant: API_ADD_CLOSE_TASK
+    value: api_add_close_task
+  - constant: API_ADD_CLOSE_TASK_COUNT_2
+    value: api_add_close_task_count_2
+  - constant: API_ADD_CLOSE_TASK_COUNT_15
+    value: api_add_close_task_count_15
+  - constant: API_CLOSE_TRIGGER_TASK
+    value: api_close_trigger_task
+  - constant: API_CLOSE_PICKUP_TASK
+    value: api_close_pickup_task
+  - constant: API_CLOSE_TRIGGER_TASK_COUNT_2
+    value: api_close_trigger_task_count_2
+  - constant: API_CLOSE_PICKUP_TASK_COUNT_2
+    value: api_close_pickup_task_count_2
+  - constant: ADD_DEVELOPMENT_TASK
+    value: add_development_task
+  - constant: API_ADD_DEVELOPMENT_TASK
+    value: api_add_development_task
+  - constant: API_ADD_DEVELOPMENT_TASK_COUNT_2
+    value: api_add_development_task_count_2
+  - constant: API_ADD_DEVELOPMENT_TASK_COUNT_15
+    value: api_add_development_task_count_15
+  - constant: API_DEVELOPMENT_TRIGGER_TASK
+    value: api_development_trigger_task
+  - constant: API_DEVELOPMENT_PICKUP_TASK
+    value: api_development_pickup_task
+  - constant: API_DEVELOPMENT_TRIGGER_TASK_COUNT_2
+    value: api_development_trigger_task_count_2
+  - constant: API_DEVELOPMENT_PICKUP_TASK_COUNT_2
+    value: api_development_pickup_task_count_2
+  - constant: ADD_TESTING_TASK
+    value: add_testing_task
+  - constant: API_ADD_TESTING_TASK
+    value: api_add_testing_task
+  - constant: API_ADD_TESTING_TASK_COUNT_2
+    value: api_add_testing_task_count_2
+  - constant: API_ADD_TESTING_TASK_COUNT_15
+    value: api_add_testing_task_count_15
+  - constant: API_TESTING_TRIGGER_TASK
+    value: api_testing_trigger_task
+  - constant: API_TESTING_PICKUP_TASK
+    value: api_testing_pickup_task
+  - constant: API_TESTING_TRIGGER_TASK_COUNT_2
+    value: api_testing_trigger_task_count_2
+  - constant: API_TESTING_PICKUP_TASK_COUNT_2
+    value: api_testing_pickup_task_count_2
+  - constant: ADD_TASK_IN_TRAINING
+    value: add_task_in_training
+  - constant: API_ADD_TRAINING_TASK
+    value: api_add_training_task
+  - constant: TRIGGER_TASK_IN_TRAINING
+    value: trigger_task_in_training
+  - constant: API_ADD_TRAINING_TASK_COUNT_15
+    value: api_add_training_task_count_15
+  - constant: TRIGGER_TASK_IN_TRAINING_TASK_COUNT_2
+    value: trigger_task_in_training_task_count_2
+  - constant: PICKUP_TASK_IN_TRAINING
+    value: pickup_task_in_training
+  - constant: PICKUP_TASK_IN_TRAINING_TASK_COUNT_2
+    value: pickup_task_in_training_task_count_2
+  - constant: ADD_TASK_IN_TRAINING_TASK_COUNT_2
+    value: add_task_in_training_task_count_2
+  - constant: ADD_TASK_IN_TRAINING_FOR_WORKLOG
+    value: add_task_in_training_for_worklog
+  - constant: ADD_TASK_IN_DEPLOYMENT
+    value: add_task_in_deployment
+  - constant: API_ADD_DEPLOYMENT_TASK
+    value: api_add_deployment_task
+  - constant: ADD_TASK_IN_DEPLOYMENT_TASK_COUNT_2
+    value: add_task_in_deployment_task_count_2
+  - constant: TRIGGER_TASK_IN_DEPLOYMENT
+    value: trigger_task_in_deployment
+  - constant: TRIGGER_TASK_IN_DEPLOYMENT_TASK_COUNT_2
+    value: trigger_task_in_deployment_task_count_2
+  - constant: PICKUP_TASK_IN_DEPLOYMENT
+    value: pickup_task_in_deployment
+  - constant: PICKUP_TASK_IN_DEPLOYMENT_TASK_COUNT_2
+    value: pickup_task_in_deployment_task_count_2
+  - constant: ADD_TASK_IN_UAT
+    value: add_task_in_UAT
+  - constant: API_ADD_UAT_TASK
+    value: api_add_uat_task
+  - constant: ADD_TASK_IN_UAT_TASK_COUNT_2
+    value: add_task_in_UAT_task_count_2
+  - constant: TRIGGER_TASK_IN_UAT
+    value: trigger_task_in_UAT
+  - constant: PICKUP_TASK_IN_UAT
+    value: pickup_task_in_UAT
+  - constant: ADD_TASK_IN_UAT_FOR_WORKLOG
+    value: add_task_in_uat_for_worklog
+  - constant: ADD_TASK_IN_STAGES
+    value: add_task_in_stages
+  - constant: ADD_TASK_IN_REVIEW
+    value: add_task_in_review
+  - constant: API_ADD_REVIEW_TASK_COUNT_15
+    value: api_add_review_task_count_15
+  - constant: API_ADD_REVIEW_TASK_COUNT_2
+    value: api_add_review_task_count_2
+  - constant: API_ADD_REVIEW_TASK
+    value: api_add_review_task
+  - constant: ADD_TASK_IN_REVIEW_TASK_COUNT_2
+    value: add_task_in_review_task_count_2
+  - constant: TRIGGER_TASK_IN_REVIEW
+    value: trigger_task_in_review
+  - constant: TRIGGER_TASK_IN_REVIEW_TASK_COUNT_2
+    value: trigger_task_in_review_task_count_2
+  - constant: PICKUP_TASK_IN_REVIEW
+    value: pickup_task_in_review
+  - constant: PICKUP_TASK_IN_REVIEW_TASK_COUNT_2
+    value: pickup_task_in_review_task_count_2
+  - constant: ADD_TASK_IN_REVIEW_FOR_WORKLOG
+    value: add_task_in_review_for_worklog
+  - constant: ADD_TASK_FROM_TEMPLATE
+    value: add_task_from_template
+  - constant: API_ADD_MULTIPLE_TASKTEMPLATE
+    value: api_add_multiple_tasktemplate
+  - constant: CREATE_RELEASE_AND_TASK_EXCEPT_GROUP_AND_OWNER_IN_UAT
+    value: add_task_with_all_fields_except_group_owner_in_UAT
+  - constant: CREATE_RELEASE_AND_TASK_EXCEPT_GROUP_AND_OWNER_IN_SUBMISSION
+    value: add_task_with_all_fields_except_group_owner_in_submission
+  - constant: TRIGGER_TASK_IN_UAT_TASK_COUNT_2
+    value: trigger_task_in_uat_task_count_2
+  - constant: API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_PLANNING
+    value: api_add_task_with_all_fields_except_group_owner_in_planning
+  - constant: VERIFY_VALIDATION_MSG_PERCENTAGE_COMPLETED_PLANNING_TASK
+    value: verify_validation_msg_percentage_completed_planning_task
+  - constant: API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_DEVELOPMENT
+    value: api_add_task_with_all_fields_except_group_owner_in_development
+  - constant: API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_TESTING
+    value: api_add_task_with_all_fields_except_group_owner_in_testing
+  - constant: API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_DEPLOYMENT
+    value: api_add_task_with_all_fields_except_group_owner_in_deployment
+  - constant: API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_TRAINING
+    value: api_add_task_with_all_fields_except_group_owner_in_training
+  - constant: API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_REVIEW
+    value: api_add_task_with_all_fields_except_group_owner_in_review
+  - constant: API_ADD_TASK_WITH_ALL_FIELDS_EXCEPT_GROUP_OWNER_IN_CLOSURE
+    value: api_add_task_with_all_fields_except_group_owner_in_closure
+preprocess_groups:
+- name: createRelease
+  creates_count: 0
+  local_storage_keys: []
+- name: createReleaseAndTask
+  creates_count: 0
+  local_storage_keys: []
+- name: createReleaseAndTaskWithGroup
+  creates_count: 0
+  local_storage_keys: []
+- name: createReleaseWithMultipleTask
+  creates_count: 0
+  local_storage_keys: []
+- name: createreleaseandtaskexceptgroupandowner
+  creates_count: 0
+  local_storage_keys: []
+- name: createtasktypewithsplchar
+  creates_count: 0
+  local_storage_keys: []
+- name: createprioritywithsplchar
+  creates_count: 0
+  local_storage_keys: []
+- name: createstatuswithsplchar
+  creates_count: 0
+  local_storage_keys: []
+- name: createreleaseandtaskwithtasktypesplchar
+  creates_count: 0
+  local_storage_keys: []
+- name: createreleaseandtaskwithstatussplchar
+  creates_count: 0
+  local_storage_keys: []
+- name: createreleaseandtaskwithprioritysplchar
+  creates_count: 0
+  local_storage_keys: []
+- name: createreleaseanddiffmultipletask
+  creates_count: 0
+  local_storage_keys: []
+- name: createreleaseandmultipletaskwithcustomstatus
+  creates_count: 0
+  local_storage_keys: []
+- name: createreleaseanddiffmultipletask2
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []
+api_util_deep:
+- name: createReleaseAndTask
+  params: String releaseDataID, String taskDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - taskName
+  - releaseId
+  - releaseName
+  local_storage_reads: []
+- name: createReleaseWithMultipleTask
+  params: String releaseDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - tasks
+  - releaseId
+  - taskNames
+  - releaseName
+  local_storage_reads: []
+- name: createReleaseWithMultipleTaskForDependency
+  params: String releaseDataID, String taskDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - releaseId
+  - releaseName
+  local_storage_reads: []
+- name: createReleaseAndDiffMultipleTask
+  params: String[] dataIds
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskDetails
+  - releaseId
+  - releaseName
+  local_storage_reads: []
+- name: createReleaseWithMultipleTaskWithCustomStatus
+  params: String releaseDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskDetails
+  - releaseId
+  - releaseName
+  local_storage_reads:
+  - status_Name
+- name: createTaskInRelease
+  params: TestCaseData taskdata
+  api_paths:
+  - releases/
+  - releases/*/tasks
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - taskId
+  - taskName
+  local_storage_reads:
+  - releaseId
+preprocess_deep:
+- group: createRelease
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createReleaseAndTask
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createReleaseAndTaskWithGroup
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createReleaseWithMultipleTask
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseWithMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseWithMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createreleaseandtaskexceptgroupandowner
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createtasktypewithsplchar
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - TaskTypeAPIUtil.createTaskTypeWithSpecialCharacters
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - TaskType.TaskTypeWithSpecialCharacters
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createprioritywithsplchar
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - PriorityAPIUtil.createPriorityeWithSpecialCharacters
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Priority.PriorityeWithSpecialCharacters
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createstatuswithsplchar
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - StatusAPIUtil.createStatusWithSpecialCharacters
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Status.StatusWithSpecialCharacters
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createreleaseandtaskwithtasktypesplchar
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  - TaskTypeAPIUtil.createTaskTypeWithSpecialCharacters
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  - TaskType.TaskTypeWithSpecialCharacters
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createreleaseandtaskwithstatussplchar
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  - StatusAPIUtil.createStatusWithSpecialCharacters
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  - Status.StatusWithSpecialCharacters
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createreleaseandtaskwithprioritysplchar
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  - PriorityAPIUtil.createPriorityeWithSpecialCharacters
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  - Priority.PriorityeWithSpecialCharacters
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createreleaseanddiffmultipletask
+  source_file: SubmissionTask.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndDiffMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndDiffMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createreleaseandmultipletaskwithcustomstatus
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - StatusAPIUtil.createStatusWithSpecialCharacters
+  - ReleaseTaskAPIUtil.createReleaseWithMultipleTaskWithCustomStatus
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Status.StatusWithSpecialCharacters
+  - ReleaseTask.ReleaseWithMultipleTaskWithCustomStatus
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createreleaseanddiffmultipletask2
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 3
+  dataids_count: 1
+  api_util_calls:
+  - StatusAPIUtil.createStatusWithSpecialCharacters
+  - ReleaseTaskAPIUtil.createReleaseAndDiffMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Status.StatusWithSpecialCharacters
+  - ReleaseTask.ReleaseAndDiffMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: addtasktemplate
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 1
+  dataids_count: 1
+  api_util_calls:
+  - TaskTemplateAPIUtil.createTaskTemplate
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - TaskTemplate.TaskTemplate
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: addmultipletasktemplate
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 1
+  dataids_count: 1
+  api_util_calls:
+  - TaskTemplateAPIUtil.createMultipleTaskTemplate
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - TaskTemplate.MultipleTaskTemplate
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createreleasewithmultipletaskfordependency
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseWithMultipleTaskForDependency
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseWithMultipleTaskForDependency
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createRelease
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createReleaseWithGroup
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createReleaseAndTask
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createReleaseAndTaskWithGroup
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createReleaseWithMultipleTask
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseWithMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseWithMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createreleaseandtaskexceptgroupandowner
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createtasktypewithsplchar
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - TaskTypeAPIUtil.createTaskTypeWithSpecialCharacters
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - TaskType.TaskTypeWithSpecialCharacters
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprioritywithsplchar
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - PriorityAPIUtil.createPriorityeWithSpecialCharacters
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Priority.PriorityeWithSpecialCharacters
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createstatuswithsplchar
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - StatusAPIUtil.createStatusWithSpecialCharacters
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Status.StatusWithSpecialCharacters
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createreleaseandtaskwithtasktypesplchar
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  - TaskTypeAPIUtil.createTaskTypeWithSpecialCharacters
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  - TaskType.TaskTypeWithSpecialCharacters
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createreleaseandtaskwithstatussplchar
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  - StatusAPIUtil.createStatusWithSpecialCharacters
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  - Status.StatusWithSpecialCharacters
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createreleaseandtaskwithprioritysplchar
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  - PriorityAPIUtil.createPriorityeWithSpecialCharacters
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  - Priority.PriorityeWithSpecialCharacters
+  creates_user: false
+  user_role: null
+  calls_super: false

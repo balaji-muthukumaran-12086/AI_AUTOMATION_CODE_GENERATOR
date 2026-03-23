@@ -1,0 +1,307 @@
+module: admin
+entity: generalsettings
+actions_util:
+  file: com/zoho/automater/selenium/modules/admin/generalsettings/utils/GeneralSettingsActionsUtil.java
+  methods:
+  - name: selectClosedOptionInRequeterRepliesToDropdown
+    return_type: void
+    params: String value
+    purpose: ''
+  - name: selectReopenAndSetStatus
+    return_type: void
+    params: String value
+    purpose: by default global always - Reopen and set status as Open
+  - name: selectReopenAndSetStatusIfRepliedWithInDays
+    return_type: void
+    params: (none)
+    purpose: requester replies within days and set status as Open
+  - name: selectAddToConversationAndNotifyTech
+    return_type: void
+    params: (none)
+    purpose: Add it to conversations and notify the technician.
+  - name: selectRaiseNewRequest
+    return_type: void
+    params: (none)
+    purpose: Raise a new requst.
+  - name: selectReopenForRemainingCompletedStatus
+    return_type: void
+    params: String value
+    purpose: For remaining completed statuses, perform
+  - name: enableRequestApprovalSettings
+    return_type: void
+    params: String value1, String value3, String value4
+    purpose: request approval settings
+  - name: enableQuickIncident
+    return_type: void
+    params: (none)
+    purpose: enable quick incident
+  - name: enableAllowRequesterToEditRequest
+    return_type: void
+    params: String value
+    purpose: Requester Portal Settings --- Do you allow requesters to edit their requests? option as Yes
+  - name: setChangePrefixName
+    return_type: void
+    params: String prefixName
+    purpose: ''
+  - name: enableRequestSettingsOptionsInRequesterPortalSetting
+    return_type: void
+    params: String requestOption
+    purpose: ''
+  - name: enableDirectCancellationForRequesterToCancelRequest
+    return_type: boolean
+    params: (none)
+    purpose: ''
+  - name: enableNotifyTechnicianOptionForRequesterToCancelRequest
+    return_type: boolean
+    params: (none)
+    purpose: ''
+  - name: requesterSettingEditorOption
+    return_type: void
+    params: String editorOption
+    purpose: ''
+  - name: disableQuickIncident
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: selectWidgetFromList
+    return_type: void
+    params: String widgetName, Locator destinationLocator
+    purpose: ''
+  - name: enableOrDisableDoNotShowDefaultTempToRequester
+    return_type: void
+    params: (none)
+    purpose: Do not show default request template to requesters
+api_util:
+  file: com/zoho/automater/selenium/modules/admin/generalsettings/utils/GeneralSettingsAPIUtil.java
+  methods:
+  - name: createRequest
+    return_type: void
+    params: String testCase
+    purpose: ''
+  - name: enableCustomizationCard
+    return_type: void
+    params: (none)
+    purpose: ''
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: null
+  classes: {}
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys: []
+actions_util_deep:
+- name: selectClosedOptionInRequeterRepliesToDropdown
+  params: String value
+  locators_used:
+  - AdvancedPortalSettingsLocators.AdvancedPortalSettings.CLICK_CLOSE_ICON_IN_REQUESTER_REPLIES_TO_DROPDOWN
+  - AdvancedPortalSettingsLocators.AdvancedPortalSettings.CLICK_REQUESTER_REPLIES_TO_DROPDOWN
+  - AdvancedPortalSettingsLocators.AdvancedPortalSettings.SELECT_DROPDOWN_VALUES_IN_REQUESTER_REPLIES_TO
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.scrollToElement
+  - actions.click
+  line_count: 4
+- name: selectReopenAndSetStatus
+  params: String value
+  locators_used:
+  - AdvancedPortalSettingsLocators.AdvancedPortalSettings.SELECT_RADIO_BTN
+  - AdvancedPortalSettingsLocators.AdvancedPortalSettings.SELECT_REOPEN_DROPDOWN_VALUES_1
+  - AdvancedPortalSettingsLocators.AdvancedPortalSettings.SELECT_REOPEN_STATUS_DROPDOWN_1
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.executeScript
+  - actions.click
+  - actions.waitForAjaxComplete
+  - actions.scrollToElement
+  - actions.click
+  - actions.waitForAjaxComplete
+  - actions.click
+  line_count: 10
+- name: selectReopenAndSetStatusIfRepliedWithInDays
+  params: (none)
+  locators_used:
+  - AdvancedPortalSettingsLocators.AdvancedPortalSettings.SELECT_RADIO_BTN
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 1
+- name: selectAddToConversationAndNotifyTech
+  params: (none)
+  locators_used:
+  - AdvancedPortalSettingsLocators.AdvancedPortalSettings.SELECT_RADIO_BTN
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 1
+- name: selectRaiseNewRequest
+  params: (none)
+  locators_used:
+  - AdvancedPortalSettingsLocators.AdvancedPortalSettings.SELECT_RADIO_BTN
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 1
+- name: selectReopenForRemainingCompletedStatus
+  params: String value
+  locators_used:
+  - AdvancedPortalSettingsLocators.AdvancedPortalSettings.REMAINING_COMPLETED_STATUS_DROPDOWN_SELECT_REOPEN_AND_SET_STATUS
+  - AdvancedPortalSettingsLocators.AdvancedPortalSettings.SELECT_COMPLETED_STATUS_DROPDOWN_VALUES
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.scrollToElement
+  - actions.click
+  line_count: 3
+- name: enableRequestApprovalSettings
+  params: String value1, String value3, String value4
+  locators_used:
+  - AdvancedPortalSettingsLocators.RequestApprovalSettings.CLICK_APPROVAL_SETTINGS_DROPDOWN
+  - AdvancedPortalSettingsLocators.RequestApprovalSettings.ENABLE_APPROVAL_SETTINGS_CHECKBOX
+  - AdvancedPortalSettingsLocators.RequestApprovalSettings.SELECT_ACTIONS_OPTIONS
+  - AdvancedPortalSettingsLocators.RequestApprovalSettings.SELECT_MODULE_DROPDOWN
+  - AdvancedPortalSettingsLocators.RequestApprovalSettings.SELECT_MODULE_FROM_DROPDOWN
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.waitForAjaxComplete
+  - actions.executeScript
+  - actions.click
+  line_count: 11
+- name: enableQuickIncident
+  params: (none)
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.executeScriptAndFetchBooleanValue
+  - actions.executeScript
+  line_count: 6
+- name: enableAllowRequesterToEditRequest
+  params: String value
+  locators_used:
+  - RequesterPortalSettingsLocators.Listview.ENABLE_REQUESTER_TO_EDIT_THEIR_REQUEST
+  - RequesterPortalSettingsLocators.Listview.SELECT_REQUEST_TO_EDIT_DROPDOWN
+  - RequesterPortalSettingsLocators.Listview.SELECT_REQUEST_TO_EDIT_DROPDOWN_VALUES
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.waitForAjaxComplete
+  - actions.scrollToElement
+  - actions.click
+  - actions.waitForAjaxComplete
+  - actions.click
+  line_count: 7
+- name: setChangePrefixName
+  params: String prefixName
+  locators_used:
+  - SDPCommonLocators.INPUT_BY_CSS_ID.apply
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.type
+  - actions.clickByNameInput
+  line_count: 2
+- name: enableRequestSettingsOptionsInRequesterPortalSetting
+  params: String requestOption
+  locators_used:
+  - RequesterPortalSettingsLocators.Listview.REQUEST_SETTING_OPTION_IN_REQUESTER_APPROVAL_SETTING
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 1
+- name: enableDirectCancellationForRequesterToCancelRequest
+  params: (none)
+  locators_used:
+  - RequesterPortalSettingsLocators.Listview.REQUESTER_DIRECT_CANCELLATION
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.executeScriptAndFetchBooleanValue
+  - actions.click
+  line_count: 5
+- name: enableNotifyTechnicianOptionForRequesterToCancelRequest
+  params: (none)
+  locators_used:
+  - RequesterPortalSettingsLocators.Listview.NOTIFY_TECHNICIAN
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 2
+- name: requesterSettingEditorOption
+  params: String editorOption
+  locators_used:
+  - RequesterPortalSettingsLocators.Listview.EDITOR_LIST_SCOPE_OF_REQUESTER
+  - RequesterPortalSettingsLocators.Listview.EDITOR_LIST_SCOPE_OF_REQUESTER_OPTION
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 2
+- name: disableQuickIncident
+  params: (none)
+  locators_used:
+  - RequestLocators.Listview.ADV_PORTAL_CHECKBOX
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.executeScriptAndFetchBooleanValue
+  - actions.click
+  - actions.clickByNameInput
+  line_count: 7
+- name: selectWidgetFromList
+  params: String widgetName, Locator destinationLocator
+  locators_used:
+  - RequesterPortalCustomizationLocators.GUI_BASED.CHECK_WIDGET
+  - RequesterPortalCustomizationLocators.GUI_BASED.SELECT_SUBTAB
+  - RequesterPortalCustomizationLocators.GUI_BASED.SELECT_WIDGET
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.isElementPresent
+  - actions.click
+  - actions.dragAndDrop
+  line_count: 4
+- name: enableOrDisableDoNotShowDefaultTempToRequester
+  params: (none)
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.executeScriptAndFetchBooleanValue
+  - actions.executeScript
+  - actions.executeScriptAndFetchBooleanValue
+  - actions.executeScript
+  line_count: 10
+api_util_deep:
+- name: createRequest
+  params: String testCase
+  api_paths:
+  - requests
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - RequestName
+  - RequestId
+  local_storage_reads: []
+- name: enableCustomizationCard
+  params: (none)
+  api_paths:
+  - /portals/_ssp_customization
+  rest_methods_used:
+  - update
+  local_storage_writes: []
+  local_storage_reads: []

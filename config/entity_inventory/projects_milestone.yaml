@@ -1,0 +1,148 @@
+module: projects
+entity: milestone
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/projects/milestone/common/MilestoneDataConstants.java
+  classes:
+    MilestoneDataConstants:
+    - ADD_MILESTONE
+    - ADD_MILESTONE_MILESTONE_COUNT_2
+    - EDIT_MILESTONE
+    - ADD_MEMBERS
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/projects/milestone/common/MilestoneAnnotationConstants.java
+  groups:
+  - constant: CREATE_PROJECT
+    value: createproject
+  - constant: CREATE_PROJECT_AND_MILESTONE
+    value: createprojectandmilestone
+  - constant: CREATE_PROJECT_WITH_MULTIPLE_MILESTONE
+    value: createprojectwithmultiplemilestone
+  - constant: CREATE_PROJECT_WITH_MEMBERS
+    value: createprojectwithmembers
+  - constant: CREATE_PROJECT_WITH_MEMBERS_AND_MILESTONE
+    value: createprojectwithmembersandmilestone
+  - constant: CREATE_PROJECT_WITH_MULTIPLE_MILESTONE_AND_MEMBERS
+    value: createprojectwithmultiplemilestoneandmembers
+  data:
+  - constant: ADD_MILESTONE
+    value: add_milestone
+  - constant: ADD_MILESTONE_MILESTONE_COUNT_2
+    value: add_milestone_milestone_count_2
+  - constant: ADD_MEMBERS
+    value: add_members
+preprocess_groups: []
+data_json_keys:
+- add_members
+- add_milestone
+- add_milestone_milestone_count_2
+- edit_milestone
+data_json_deep:
+  total_entries: 4
+  field_frequency:
+    status: 3
+    title: 3
+    description: 3
+    priority: 3
+    milestone_count: 1
+    project_members: 1
+  all_placeholders:
+  - unique_string
+  reuse_groups_count: 1
+  entries:
+    add_milestone:
+      fields:
+      - status
+      - title
+      - description
+      - priority
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    edit_milestone:
+      fields:
+      - status
+      - title
+      - description
+      - priority
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_milestone_milestone_count_2:
+      fields:
+      - status
+      - title
+      - description
+      - priority
+      - milestone_count
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_members:
+      fields:
+      - project_members
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+preprocess_deep:
+- group: createproject
+  source_file: MilestoneBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ProjectAPIUtil.createProject
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Project.Project
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprojectandmilestone
+  source_file: MilestoneBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ProjectAPIUtil.createProjectWithMilestone
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Project.ProjectWithMilestone
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprojectwithmultiplemilestone
+  source_file: MilestoneBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ProjectAPIUtil.createProjectWithMultipleMilestone
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Project.ProjectWithMultipleMilestone
+  creates_user: false
+  user_role: null
+  calls_super: false

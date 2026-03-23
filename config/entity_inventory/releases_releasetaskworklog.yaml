@@ -1,0 +1,142 @@
+module: releases
+entity: releasetaskworklog
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/releases/releasetaskworklog/utils/ReleaseTaskWorklogAPIUtil.java
+  methods:
+  - name: createReleaseAndTaskWorklog
+    return_type: void
+    params: String releaseDataID, String taskDataID, String worklogDataID
+    purpose: ''
+  - name: createTaskWorklog
+    return_type: void
+    params: String worklogDataID
+    purpose: ''
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/releases/releasetaskworklog/common/ReleaseTaskWorklogDataConstants.java
+  classes:
+    ReleaseTaskWorklogDataConstants:
+    - API_ADD_DEVELOPMENT_TASK
+    - API_VALID_INPUT_GENERAL_TEMPLATE
+    - API_ADD_SUBMISSION_TASK
+    - API_VALID_INPUT_GENERAL_TEMPLATE_MANDATORY_FIELDS
+    - ASSOCIATED_GROUP
+    - API_ADD_PLANNING_TASK
+    - API_ADD_UAT_TASK
+    - API_ADD_TRAINING_TASK
+    - API_ADD_REVIEW_TASK
+    - API_ADD_TESTING_TASK
+    - API_ADD_DEPLOYMENT_TASK
+    - ASSOCIATED_CUSTOM_SITE
+    - EDIT_WORKLOG
+    - API_ADD_CLOSURE_TASK
+    - ADD_WORKLOG
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/releases/releasetaskworklog/common/ReleaseTaskWorklogAnnotationConstants.java
+  groups:
+  - constant: CREATE_RELEASE_AND_TASK
+    value: createreleaseandtask
+  - constant: CREATE_RELEASE_AND_TASK_WORKLOG
+    value: createreleaseandtaskworklog
+  data:
+  - constant: ADD_WORKLOG
+    value: add_worklog
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE
+    value: api_valid_input_general_template
+  - constant: API_VALID_INPUT_GENERAL_TEMPLATE_MANDATORY_FIELDS
+    value: api_valid_input_general_template_mandatory_fields
+  - constant: API_ADD_SUBMISSION_TASK
+    value: api_add_submission_task
+  - constant: API_ADD_PLANNING_TASK
+    value: api_add_planning_task
+  - constant: API_ADD_DEVELOPMENT_TASK
+    value: api_add_development_task
+  - constant: API_ADD_TESTING_TASK
+    value: api_add_testing_task
+  - constant: API_ADD_UAT_TASK
+    value: api_add_UAT_task
+  - constant: API_ADD_DEPLOYMENT_TASK
+    value: api_add_deployment_task
+  - constant: API_ADD_TRAINING_TASK
+    value: api_add_training_task
+  - constant: API_ADD_REVIEW_TASK
+    value: api_add_review_task
+  - constant: API_ADD_CLOSEURE_TASK
+    value: api_add_closure_task
+  - constant: API_ADD_WORKLOG
+    value: api_add_worklog
+preprocess_groups:
+- name: createreleaseandtask
+  creates_count: 0
+  local_storage_keys:
+  - technician
+- name: createreleaseandtaskworklog
+  creates_count: 0
+  local_storage_keys:
+  - technician
+data_json_keys: []
+api_util_deep:
+- name: createReleaseAndTaskWorklog
+  params: String releaseDataID, String taskDataID, String worklogDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - releaseId
+  - releaseName
+  - worklogId
+  - worklogName
+  local_storage_reads: []
+- name: createTaskWorklog
+  params: String worklogDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - worklogId
+  - description
+  local_storage_reads:
+  - taskId
+  - releaseId
+preprocess_deep:
+- group: createreleaseandtask
+  source_file: ReleaseTaskWorklog.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ReleaseTaskAPIUtil.createReleaseAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTask.ReleaseAndTask
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createreleaseandtaskworklog
+  source_file: ReleaseTaskWorklog.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ReleaseTaskWorklogAPIUtil.createReleaseAndTaskWorklog
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: technician
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - ReleaseTaskWorklog.ReleaseAndTaskWorklog
+  creates_user: false
+  user_role: null
+  calls_super: false

@@ -23,6 +23,16 @@ files:
         topic: "SECTION 0 — Module placement, derive from use-case, cross-module rules"
         keywords: ["module placement", "use-case", "cross-module", "FORBIDDEN"]
 
+      - id: "FR_ANTI_FALSE_POSITIVE"
+        lines: [110, 190]
+        topic: "SECTION 0.5 — Anti-false-positive assertion rule, two-phase assertion pattern"
+        keywords: ["false positive", "negative assertion", "isElementPresent", "positive anchor", "two-phase"]
+
+      - id: "FR_API_REGISTRY_GATE"
+        lines: [192, 220]
+        topic: "SECTION 0.6 — API Registry Gate, check api_registry.yaml before RestAPI calls"
+        keywords: ["api registry", "DOES_NOT_EXIST", "VERIFIED_WORKING", "restAPI"]
+
       - id: "FR_CLASS_ARCHITECTURE"
         lines: [30, 86]
         topic: "SECTION 1 — Two-layer class pattern (Entity.java wrapper + EntityBase.java impl)"

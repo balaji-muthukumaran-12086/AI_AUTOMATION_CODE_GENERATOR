@@ -292,3 +292,47 @@ if (x) {
     doSomething();
 }
 ```
+
+---
+
+## D23 — ANTI-FALSE-POSITIVE ASSERTIONS (§0.5)
+
+Every **negative assertion** (`!isElementPresent`, "should NOT be visible") MUST be preceded by a **positive anchor** proving the correct UI state was reached.
+
+```java
+// ✅ CORRECT — Two-Phase Assertion
+if (!actions.isElementPresent(POPUP_HEADER)) {
+    addFailureReport("Popup never opened — cannot verify exclusion");
+    return;
+}
+// NOW safe to check absence:
+if (!actions.isElementPresent(TRASHED_ROW)) {
+    addSuccessReport("Trashed entity correctly excluded");
+}
+
+// ❌ FORBIDDEN — Naked Negative (false positive if popup never opened)
+if (!actions.isElementPresent(TRASHED_ROW)) {
+    addSuccessReport("Excluded");  // might pass because popup didn't open at all
+}
+```
+
+---
+
+## D24 — API REGISTRY GATE (§0.6)
+
+Before any `restAPI.*` call, check `config/api_registry.yaml`.
+- `VERIFIED_WORKING` → safe to use
+- `DOES_NOT_EXIST` → MUST use UI (e.g., linking changes has NO V3 API)
+- `UNTESTED` or not listed → verify first, treat as unavailable
+
+---
+
+## D25 — ENTITY INVENTORY CHECK
+
+Before writing any new scenario, check `config/entity_inventory/<module>_<entity>.yaml` for:
+- Existing ActionsUtil methods (REUSE, don't duplicate)
+- Existing APIUtil methods (REUSE, don't duplicate)
+- Available preProcess groups + their LocalStorage keys
+- Available DataConstants + AnnotationConstants
+
+Regenerate with: `.venv/bin/python generate_entity_inventory.py`

@@ -59,6 +59,36 @@ When multiple manual test cases from the use-case document can be covered by a s
 actions.click(Locators.CHECKBOX_LOCATOR);  // explicit click
 ```
 
+## UNIVERSAL RULE — UI-Only Test Method Bodies + Feature Under Test Separation
+
+This is a **UI automation framework**. Test method bodies MUST only exercise UI flows (Selenium clicks, navigation, form fills, `isElementPresent`, `getText`, etc.). **API calls in test method bodies are FORBIDDEN** — they turn the test into API testing. Only `preProcess` should use API calls — and **only for raw entity creation and state setup**, NOT for performing the feature being tested.
+
+**Critical distinction:**
+- **"Data creation"** = creating entities that need to EXIST (changes, users, templates) → API in preProcess ✅
+- **"State setup"** = setting entities into a state needed before the test (trash, close) → API in preProcess ✅
+- **"Feature under test"** = the action/flow the test verifies (linking, associating, approval flow) → **UI in test method ONLY** ✅
+
+```java
+// ❌ FORBIDDEN — Feature under test (linking) done via API in preProcess
+} else if ("createAndLinkChild".equalsIgnoreCase(group)) {
+    createChangeGetResponse(dataIds[0]);
+    ChangeAPIUtil.linkChildChange(sourceId, childId);  // ← Wrong! Linking IS the test
+}
+
+// ✅ CORRECT — preProcess only creates entities; test method links via UI
+// In preProcess:
+createChangeGetResponse(dataIds[0]);  // parent
+JSONObject child = ChangeAPIUtil.createChangeGetFullResponse(dataIds[0]);  // child
+LocalStorage.store("childName", child.optString("title"));
+// NO linking — that's the test method's responsibility
+
+// In test method:
+ChangeActionsUtil.navigateToAssociationsTab();      // UI click
+ChangeActionsUtil.openAttachPopup("Child Changes");  // UI click
+ChangeActionsUtil.searchAndSelectChange(childName);  // UI interaction
+ChangeActionsUtil.clickAssociateButton();             // UI click
+```
+
 ## FORBIDDEN — Inline JSONObject Construction for Test Data
 
 All test data (UI form inputs AND preProcess API payloads) MUST be defined in `*_data.json` files and loaded via `getTestCaseData()` or `getTestCaseDataUsingCaseId()`. Never construct JSONObject payloads inline.

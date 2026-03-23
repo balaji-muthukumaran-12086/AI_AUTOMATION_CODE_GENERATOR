@@ -1,0 +1,52 @@
+module: problems
+entity: reminder
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/problems/reminder/common/ReminderDataConstants.java
+  classes:
+    ReminderDataConstants:
+    - ADDREMINDER
+    - API_ADDREMINDER1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- API_AddReminder1
+- AddReminder
+data_json_deep:
+  total_entries: 2
+  field_frequency:
+    summary: 2
+    date: 2
+  all_placeholders:
+  - datetime, 0Y 1M 100D 10h 10m, true
+  - unique_string
+  reuse_groups_count: 1
+  entries:
+    AddReminder:
+      fields:
+      - summary
+      - date
+      placeholders:
+      - unique_string
+      - datetime, 0Y 1M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    API_AddReminder1:
+      fields:
+      - summary
+      - date
+      placeholders:
+      - datetime, 0Y 1M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form

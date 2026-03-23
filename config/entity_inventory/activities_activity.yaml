@@ -1,0 +1,67 @@
+module: activities
+entity: activity
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/activities/activity/common/ActivityDataConstants.java
+  classes:
+    ActivityDataConstants:
+    - CREATE_REQUEST_FOR_ACTIVITIES
+    - REQUEST_DATA_FOR_GROUP_HEAD
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- create_request_for_activities
+- request_data_for_group_head
+data_json_deep:
+  total_entries: 2
+  field_frequency:
+    request: 1
+    template: 1
+    subject: 1
+    site: 1
+    group: 1
+    requester: 1
+  all_placeholders:
+  - custom_associated_group_name
+  - custom_associated_site_name
+  - unique_string
+  - user_email_id
+  - user_name
+  reuse_groups_count: 0
+  entries:
+    create_request_for_activities:
+      fields:
+      - request
+      placeholders:
+      - unique_string
+      - user_name
+      - user_email_id
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    request_data_for_group_head:
+      fields:
+      - template
+      - subject
+      - site
+      - group
+      - requester
+      placeholders:
+      - unique_string
+      - custom_associated_site_name
+      - custom_associated_group_name
+      - user_name
+      local_storage_keys_required:
+      - associated_site_name
+      - associated_group_name
+      purpose: ui_form

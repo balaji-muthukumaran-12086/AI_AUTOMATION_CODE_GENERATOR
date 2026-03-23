@@ -2,19 +2,23 @@
 context_builder.py
 ------------------
 Builds rich context payloads for the Coder Agent by combining:
-  1. Module's existing test scenarios (from vector store)
-  2. Actual source files: Fields.java, DataConstants.java, Locators.java
-  3. Framework grammar rules
-  4. Similar test cases from other modules (cross-module learning)
+  1. Product Discovery documents (verified via Playwright — highest authority)
+  2. Module's existing test scenarios (from vector store)
+  3. Actual source files: Fields.java, DataConstants.java, Locators.java
+  4. Framework grammar rules
+  5. Similar test cases from other modules (cross-module learning)
 
 This context is injected into the LLM prompt so the agent generates
 code that is 100% consistent with the existing codebase patterns.
 """
 
 import json
+import re
 import yaml
 from pathlib import Path
 from typing import Optional
+
+from knowledge_base.discovery_loader import DiscoveryLoader
 
 
 class ContextBuilder:
@@ -24,13 +28,39 @@ class ContextBuilder:
         self.kb_raw = self.base / 'knowledge_base' / 'raw'
         self.config_dir = self.base / 'config'
 
+        # Discovery loader for product knowledge docs
+        self.discovery_loader = DiscoveryLoader(str(self.base))
+
         # Lazy-loaded caches
         self._module_index: Optional[dict] = None
         self._framework_grammar: Optional[dict] = None
         self._module_taxonomy: Optional[dict] = None
         self._testcases_parsed: Optional[list] = None
+        self._api_registry: Optional[dict] = None
+        self._entity_inventories: dict = {}
 
     # ── Lazy loaders ───────────────────────────────────────
+
+    def _get_api_registry(self) -> dict:
+        """Load the API registry (verified endpoints per module)."""
+        if self._api_registry is None:
+            reg_path = self.config_dir / 'api_registry.yaml'
+            if reg_path.exists():
+                self._api_registry = yaml.safe_load(reg_path.read_text())
+            else:
+                self._api_registry = {}
+        return self._api_registry
+
+    def _get_entity_inventory(self, module: str, entity: str) -> dict:
+        """Load entity inventory YAML (methods, locators, preProcess groups)."""
+        key = f"{module}_{entity}"
+        if key not in self._entity_inventories:
+            inv_path = self.config_dir / 'entity_inventory' / f"{key}.yaml"
+            if inv_path.exists():
+                self._entity_inventories[key] = yaml.safe_load(inv_path.read_text())
+            else:
+                self._entity_inventories[key] = {}
+        return self._entity_inventories[key]
 
     def _get_module_index(self) -> dict:
         if self._module_index is None:
@@ -229,6 +259,15 @@ class ContextBuilder:
         for ann_name, ann_def in ann.items():
             lines.append(f"  @{ann_name}: required={[f['name'] for f in ann_def.get('required_fields', [])]}")
 
+        # 9. Product Discovery documents — HIGHEST AUTHORITY
+        # These are verified via live Playwright exploration and contain proven API
+        # endpoints, real UI flows, and edge cases. They override ALL other sources.
+        discovery_context = self.discovery_loader.get_all_context_for_module(
+            module_path.strip('/').split('/')[1] if '/' in module_path else module_path
+        )
+        if discovery_context:
+            lines.append("\n" + discovery_context)
+
         # 9a. LIVE UI observations from Playwright scout — HIGHEST PRIORITY
         # These are real-time observations of the application UI, not documentation.
         # They take precedence over help guide content for understanding UI behaviour.
@@ -279,7 +318,162 @@ class ContextBuilder:
                 for item in by_type['full_text'][:2]:
                     lines.append(f"  {item['content'][:350]}")
 
-        # 10. Task
+        # 10. Entity Inventory — existing methods, locators, preProcess groups
+        module_parts = module_path.strip('/').split('/')
+        if len(module_parts) >= 2:
+            inv = self._get_entity_inventory(module_parts[0], module_parts[1])
+            if inv:
+                lines.append("\n## Entity Inventory (auto-generated — REUSE existing methods):")
+
+                # ── Deep preProcess behavior (highest priority — enables group reuse) ──
+                pp_deep = inv.get('preprocess_deep', [])
+                if pp_deep:
+                    lines.append(f"\n### preProcess Groups — Full Behavior ({len(pp_deep)} groups):")
+                    lines.append("CRITICAL: REUSE these groups — do NOT add new ones if existing group provides the same entities/LocalStorage keys.")
+                    for g in pp_deep:
+                        ls_stores = ', '.join(f"{s['key']}({s['source_type']})" for s in g.get('local_storage_stores', []))
+                        ls_reads = ', '.join(g.get('local_storage_reads', []))
+                        api_calls = ', '.join(g.get('api_util_calls', []))
+                        dataids = ', '.join(str(i) for i in g.get('dataids_consumed', []))
+                        entities = ', '.join(g.get('entities_created', []))
+                        parts = [f"group=\"{g['group']}\""]
+                        if dataids:
+                            parts.append(f"dataIds[{dataids}]")
+                        if api_calls:
+                            parts.append(f"calls: {api_calls}")
+                        if entities:
+                            parts.append(f"creates: {entities}")
+                        if ls_stores:
+                            parts.append(f"stores: [{ls_stores}]")
+                        if ls_reads:
+                            parts.append(f"reads: [{ls_reads}]")
+                        if g.get('creates_user'):
+                            role = g.get('user_role', '?')
+                            parts.append(f"creates user(role={role})")
+                        if g.get('calls_super'):
+                            parts.append("→ chains to super")
+                        lines.append(f"  - {' | '.join(parts)}")
+                else:
+                    # Fallback to shallow preProcess if deep not available
+                    pp_groups = inv.get('preprocess_groups', [])
+                    if pp_groups:
+                        lines.append(f"\n### Known preProcess Groups ({len(pp_groups)}):")
+                        lines.append("CRITICAL: REUSE existing groups — do NOT create new ones unless needed.")
+                        for g in pp_groups:
+                            ls_keys = ', '.join(g.get('local_storage_keys', [])) or 'none'
+                            lines.append(f"  - group=\"{g['name']}\" → creates {g.get('creates_count', 0)} entities, "
+                                         f"LocalStorage keys: [{ls_keys}]")
+
+                # ── Deep APIUtil behavior ──
+                api_deep = inv.get('api_util_deep', [])
+                if api_deep:
+                    lines.append(f"\n### APIUtil Methods — Behavior ({len(api_deep)} methods):")
+                    for m in api_deep:
+                        ret = m.get('return_type', 'void')
+                        parts = [f"{ret} {m['name']}({m.get('params', '')})"]
+                        if m.get('api_paths'):
+                            parts.append(f"→ {','.join(m['api_paths'][:2])}")
+                        if m.get('http_methods'):
+                            parts.append(f"[{','.join(m['http_methods'])}]")
+                        if m.get('api_path_from_parameter'):
+                            parts.append("[path from caller]")
+                        if m.get('local_storage_writes'):
+                            parts.append(f"stores: {m['local_storage_writes']}")
+                        if m.get('data_loads'):
+                            # Show just the data constant reference, not full call
+                            data_refs = []
+                            for dl in m['data_loads'][:2]:
+                                # Extract the constant name from DataUtil.getTestCaseData(Foo.Bar.BAZ)
+                                const_m = re.search(r'\.(\w+)\)', dl)
+                                if const_m:
+                                    data_refs.append(const_m.group(1))
+                                else:
+                                    data_refs.append(dl[:40])
+                            parts.append(f"data: {data_refs}")
+                        lines.append(f"  - {' '.join(parts)}")
+                else:
+                    # Fallback to shallow
+                    api_methods = inv.get('api_util', {}).get('methods', [])
+                    if api_methods:
+                        lines.append(f"\n### APIUtil Methods ({len(api_methods)} available):")
+                        for m in api_methods:
+                            lines.append(f"  - {m['return_type']} {m['name']}({m.get('params', '')})")
+
+                # ── Deep ActionsUtil behavior ──
+                actions_deep = inv.get('actions_util_deep', [])
+                if actions_deep:
+                    lines.append(f"\n### ActionsUtil Methods — Behavior ({len(actions_deep)} methods):")
+                    lines.append("CRITICAL: Call these existing methods — do NOT duplicate their logic.")
+                    for m in actions_deep:
+                        parts = [f"{m['name']}({m.get('params', '')})"]
+                        if m.get('action_chain'):
+                            parts.append(f"chain: {' → '.join(m['action_chain'][:5])}")
+                        if m.get('locators_used'):
+                            parts.append(f"uses: {m['locators_used'][:3]}")
+                        if m.get('local_storage_reads'):
+                            parts.append(f"reads LS: {m['local_storage_reads']}")
+                        lines.append(f"  - {' | '.join(parts)}")
+                else:
+                    # Fallback to shallow
+                    actions_methods = inv.get('actions_util', {}).get('methods', [])
+                    if actions_methods:
+                        lines.append(f"\n### ActionsUtil Methods ({len(actions_methods)} available):")
+                        lines.append("CRITICAL: Call these existing methods — do NOT duplicate their logic.")
+                        for m in actions_methods:
+                            lines.append(f"  - {m['name']}({m.get('params', '')})")
+
+                # ── Deep data.json analysis (summary + curated entries) ──
+                data_deep = inv.get('data_json_deep', {})
+                if data_deep and data_deep.get('entries'):
+                    all_entries = data_deep['entries']
+                    lines.append(f"\n### Data JSON Entries — Summary ({data_deep.get('total_entries', 0)} total):")
+                    lines.append(f"  Most common fields: {list(data_deep.get('field_frequency', {}).keys())[:10]}")
+                    all_ph = data_deep.get('all_placeholders', [])
+                    custom_phs = [p for p in all_ph if p.startswith('custom_')]
+                    if custom_phs:
+                        lines.append(f"  Custom placeholders (require LocalStorage): {custom_phs[:15]}")
+
+                    # Show API preProcess entries (most important for group reuse)
+                    api_entries = {k: v for k, v in all_entries.items()
+                                  if v.get('purpose') == 'api_preprocess'}
+                    if api_entries:
+                        lines.append(f"\n  API/preProcess data entries ({len(api_entries)}):")
+                        for k, v in list(api_entries.items())[:20]:
+                            flds = ', '.join(v['fields'][:6])
+                            extra = '...' if len(v['fields']) > 6 else ''
+                            ls_req = ', '.join(v.get('local_storage_keys_required', []))
+                            entry_line = f"    \"{k}\": [{flds}{extra}]"
+                            if ls_req:
+                                entry_line += f" (needs LS: {ls_req})"
+                            lines.append(entry_line)
+
+                    # Show UI form entries (limited — for test method data)
+                    ui_entries = {k: v for k, v in all_entries.items()
+                                 if v.get('purpose') == 'ui_form'}
+                    if ui_entries:
+                        lines.append(f"\n  UI form data entries ({len(ui_entries)}):")
+                        for k, v in list(ui_entries.items())[:15]:
+                            flds = ', '.join(v['fields'][:6])
+                            extra = '...' if len(v['fields']) > 6 else ''
+                            lines.append(f"    \"{k}\": [{flds}{extra}]")
+
+        # 11. API Registry — verified endpoint availability
+        registry = self._get_api_registry()
+        if registry and 'modules' in registry:
+            mod_key = module_parts[0] if module_parts else ''
+            mod_reg = registry['modules'].get(mod_key, {})
+            if mod_reg:
+                lines.append(f"\n## API Registry for '{mod_key}' (VERIFIED endpoints):")
+                lines.append("⚠️ Before any restAPI call, check this list:")
+                for ep_name, ep_data in mod_reg.get('endpoints', {}).items():
+                    status = ep_data.get('status', 'UNTESTED')
+                    icon = "✅" if status == 'VERIFIED_WORKING' else "❌" if status == 'DOES_NOT_EXIST' else "❓"
+                    path = ep_data.get('path', '')
+                    lines.append(f"  {icon} {ep_name}: {ep_data.get('method', '?')} {path} [{status}]")
+                    if status == 'DOES_NOT_EXIST' and ep_data.get('ui_alternative'):
+                        lines.append(f"     → UI alternative: {ep_data['ui_alternative']}")
+
+        # 12. Task
         lines.append(f"\n## Your Task:")
         lines.append(f"Generate test scenarios for: {feature_description}")
         lines.append("=" * 70)

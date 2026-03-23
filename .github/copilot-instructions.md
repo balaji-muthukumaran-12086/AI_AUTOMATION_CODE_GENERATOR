@@ -72,6 +72,7 @@ available agents, LLM providers, knowledge base tools, scripts, and templates.
 > **Affected agents** (require MCP tools — must run inline):
 > - `test-runner` — needs Playwright MCP for UI diagnosis
 > - `test-debugger` — needs Playwright MCP for locator inspection
+> - `product-discovery` — needs Playwright MCP to explore live SDP product
 >
 > **Safe to delegate via `runSubagent()`** (no MCP dependency):
 > - `test-generator` — only generates code, no browser needed
@@ -182,14 +183,31 @@ ai-automation-qa/
 
 ## Test Lifecycle
 
-1. **preProcess** (driven by `@AutomaterScenario(group=..., dataIds={...})`)
-   - Creates prerequisite data via REST API (templates, topics, solutions, etc.)
-   - Stores IDs/names in `LocalStorage` (e.g., `"solution_template"`, `"topic"`)
+> ⚠️ **UNIVERSAL RULE — UI Testing, NOT API Testing**: This is a UI automation framework. Every
+> `@AutomaterScenario` test method MUST exercise the actual UI flow (Selenium clicks, navigation,
+> form fills, validations). API calls in test method bodies are **FORBIDDEN** — they turn the test into
+> API testing. Only `preProcess` should use API calls for data setup. If no API exists for prerequisite
+> data, `preProcess` may use UI-based setup as a fallback. This applies to ALL features universally.
 
-2. **Test method** (in `<Entity>Base.java`)
+1. **preProcess** (driven by `@AutomaterScenario(group=..., dataIds={...})`)
+   - Creates prerequisite **entities** via REST API (changes, requests, templates, users, etc.)
+   - Sets prerequisite **state** via API (trash a change, close a change for testing something else)
+   - If API is unavailable for the prerequisite, UI-based setup is acceptable as fallback
+   - Stores IDs/names in `LocalStorage` (e.g., `"solution_template"`, `"topic"`)
+   - **NEVER performs the feature/action under test** — preProcess is for data/state setup ONLY
+
+2. **Test method** (in `<Entity>Base.java`) — **UI-ONLY**
    - Loads data: `getTestCaseData(DataConstants.SomeKey)` → resolves `$(placeholders)` from LocalStorage
-   - Navigates UI, fills form via `fillInputForAnEntity` + manual field calls
-   - Validates result
+   - **Performs the feature under test via UI** — linking, associations, form fills, status changes
+   - Validates result via UI (getText, isElementPresent, etc.)
+   - **NEVER** calls `restAPI.*` or `*APIUtil.*` methods — that would be API testing
+
+> ⚠️ **"Data creation" vs "Feature under test"**: preProcess API creates entities that need to
+> EXIST. The **action being tested** (linking, approving, associating, etc.) MUST be done via UI
+> in the test method. If a test verifies "link child change", preProcess creates the two changes,
+> the test method performs the linking via UI clicks. If a test verifies "trashed change not in
+> popup", preProcess creates + trashes one change, the test method opens the popup via UI and
+> verifies absence.
 
 3. **postProcess** — deletes created entities via REST API
 

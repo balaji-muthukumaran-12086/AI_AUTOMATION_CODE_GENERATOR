@@ -1,0 +1,1132 @@
+module: changes
+entity: changetask
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/changes/changetask/utils/ChangeTaskAPIUtil.java
+  methods:
+  - name: createChangeAndTask
+    return_type: void
+    params: String changeDataID, String taskDataID
+    purpose: ''
+  - name: createChangeWithMultipleTask
+    return_type: void
+    params: String changeDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: ''
+  - name: createChangeWithMultipleTaskForDependency
+    return_type: HashMap<String, HashMap<String, String>>
+    params: String changeDataID, String taskDataID
+    purpose: for task dependency
+  - name: createChangeWithMultipleTaskWithCustomStatus
+    return_type: void
+    params: String changeDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: ''
+  - name: createChangeAndDiffMultipleTask
+    return_type: void
+    params: String[] dataIds
+    purpose: ''
+  - name: createTaskInChange
+    return_type: String
+    params: TestCaseData taskdata
+    purpose: ''
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/changes/changetask/common/ChangeTaskDataConstants.java
+  classes:
+    ChangeTaskDataConstants:
+    - ADD_TASK_IN_UAT
+    - ADD_TASK_IN_CAB_EVALUATION
+    - UPDATE_PLANNING_TASK
+    - PICKUP_TASK_IN_UAT
+    - API_ADD_RELEASE_TASK_COUNT_2
+    - API_PLANNING_PICKUP_TASK_COUNT_2
+    - API_SUBMISSION_TRIGGER_TASK_COUNT_2
+    - UPDATE_CLOSE_TASK
+    - PICKUP_TASK_IN_IMPLEMENTATION_WITH_DESCRIPTION
+    - UPDATE_SUBMISSION_TASK
+    - API_PLANNING_PICKUP_TASK
+    - ADD_RELEASE_TASK
+    - API_ADD_TASK_IN_REVIEW
+    - ADD_TASK_IN_CAB_EVALUATION_TASK_COUNT_2
+    - ADD_TASK_IN_UAT_TASK_COUNT_2
+    - API_SUBMISSION_TRIGGER_TASK
+    - API_RELEASE_TRIGGER_TASK_COUNT_2
+    - PICKUP_TASK_IN_REVIEW_TASK_COUNT_2
+    - TRIGGER_TASK_IN_CAB_EVALUATION_TASK_COUNT_2
+    - PICKUP_TASK_IN_CAB_EVALUATION_TASK_COUNT_2
+    - API_ADD_SUBMISSION_TASK_COUNT_2
+    - TRIGGER_TASK_IN_UAT
+    - API_CLOSE_TRIGGER_TASK_COUNT_2
+    - API_ADD_CLOSE_TASK_COUNT_2
+    - API_SUBMISSION_PICKUP_TASK
+    - API_RELEASE_PICKUP_TASK
+    - API_ADD_PLANNING_TASK
+    - ADD_TASK_FROM_TEMPLATE
+    - EDIT_TASK
+    - ADD_TASK_IN_REVIEW_TASK_COUNT_2
+    - API_CLOSE_PICKUP_TASK_COUNT_2
+    - ADD_TASK_IN_REVIEW
+    - ADD_PLANNING_TASK
+    - PICKUP_TASK_IN_CAB_EVALUATION
+    - API_ADD_PLANNING_TASK_COUNT_2
+    - DETAILS_SPOT_EDIT_GROUP_DEPENDENT_FIELDS_INPUT
+    - API_ADD_SUBMISSION_TASK_RESOLVED
+    - DETAILS_SPOT_EDIT_PICKLIST_INPUT
+    - ADD_TASK_IN_IMPLEMENTATION_TASK_COUNT_2
+    - DETAILS_SPOT_EDIT_BY_TYPING_FIELDS_INPUT
+    - API_ADD_SUBMISSION_TASK_COUNT_15
+    - ADD_TASK_IN_IMPLEMENTATION
+    - TRIGGER_TASK_IN_IMPLEMENTATION
+    - API_RELEASE_PICKUP_TASK_COUNT_2
+    - API_CLOSE_TRIGGER_TASK
+    - API_SUBMISSION_PICKUP_TASK_COUNT_2
+    - TRIGGER_TASK_IN_UAT_TASK_COUNT_2
+    - TRIGGER_TASK_IN_REVIEW
+    - PICKUP_TASK_IN_IMPLEMENTATION
+    - TRIGGER_TASK_IN_IMPLEMENTATION_TASK_COUNT_2
+    - TRIGGER_TASK_IN_REVIEW_TASK_COUNT_2
+    - UPDATE_RELEASE_TASK
+    - TRIGGER_TASK_IN_CAB_EVALUATION
+    - API_TASK_IN_CAB_EVALUATION
+    - UPDATE_REVIEW_TASK
+    - API_ADD_SUBMISSION_TASK_CUSTOM_ONHOLD_STATUS_COUNT_2
+    - ADD_CLOSE_TASK
+    - API_CLOSE_PICKUP_TASK
+    - API_PLANNING_TRIGGER_TASK
+    - API_ADD_TASK_IN_IMPLEMENTATION
+    - API_ADD_SUBMISSION_TASK_CLOSED
+    - ADD_TASK_IN_SUBMISSIONSTAGE_FOR_CUSTOMERISSUE
+    - API_ADD_TASK_IN_UAT
+    - API_TASK_IN_SUBMISSION
+    - API_ADD_SUBMISSION_TASK_FOR_TRIGGER
+    - API_ADD_SUBMISSION_TASK
+    - API_ADD_SUBMISSION_TASK_CUSTOM_COMPLETED_STATUS
+    - UPDATE_UAT_TASK
+    - ADD_SUBMISSION_TASK
+    - DETAILS_SPOT_EDIT_ESTIMATED_EFFORT_FIELDS_INPUT
+    - PICKUP_TASK_IN_IMPLEMENTATION_TASK_COUNT_2
+    - API_ADD_SUBMISSION_TASK_CUSTOM_STATUS_COUNT_2
+    - DETAILS_SPOT_EDIT_USING_SEARCH_INPUT
+    - API_ADD_RELEASE_TASK
+    - API_RELEASE_TRIGGER_TASK
+    - UPDATE_IMPLEMENTATION_TASK
+    - UPDATE_CAB_EVALUATION_TASK
+    - DETAILS_SPOT_EDIT_DATE_TIME_FIELDS_INPUT
+    - API_PLANNING_TRIGGER_TASK_COUNT_2
+    - API_ADD_CLOSE_TASK
+    - PICKUP_TASK_IN_REVIEW
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/changes/changetask/common/ChangeTaskAnnotationConstants.java
+  groups:
+  - constant: CREATE_CHANGE
+    value: createChange
+  - constant: CREATE_CHANGE_AND_TASK
+    value: createChangeAndTask
+  - constant: CREATE_CHANGE_WITH_MULTIPLE_TASK
+    value: createChangeWithMultipleTask
+  - constant: ADD_TASK_IN_CAB_EVALUATION
+    value: Add_Task_In_CAB_Evaluation
+  - constant: CREATE_REQUEST_FOR_CHANGE
+    value: createRequestForChange
+  - constant: ADD_TASK_TEMPLATE
+    value: addtasktemplate
+  - constant: CREATE_CHANGE_WITH_MULTIPLE_TASK_FOR_DEPENDENCY
+    value: createChangeWithMultipleTaskForDependency
+  - constant: CREATE_CHANGE_AND_MULTIPLE_TASK_WITH_CUSTOM_STATUS
+    value: createchangeandmultipletaskwithcustomstatus
+  - constant: CREATE_CHANGE_AND_DIFF_MULTIPLE_TASK
+    value: createchangeanddiffmultipletask
+  - constant: CREATE_CHANGE_AND_DIFF_MULTIPLE_TASK2
+    value: createchangeanddiffmultipletask2
+  - constant: API_ADD_SUBMISSION_TASK_CUSTOM_COMPLETED_STATUS
+    value: api_add_submission_task_custom_completed_status
+  - constant: CREATE_STATUS_WITH_SPLCHAR
+    value: createstatuswithsplchar
+  - constant: CREATE_PRIORITY_WITH_SPLCHAR
+    value: createprioritywithsplchar
+  data:
+  - constant: ADD_SUBMISSION_TASK
+    value: add_submission_task
+  - constant: API_ADD_SUBMISSION_TASK
+    value: api_add_submission_task
+  - constant: API_ADD_SUBMISSION_TASK_COUNT_2
+    value: api_add_submission_task_count_2
+  - constant: API_ADD_SUBMISSION_TASK_COUNT_15
+    value: api_add_submission_task_count_15
+  - constant: API_SUBMISSION_TRIGGER_TASK
+    value: api_submission_trigger_task
+  - constant: API_SUBMISSION_PICKUP_TASK
+    value: api_submission_pickup_task
+  - constant: API_SUBMISSION_TRIGGER_TASK_COUNT_2
+    value: api_submission_trigger_task_count_2
+  - constant: API_SUBMISSION_PICKUP_TASK_COUNT_2
+    value: api_submission_pickup_task_count_2
+  - constant: API_ADD_SUBMISSION_TASK_CUSTOM_ONHOLD_STATUS_COUNT_2
+    value: api_add_submission_task_custom_onhold_status_count_2
+  - constant: API_ADD_SUBMISSION_TASK_CLOSED
+    value: api_add_submission_task_closed
+  - constant: API_ADD_SUBMISSION_TASK_RESOLVED
+    value: api_add_submission_task_resolved
+  - constant: API_ADD_SUBMISSION_TASK_CUSTOM_COMPLETED_STATUS
+    value: api_add_submission_task_custom_completed_status
+  - constant: API_ADD_SUBMISSION_TASK_CUSTOM_STATUS_COUNT_2
+    value: api_add_submission_task_custom_status_count_2
+  - constant: ADD_RELEASE_TASK
+    value: add_release_task
+  - constant: API_ADD_RELEASE_TASK
+    value: api_add_release_task
+  - constant: API_ADD_RELEASE_TASK_COUNT_2
+    value: api_add_release_task_count_2
+  - constant: API_ADD_RELEASE_TASK_COUNT_15
+    value: api_add_release_task_count_15
+  - constant: API_RELEASE_TRIGGER_TASK
+    value: api_release_trigger_task
+  - constant: API_RELEASE_PICKUP_TASK
+    value: api_release_pickup_task
+  - constant: API_RELEASE_TRIGGER_TASK_COUNT_2
+    value: api_release_trigger_task_count_2
+  - constant: API_RELEASE_PICKUP_TASK_COUNT_2
+    value: api_release_pickup_task_count_2
+  - constant: ADD_PLANNING_TASK
+    value: add_planning_task
+  - constant: API_ADD_PLANNING_TASK
+    value: api_add_planning_task
+  - constant: API_ADD_PLANNING_TASK_COUNT_2
+    value: api_add_planning_task_count_2
+  - constant: API_ADD_PLANNING_TASK_COUNT_15
+    value: api_add_planning_task_count_15
+  - constant: API_PLANNING_TRIGGER_TASK
+    value: api_planning_trigger_task
+  - constant: API_PLANNING_PICKUP_TASK
+    value: api_planning_pickup_task
+  - constant: API_PLANNING_TRIGGER_TASK_COUNT_2
+    value: api_planning_trigger_task_count_2
+  - constant: API_PLANNING_PICKUP_TASK_COUNT_2
+    value: api_planning_pickup_task_count_2
+  - constant: ADD_CLOSE_TASK
+    value: add_close_task
+  - constant: API_ADD_CLOSE_TASK
+    value: api_add_close_task
+  - constant: API_ADD_CLOSE_TASK_COUNT_2
+    value: api_add_close_task_count_2
+  - constant: API_ADD_CLOSE_TASK_COUNT_15
+    value: api_add_close_task_count_15
+  - constant: API_CLOSE_TRIGGER_TASK
+    value: api_close_trigger_task
+  - constant: API_CLOSE_PICKUP_TASK
+    value: api_close_pickup_task
+  - constant: API_CLOSE_TRIGGER_TASK_COUNT_2
+    value: api_close_trigger_task_count_2
+  - constant: API_CLOSE_PICKUP_TASK_COUNT_2
+    value: api_close_pickup_task_count_2
+  - constant: ADD_TASK_IN_CAB_EVALUATION
+    value: Add_Task_In_CAB_Evaluation
+  - constant: TRIGGER_TASK_IN_CAB_EVALUATION
+    value: Trigger_Task_in_CAB_Evaluation
+  - constant: TRIGGER_TASK_IN_CAB_EVALUATION_TASK_COUNT_2
+    value: Trigger_Task_in_CAB_Evaluation_task_count_2
+  - constant: PICKUP_TASK_IN_CAB_EVALUATION
+    value: Pickup_Task_in_CAB_Evaluation
+  - constant: PICKUP_TASK_IN_CAB_EVALUATION_TASK_COUNT_2
+    value: Pickup_Task_in_CAB_Evaluation_task_count_2
+  - constant: ADD_TASK_IN_CAB_EVALUATION_TASK_COUNT_2
+    value: Add_Task_In_CAB_Evaluation_task_count_2
+  - constant: ADD_TASK_IN_IMPLEMENTATION
+    value: add_task_in_implementation
+  - constant: ADD_TASK_IN_IMPLEMENTATION_TASK_COUNT_2
+    value: add_task_in_implementation_task_count_2
+  - constant: TRIGGER_TASK_IN_IMPLEMENTATION
+    value: trigger_task_in_implementation
+  - constant: TRIGGER_TASK_IN_IMPLEMENTATION_TASK_COUNT_2
+    value: trigger_task_in_implementation_task_count_2
+  - constant: PICKUP_TASK_IN_IMPLEMENTATION
+    value: pickup_task_in_implementation
+  - constant: PICKUP_TASK_IN_IMPLEMENTATION_TASK_COUNT_2
+    value: Pickup_Task_in_Implementation_task_count_2
+  - constant: ADD_TASK_IN_UAT
+    value: add_task_in_UAT
+  - constant: ADD_TASK_IN_UAT_TASK_COUNT_2
+    value: add_task_in_UAT_task_count_2
+  - constant: TRIGGER_TASK_IN_UAT
+    value: trigger_task_in_UAT
+  - constant: PICKUP_TASK_IN_UAT
+    value: pickup_task_in_UAT
+  - constant: ADD_TASK_IN_STAGES
+    value: add_task_in_stages
+  - constant: ADD_TASK_IN_REVIEW
+    value: add_task_in_review
+  - constant: ADD_TASK_IN_REVIEW_TASK_COUNT_2
+    value: add_task_in_review_task_count_2
+  - constant: TRIGGER_TASK_IN_REVIEW
+    value: trigger_task_in_review
+  - constant: TRIGGER_TASK_IN_REVIEW_TASK_COUNT_2
+    value: trigger_task_in_review_task_count_2
+  - constant: PICKUP_TASK_IN_REVIEW
+    value: pickup_task_in_review
+  - constant: PICKUP_TASK_IN_REVIEW_TASK_COUNT_2
+    value: pickup_task_in_review_task_count_2
+  - constant: ADD_TASK_FROM_TEMPLATE
+    value: add_task_from_template
+  - constant: TRIGGER_TASK_IN_UAT_TASK_COUNT_2
+    value: trigger_task_in_uat_task_count_2
+  - constant: API_TASK_IN_CAB_EVALUATION
+    value: api_Task_In_CAB_Evaluation
+  - constant: API_TASK_IN_SUBMISSION
+    value: api_Task_In_CAB_Submission
+  - constant: API_ADD_TASK_IN_UAT
+    value: api_add_task_in_UAT
+  - constant: API_ADD_TASK_IN_REVIEW
+    value: api_add_task_in_review
+  - constant: API_ADD_TASK_IN_IMPLEMENTATION
+    value: api_add_task_in_implementation
+preprocess_groups:
+- name: createChange
+  creates_count: 0
+  local_storage_keys: []
+- name: createChangeAndTask
+  creates_count: 0
+  local_storage_keys: []
+- name: createChangeAndTaskWithGroup
+  creates_count: 0
+  local_storage_keys: []
+- name: createChangeWithMultipleTask
+  creates_count: 0
+  local_storage_keys: []
+- name: createChangeWithMultipleTaskWithGroup
+  creates_count: 0
+  local_storage_keys: []
+- name: createChangeWithMultipleTaskForDependency
+  creates_count: 0
+  local_storage_keys: []
+- name: createchangeandmultipletaskwithcustomstatus
+  creates_count: 0
+  local_storage_keys: []
+- name: createchangeanddiffmultipletask
+  creates_count: 0
+  local_storage_keys: []
+- name: createchangeanddiffmultipletask2
+  creates_count: 0
+  local_storage_keys: []
+- name: createstatuswithsplchar
+  creates_count: 0
+  local_storage_keys: []
+- name: createprioritywithsplchar
+  creates_count: 0
+  local_storage_keys: []
+- name: checklistudfintasktemplate
+  creates_count: 0
+  local_storage_keys: []
+data_json_keys: []
+api_util_deep:
+- name: createChangeAndTask
+  params: String changeDataID, String taskDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - taskName
+  - changeId
+  - changeName
+  local_storage_reads: []
+- name: createChangeWithMultipleTask
+  params: String changeDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - tasks
+  - changeId
+  - changeName
+  - taskNames
+  local_storage_reads: []
+- name: createChangeWithMultipleTaskForDependency
+  params: String changeDataID, String taskDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - changeId
+  - changeName
+  local_storage_reads: []
+- name: createChangeWithMultipleTaskWithCustomStatus
+  params: String changeDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskDetails
+  - changeId
+  - changeName
+  local_storage_reads:
+  - status_Name
+- name: createChangeAndDiffMultipleTask
+  params: String[] dataIds
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskDetails
+  - changeId
+  - changeName
+  local_storage_reads: []
+- name: createTaskInChange
+  params: TestCaseData taskdata
+  api_paths:
+  - changes/
+  - changes/*/tasks
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - taskName
+  - task
+  local_storage_reads:
+  - changeId
+preprocess_deep:
+- group: createChange
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTask
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTaskWithGroup
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTask
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTaskWithGroup
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTaskForDependency
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTaskForDependency
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTaskForDependency
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createchangeandmultipletaskwithcustomstatus
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - StatusAPIUtil.createStatusWithSpecialCharacters
+  - ChangeTaskAPIUtil.createChangeWithMultipleTaskWithCustomStatus
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Status.StatusWithSpecialCharacters
+  - ChangeTask.ChangeWithMultipleTaskWithCustomStatus
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createchangeanddiffmultipletask
+  source_file: SubmissionTask.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndDiffMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndDiffMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createchangeanddiffmultipletask2
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 3
+  dataids_count: 1
+  api_util_calls:
+  - StatusAPIUtil.createStatusWithSpecialCharacters
+  - ChangeTaskAPIUtil.createChangeAndDiffMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Status.StatusWithSpecialCharacters
+  - ChangeTask.ChangeAndDiffMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createstatuswithsplchar
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - StatusAPIUtil.createStatusWithSpecialCharacters
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Status.StatusWithSpecialCharacters
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createprioritywithsplchar
+  source_file: SubmissionTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - PriorityAPIUtil.createPriorityeWithSpecialCharacters
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Priority.PriorityeWithSpecialCharacters
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: checklistudfintasktemplate
+  source_file: SubmissionTask.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls:
+  - AdditionalFieldsAPIUtil.createUDFInAPI
+  - TaskTemplateAPIUtil.createTaskTemplate
+  - ChangeAPIUtil.createChange
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - AdditionalFields.UDFInAPI
+  - TaskTemplate.TaskTemplate
+  - Change.Change
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChange
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTask
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTaskWithGroup
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTask
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTaskForDependency
+  source_file: ReleaseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTaskForDependency
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTaskForDependency
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChange
+  source_file: CloseTask.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithGroup
+  source_file: CloseTask.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTask
+  source_file: CloseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTaskWithGroup
+  source_file: CloseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTask
+  source_file: CloseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTaskForDependency
+  source_file: CloseTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTaskForDependency
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTaskForDependency
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: addtasktemplate
+  source_file: ChangeTask.java
+  dataids_consumed:
+  - 1
+  dataids_count: 1
+  api_util_calls:
+  - TaskTemplateAPIUtil.createTaskTemplate
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - TaskTemplate.TaskTemplate
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create
+  source_file: ReviewTask.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTask
+  source_file: ReviewTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTaskWithGroup
+  source_file: ReviewTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTask
+  source_file: ReviewTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTaskForDependency
+  source_file: ReviewTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTaskForDependency
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTaskForDependency
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: create
+  source_file: UATTask.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTask
+  source_file: UATTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTaskWithGroup
+  source_file: UATTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTask
+  source_file: UATTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTaskForDependency
+  source_file: UATTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTaskForDependency
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTaskForDependency
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: create
+  source_file: ImplementationTask.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTask
+  source_file: ImplementationTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTaskWithGroup
+  source_file: ImplementationTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTask
+  source_file: ImplementationTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTaskForDependency
+  source_file: ImplementationTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTaskForDependency
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTaskForDependency
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChange
+  source_file: PlanningTask.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTask
+  source_file: PlanningTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createReleaseAndTaskWithGroup
+  source_file: PlanningTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTask
+  source_file: PlanningTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTaskForDependency
+  source_file: PlanningTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTaskForDependency
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTaskForDependency
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: create
+  source_file: CabEvaluationTask.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeAndTask
+  source_file: CabEvaluationTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeAndTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTask
+  source_file: CabEvaluationTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: true
+- group: createChangeWithMultipleTaskForDependency
+  source_file: CabEvaluationTask.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ChangeTaskAPIUtil.createChangeWithMultipleTaskForDependency
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ChangeTask.ChangeWithMultipleTaskForDependency
+  creates_user: false
+  user_role: null
+  calls_super: true

@@ -25,6 +25,201 @@ public void createIncidentRequestAndAddNotes() { ... }   // inside RequestNotes
 > **Root cause guard**: The currently open file is NOT a valid signal for target module.
 > The use-case description is the only valid signal.
 
+### 0.4 UI Testing Philosophy — UNIVERSAL RULE (applies to ALL features)
+
+> This is a **UI automation framework**, NOT an API testing framework. Every `@AutomaterScenario` test
+> method MUST exercise the actual UI flow through Selenium interactions (clicks, navigation, form fills,
+> validations). Using API calls in test method bodies turns it into API testing, which defeats the purpose.
+
+| Phase | Allowed Approach | Purpose |
+|-------|-----------------|----------|
+| **preProcess** | API-based (preferred) | Create prerequisite data (changes, templates, users, etc.) |
+| **preProcess** | UI-based (fallback) | When API is unavailable or too complex for the prerequisite |
+| **Test method body** | **UI-ONLY (mandatory)** | The actual scenario — clicks, navigation, form fills, validations |
+
+**FORBIDDEN — API shortcuts in test method bodies:**
+```java
+// ❌ WRONG — linking via API in the test method = API testing, not UI testing
+public void verifyLinkParentChange() throws Exception {
+    ChangeAPIUtil.linkParentChange(changeId, parentId);  // ← NOT testing the UI, just calling an API
+    // ... assertions ...
+}
+
+// ✅ CORRECT — linking via UI clicks in the test method = real UI testing
+public void verifyLinkParentChange() throws Exception {
+    ChangeActionsUtil.navigateToAssociationsTab();        // UI click
+    ChangeActionsUtil.openAttachPopup("Parent Change");   // UI click
+    ChangeActionsUtil.searchAndSelectChange(changeName);  // UI interaction
+    ChangeActionsUtil.clickAssociateButton();              // UI click
+    // ... UI-based assertions (isElementPresent, getText, etc.) ...
+}
+```
+
+**Critical distinction — "data creation" vs "feature under test":**
+
+> **preProcess API is ONLY for raw entity creation** (creating changes, requests, users, templates
+> that need to EXIST). It is **NOT** for performing the action/feature being tested.
+>
+> If the test verifies "linking changes", then linking is the **feature under test** — it MUST
+> happen via UI, even if an API existed. preProcess only creates the changes themselves.
+> If the test verifies "trashed change not in popup", preProcess creates changes + trashes one.
+> The test method then opens the popup via UI and verifies the trashed change is absent.
+
+| What | Category | Where | How |
+|------|----------|-------|-----|
+| Creating a change entity | Raw data creation | preProcess | API ✅ |
+| Creating a user with role | Raw data creation | preProcess | API ✅ |
+| Trashing a change (to set up a state) | State setup | preProcess | API ✅ |
+| **Linking two changes** | **Feature under test** | **Test method** | **UI only** ✅ |
+| **Verifying popup contents** | **Validation** | **Test method** | **UI only** ✅ |
+| **Closing a change via stage transitions** | **Feature under test** | **Test method** | **UI only** ✅ |
+| Closing a change to test something ELSE | State setup for another test | preProcess | API ✅ |
+
+**Decision flow for every scenario:**
+```
+Step 1: What entities need to EXIST before the test?       → Create via API in preProcess
+Step 2: What STATE must those entities be in?               → Set state via API in preProcess (trash, close, etc.)
+Step 3: What is the FEATURE / USER ACTION being tested?     → Do this ONLY via UI in the test method
+Step 4: What is being VALIDATED?                            → Verify via UI (getText, isElementPresent, etc.)
+```
+
+> **FORBIDDEN — performing the tested feature via API in preProcess:**
+> ```java
+> // ❌ WRONG — Test verifies "link child change", but linking is done via API in preProcess
+> // This tests nothing — the API did all the work, test method just checks static page
+> } else if ("createAndLinkChild".equalsIgnoreCase(group)) {
+>     createChangeGetResponse(dataIds[0]);
+>     ChangeAPIUtil.linkChildChange(sourceId, childId);  // ← Feature under test done via API!
+> }
+>
+> // ✅ CORRECT — preProcess only creates entities, test method performs linking via UI
+> } else if ("createWithChild".equalsIgnoreCase(group)) {
+>     createChangeGetResponse(dataIds[0]);  // parent
+>     JSONObject child = ChangeAPIUtil.createChangeGetFullResponse(dataIds[0]);  // child
+>     LocalStorage.store("childId", child.optString("id"));
+>     LocalStorage.store("childName", child.optString("title"));
+>     // NO linking here — that's the test method's job
+> }
+> ```
+
+> **Exception — preProcess fallback to UI**: If no API endpoint exists for prerequisite data
+> (e.g., linking changes has no V3 API), preProcess MAY use UI-based setup. But the test
+> method itself MUST still be a separate UI flow testing the actual user-facing behavior.
+
+---
+
+## SECTION 0.5 — ANTI-FALSE-POSITIVE ASSERTION RULE
+
+> **Root cause**: Tests that assert `!isElementPresent(X)` (negative assertion) pass FALSELY
+> when the test never reached the correct UI state — the element is absent because the page
+> isn't right, not because the feature works correctly.
+
+### 0.5.1 Two-Phase Assertion Pattern (MANDATORY for all negative assertions)
+
+Every **negative assertion** (`!isElementPresent`, "element should NOT be visible", "text should NOT contain X")
+MUST be preceded by a **positive anchor assertion** that proves the correct UI state was reached.
+
+```java
+// ✅ CORRECT — Two-Phase Assertion (positive anchor → negative test)
+// Phase 1: POSITIVE ANCHOR — prove we're on the right page/popup
+if (!actions.isElementPresent(ChangeLocators.LinkingChange.ASSOCIATIONS_TAB_HEADER)) {
+    addFailureReport("Associations tab did not load — cannot verify exclusion");
+    return;  // or throw — do NOT continue to negative assertion
+}
+addSuccessReport("Phase 1: Associations tab loaded successfully");
+
+// Phase 2: NEGATIVE TEST — now safe to check absence
+if (!actions.isElementPresent(ChangeLocators.LinkingChange.TRASHED_CHANGE_ROW)) {
+    addSuccessReport("Phase 2: Trashed change correctly excluded from popup");
+} else {
+    addFailureReport("Trashed change should not appear in linking popup");
+}
+
+// ❌ FORBIDDEN — Naked Negative Assertion (no proof of correct state)
+if (!actions.isElementPresent(ChangeLocators.LinkingChange.TRASHED_CHANGE_ROW)) {
+    addSuccessReport("Trashed change not in popup");  // FALSE POSITIVE if popup never opened!
+}
+```
+
+### 0.5.2 Positive Anchor Examples by Context
+
+| UI Context | Positive Anchor (prove state) | Then Safe to Assert Negative |
+|---|---|---|
+| Linking popup | Popup header/title visible | Trashed entity not in popup rows |
+| List view filter | Filter name displayed + record count > 0 | Deleted record not in filtered list |
+| Details page tab | Tab header text matches | Field/section not present for this role |
+| Bulk action menu | Menu dropdown opened | Disabled action not in menu |
+| Search results | Search results container visible + count shown | Excluded item not in results |
+| Permission check | Page loaded (module title present) | Restricted button/action not visible |
+
+### 0.5.3 Decision Flow
+
+```
+Writing a negative assertion (!isElementPresent, "should not be visible")?
+  ↓
+  Step 1: What UI state MUST be true for this assertion to be meaningful?
+  Step 2: Add positive assertion for that state FIRST
+  Step 3: If positive assertion fails → addFailureReport + return (do NOT proceed)
+  Step 4: Only THEN write the negative assertion
+```
+
+### 0.5.4 The `verifyAbsenceWithAnchor` Pattern
+
+For common scenarios, use this method pattern in ActionsUtil:
+
+```java
+/**
+ * Verify an element is absent, but only after confirming the anchor element is present.
+ * @param anchorLocator  Must be present (proves correct UI state)
+ * @param targetLocator  Must be absent (the actual negative assertion)
+ * @param anchorDesc     Description of the anchor for reporting
+ * @param targetDesc     Description of what should be absent
+ * @return true if anchor present AND target absent; false otherwise
+ */
+public static boolean verifyAbsenceWithAnchor(
+        Locator anchorLocator, Locator targetLocator,
+        String anchorDesc, String targetDesc) throws Exception {
+    if (!actions.isElementPresent(anchorLocator)) {
+        report.addCaseFlow("ANCHOR MISSING: " + anchorDesc + " — cannot verify absence of " + targetDesc);
+        return false;  // caller must addFailureReport
+    }
+    return !actions.isElementPresent(targetLocator);
+}
+```
+
+> ⚠️ **This rule applies to ALL modules, ALL entities, ALL test types** — not just linking/trash scenarios.
+> Any test that checks "X should NOT be visible/present" is at risk of false positives without an anchor.
+> **The AI code generator MUST apply this pattern automatically during code generation.**
+
+---
+
+## SECTION 0.6 — API REGISTRY GATE
+
+> Before writing ANY `restAPI.*` call or `*APIUtil.*` method, the AI MUST check `config/api_registry.yaml`.
+
+### Rules:
+1. If endpoint `status: VERIFIED_WORKING` → safe to use
+2. If endpoint `status: DOES_NOT_EXIST` → MUST use UI instead. Add `ui_alternative` note.
+3. If endpoint `status: UNTESTED` → verify via Playwright before using
+4. If endpoint NOT listed → treat as UNTESTED (unavailable until verified)
+5. NEVER invent API paths — if it's not in the registry, it probably doesn't exist
+
+### In preProcess:
+```java
+// ✅ CORRECT — endpoint is VERIFIED_WORKING in api_registry.yaml
+restAPI.createAndGetResponse("changes", "changes", inputData);  // changes/create = VERIFIED_WORKING
+
+// ❌ FORBIDDEN — endpoint is DOES_NOT_EXIST in api_registry.yaml
+restAPI.update("changes/" + id + "/link_parent_change", data);  // DOES_NOT_EXIST!
+```
+
+### In test method:
+```java
+// Linking has no API → MUST be done via UI clicks in test method
+ChangeActionsUtil.openAssociationsTab();
+ChangeActionsUtil.attachParentChange(parentChangeName);  // UI flow
+```
+
 ---
 
 ## SECTION 1 — CLASS ARCHITECTURE (two-layer pattern)
@@ -1190,6 +1385,10 @@ Session context during test lifecycle:
 **CRITICAL:** Any API call (e.g., `createSolutionTemplateAndGetName()`) placed INSIDE the test method
 body runs in the user session. Regular users cannot create templates/configs → `sdpAPICall` returns
 null → NPE. ALL prerequisite API calls MUST be in the `preProcess` group method, NOT the test body.
+
+**CRITICAL — UI ONLY IN TEST METHODS:** Even for admin-session tests (`Role.SDADMIN`), the test
+method body must exercise the **UI flow**, not shortcut through API calls. The purpose of this
+framework is to validate the user-facing UI behavior. See SECTION 0.4 for the full rule.
 
 ### 20.7 `preProcess` exception handling varies by module
 - `Solution.java`: `catch(Exception) { return false; }` — **silently swallows all exceptions**. If preProcess fails, test is skipped with zero visibility.

@@ -703,6 +703,45 @@ Keep the loaded learnings in working memory for Steps 2–6. Reference them when
 
 ---
 
+### Step 0.8 — Check Product Discovery Documents (NEW — Gap Prevention)
+
+> **WHY**: Past failures (trash tests, linking tests) were caused by generating code
+> that assumed API paths, UI flows, and locators without verifying them against the
+> live product. Discovery documents contain verified behavior observed via Playwright.
+
+```bash
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+
+# List all available discovery documents
+.venv/bin/python << 'CHECK_DISCOVERY'
+from knowledge_base.discovery_loader import DiscoveryLoader
+loader = DiscoveryLoader()
+discoveries = loader.list_all()
+if discoveries:
+    print(f"=== Available Product Discoveries ({len(discoveries)}) ===")
+    for d in discoveries:
+        print(f"  {d['module']}/{d['feature']} — {d['api_count']} APIs, {d['edge_case_count']} edge cases ({d['discovered_at']})")
+else:
+    print("No product discovery documents found.")
+    print("If generating tests for a new/unfamiliar feature, consider running:")
+    print("  @product-discovery <module>/<feature>")
+CHECK_DISCOVERY
+```
+
+**Decision flow:**
+
+| Situation | Action |
+|-----------|--------|
+| Discovery doc exists for the target module/feature | **Load it** — use verified APIs, locators, and flows. The discovery context is automatically injected by the context builder, but ALSO read the summary: `knowledge_base/discoveries/{module}_{feature}_summary.md` |
+| No discovery, but ALL APIs/locators used in planned tests already exist in the codebase (`*APIUtil.java`, `*ActionsUtil.java`, `*Locators.java`) | **Proceed** — existing code is the source of truth |
+| No discovery, AND the planned tests require NEW API paths, NEW locators, or NEW UI flows not present in existing codebase | **WARN** the user: `"⚠️ No product discovery found for {feature}. The planned tests require API/UI patterns not present in existing code. Recommend running @product-discovery {module}/{feature} first to avoid inventing behavior."` Then **wait for confirmation** before proceeding. |
+
+> **This gate prevents the exact failure that happened with trash/linking tests:**
+> inventing `trashChange()`, `linkChildChange()`, `link_child_changes` API path, etc.
+> without ever verifying they exist in the product.
+
+---
+
 ### Step 1 — Determine Module Placement
 Match the use-case noun to the correct module — NEVER default to whatever file is open:
 - incident request / IR → `modules/requests/request/`

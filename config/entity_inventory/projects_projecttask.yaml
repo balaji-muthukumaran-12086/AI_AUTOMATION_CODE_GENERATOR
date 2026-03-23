@@ -1,0 +1,406 @@
+module: projects
+entity: projecttask
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: com/zoho/automater/selenium/modules/projects/projecttask/utils/ProjectTaskAPIUtil.java
+  methods:
+  - name: createProjectAndTask
+    return_type: void
+    params: String projectDataID, String taskDataID
+    purpose: ''
+  - name: createProjectWithMultipleTask
+    return_type: void
+    params: String projectDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: ''
+  - name: createProjectWithMilestoneAndTask
+    return_type: void
+    params: String projectDataID, String milestoneDataID, String taskDataID
+    purpose: ''
+  - name: createProjectWithMilestoneAndMultipleTask
+    return_type: void
+    params: String projectDataID, String milestoneDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+    purpose: ''
+  - name: createProjectTaskWithComments
+    return_type: void
+    params: String testCase, String taskDataID, String commentDataID
+    purpose: task comments
+  - name: createProjectTaskWithCommentsAndReply
+    return_type: void
+    params: String testCase, String taskDataID, String commentDataID, String replyDataID
+    purpose: task reply comments
+  - name: addMultipleReplyInProjectTaskComments
+    return_type: void
+    params: String testCase, String taskDataID, String commentDataID, String replyDataID
+    purpose: multiple task reply comments
+  - name: createProjectWithTaskAndMembers
+    return_type: void
+    params: String testCase, String taskDataID, String memberDataID
+    purpose: for roles
+  - name: createProjectWithMultipleTaskAndMembers
+    return_type: void
+    params: String projectDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields, String memberDataID
+    purpose: LocalStorage.store("memberId", member.optString("id"));
+  - name: createProjectWithMilestoneTaskMembers
+    return_type: void
+    params: String projectDataID, String milestoneDataID, String taskDataID, String memberDataID
+    purpose: LocalStorage.store("memberId", member.optString("id"));
+  - name: createProjectWithMilestoneMultipleTaskAndMembers
+    return_type: void
+    params: String projectDataID, String milestoneDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields, String
+      memberDataID
+    purpose: LocalStorage.store("Member", member.optString("id"));
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/projects/projecttask/common/ProjectTaskDataConstants.java
+  classes:
+    ProjectTaskDataConstants:
+    - ADD_TASK_TASK_COUNT_2
+    - ADD_TASK_COMMENT_API
+    - EDIT_TASK_REPLY_COMMENT_UI
+    - REPLY_FOR_ADD_TASK_COMMENT_WITH_USER_API
+    - EDIT_COMMENT
+    - TRIGGER_TASK
+    - ADD_TASK_COMMENT_SPLCHAR_API
+    - ADD_TASK_COMMENT_SCRIPT_TAGS_API
+    - ADD_TASK_FROM_TEMPLATE
+    - HISTORY_TASK_COMMENT
+    - EDIT_TASK
+    - ADD_TASK_COMMENT_WITH_AT_SYMBOL_UI
+    - ADD_TASK
+    - ADD_TASK_WITH_OWNER
+    - ADD_TASK_COMMENT_WITH_USER_API
+    - TRIGGER_TASK_ROLE
+    - ADD_TASK_REPLY_COMMENT_API
+annotation_constants:
+  file: com/zoho/automater/selenium/modules/projects/projecttask/common/ProjectTaskAnnotationConstants.java
+  groups:
+  - constant: CREATE_PROJECT
+    value: createproject
+  - constant: CREATE_AND_DELETE_PROJECT
+    value: createanddeleteproject
+  - constant: CREATE_PROJECT_WITH_MILESTONE_AND_MEMBERS
+    value: createprojectwithmilestoneandmembers
+  - constant: CREATE_PROJECT_AND_TASK
+    value: createprojectandtask
+  - constant: CREATE_PROJECT_WITH_MULTIPLE_TASK
+    value: createprojectwithmultipletask
+  - constant: CREATE_PROJECT_AND_TRIGGER_TASK
+    value: createprojectandtriggertask
+  - constant: CREATE_PROJECT_WITH_MILESTONE_AND_TASK
+    value: createprojectwithmilestoneandtask
+  - constant: CREATE_PROJECT_WITH_MILESTONE_AND_MULTIPLE_TASK
+    value: createprojectwithmilestoneandmultipletask
+  - constant: ADD_TASK_TEMPLATE
+    value: addtasktemplate
+  - constant: CREATE_PROJECT_TASK_WITH_COMMMENTS
+    value: createprojecttaskwithcomments
+  - constant: CREATE_PROJECT_TASK_WITH_COMMENTS_AND_REPLY
+    value: createProjectTaskWithCommentsAndReply
+  - constant: ADD_MULTIPLE_REPLY_IN_PROJECT_TASK_COMMENTS
+    value: addmultiplereplyinprojecttaskcomments
+  - constant: CREATE_PROJECT_WITH_MEMBERS
+    value: createprojectwithmembers
+  - constant: CREATE_PROJECT_WITH_MEMBERS_AND_TASK
+    value: createprojectwithmembersandtask
+  - constant: CREATE_PROJECT_WITH_MULTIPLE_TASK_AND_MEMBERS
+    value: createprojectwithmultipletaskandmembers
+  - constant: CREATE_PROJECT_WITH_MILESTONE_TASK_AND_MEMBERS
+    value: createprojectwithmilestonetaskmembers
+  - constant: CREATE_PROJECT_WITH_MILESTONE_MULTIPLE_TASK_AND_MEMBERS
+    value: createprojectwithmilestonemultipletaskandmembers
+  data:
+  - constant: CREATE_PROJECT_USING_DEFAULT_PROJECT_TEMPLATE
+    value: create_project_using_default_project_template
+  - constant: CREATE_PROJECT_MANDATORY_FIELDS
+    value: create_project_mandatory_fields
+  - constant: ADD_TASK
+    value: add_task
+  - constant: ADD_TASK_TASK_COUNT_2
+    value: add_task_task_count_2
+  - constant: TRIGGER_TASK
+    value: trigger_task
+  - constant: ADD_TASK_FROM_TEMPLATE
+    value: add_task_from_template
+  - constant: TRIGGER_TASK_ROLE
+    value: trigger_task_role
+  - constant: ADD_TASK_COMMENT_API
+    value: add_task_comment_api
+  - constant: ADD_TASK_COMMENT_SPLCHAR_API
+    value: add_task_comment_splchar_api
+  - constant: ADD_TASK_COMMENT_SCRIPT_TAGS_API
+    value: add_task_comment_script_tags_api
+  - constant: ADD_TASK_REPLY_COMMENT_API
+    value: add_task_reply_comment_api
+  - constant: ADD_TASK_COMMENT_WITH_USERS_API
+    value: add_task_comment_with_user_api
+  - constant: ADD_REPLY_FOR_COMMENT_WITH_USERS_API
+    value: reply_for_add_task_comment_with_user_api
+preprocess_groups: []
+data_json_keys: []
+api_util_deep:
+- name: createProjectAndTask
+  params: String projectDataID, String taskDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - taskName
+  - adminuser
+  local_storage_reads:
+  - projectId
+- name: createProjectWithMultipleTask
+  params: String projectDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - tasks
+  - taskNames
+  local_storage_reads:
+  - projectId
+- name: createProjectWithMilestoneAndTask
+  params: String projectDataID, String milestoneDataID, String taskDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - taskId
+  - taskName
+  local_storage_reads:
+  - projectId
+- name: createProjectWithMilestoneAndMultipleTask
+  params: String projectDataID, String milestoneDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - tasks
+  - taskNames
+  local_storage_reads:
+  - projectId
+- name: createProjectTaskWithComments
+  params: String testCase, String taskDataID, String commentDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - commentId
+  - commentName
+  local_storage_reads: []
+- name: createProjectTaskWithCommentsAndReply
+  params: String testCase, String taskDataID, String commentDataID, String replyDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - replyCommentId
+  - replyCommentName
+  local_storage_reads: []
+- name: addMultipleReplyInProjectTaskComments
+  params: String testCase, String taskDataID, String commentDataID, String replyDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - replyCommentId
+  - replyCommentName
+  local_storage_reads: []
+- name: createProjectWithTaskAndMembers
+  params: String testCase, String taskDataID, String memberDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - memberId
+  - memberName
+  local_storage_reads:
+  - projectId
+- name: createProjectWithMultipleTaskAndMembers
+  params: String projectDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields, String memberDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - memberId
+  - tasks
+  - memberName
+  - taskNames
+  local_storage_reads:
+  - projectId
+- name: createProjectWithMilestoneTaskMembers
+  params: String projectDataID, String milestoneDataID, String taskDataID, String memberDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - MemberName
+  - Member
+  local_storage_reads:
+  - projectId
+- name: createProjectWithMilestoneMultipleTaskAndMembers
+  params: String projectDataID, String milestoneDataID, String taskDataID, LinkedHashMap<String, FieldDetails> fields, String
+    memberDataID
+  api_paths: []
+  rest_methods_used:
+  - createAndGetResponse
+  local_storage_writes:
+  - MemberName
+  - Member
+  local_storage_reads:
+  - projectId
+preprocess_deep:
+- group: createproject
+  source_file: ProjectTaskBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ProjectAPIUtil.createProject
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Project.Project
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprojectandtask
+  source_file: ProjectTaskBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ProjectTaskAPIUtil.createProjectAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ProjectTask.ProjectAndTask
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprojectwithmultipletask
+  source_file: ProjectTaskBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - ProjectTaskAPIUtil.createProjectWithMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ProjectTask.ProjectWithMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprojectwithmilestoneandtask
+  source_file: ProjectTaskBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ProjectTaskAPIUtil.createProjectWithMilestoneAndTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ProjectTask.ProjectWithMilestoneAndTask
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprojectwithmilestoneandmultipletask
+  source_file: ProjectTaskBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ProjectTaskAPIUtil.createProjectWithMilestoneAndMultipleTask
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ProjectTask.ProjectWithMilestoneAndMultipleTask
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: addtasktemplate
+  source_file: ProjectTaskBase.java
+  dataids_consumed:
+  - 1
+  dataids_count: 1
+  api_util_calls:
+  - TaskTemplateAPIUtil.createTaskTemplate
+  - ProjectAPIUtil.createProject
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - TaskTemplate.TaskTemplate
+  - Project.Project
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprojecttaskwithcomments
+  source_file: ProjectTaskBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - ProjectTaskAPIUtil.createProjectTaskWithComments
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ProjectTask.ProjectTaskWithComments
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createprojecttaskwithcommentsandreply
+  source_file: ProjectTaskBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  dataids_count: 4
+  api_util_calls:
+  - ProjectTaskAPIUtil.createProjectTaskWithCommentsAndReply
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - ProjectTask.ProjectTaskWithCommentsAndReply
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: addmultiplereplyinprojecttaskcomments
+  source_file: ProjectTaskBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  - 3
+  dataids_count: 4
+  api_util_calls:
+  - ProjectTaskAPIUtil.addMultipleReplyInProjectTaskComments
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false

@@ -1,0 +1,98 @@
+module: problems
+entity: task
+actions_util:
+  file: null
+  methods: []
+api_util:
+  file: null
+  methods: []
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/problems/task/common/TaskDataConstants.java
+  classes:
+    TaskDataConstants:
+    - API_PROBLEMTASKWITHGROUPANDOWNER
+    - API_PROBLEMTASK1
+    - API_PROBLEMTASK2
+    - UI_PROBLEMTASK1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- API_ProblemTask1
+- API_ProblemTask2
+- API_ProblemTaskWithGroupAndOwner
+- UI_ProblemTask1
+data_json_deep:
+  total_entries: 4
+  field_frequency:
+    title: 3
+    description: 3
+    estimated_effort_days: 2
+    owner: 2
+    template: 1
+    priority: 1
+    status: 1
+    additional_cost: 1
+    percentage_completion: 1
+    group: 1
+  all_placeholders:
+  - custom_groupName
+  - custom_techName
+  - custom_uniqueString
+  - unique_string
+  - user_email_id
+  reuse_groups_count: 1
+  entries:
+    API_ProblemTask1:
+      fields:
+      - title
+      - description
+      - estimated_effort_days
+      placeholders:
+      - unique_string
+      - custom_uniqueString
+      local_storage_keys_required:
+      - uniqueString
+      purpose: ui_form
+    API_ProblemTask2:
+      fields:
+      - title
+      - description
+      - estimated_effort_days
+      placeholders:
+      - unique_string
+      - custom_uniqueString
+      local_storage_keys_required:
+      - uniqueString
+      purpose: ui_form
+    UI_ProblemTask1:
+      fields:
+      - title
+      - description
+      - template
+      - owner
+      - priority
+      - status
+      - additional_cost
+      - percentage_completion
+      placeholders:
+      - unique_string
+      - user_email_id
+      local_storage_keys_required: []
+      purpose: ui_form
+    API_ProblemTaskWithGroupAndOwner:
+      fields:
+      - group
+      - owner
+      placeholders:
+      - custom_groupName
+      - custom_techName
+      local_storage_keys_required:
+      - groupName
+      - techName
+      purpose: ui_form

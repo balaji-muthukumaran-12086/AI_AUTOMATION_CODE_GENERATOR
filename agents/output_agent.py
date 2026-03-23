@@ -231,6 +231,39 @@ class OutputAgent:
                 f"[OutputAgent] ✅ {len(pieces)} snippet(s) for [{module_path}] → {run_dir.name}/"
             ]
 
+            # ── Static Analysis Gate — validate before compilation ──────────
+            try:
+                from static_analysis_gate import StaticAnalysisGate, format_report
+                gate = StaticAnalysisGate(str(self.base))
+                gate_results = []
+                for snippet_path, _ in resolved:
+                    if snippet_path.suffix == '.java' or 'ADD_TO_' in snippet_path.name:
+                        code = snippet_path.read_text(encoding='utf-8')
+                        gate_results.append(gate.analyze(code, str(snippet_path.name)))
+
+                error_count = sum(len([v for v in r.violations if v.severity == 'ERROR'])
+                                  for r in gate_results)
+                warning_count = sum(len([v for v in r.violations if v.severity == 'WARNING'])
+                                    for r in gate_results)
+
+                if error_count > 0 or warning_count > 0:
+                    report = format_report(gate_results)
+                    report_path = run_dir / 'STATIC_ANALYSIS_REPORT.txt'
+                    report_path.write_text(report, encoding='utf-8')
+                    all_output_paths.append(str(report_path))
+                    print(f"[OutputAgent] 🔍 Static analysis: {error_count} errors, {warning_count} warnings", flush=True)
+
+                    if error_count > 0:
+                        state.setdefault('static_analysis_errors', []).append({
+                            'module_path': module_path,
+                            'error_count': error_count,
+                            'warning_count': warning_count,
+                        })
+                else:
+                    print(f"[OutputAgent] ✅ Static analysis passed for [{module_path}]", flush=True)
+            except Exception as e:
+                print(f"[OutputAgent] ⚠ Static analysis skipped: {e}", flush=True)
+
         # ── Summary JSON ────────────────────────────────────────────────────
         if all_output_paths:
             summary_path = self.generated_dir / f"summary_{ts}.json"

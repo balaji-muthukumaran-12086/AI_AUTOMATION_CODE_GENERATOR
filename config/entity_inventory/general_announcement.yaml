@@ -1,0 +1,446 @@
+module: general
+entity: announcement
+actions_util:
+  file: com/zoho/automater/selenium/modules/general/announcement/utils/AnnouncementActionsUtil.java
+  methods:
+  - name: announcementComments
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: announcementReplyComments
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: getAnnouncementId
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: uploadFile
+    return_type: void
+    params: String fileName
+    purpose: ''
+  - name: pressEscapeKey
+    return_type: void
+    params: (none)
+    purpose: pressEscapeKey();
+api_util:
+  file: com/zoho/automater/selenium/modules/general/announcement/utils/AnnouncementAPIUtil.java
+  methods:
+  - name: createAnnouncment
+    return_type: void
+    params: String inputData
+    purpose: ''
+  - name: followAnnouncement
+    return_type: void
+    params: (none)
+    purpose: ''
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/general/announcement/common/AnnouncementDataConstants.java
+  classes:
+    AnnouncementDataConstants:
+    - CREATE_BASIC_ANNOUNCEMENT_UI_WITH_TEMPLATE
+    - CREATE_BASIC_ANNOUNCEMENT_WITH_DISPLAY_BANNER
+    - CREATE_BASIC_ANNOUNCEMENT_UI
+    - CREATE_REQUEST_ANNOUNCEMENT_UI
+    - ADD_SITE_USER_GROUP
+    - CREATE_BASIC_ANNOUNCEMENT
+    - COPYSITE
+    - ADD_ANNOUNCEMENT_USING_USERGROUPS
+    - GET_ANNOUNCEMENT_ID
+    - ANNOUNCEMENT_FOR_CUSTOMER
+    - COLUMN_CHOOSER_LIST_IN_ANNOUNCEMENT
+    - POST_PUBLIC_ANNOUNCEMENT
+    - CREATE_ANNOUNCEMENT_1
+    - CREATE_BASIC_ANNOUNCEMENT_UI_1
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- CopySite
+- add_announcement_using_usergroups
+- add_site_user_group
+- announcement_for_customer
+- column_chooser_list_in_announcement
+- create_announcement_1
+- create_basic_announcement
+- create_basic_announcement_ui
+- create_basic_announcement_ui_1
+- create_basic_announcement_ui_with_template
+- create_basic_announcement_with_display_banner
+- create_request_announcement_ui
+- get_announcement_id
+- post_public_announcement
+data_json_deep:
+  total_entries: 14
+  field_frequency:
+    announcement: 6
+    priority: 4
+    isbannerenabled: 4
+    title: 3
+    show_banner_until_expiry: 3
+    description: 2
+    site: 1
+    user_group: 1
+    list: 1
+    template: 1
+    search_criteria: 1
+  all_placeholders:
+  - custom_announcementName
+  - custom_announcementTemplateName
+  - custom_customerId
+  - custom_siteId
+  - custom_usergroupId
+  - datetime
+  - datetime, 0Y 0M 0D 0h 0m, true
+  - unique_string
+  reuse_groups_count: 1
+  entries:
+    add_announcement_using_usergroups:
+      fields:
+      - announcement
+      placeholders:
+      - datetime
+      - unique_string
+      - custom_usergroupId
+      local_storage_keys_required:
+      - usergroupId
+      purpose: ui_form
+    CopySite:
+      fields:
+      - site
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_site_user_group:
+      fields:
+      - user_group
+      placeholders:
+      - unique_string
+      - custom_siteId
+      local_storage_keys_required:
+      - siteId
+      purpose: ui_form
+    announcement_for_customer:
+      fields:
+      - announcement
+      placeholders:
+      - datetime
+      - custom_customerId
+      - unique_string
+      local_storage_keys_required:
+      - customerId
+      purpose: ui_form
+    create_basic_announcement:
+      fields:
+      - announcement
+      placeholders:
+      - datetime
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_basic_announcement_with_display_banner:
+      fields:
+      - announcement
+      placeholders:
+      - datetime
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_basic_announcement_ui:
+      fields:
+      - description
+      - priority
+      - title
+      - show_banner_until_expiry
+      - isbannerenabled
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_announcement_1:
+      fields:
+      - announcement
+      placeholders:
+      - datetime
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_request_announcement_ui:
+      fields:
+      - priority
+      - show_banner_until_expiry
+      - isbannerenabled
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    column_chooser_list_in_announcement:
+      fields:
+      - list
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_basic_announcement_ui_1:
+      fields:
+      - description
+      - priority
+      - title
+      - isbannerenabled
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_basic_announcement_ui_with_template:
+      fields:
+      - priority
+      - template
+      - title
+      - show_banner_until_expiry
+      - isbannerenabled
+      placeholders:
+      - custom_announcementTemplateName
+      - unique_string
+      local_storage_keys_required:
+      - announcementTemplateName
+      purpose: api_preprocess
+    get_announcement_id:
+      fields:
+      - search_criteria
+      placeholders:
+      - custom_announcementName
+      local_storage_keys_required:
+      - announcementName
+      purpose: ui_form
+    post_public_announcement:
+      fields:
+      - announcement
+      placeholders:
+      - unique_string
+      - datetime, 0Y 0M 0D 0h 0m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+actions_util_deep:
+- name: announcementComments
+  params: (none)
+  locators_used:
+  - AnnouncementLocators.Popup.ANNOUNCEMENT_COMMENTS_FIELD
+  - ClientFrameworkLocators.FormBuilderLocators.FRAME_ZE
+  - ClientFrameworkLocators.FormBuilderLocators.TXT_EDITOR
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.switchFrame
+  - actions.type
+  - actions.switchToDefaultFrame
+  - actions.clickByNameSubmit
+  - actions.validate.successMessageInAlert
+  line_count: 6
+- name: announcementReplyComments
+  params: (none)
+  locators_used:
+  - AnnouncementLocators.Popup.ANNOUNCEMENT_COMMENTS_FIELD
+  - ClientFrameworkLocators.FormBuilderLocators.FRAME_ZE
+  - ClientFrameworkLocators.FormBuilderLocators.TXT_EDITOR
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.switchFrame
+  - actions.type
+  - actions.switchToDefaultFrame
+  - actions.clickByNameSubmit
+  - actions.validate.successMessageInAlert
+  line_count: 6
+- name: getAnnouncementId
+  params: (none)
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes:
+  - announcementId
+  action_chain: []
+  line_count: 3
+- name: uploadFile
+  params: String fileName
+  locators_used:
+  - RequestLocators.DetailView.FILE_INPUT
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.executeScript
+  - actions.type
+  line_count: 10
+- name: pressEscapeKey
+  params: (none)
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain: []
+  line_count: 10
+api_util_deep:
+- name: createAnnouncment
+  params: String inputData
+  api_paths:
+  - announcements
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - announcementName
+  - announcementId
+  local_storage_reads: []
+- name: followAnnouncement
+  params: (none)
+  api_paths:
+  - announcements/*/follows/_follow
+  rest_methods_used:
+  - createAndGetAPIResponse
+  local_storage_writes: []
+  local_storage_reads:
+  - announcementId
+preprocess_deep:
+- group: createannouncementwithsiteusergroup
+  source_file: AnnouncementBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - SiteAPIUtil.createCopySite
+  - RequestAPIUtil.getSiteIdFromSiteName
+  - UserGroupsAPIUtil.createUserGroup
+  - AnnouncementAPIUtil.createAnnouncment
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: siteId
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - Site.CopySite
+  - UserGroups.UserGroup
+  - Announcement.Announcment
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: announcement
+  source_file: AnnouncementBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - AnnouncementAPIUtil.createAnnouncment
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Announcement.Announcment
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createrequest
+  source_file: AnnouncementBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: requestId
+    source_type: computed
+  - key: subject
+    source_type: hardcoded
+  - key: apiPath
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - ModuleConstants
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createchange
+  source_file: AnnouncementBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ChangeAPIUtil.createChange
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: id
+    source_type: hardcoded
+  - key: subject
+    source_type: hardcoded
+  - key: apiPath
+    source_type: hardcoded
+  local_storage_reads:
+  - changeId
+  - changeName
+  entities_created:
+  - Change.Change
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createrelease
+  source_file: AnnouncementBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ReleaseAPIUtil.createRelease
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: id
+    source_type: hardcoded
+  - key: subject
+    source_type: hardcoded
+  local_storage_reads:
+  - releaseId
+  - releaseName
+  entities_created:
+  - Release.Release
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createproblem
+  source_file: AnnouncementBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - ProblemAPIUtil.createProblemForTrigger
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: subject
+    source_type: hardcoded
+  - key: apiPath
+    source_type: hardcoded
+  local_storage_reads:
+  - ProblemName
+  - problemId
+  entities_created:
+  - Problem.ProblemForTrigger
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: announcementtemplateui
+  source_file: AnnouncementBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - AnnouncementTemplateAPIUtil.createAnnouncementTemplateAPI
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - AnnouncementTemplate.AnnouncementTemplateAPI
+  creates_user: false
+  user_role: null
+  calls_super: false

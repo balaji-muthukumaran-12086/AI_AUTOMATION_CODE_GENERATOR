@@ -1,0 +1,3638 @@
+module: assets
+entity: asset
+actions_util:
+  file: com/zoho/automater/selenium/modules/assets/asset/utils/AssetActionsUtil.java
+  methods:
+  - name: typeAndSelectOption
+    return_type: void
+    params: String value
+    purpose: ''
+  - name: searchAndSelectProductTypeInAccordian
+    return_type: void
+    params: String name
+    purpose: ''
+  - name: clickAndSelectFromRowActions
+    return_type: void
+    params: String entityId, String actionName
+    purpose: actions.click(AssetLocators.Listview.SPAN_ACCORDION_SEARCH_RESULT1.)
+  - name: clickFirstRowActionIcon
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: clickNthRowActionsIcon
+    return_type: void
+    params: String n
+    purpose: ''
+  - name: getFieldValueFromFirstRow
+    return_type: String
+    params: String field
+    purpose: ''
+  - name: getFieldValueFromRow
+    return_type: String
+    params: String field, String row
+    purpose: public static String getFieldValueFromFirstRow(String field) throws SeleniumException {
+  - name: checkfunctionalityofcancelbuttoninActionstype
+    return_type: void
+    params: String actionsName
+    purpose: ''
+  - name: checkfunctionalityofcancelbuttoninActionsParticulartype
+    return_type: void
+    params: String actionsName
+    purpose: ''
+  - name: selectFilter
+    return_type: void
+    params: String option
+    purpose: ''
+  - name: getFieldValueFromDetailsPage
+    return_type: String
+    params: String field
+    purpose: ''
+  - name: fillDateTimeFieldByLocator
+    return_type: void
+    params: Locator fieldLocator, Long value, Boolean isTimeField
+    purpose: ''
+  - name: modifyProduct
+    return_type: void
+    params: String entityId
+    purpose: ''
+  - name: addfavoritesandCreateAssetinAssets
+    return_type: void
+    params: String assets, String assetstype
+    purpose: ''
+  - name: addfavoritesandCreateAssetinAssetComponents
+    return_type: void
+    params: String assetcomponents, String assetstype
+    purpose: ''
+  - name: addfavoritesandCreateAssetinConsumable
+    return_type: void
+    params: String consumableassetname, String assetstype
+    purpose: ''
+  - name: modifystatusinDetailview
+    return_type: void
+    params: String productName, String assetApiname, String assetDisplayname
+    purpose: ''
+  - name: configureDepreciationinDetailview
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: updateCredentialsinDetailview
+    return_type: void
+    params: String entityId
+    purpose: ''
+  - name: validationForm
+    return_type: int
+    params: JSONObject inputData, JSONArray mandatoryfieldjsonarray, String assetName
+    purpose: ''
+  - name: configureDepreciationinListviewActions
+    return_type: void
+    params: String entityId
+    purpose: ''
+  - name: modifystatesinlistviewActions
+    return_type: void
+    params: String entityId, String assetStatus
+    purpose: ''
+  - name: assigntoDeparmentorAssigntoSiteinListviewActions
+    return_type: void
+    params: String entityId, String departmentorSite, String departmentorSitePopup, String departmentNameorSiteName
+    purpose: ''
+  - name: bulkEditStatus
+    return_type: void
+    params: JSONObject tableSettingInputData, String toAssetStatus
+    purpose: ''
+  - name: assetListviewValidation
+    return_type: int
+    params: (none)
+    purpose: ''
+  - name: assetTypesFilterinListview
+    return_type: int
+    params: String assetFilter
+    purpose: ''
+  - name: changeVmPlatform
+    return_type: void
+    params: String vmplatformName
+    purpose: actions.click(AssetLocators.Listview.SEARCH_BUTTON_IN_LISTVIEW);
+  - name: addRelationshipinRelationshipSubtab
+    return_type: void
+    params: String entityId, Boolean virtualHost, Boolean virtualMachine
+    purpose: ''
+  - name: clickDetailsInRhsDetails
+    return_type: void
+    params: String iconName
+    purpose: ''
+  - name: attachAssets
+    return_type: void
+    params: String entityId, JSONObject inputData, Boolean usingPlusSign, Boolean virtualHost, Boolean virtualMachine
+    purpose: ''
+  - name: cancelButtoninRelationshipSubtab
+    return_type: void
+    params: String typeofRelationshipAssets, String entityId, Boolean virtualHost, Boolean virtualMachine
+    purpose: ''
+  - name: connectAssets
+    return_type: void
+    params: String entityId, JSONObject inputData, Boolean virtualHost, Boolean virtualMachine
+    purpose: ''
+  - name: connectAssetsbyusingPlusSign
+    return_type: void
+    params: String entityId, JSONObject inputData, Boolean virtualHost, Boolean virtualMachine
+    purpose: ''
+  - name: connectBusinessServices
+    return_type: void
+    params: String entityId, JSONObject inputData, Boolean usingPlusSign, Boolean virtualHost, Boolean virtualMachine
+    purpose: ''
+  - name: assignorAssociateUser
+    return_type: void
+    params: String entityId, Boolean virtualHost, Boolean virtualMachine
+    purpose: ''
+  - name: markasLoanablefromDetailview
+    return_type: void
+    params: String assetName, String entityId
+    purpose: ''
+  - name: markasLoanablefromListview
+    return_type: void
+    params: String assetName
+    purpose: ''
+  - name: isColumnSelected
+    return_type: boolean
+    params: String column
+    purpose: ''
+  - name: columnChooser
+    return_type: void
+    params: JSONObject inputData, String datapath
+    purpose: ''
+  - name: bulkEditfromListview
+    return_type: void
+    params: JSONObject inputData, String assetName, JSONObject tablesetting
+    purpose: ''
+  - name: gotoHardwareSubtabinAsset
+    return_type: void
+    params: String entityId, String assetName, String createdAssetName
+    purpose: ''
+  - name: verifyAjaxMessage
+    return_type: Boolean
+    params: String text
+    purpose: ''
+  - name: createAsset
+    return_type: String
+    params: JSONObject assetInputData, String producttype
+    purpose: ''
+  - name: createSiteandDepartment
+    return_type: void
+    params: TestCaseData departmentInputData
+    purpose: ''
+  - name: createProductAndGoToAssetForm
+    return_type: JSONObject
+    params: TestCaseData testCasedata, String productApiName, String assetDisplayName
+    purpose: ''
+  - name: createAssetInUI
+    return_type: void
+    params: TestCaseData testCasedata, String productApiName, String assetDisplayName
+    purpose: ''
+  - name: editAssetinUI
+    return_type: void
+    params: TestCaseData testCasedata, String assetDisplayName, String entityId
+    purpose: ''
+  - name: deleteAssetinUI
+    return_type: void
+    params: String assetDisplayName, String entityId, String assetName
+    purpose: ''
+  - name: gotoAssetDetailview
+    return_type: void
+    params: String assetDisplayName, String entityId
+    purpose: actions.isDisplayed(AssetLocators.Listview.EMPTY_ASSET_TABLE_TEXT);
+  - name: clickSpotEditField
+    return_type: void
+    params: String sectionName, String field
+    purpose: AssetActionsUtil.configureDepreciationinListviewActions(entityId);
+  - name: assginUserFromListview
+    return_type: String
+    params: String assetName
+    purpose: ''
+  - name: setCustomFilterCriteriaforDynamicGroup
+    return_type: void
+    params: JSONArray criteriaData
+    purpose: ''
+  - name: globalSearchViaDashboard
+    return_type: void
+    params: String searchValue, String subModuleType, String module
+    purpose: ''
+  - name: createAssetAudit
+    return_type: void
+    params: JSONObject auditData, String auditType
+    purpose: ''
+  - name: selectcolumninTableSetting
+    return_type: void
+    params: JSONObject data, String apipath, String subTabName
+    purpose: ''
+  - name: createTaskLayoutAPI
+    return_type: void
+    params: TestCaseData testCase
+    purpose: Schedule End reminder Cases
+  - name: navigateTo
+    return_type: void
+    params: String productType, String tableViewName, String listviewFilter, String entityID, String subTab
+    purpose: ''
+  - name: modifyStateinDetailPage
+    return_type: boolean
+    params: String assetState, String currentusername
+    purpose: ''
+  - name: createProductFromAssetUI
+    return_type: void
+    params: boolean isClientFramework, Map<String, FieldDetails> fields, JSONObject productInputData
+    purpose: ''
+  - name: loadNewAssetCreationForm
+    return_type: void
+    params: String productTypeDisplayName
+    purpose: ''
+  - name: getAssetIdUsingName
+    return_type: String
+    params: String assetName
+    purpose: ''
+  - name: getSubModuleIdUsingProductTypeName
+    return_type: String
+    params: String productTypeName
+    purpose: ''
+  - name: generateNetworkIpAddress
+    return_type: String
+    params: (none)
+    purpose: ''
+  - name: importDataAction
+    return_type: void
+    params: String fileName, String moduleName
+    purpose: ''
+  - name: navigateToListView
+    return_type: void
+    params: String subModuleName
+    purpose: RequestActionsUtils.pressEscapeKey();
+  - name: createCustomFilter
+    return_type: void
+    params: String subModuleName,JSONObject inputData
+    purpose: ''
+  - name: updateCustomFilter
+    return_type: void
+    params: String subModuleName,String filterName,String filterId, JSONObject inputData
+    purpose: ''
+  - name: deleteCustomFilter
+    return_type: void
+    params: String subModuleName,String filterName,String filterId
+    purpose: ''
+api_util:
+  file: com/zoho/automater/selenium/modules/assets/asset/utils/AssetAPIUtil.java
+  methods:
+  - name: checkAndCreateProduct
+    return_type: void
+    params: String productType, String productName
+    purpose: ''
+  - name: createProductForProductType
+    return_type: void
+    params: String productType, String productName
+    purpose: String ProductID = existingProductJson.optJSONObject(0).optString("id");
+  - name: checkAndCreateVHinVirtualMachine
+    return_type: void
+    params: String virtualHostname
+    purpose: ''
+  - name: createVirtualHostforVirtualMachine
+    return_type: void
+    params: String virtualHostname
+    purpose: ''
+  - name: createProduct
+    return_type: void
+    params: String productType
+    purpose: ''
+  - name: assignAsset
+    return_type: void
+    params: String inputData
+    purpose: ''
+  - name: addAssetWithDepreciation
+    return_type: void
+    params: String inputData
+    purpose: ''
+  - name: createAsset
+    return_type: void
+    params: JSONObject inputData, String producttype
+    purpose: String trimmedValue = currentCost.replace("$", "").trim();
+  - name: addAssetWithCostFactor
+    return_type: void
+    params: String inputData, String costFactorName
+    purpose: Add cost in financial subtab
+  - name: createAssetFGA
+    return_type: void
+    params: String productType, User user
+    purpose: ''
+  - name: getAssetModuleID
+    return_type: void
+    params: (none)
+    purpose: ''
+  - name: getProductEntityId
+    return_type: void
+    params: String productName
+    purpose: ''
+  - name: createMultipleAssets
+    return_type: void
+    params: String productType, String assetData, int noofAssets
+    purpose: ''
+  - name: createAssetAudit
+    return_type: void
+    params: String auditType
+    purpose: ''
+  - name: getAuditTypeId
+    return_type: void
+    params: String auditType
+    purpose: ''
+  - name: editAssetState
+    return_type: void
+    params: JSONObject data, String entityId, String apiPath, String assetEntityName
+    purpose: ''
+  - name: createCustomFilterAPI
+    return_type: void
+    params: String customFilterData, String productType
+    purpose: ''
+  - name: getAssetIDUsingName
+    return_type: String
+    params: String assetName
+    purpose: ''
+  - name: getAllAssetState
+    return_type: ArrayList<String>
+    params: (none)
+    purpose: ''
+  - name: createProduct
+    return_type: void
+    params: TestCaseData productdata
+    purpose: ''
+  - name: createAsset
+    return_type: void
+    params: JSONObject assetJson
+    purpose: ''
+  - name: createAssetAPI
+    return_type: void
+    params: JSONObject assetData, String product
+    purpose: ''
+  - name: addSoftwareToComputer
+    return_type: void
+    params: String assetId, String softwareId
+    purpose: '}'
+locators:
+  file: null
+  interfaces: {}
+data_constants:
+  file: com/zoho/automater/selenium/modules/assets/asset/common/AssetDataConstants.java
+  classes:
+    AssetDataConstants:
+    - TABLE_SETTINGS_PAGE
+    - CONFIGURE_DEPRECIATION_DETAILS
+    - CREATE_MULTIPLE_VIRTUAL_HOST_ASSET
+    - CREATE_ACCESS_POINT_ASSET_WITH_DEFAULT_FIELDS
+    - CREATE_CISCO_SWITCH_ASSET
+    - CREATE_VIRTUAL_HOST_ASSET_WITH_HYPERV_VMPLATFORM
+    - CREATE_KEYBOARD_ASSET
+    - BARCODE_SELECTED_ASSETS
+    - ASSET_CUSTOM_NOTIFICATION_WITH_GLOBAL_VARIABLE_API
+    - MARK_AS_LOANABLE
+    - CREATE_ASSET
+    - GET_DECLINE_TYPE_ID
+    - UPDATE_TECHNICIANS_WITH_DEPARTMENT
+    - CREATE_ASSET_AUDIT
+    - UPDATE_ACCESS_POINT_ASSET
+    - REQUESTER
+    - ASSET_AUDIT_CRITERIA_CONDITIONS
+    - SEARCH_SITES
+    - UPDATE_PRINTER_ASSET
+    - CONNECT_VIRTUALHOST_ASSETS
+    - CREATE_VIRTUAL_HOST_ASSET_FOR_VIRTUALMACHINE
+    - CREATE_SMARTPHONE_ALC_LIFE_CYCLE
+    - CREATE_CISCO_ROUTER_ASSET
+    - EDIT_ASSET_FROM_LISTVIEW
+    - EDIT_ASSET_COST_DETAILS
+    - ASSIGN_VIRTUALHOST_IN_SERVER
+    - CRITERIA_CONDITION_2
+    - GET_COST_FACTOR_ID
+    - CREATE_VIRTUAL_HOST
+    - CREATE_NEW_CREDENTIAL_FOR_SNMPV3
+    - CREATE_VIRTUAL_HOST_ASSET_WITH_DIFFERENT_TYPE_OF_PLATFORM
+    - CREATE_VIRTUAL_MACHINE_FOR_WORKFLOW
+    - ASSETS_USED_BY_CONTRACT
+    - CREATE_DEPARTMENT
+    - CREATE_ACCESS_POINT_ASSET_WITH_EXPIRED_STATUS
+    - CREATE_ACCESS_POINT_ASSET
+    - CREATE_VENDOR_FROM_ASSET
+    - CREATE_ASSET_WITH_OTHER_UDF
+    - MULTISELECT_USER
+    - UPDATE_TABLET_ASSET
+    - CONNECT_ASSETS
+    - ADD_ASSET_WITH_VENDOR
+    - ASSOCIATED_GROUP
+    - CREATE_WORKSTAION_ASSET_WITH_SERVICE_TAG
+    - COLUMN_CHOOSER_IN_ASSETTAB
+    - CREATE_PRODUCT_FROM_ASSET
+    - BUSINESS_SERVICE_CONNECTIONS
+    - CREATE_ACCESSPOINT_ASSET_WITH_INUSE_STATE
+    - GLOBAL_VARIABLE_FOR_ASSET_NOTIFICATION
+    - EDIT_ASSET
+    - UPDATE_SMARTPHONE_NAME
+    - SET_TABLE_SETTING
+    - CREATE_PROJECTOR_ASSET
+    - CREATE_WORKSTAION_ASSET
+    - ADD_DEPRECIATION
+    - BASIC_ASSIGN_ASSET
+    - UPDATE_SCANNER_ASSET
+    - SEARCH_VIRTUALHOST
+    - MANDATORY_FIELDNAME_IN_ASSETS
+    - UPDATE_SERVER_ASSET
+    - COLUMN_CHOOSER_IN_AUDIT_LISTVIEW
+    - UPDATE_SMARTPHONE_ASSET
+    - COLUMN_CHOOSER_IN_CONSUMABLETAB
+    - REVERT_SMARTPHONE_NAME
+    - ADD_ASSET_WITH_COST
+    - COLUMN_CHOOSER_LISTVIEW_AND_TABLE_SETTING_1
+    - MANDATORY_FIELDNAME_IN_SERVERS_OR_WORKSTATIONS
+    - UPDATE_ROUTER_ASSET
+    - CREATE_SMARTPHONE_ASSET
+    - CREATE_ACCESS_POINT_ASSET_WITH_DISPOSED_STATUS
+    - ASSET_CUSTOMFILTER_API
+    - UPDATE_PROJECTOR_ASSET
+    - ASSET_AUDIT_IN_API
+    - SEARCH_PRODUCT
+    - UPDATE_USER_IN_ASSET
+    - CREATE_SMARTPHONE_ASSET_WITH_PLATFORM_FIELD
+    - ASSET_CUSTOMFILTER_API_DATA1
+    - UPDATE_SMARTPHONE_ASSET_WITH_PLATFORM_FIELD
+    - REQUEST_MANDATORY_FIELD_ONLY
+    - ASSET_ASSOCIATED_WITH_CONTRACT
+    - CREATE_TABLET_ASSET
+    - UPDATE_VIRTUAL_MACHINE_ASSET
+    - CREATE_PRINTER_ASSET
+    - CREATE_VIRTUALMACHINE_AND_VIRTUALHOST
+    - CREATE_PRINTER_ASSET_100_CHAR
+    - CREATE_SERVER_ASSET
+    - CRITERIA_CONDITION
+    - ASSET_COST_DETAILS
+    - CREATE_VIRTUAL_HOST_ASSET
+    - CHANGE_API_VALID_INPUT_GENERAL_TEMPLATE
+    - COPY_ASSET
+    - CREATE_VIRTUAL_MACHINE
+    - UPDATE_SWITCH_ASSET
+    - ADD_SOFTWARE_TO_COMPUTER
+    - CREATE_ASSET_FOR_TRANISTION_API
+    - CONFIGURE_DEPRECIATION
+    - UPDATE_WORKSTATION_ASSET
+    - LOAN
+    - EDIT_ASSET_IN_SECONDTIME_FROM_LISTVIEW
+    - UPDATE_KEYBOARD_ASSET
+    - CREATE_KEYBOARD_ASSET_WITH_DISPOSED_STATUS
+    - UPDATE_VIRTUAL_HOSTS_ASSET
+    - CREATE_ACCESSPOINT_ASSET_WITH_DEPARTMENT
+    - CREATE_ACCESSPOINT_ASKZIA
+    - CREATE_API_ASSET
+    - CONNECT_VIRTUALMACHINE_ASSETS
+    - CREATE_VIRTUAL_HOST_ASSET_WITH_OTHERS_VMPLATFORM
+    - GET_PRODUCT_TYPE_ID
+    - CREATE_ACCESS_POINT_ASSET_WITH_CUSTOMER
+    - COLUMN_CHOOSER_LISTVIEW_AND_TABLE_SETTING
+    - POST_WORKSTAION_ASSET
+    - CREATE_DEPARTMENT_FOR_MSP
+    - ADD_COST
+    - CREATE_ASSET_WITH_UDF
+    - CUSTOM_FILTER_LIST
+    - CREATE_SCANNER_ASSET
+    - INSTORE_STATE
+    - UPDATE_ACCESS_POINT_ASSET_WITH_DEFAULT_FIELDS
+    - ASSIGN_ASSET
+    - CREATE_PRODUCT
+    - CREATE_ACCESSPOINT_ASSET_AUDIT
+    - CREATE_REGION
+    - CREATE_ACCESS_POINT_ASSET_WITH_REPAIR_STATUS
+    - COLUMN_CHOOSER_LISTVIEW
+    - CREATE_VIRTUAL_MACHINE_ASSET
+    - SET_TABLE_SETTING_USING_TIME_OF_OCCURRENCE
+    - ASSOCIATED_CUSTOM_SITE
+    - CREATE_ACCESS_ASSET_WITH_EXPIRED_STATUS
+annotation_constants:
+  file: null
+  groups: []
+  data: []
+preprocess_groups: []
+data_json_keys:
+- Column_Chooser_In_Audit_Listview
+- Column_Chooser_Listview
+- Column_Chooser_Listview_and_table_setting
+- Column_Chooser_Listview_and_table_setting_1
+- Column_Chooser_in_Consumabletab
+- Column_Chooser_in_assettab
+- Search_Sites
+- Table_Settings_page
+- add_asset_with_cost
+- add_asset_with_vendor
+- add_cost
+- add_depreciation
+- add_software_to_computer
+- asset_associated_with_contract
+- asset_audit_criteria_conditions
+- asset_audit_in_api
+- asset_cost_details
+- asset_custom_notification_with_global_variable_api
+- asset_customfilter_api
+- asset_customfilter_api_data1
+- assets_used_by_contract
+- assign_VirtualHost_in_Server
+- assign_asset
+- associated_custom_site
+- associated_group
+- barcode_selected_assets
+- basic_assign_asset
+- business_service_connections
+- change_api_valid_input_general_template
+- configure_depreciation
+- configure_depreciation_details
+- connect_assets
+- connect_virtualhost_assets
+- connect_virtualmachine_assets
+- copy_asset
+- create_VirtualMachine_and_VirtualHost
+- create_access_asset_with_expired_status
+- create_access_point_asset
+- create_access_point_asset_with_customer
+- create_access_point_asset_with_default_fields
+- create_access_point_asset_with_disposed_status
+- create_access_point_asset_with_expired_status
+- create_access_point_asset_with_repair_status
+- create_accesspoint_AskZia
+- create_accesspoint_asset_audit
+- create_accesspoint_asset_with_department
+- create_accesspoint_asset_with_inuse_state
+- create_api_asset
+- create_asset
+- create_asset_audit
+- create_asset_for_tranistion_api
+- create_asset_with_other_udf
+- create_asset_with_udf
+- create_cisco_router_asset
+- create_cisco_switch_asset
+- create_department
+- create_department_for_msp
+- create_keyboard_asset
+- create_keyboard_asset_with_disposed_status
+- create_multiple_virtual_host_asset
+- create_new_credential_for_snmpv3
+- create_printer_asset
+- create_printer_asset_100_char
+- create_product
+- create_product_from_asset
+- create_projector_asset
+- create_region
+- create_scanner_asset
+- create_server_asset
+- create_smartphone_alc_life_cycle
+- create_smartphone_asset
+- create_smartphone_asset_with_platform_field
+- create_tablet_asset
+- create_vendor_from_asset
+- create_virtual_host
+- create_virtual_host_asset
+- create_virtual_host_asset_for_virtualmachine
+- create_virtual_host_asset_with_HyperV_VmPlatform
+- create_virtual_host_asset_with_Others_VmPlatform
+- create_virtual_host_asset_with_different_type_of_platform
+- create_virtual_machine
+- create_virtual_machine_asset
+- create_virtual_machine_for_workflow
+- create_workstaion_asset
+- create_workstaion_asset_with_service_tag
+- criteria_condition
+- criteria_condition_2
+- custom_filter_list
+- edit_asset
+- edit_asset_cost_details
+- edit_asset_from_listview
+- edit_asset_in_secondtime_from_listview
+- get_cost_factor_id
+- get_decline_type_id
+- get_product_type_id
+- global_variable_for_asset_notification
+- instore_state
+- loan
+- mandatory_fieldname_in_Servers_or_workstations
+- mandatory_fieldname_in_assets
+- mark_as_loanable
+- multiselect_user
+- post_workstaion_asset
+- request_mandatory_field_only
+- requester
+- revert_smartphone_name
+- search_product
+- search_virtualhost
+- set_table_setting
+- set_table_setting_using_Time_of_Occurrence
+- update_access_point_asset
+- update_access_point_asset_with_default_fields
+- update_keyboard_asset
+- update_printer_asset
+- update_projector_asset
+- update_router_asset
+- update_scanner_asset
+- update_server_asset
+- update_smartphone_asset
+- update_smartphone_asset_with_platform_field
+- update_smartphone_name
+- update_switch_asset
+- update_tablet_asset
+- update_technicians_with_department
+- update_user_in_asset
+- update_virtual_hosts_asset
+- update_virtual_machine_asset
+- update_workstation_asset
+data_json_deep:
+  total_entries: 128
+  field_frequency:
+    name: 59
+    product: 40
+    purchase_cost: 21
+    state: 13
+    vm_platform: 10
+    search_criteria: 7
+    columns: 6
+    asset: 6
+    asset_tag: 5
+    operating_system: 5
+    location: 5
+    acquisition_date: 4
+    asset_cost: 4
+    serial_number: 4
+    row_count: 3
+    start_index: 3
+    fields_required: 3
+    get_total_count: 3
+    computer_system: 3
+    network_adapters: 3
+  all_placeholders:
+  - custom_RequesterName
+  - custom_Vmplatform
+  - custom_associated_site_name
+  - custom_costFactorId
+  - custom_costFactorName
+  - custom_customerID
+  - custom_customerId
+  - custom_demo
+  - custom_departmentId
+  - custom_departmentName
+  - custom_global_variable_group_name
+  - custom_global_variable_name
+  - custom_name
+  - custom_printerName100Char
+  - custom_productId
+  - custom_productName
+  - custom_productType
+  - custom_productTypeName
+  - custom_productid
+  - custom_regionId
+  - custom_secondAssetName
+  - custom_siteId
+  - custom_siteName
+  - custom_userId
+  - custom_vendorID
+  - custom_vendorName
+  - custom_virtual_host_asset_display_name
+  - custom_virtual_host_name
+  - custom_virtual_machine_name
+  - date, 0Y 0M 0D, true
+  - date, 0Y 0M 1D 0h 0m, false
+  - date, 0Y 0M 1D, true
+  - date, 0Y 0M 2D, true
+  - date, 0Y 0M 3D, true
+  - date, 0Y 0M 4D, true
+  - date, 0Y 0M 5D, true
+  - date, 0Y 3M 1D 0h 0m, false
+  - date, 1Y 3M 1D 1h 0m, false
+  - date, 2Y 3M 1D 0h 0m, false
+  - datetime, 1Y 10M 100D 10h 10m, false
+  - datetime, 1Y 10M 100D 10h 10m, true
+  - datetime, 2Y 10M 100D 10h 10m, false
+  - datetime, 2Y 10M 100D 10h 10m, true
+  - rest_api, get, depreciation_types, depreciation_types, get_decline_type_id
+  - rest_api, get, product_types, product_types, get_product_type_id
+  - rest_api, search, asset_smartphones/platform_type, name, iOS
+  - rest_api, search, asset_states, name, Disposed
+  - rest_api, search, asset_states, name, Expired
+  - rest_api, search, asset_states, name, In Repair
+  - rest_api, search, asset_states, name, In Store
+  - rest_api, search, asset_states, name, In Use
+  - rest_api, search, product_types, name, smartphone
+  - unique_string
+  - user_email_id
+  - user_id
+  - user_name
+  reuse_groups_count: 19
+  entries:
+    search_product:
+      fields:
+      - row_count
+      - start_index
+      - fields_required
+      - get_total_count
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    search_virtualhost:
+      fields:
+      - row_count
+      - start_index
+      - fields_required
+      - get_total_count
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_access_point_asset:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      - asset_tag
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_access_point_asset:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_printer_asset:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_printer_asset:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_cisco_router_asset:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_router_asset:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_server_asset:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_server_asset:
+      fields:
+      - name
+      - operating_system
+      - computer_system
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_smartphone_asset:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      - network_adapters
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_smartphone_asset:
+      fields:
+      - name
+      - inventory_details-total_capacity
+      - os_information-os_version
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_workstaion_asset:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_workstation_asset:
+      fields:
+      - name
+      - operating_system
+      - memory-physical_memory
+      - memory-virtual_memory
+      - keyboard-keyboard_type
+      - keyboard-keyboard_manufacturer
+      - mouse-mouse_type
+      - mouse-mouse_manufacturer
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_cisco_switch_asset:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_switch_asset:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_tablet_asset:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_tablet_asset:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_projector_asset:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_projector_asset:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_scanner_asset:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_scanner_asset:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_keyboard_asset:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_keyboard_asset:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_virtual_host_asset:
+      fields:
+      - name
+      - product
+      - vm_platform
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_virtual_host:
+      fields:
+      - name
+      - product
+      - vm_platform
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_virtual_hosts_asset:
+      fields:
+      - name
+      - vm_platform
+      - operating_system
+      - computer_system
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    update_virtual_machine_asset:
+      fields:
+      - name
+      - operating_system
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_virtual_machine_asset:
+      fields:
+      - name
+      - product
+      - vm_host
+      - purchase_cost
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_virtual_machine:
+      fields:
+      - name
+      - product
+      - vm_host
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_virtual_host_asset_for_virtualmachine:
+      fields:
+      - name
+      - product
+      - vm_platform
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_multiple_virtual_host_asset:
+      fields:
+      - name
+      - product
+      - vm_platform
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    Table_Settings_page:
+      fields:
+      - count
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Search_Sites:
+      fields:
+      - row_count
+      - start_index
+      - fields_required
+      - get_total_count
+      - search_criteria
+      - sort_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    associated_custom_site:
+      fields:
+      - name
+      - settings
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_department_for_msp:
+      fields:
+      - department
+      placeholders:
+      - custom_associated_site_name
+      - custom_customerID
+      - unique_string
+      local_storage_keys_required:
+      - associated_site_name
+      - customerID
+      purpose: api_preprocess
+    create_department:
+      fields:
+      - department
+      placeholders:
+      - custom_associated_site_name
+      - unique_string
+      - user_id
+      local_storage_keys_required:
+      - associated_site_name
+      purpose: api_preprocess
+    associated_group:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    configure_depreciation:
+      fields:
+      - config
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    edit_asset:
+      fields:
+      - state
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Column_Chooser_Listview_and_table_setting:
+      fields:
+      - columns
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Column_Chooser_Listview:
+      fields:
+      - columns
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_access_point_asset_with_repair_status:
+      fields:
+      - name
+      - product
+      - state
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_access_point_asset_with_expired_status:
+      fields:
+      - name
+      - product
+      - state
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_access_point_asset_with_disposed_status:
+      fields:
+      - name
+      - product
+      - state
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_keyboard_asset_with_disposed_status:
+      fields:
+      - name
+      - product
+      - state
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_new_credential_for_snmpv3:
+      fields:
+      - snmp_v3_credential
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    set_table_setting:
+      fields:
+      - sort_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    mandatory_fieldname_in_assets:
+      fields:
+      - mandatory_field
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    mandatory_fieldname_in_Servers_or_workstations:
+      fields:
+      - mandatory_field_in_Server_or_workstation
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_accesspoint_asset_with_inuse_state:
+      fields:
+      - state
+      - name
+      - product
+      - retain_user_site
+      - user
+      placeholders:
+      - unique_string
+      - user_email_id
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_access_asset_with_expired_status:
+      fields:
+      - name
+      - product
+      - state
+      placeholders:
+      - unique_string
+      - custom_demo
+      local_storage_keys_required:
+      - demo
+      purpose: api_preprocess
+    create_product:
+      fields:
+      - product
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    edit_asset_from_listview:
+      fields:
+      - state
+      - location
+      - purchase_cost
+      - date
+      placeholders:
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    edit_asset_in_secondtime_from_listview:
+      fields:
+      - state
+      - location
+      - purchase_cost
+      - date
+      placeholders:
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    loan:
+      fields:
+      - loaned_to_user
+      - loaned_assets
+      - jaya
+      placeholders:
+      - user_name
+      - custom_name
+      local_storage_keys_required:
+      - name
+      purpose: ui_form
+    configure_depreciation_details:
+      fields:
+      - config
+      - useful_life
+      - acquisition_date
+      placeholders:
+      - datetime, 1Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_virtual_host_asset_with_different_type_of_platform:
+      fields:
+      - name
+      - product
+      - vm_platform
+      - purchase_cost
+      placeholders:
+      - unique_string
+      - custom_Vmplatform
+      local_storage_keys_required:
+      - Vmplatform
+      purpose: api_preprocess
+    create_virtual_host_asset_with_Others_VmPlatform:
+      fields:
+      - name
+      - product
+      - vm_platform
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_virtual_host_asset_with_HyperV_VmPlatform:
+      fields:
+      - name
+      - product
+      - vm_platform
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    copy_asset:
+      fields:
+      - copy
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    connect_assets:
+      fields:
+      - asset_connections
+      placeholders:
+      - custom_secondAssetName
+      local_storage_keys_required:
+      - secondAssetName
+      purpose: ui_form
+    connect_virtualhost_assets:
+      fields:
+      - asset_connections
+      placeholders:
+      - custom_virtual_host_name
+      local_storage_keys_required:
+      - virtual_host_name
+      purpose: ui_form
+    connect_virtualmachine_assets:
+      fields:
+      - asset_connections
+      placeholders:
+      - custom_virtual_machine_name
+      local_storage_keys_required:
+      - virtual_machine_name
+      purpose: ui_form
+    business_service_connections:
+      fields:
+      - business_service_connections
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_cost:
+      fields:
+      - asset_cost
+      placeholders:
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    mark_as_loanable:
+      fields:
+      - asset
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    edit_asset_cost_details:
+      fields:
+      - asset_cost
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    asset_cost_details:
+      fields:
+      - asset_cost
+      placeholders:
+      - datetime, 1Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    change_api_valid_input_general_template:
+      fields:
+      - change
+      placeholders:
+      - user_name
+      - user_email_id
+      - datetime, 2Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    assign_VirtualHost_in_Server:
+      fields:
+      - vm_type
+      - vm_platform
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_VirtualMachine_and_VirtualHost:
+      fields:
+      - vm_type
+      - vm_host
+      placeholders:
+      - custom_virtual_host_asset_display_name
+      local_storage_keys_required:
+      - virtual_host_asset_display_name
+      purpose: api_preprocess
+    asset_associated_with_contract:
+      fields:
+      - name
+      - vendor
+      - active_from
+      - active_till
+      placeholders:
+      - unique_string
+      - custom_vendorName
+      - datetime, 1Y 10M 100D 10h 10m, false
+      - datetime, 2Y 10M 100D 10h 10m, true
+      local_storage_keys_required:
+      - vendorName
+      purpose: ui_form
+    assets_used_by_contract:
+      fields:
+      - assets
+      placeholders:
+      - custom_name
+      local_storage_keys_required:
+      - name
+      purpose: ui_form
+    requester:
+      fields:
+      - search_criteria
+      placeholders:
+      - custom_RequesterName
+      local_storage_keys_required:
+      - RequesterName
+      purpose: ui_form
+    set_table_setting_using_Time_of_Occurrence:
+      fields:
+      - sort_fields
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_virtual_machine_for_workflow:
+      fields:
+      - name
+      - product
+      - vm_platform
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_api_asset:
+      fields:
+      - name
+      - product
+      - acquisition_date
+      - serial_number
+      - asset_tag
+      placeholders:
+      - unique_string
+      - date, 0Y 0M 0D, true
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_access_point_asset_with_customer:
+      fields:
+      - asset
+      placeholders:
+      - unique_string
+      - custom_productName
+      - unique_string
+      - custom_customerId
+      local_storage_keys_required:
+      - productName
+      - customerId
+      purpose: api_preprocess
+    assign_asset:
+      fields:
+      - asset
+      placeholders:
+      - custom_departmentId
+      - custom_siteId
+      local_storage_keys_required:
+      - departmentId
+      - siteId
+      purpose: ui_form
+    add_depreciation:
+      fields:
+      - config
+      placeholders:
+      - rest_api, get, depreciation_types, depreciation_types, get_decline_type_id
+      - date, 0Y 3M 1D 0h 0m, false
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_decline_type_id:
+      fields:
+      - search_criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    add_asset_with_vendor:
+      fields:
+      - name
+      - vendor
+      - product
+      - network_adapters
+      placeholders:
+      - unique_string
+      - custom_vendorID
+      - unique_string
+      local_storage_keys_required:
+      - vendorID
+      purpose: ui_form
+    add_asset_with_cost:
+      fields:
+      - asset_cost
+      placeholders:
+      - custom_costFactorId
+      - date, 0Y 0M 1D 0h 0m, false
+      local_storage_keys_required:
+      - costFactorId
+      purpose: ui_form
+    get_cost_factor_id:
+      fields:
+      - search_criteria
+      placeholders:
+      - custom_costFactorName
+      local_storage_keys_required:
+      - costFactorName
+      purpose: ui_form
+    basic_assign_asset:
+      fields:
+      - asset
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_asset:
+      fields:
+      - name
+      - product
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    criteria_condition:
+      fields:
+      - criteria
+      placeholders:
+      - custom_name
+      local_storage_keys_required:
+      - name
+      purpose: ui_form
+    criteria_condition_2:
+      fields:
+      - criteria
+      placeholders:
+      - custom_productType
+      local_storage_keys_required:
+      - productType
+      purpose: ui_form
+    create_asset_audit:
+      fields:
+      - name
+      - audit_type
+      - description
+      - planned_start_date
+      - planned_end_date
+      placeholders:
+      - unique_string
+      - unique_string
+      - date, 2Y 3M 1D 0h 0m, false
+      - date, 1Y 3M 1D 1h 0m, false
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    asset_audit_in_api:
+      fields:
+      - asset_audit
+      placeholders:
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    Column_Chooser_In_Audit_Listview:
+      fields:
+      - columns
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    asset_audit_criteria_conditions:
+      fields:
+      - criteria
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    instore_state:
+      fields:
+      - state
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Column_Chooser_in_Consumabletab:
+      fields:
+      - columns
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    Column_Chooser_in_assettab:
+      fields:
+      - columns
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_accesspoint_asset_with_department:
+      fields:
+      - state
+      - name
+      - product
+      - retain_user_site
+      - department
+      - site
+      placeholders:
+      - unique_string
+      - custom_departmentName
+      - custom_siteName
+      local_storage_keys_required:
+      - departmentName
+      - siteName
+      purpose: api_preprocess
+    multiselect_user:
+      fields:
+      - selectmultiuser
+      placeholders:
+      - user_name
+      local_storage_keys_required: []
+      purpose: ui_form
+    update_technicians_with_department:
+      fields:
+      - technician
+      placeholders:
+      - custom_departmentName
+      - custom_associated_site_name
+      local_storage_keys_required:
+      - departmentName
+      - associated_site_name
+      purpose: ui_form
+    update_user_in_asset:
+      fields:
+      - asset_access_point
+      placeholders:
+      - user_id
+      local_storage_keys_required: []
+      purpose: ui_form
+    custom_filter_list:
+      fields:
+      - list
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    get_product_type_id:
+      fields:
+      - search_criteria
+      placeholders:
+      - custom_productTypeName
+      local_storage_keys_required:
+      - productTypeName
+      purpose: ui_form
+    asset_customfilter_api:
+      fields:
+      - list_view_filter
+      placeholders:
+      - unique_string
+      - rest_api, get, product_types, product_types, get_product_type_id
+      local_storage_keys_required: []
+      purpose: ui_form
+    asset_customfilter_api_data1:
+      fields:
+      - list_view_filter
+      placeholders:
+      - unique_string
+      - custom_regionId
+      - rest_api, get, product_types, product_types, get_product_type_id
+      local_storage_keys_required:
+      - regionId
+      purpose: ui_form
+    create_region:
+      fields:
+      - region
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    Column_Chooser_Listview_and_table_setting_1:
+      fields:
+      - columns
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    update_smartphone_name:
+      fields:
+      - product_type
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    request_mandatory_field_only:
+      fields:
+      - requester
+      - subject
+      placeholders:
+      - user_name
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    revert_smartphone_name:
+      fields:
+      - product_type
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_accesspoint_asset_audit:
+      fields:
+      - state
+      - name
+      - product
+      - retain_user_site
+      - user
+      - serial_number
+      - asset_tag
+      - location
+      - barcode
+      placeholders:
+      - unique_string
+      - user_email_id
+      - unique_string
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_workstaion_asset_with_service_tag:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      - computer_system
+      - operating_system
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    barcode_selected_assets:
+      fields:
+      - values
+      placeholders:
+      - custom_name
+      local_storage_keys_required:
+      - name
+      purpose: ui_form
+    create_asset_for_tranistion_api:
+      fields:
+      - state
+      - name
+      - product
+      placeholders:
+      - unique_string
+      - custom_productid
+      local_storage_keys_required:
+      - productid
+      purpose: api_preprocess
+    create_vendor_from_asset:
+      fields:
+      - name
+      placeholders:
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_product_from_asset:
+      fields:
+      - name
+      - manufacturer
+      - part_no
+      - cost
+      - description
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_asset_with_udf:
+      fields:
+      - name
+      - product
+      - txt_single_line
+      - txt_multi_line
+      - txt_pick_list
+      - num_numeric
+      - txt_e-mail
+      - txt_assetlookupName
+      - txt_multi_select
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_asset_with_other_udf:
+      fields:
+      - name
+      - product
+      - txt_web_url
+      - txt_check_box
+      - dbl_percent
+      - dbl_decimal
+      - dbl_currency
+      - txt_phone
+      - txt_radio
+      - txt_assetlookupName
+      placeholders:
+      - unique_string
+      - user_name
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_access_point_asset_with_default_fields:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      - asset_tag
+      - serial_number
+      - barcode
+      - location
+      - acquisition_date
+      - warranty_expiry
+      - expiry_date
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      - unique_string
+      - date, 0Y 0M 0D, true
+      - date, 0Y 0M 1D, true
+      - date, 0Y 0M 2D, true
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    update_access_point_asset_with_default_fields:
+      fields:
+      - name
+      - purchase_cost
+      - asset_tag
+      - serial_number
+      - barcode
+      - location
+      - acquisition_date
+      - warranty_expiry
+      - expiry_date
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      - unique_string
+      - date, 0Y 0M 3D, true
+      - date, 0Y 0M 4D, true
+      - date, 0Y 0M 5D, true
+      local_storage_keys_required: []
+      purpose: ui_form
+    post_workstaion_asset:
+      fields:
+      - asset
+      placeholders:
+      - unique_string
+      - custom_userId
+      local_storage_keys_required:
+      - userId
+      purpose: ui_form
+    update_smartphone_asset_with_platform_field:
+      fields:
+      - os_information-platform_type
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_smartphone_asset_with_platform_field:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      - os_information
+      - network_adapters
+      placeholders:
+      - unique_string
+      - rest_api, search, asset_smartphones/platform_type, name, iOS
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    create_smartphone_alc_life_cycle:
+      fields:
+      - asset_lifecycle
+      placeholders:
+      - unique_string
+      - rest_api, search, product_types, name, smartphone
+      - rest_api, search, asset_states, name, In Store
+      - rest_api, search, asset_states, name, In Use
+      - rest_api, search, asset_states, name, Expired
+      - rest_api, search, asset_states, name, In Repair
+      - rest_api, search, asset_states, name, Disposed
+      local_storage_keys_required: []
+      purpose: api_preprocess
+    add_software_to_computer:
+      fields:
+      - software
+      placeholders: []
+      local_storage_keys_required: []
+      purpose: ui_form
+    create_printer_asset_100_char:
+      fields:
+      - name
+      - product
+      - purchase_cost
+      placeholders:
+      - custom_printerName100Char
+      local_storage_keys_required:
+      - printerName100Char
+      purpose: api_preprocess
+    global_variable_for_asset_notification:
+      fields:
+      - global_variable_group
+      placeholders:
+      - unique_string
+      - unique_string
+      - unique_string
+      local_storage_keys_required: []
+      purpose: ui_form
+    asset_custom_notification_with_global_variable_api:
+      fields:
+      - wfaction
+      placeholders:
+      - unique_string
+      - custom_global_variable_group_name
+      - custom_global_variable_name
+      - custom_global_variable_group_name
+      - custom_global_variable_name
+      - user_id
+      - custom_productId
+      local_storage_keys_required:
+      - global_variable_group_name
+      - global_variable_name
+      - global_variable_group_name
+      - global_variable_name
+      - productId
+      purpose: ui_form
+    create_accesspoint_AskZia:
+      fields:
+      - asset
+      placeholders:
+      - user_email_id
+      local_storage_keys_required: []
+      purpose: api_preprocess
+actions_util_deep:
+- name: typeAndSelectOption
+  params: String value
+  locators_used:
+  - AssetLocators.Listview.OPTIONS_ELEMENT
+  - ClientFrameworkLocators.FormBuilderLocators.TYPE_DROPDOWN_SEARCH_INPUT
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.type
+  - actions.waitForAjaxComplete
+  - actions.click
+  line_count: 4
+- name: searchAndSelectProductTypeInAccordian
+  params: String name
+  locators_used:
+  - AssetAcknowledgementLocators.Listview.ACCORDIN_SEARCH
+  - AssetAcknowledgementLocators.Listview.ACKNOWLEDGMENT_IN_ACCORDIN_SEARCH
+  - AssetLocators.Listview.INPUT_ACCORDION_SEARCH
+  - AssetLocators.Listview.SPAN_ACCORDION_SEARCH_RESULT
+  - AssetLocators.Listview.SPAN_ACCORDION_SEARCH_RESULT1
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.type
+  - actions.waitForAnElementToAppear
+  - actions.click
+  line_count: 10
+- name: clickAndSelectFromRowActions
+  params: String entityId, String actionName
+  locators_used:
+  - AssetLocators.Listview.CLICK_ROW_ACTIONS_WITH_ENTITYID
+  - AssetLocators.Listview.ROW_ACTIONS_LIST
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 2
+- name: clickFirstRowActionIcon
+  params: (none)
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain: []
+  line_count: 1
+- name: clickNthRowActionsIcon
+  params: String n
+  locators_used:
+  - PurchaseOrderLocators.ICON_ROWACTION.apply
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 1
+- name: getFieldValueFromFirstRow
+  params: String field
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain: []
+  line_count: 2
+- name: getFieldValueFromRow
+  params: String field, String row
+  locators_used:
+  - SoftwareLocators.Listview.GET_TABLE_COLUMN_VALUE_FROM_ROW
+  - SoftwareLocators.Listview.TABLE_HEADING_NAME
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.isElementPresent
+  - actions.getAttribute
+  - actions.getAllElements
+  line_count: 14
+- name: checkfunctionalityofcancelbuttoninActionstype
+  params: String actionsName
+  locators_used:
+  - AssetLocators.Listview.CHECKBOX_USING_VIRTUALHOSTNAME
+  - AssetLocators.Listview.SELECT_LISTVIEW_GLOBAL_ACTIONS
+  local_storage_reads:
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.listView.columnSearch
+  - actions.click
+  - actions.clickByNameSpan
+  - actions.click
+  - actions.clickByName
+  line_count: 5
+- name: checkfunctionalityofcancelbuttoninActionsParticulartype
+  params: String actionsName
+  locators_used:
+  - AssetLocators.Listview.ACTIONS_SEARCHBOX
+  - AssetLocators.Listview.CHECKBOX_USING_VIRTUALHOSTNAME
+  local_storage_reads:
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.listView.columnSearch
+  - actions.click
+  - actions.clickByNameSpan
+  - actions.type
+  - actions.formBuilder.typeAndSelectOption
+  - actions.clickByName
+  line_count: 6
+- name: selectFilter
+  params: String option
+  locators_used:
+  - AssetLocators.Listview.BTN_ALL_FILTER
+  - AssetLocators.Listview.FILTERVALUE
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 3
+- name: getFieldValueFromDetailsPage
+  params: String field
+  locators_used:
+  - ClientFrameworkLocators.DetailsViewLocators.SPAN_DETAILS_FIELD_NAME
+  - ClientFrameworkLocators.DetailsViewLocators.SPAN_DETAILS_FIELD_VALUE
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.waitForAnElementToAppear
+  - actions.getAttribute
+  - actions.getText
+  line_count: 5
+- name: fillDateTimeFieldByLocator
+  params: Locator fieldLocator, Long value, Boolean isTimeField
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.isElementPresent
+  - actions.click
+  line_count: 3
+- name: modifyProduct
+  params: String entityId
+  locators_used:
+  - AssetLocators.Listview.ASSET_ACTIONS_TYPE_SELECT_DROPDOWN
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  - AssetLocators.Listview.SELECT_LISTVIEW_GLOBAL_ACTIONS
+  - AssetLocators.Listview.SELECT_ROW_USING_ENTITYID
+  local_storage_reads:
+  - AssetName
+  - AssetProductName
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.listView.columnSearch
+  - actions.click
+  - actions.formBuilder.fillSelectField
+  - actions.formBuilder.typeAndSelectOption
+  - actions.popUp.clickByName
+  - actions.clickByNameSpan
+  - actions.validate.successMessageInAlert
+  - actions.listView.columnSearch
+  line_count: 13
+- name: addfavoritesandCreateAssetinAssets
+  params: String assets, String assetstype
+  locators_used:
+  - AssetLocators.Detailview.ASSETS_CARDVIEW
+  - AssetLocators.Detailview.ASSETS_HEADING_IN_LHS_MENU_BAR
+  - AssetLocators.Detailview.OPEN_ASSETS_HEADING
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 3
+- name: addfavoritesandCreateAssetinAssetComponents
+  params: String assetcomponents, String assetstype
+  locators_used:
+  - AssetLocators.Detailview.ASSETS_COMPONENTS_CARDVIEW
+  - AssetLocators.Detailview.ASSETS_HEADING_IN_LHS_MENU_BAR
+  - AssetLocators.Detailview.OPEN_ASSETS_HEADING
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 3
+- name: addfavoritesandCreateAssetinConsumable
+  params: String consumableassetname, String assetstype
+  locators_used:
+  - AssetLocators.Detailview.ASSETS_CONSUMABLE_CARDVIEW
+  - AssetLocators.Detailview.ASSETS_HEADING_IN_LHS_MENU_BAR
+  - AssetLocators.Detailview.OPEN_ASSETS_HEADING
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  line_count: 3
+- name: modifystatusinDetailview
+  params: String productName, String assetApiname, String assetDisplayname
+  locators_used:
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.click
+  line_count: 4
+- name: configureDepreciationinDetailview
+  params: (none)
+  locators_used:
+  - AssetLocators.Detailview.DEPRECIATION_SCHEDULE
+  - AssetLocators.Detailview.DETAILVIEW_ACTIONS_LIST_DROPDOWN
+  - AssetLocators.Listview.CONFIGURE_DEPRECIATION_METHOD_DROPDOWN
+  - AssetLocators.Listview.POPUP_SEARCH_BOX
+  - AssetLocators.Listview.USEFUL_LIFE_IN_CONFIGURE_DEPRECIATION
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.clickByName
+  - actions.click
+  - actions.formBuilder.fillDateField
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.formBuilder.fillSelectField
+  - actions.type
+  - actions.popUp.clickByName
+  - actions.validate.successMessageInAlert
+  - actions.navigate.toSubTabInDetailsPage
+  line_count: 15
+- name: updateCredentialsinDetailview
+  params: String entityId
+  locators_used:
+  - AssetLocators.Detailview.DETAILVIEW_ACTIONS_LIST_DROPDOWN
+  - AssetLocators.Listview.ASSET_ACTIONS_TYPE_SELECT_DROPDOWN
+  local_storage_reads:
+  - credentialdisplayname
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toDetailsPageUsingRecordId
+  - actions.clickByName
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.clickByName
+  line_count: 8
+- name: validationForm
+  params: JSONObject inputData, JSONArray mandatoryfieldjsonarray, String assetName
+  locators_used:
+  - AssetLocators.Detailview.MANDATORY_FIELD
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.clickByName
+  - actions.isDisplayed
+  line_count: 13
+- name: configureDepreciationinListviewActions
+  params: String entityId
+  locators_used:
+  - AssetLocators.Detailview.DEPRECIATION_SCHEDULE
+  - AssetLocators.Detailview.GOBACK_BUTTON_LOCATOR
+  - AssetLocators.Listview.ACKNOWLEDGEMENT_BUTTON
+  - AssetLocators.Listview.CONFIGURE_DEPRECIATION_METHOD_DROPDOWN
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  - AssetLocators.Listview.POPUP_SEARCH_BOX
+  - AssetLocators.Listview.SELECT_LISTVIEW_GLOBAL_ACTIONS
+  - AssetLocators.Listview.SELECT_ROW_USING_ENTITYID
+  - AssetLocators.Listview.USEFUL_LIFE_IN_CONFIGURE_DEPRECIATION
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.clickByName
+  - actions.formBuilder.fillDateField
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.type
+  - actions.popUp.clickByName
+  - actions.validate.successMessageInAlert
+  - actions.navigate.toDetailsPageUsingRecordId
+  - actions.navigate.toSubTabInDetailsPage
+  - actions.click
+  line_count: 17
+- name: modifystatesinlistviewActions
+  params: String entityId, String assetStatus
+  locators_used:
+  - AssetLocators.Listview.ASSET_ACTIONS_TYPE_SELECT_DROPDOWN
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  - AssetLocators.Listview.SELECT_LISTVIEW_GLOBAL_ACTIONS
+  - AssetLocators.Listview.SELECT_ROW_USING_ENTITYID
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.popUp.clickByName
+  - actions.waitForAjaxComplete
+  line_count: 8
+- name: assigntoDeparmentorAssigntoSiteinListviewActions
+  params: String entityId, String departmentorSite, String departmentorSitePopup, String departmentNameorSiteName
+  locators_used:
+  - AssetLocators.Listview.ACKNOWLEDGEMENT_BUTTON
+  - AssetLocators.Listview.ASSET_ACTIONS_TYPE_SELECT_DROPDOWN
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  - AssetLocators.Listview.SELECT_LISTVIEW_GLOBAL_ACTIONS
+  - AssetLocators.Listview.SELECT_ROW_USING_ENTITYID
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.formBuilder.fillSelectField
+  - actions.click
+  - actions.waitForAjaxComplete
+  line_count: 8
+- name: bulkEditStatus
+  params: JSONObject tableSettingInputData, String toAssetStatus
+  locators_used:
+  - AssetLocators.Listview.ASSET_ACTIONS_TYPE_SELECT_DROPDOWN
+  - AssetLocators.Listview.CHECKBOX_USING_VIRTUALHOSTNAME
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  - AssetLocators.Listview.SEARCH_BUTTON_IN_LISTVIEW
+  - AssetLocators.Listview.SELECT_LISTVIEW_GLOBAL_ACTIONS
+  local_storage_reads:
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.listView.setTableSettings
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.clickByName
+  - actions.waitForAjaxComplete
+  - actions.validate.successMessageInAlert
+  - actions.listView.columnSearch
+  - actions.listView.getFieldValueFromFirstRow
+  - actions.validate.customAssert
+  - actions.click
+  line_count: 20
+- name: assetListviewValidation
+  params: (none)
+  locators_used:
+  - AssetLocators.Listview.CHECKBOX_USING_VIRTUALHOSTNAME
+  - AssetLocators.Listview.SEARCH_BUTTON_IN_LISTVIEW
+  local_storage_reads:
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.listView.columnSearch
+  - actions.isElementPresent
+  - actions.click
+  line_count: 10
+- name: assetTypesFilterinListview
+  params: String assetFilter
+  locators_used:
+  - AssetLocators.Listview.ASSET_TYPES_FILTER_IN_LISTVIEW
+  - AssetLocators.Listview.CREATED_ASSET_DATA_ROW_ID
+  - AssetLocators.Listview.SEARCH_BUTTON_IN_LISTVIEW
+  local_storage_reads:
+  - entityId
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.listView.columnSearch
+  - actions.isElementPresent
+  - actions.click
+  line_count: 13
+- name: changeVmPlatform
+  params: String vmplatformName
+  locators_used:
+  - AssetLocators.Detailview.SPOT_EDIT_IN_DETAILVIEW
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.clickByName
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.clickByName
+  - actions.validate.successMessageInAlert
+  line_count: 5
+- name: addRelationshipinRelationshipSubtab
+  params: String entityId, Boolean virtualHost, Boolean virtualMachine
+  locators_used: []
+  local_storage_reads:
+  - virtual_machine_name
+  - virtual_host_asset_display_name
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.listView.columnSearch
+  - actions.navigate.toDetailsPageUsingRecordId
+  - actions.detailsView.clickSubTab
+  line_count: 10
+- name: clickDetailsInRhsDetails
+  params: String iconName
+  locators_used:
+  - AssetLocators.Detailview.ICN_RHS_DETAILS
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.isDisplayed
+  - actions.click
+  line_count: 5
+- name: attachAssets
+  params: String entityId, JSONObject inputData, Boolean usingPlusSign, Boolean virtualHost, Boolean virtualMachine
+  locators_used:
+  - AssetLocators.Detailview.ADD_CONNECTED_AND_ATTACHED_ASSETS_USING_PLUS_SIGN_IN_RELATIONSHIPS_SUBTAB
+  - AssetLocators.Detailview.ADD_RELATIONSHIP_IN_RELATIONSHIP_SUBTAB
+  - AssetLocators.Detailview.ADD_RELATIONSHIP_LIST
+  - AssetLocators.Detailview.OPERATION_STATUS
+  - AssetLocators.Detailview.VIEW_DETAILS_OF_ADDED_ASSETS_IN_RELATIONSHIPS_SUBTAB
+  local_storage_reads:
+  - secondAssetName
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.formBuilder.fillMultiSelectField
+  - actions.popUp.clickByName
+  - actions.validate.successMessageInAlert
+  - actions.click
+  - actions.navigate.toSubTabInDetailsPage
+  - actions.isElementPresent
+  line_count: 15
+- name: cancelButtoninRelationshipSubtab
+  params: String typeofRelationshipAssets, String entityId, Boolean virtualHost, Boolean virtualMachine
+  locators_used:
+  - AssetLocators.Detailview.ADD_RELATIONSHIP_IN_RELATIONSHIP_SUBTAB
+  - AssetLocators.Detailview.ADD_RELATIONSHIP_LIST
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.clickByName
+  line_count: 4
+- name: connectAssets
+  params: String entityId, JSONObject inputData, Boolean virtualHost, Boolean virtualMachine
+  locators_used:
+  - AssetLocators.Detailview.ADD_RELATIONSHIP_IN_RELATIONSHIP_SUBTAB
+  - AssetLocators.Detailview.ADD_RELATIONSHIP_LIST
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.formBuilder.fillMultiSelectField
+  - actions.clickByName
+  - actions.validate.successMessageInAlert
+  line_count: 7
+- name: connectAssetsbyusingPlusSign
+  params: String entityId, JSONObject inputData, Boolean virtualHost, Boolean virtualMachine
+  locators_used:
+  - AssetLocators.Detailview.ADD_CONNECTED_AND_ATTACHED_ASSETS_USING_PLUS_SIGN_IN_RELATIONSHIPS_SUBTAB
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.formBuilder.fillMultiSelectField
+  - actions.clickByName
+  - actions.validate.successMessageInAlert
+  line_count: 6
+- name: connectBusinessServices
+  params: String entityId, JSONObject inputData, Boolean usingPlusSign, Boolean virtualHost, Boolean virtualMachine
+  locators_used:
+  - AssetLocators.Detailview.ADD_CONNECTED_AND_ATTACHED_ASSETS_USING_PLUS_SIGN_IN_RELATIONSHIPS_SUBTAB
+  - AssetLocators.Detailview.ADD_RELATIONSHIP_IN_RELATIONSHIP_SUBTAB
+  - AssetLocators.Detailview.ADD_RELATIONSHIP_LIST
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.formBuilder.fillMultiSelectField
+  - actions.popUp.clickByName
+  - actions.validate.successMessageInAlert
+  line_count: 13
+- name: assignorAssociateUser
+  params: String entityId, Boolean virtualHost, Boolean virtualMachine
+  locators_used:
+  - AssetLocators.Detailview.ADD_RELATIONSHIP_IN_RELATIONSHIP_SUBTAB
+  - AssetLocators.Detailview.ADD_RELATIONSHIP_LIST
+  - AssetLocators.Detailview.ASSIGNED_TO_USER_IN_RELATIONSHIP_SUBTAB
+  - AssetLocators.Detailview.OPERATION_STATUS
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.formBuilder.fillSelectField
+  - actions.popUp.clickByName
+  - actions.validate.successMessageInAlert
+  - actions.isElementPresent
+  - actions.navigate.toSubTabInDetailsPage
+  - actions.isElementPresent
+  line_count: 9
+- name: markasLoanablefromDetailview
+  params: String assetName, String entityId
+  locators_used:
+  - AssetLocators.Detailview.DETAILVIEW_ACTIONS_LIST_DROPDOWN
+  - AssetLocators.Detailview.GOBACK_BUTTON_LOCATOR
+  local_storage_reads:
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.listView.columnSearch
+  - actions.navigate.toDetailsPageUsingRecordId
+  - actions.clickByName
+  - actions.click
+  - actions.validate.successMessageInAlert
+  - actions.click
+  - actions.listView.columnSearch
+  line_count: 10
+- name: markasLoanablefromListview
+  params: String assetName
+  locators_used:
+  - AssetLocators.Listview.CHECKBOX_USING_VIRTUALHOSTNAME
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  - AssetLocators.Listview.SELECT_LISTVIEW_GLOBAL_ACTIONS
+  local_storage_reads:
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.listView.columnSearch
+  - actions.click
+  - actions.validate.successMessageInAlert
+  - actions.listView.columnSearch
+  line_count: 9
+- name: isColumnSelected
+  params: String column
+  locators_used:
+  - ClientFrameworkLocators.ColumnChooserLocators.IS_COLUMN_CHOSEN
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.isElementPresent
+  line_count: 7
+- name: columnChooser
+  params: JSONObject inputData, String datapath
+  locators_used:
+  - ClientFrameworkLocators.ColumnChooserLocators.CHK_COLUMN_CHOOSE
+  - ClientFrameworkLocators.ColumnChooserLocators.ICN_COLUMNCHOOSE
+  - ClientFrameworkLocators.ColumnChooserLocators.TXT_SEARCHCOLUMN
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.executeScript
+  - actions.type
+  - actions.click
+  - actions.clickByNameInput
+  line_count: 17
+- name: bulkEditfromListview
+  params: JSONObject inputData, String assetName, JSONObject tablesetting
+  locators_used:
+  - AssetLocators.Listview.CHECKBOX_USING_VIRTUALHOSTNAME
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  local_storage_reads:
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.listView.setTableSettings
+  - actions.click
+  - actions.popUp.formBuilder.fillInputForAnEntity
+  - actions.clickByName
+  - actions.validate.successMessageInAlert
+  line_count: 18
+- name: gotoHardwareSubtabinAsset
+  params: String entityId, String assetName, String createdAssetName
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.refreshPage
+  - actions.listView.columnSearch
+  - actions.navigate.toDetailsPageUsingRecordId
+  - actions.navigate.toSubTabInDetailsPage
+  line_count: 6
+- name: verifyAjaxMessage
+  params: String text
+  locators_used:
+  - AssetLocators.Listview.ASSET_AJAX_POPUP_MESSAGE
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.validate.textContent
+  line_count: 2
+- name: createAsset
+  params: JSONObject assetInputData, String producttype
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes:
+  - assetId
+  action_chain: []
+  line_count: 7
+- name: createSiteandDepartment
+  params: TestCaseData departmentInputData
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes:
+  - departmentName
+  - siteName
+  - departmentId
+  action_chain:
+  - actions.createGroup
+  line_count: 8
+- name: createProductAndGoToAssetForm
+  params: TestCaseData testCasedata, String productApiName, String assetDisplayName
+  locators_used:
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.click
+  line_count: 7
+- name: createAssetInUI
+  params: TestCaseData testCasedata, String productApiName, String assetDisplayName
+  locators_used:
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  local_storage_reads: []
+  local_storage_writes:
+  - AssetName
+  action_chain:
+  - actions.navigate.toModule
+  - actions.click
+  - actions.formBuilder.fillInputForAnEntity
+  line_count: 9
+- name: editAssetinUI
+  params: TestCaseData testCasedata, String assetDisplayName, String entityId
+  locators_used: []
+  local_storage_reads:
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.listView.columnSearch
+  - actions.navigate.toDetailsPageUsingRecordId
+  - actions.navigate.toGlobalActionInDetailsPage
+  line_count: 10
+- name: deleteAssetinUI
+  params: String assetDisplayName, String entityId, String assetName
+  locators_used:
+  - AssetLocators.Listview.EMPTY_ASSET_TABLE_TEXT
+  - AssetLocators.Listview.ICON_CLEAR_SEARCH
+  - AssetLocators.Listview.ROW_ACTIONS_LIST
+  local_storage_reads:
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.listView.columnSearch
+  - actions.click
+  - actions.clickByNameSpan
+  - actions.validate.successMessageInAlert
+  - actions.isDisplayed
+  - actions.click
+  - actions.listView.columnSearch
+  - actions.isDisplayed
+  line_count: 22
+- name: gotoAssetDetailview
+  params: String assetDisplayName, String entityId
+  locators_used: []
+  local_storage_reads:
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.listView.selectFilter
+  - actions.listView.columnSearch
+  - actions.navigate.toDetailsPageUsingRecordId
+  line_count: 6
+- name: clickSpotEditField
+  params: String sectionName, String field
+  locators_used:
+  - AssetLocators.Detailview.SPOT_EDIT
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.waitForAjaxComplete
+  - actions.click
+  line_count: 2
+- name: assginUserFromListview
+  params: String assetName
+  locators_used:
+  - AssetLocators.Listview.ASSIGN_USERS_BUTTON_IN_LISTVIEW_POPUP
+  - AssetLocators.Listview.ASSIGN_USERS_IN_LISTVIEW
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  local_storage_reads:
+  - asset
+  - name
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.click
+  - actions.popUp.listView.columnSearch
+  - actions.clickByName
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.click
+  - actions.validate.successMessageInAlert
+  - actions.listView.isColumnSelected
+  line_count: 12
+- name: setCustomFilterCriteriaforDynamicGroup
+  params: JSONArray criteriaData
+  locators_used:
+  - AssetLocators.Listview.CONDITION_IN_DYNAMICGROUP
+  - AssetLocators.Listview.CUSTOM_VIEW_CRITERIA
+  - AssetLocators.Listview.DEMO
+  - AssetLocators.Listview.TXT_CRITERIA_VALUE
+  - ClientFrameworkLocators.FormBuilderLocators.CLICK_SUB_FIELD_ARROW
+  - ClientFrameworkLocators.FormBuilderLocators.CRITERIA_LIST
+  - ClientFrameworkLocators.FormBuilderLocators.DIV_CRITERIA_VALUE
+  - ClientFrameworkLocators.FormBuilderLocators.ICN_ADD
+  - ClientFrameworkLocators.FormBuilderLocators.OPTION_ELEMENT
+  - ClientFrameworkLocators.FormBuilderLocators.TYPE_DROPDOWN_SEARCH_INPUT
+  - TriggersLocators.Listview.DATE_CRITERIA_LOCATOR
+  - TriggersLocators.Listview.DECISION_BOX
+  - TriggersLocators.Listview.LOGICAL_OPERATOR
+  - TriggersLocators.Listview.LOOKUP_DYNAMIC_DROPDOWN
+  - TriggersLocators.Listview.LOOKUP_DYNAMIC_VALUE
+  - TriggersLocators.Listview.NUMERIC_CRITETRIA_LOCATOR
+  - TriggersLocators.Listview.OPTION_ELEMENT
+  - TriggersLocators.Listview.TEXTAREA_CRITERIA_LOCATOR
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.getAllElements
+  - actions.justClick
+  - actions.waitForAnElementToAppear
+  - actions.type
+  - actions.click
+  - actions.waitForAnElementToAppear
+  - actions.type
+  - actions.click
+  - actions.waitForAnElementToAppear
+  line_count: 76
+- name: globalSearchViaDashboard
+  params: String searchValue, String subModuleType, String module
+  locators_used:
+  - AssetLocators.Listview.GLOBALSEARCHICON
+  - AssetLocators.Listview.GOLBAL_SEARCH_BOX
+  - AssetLocators.SELECT_MODULE_IN_GLOBALSEARCHBOX.apply
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.type
+  - actions.sendKeys
+  line_count: 7
+- name: createAssetAudit
+  params: JSONObject auditData, String auditType
+  locators_used:
+  - AssetLocators.CommonLocators.INTERNAL_NAME
+  - ClientFrameworkLocators.FormBuilderLocators.OPTION_ELEMENT
+  local_storage_reads: []
+  local_storage_writes:
+  - auditName
+  action_chain:
+  - actions.navigate.toModule
+  - actions.clickByName
+  - actions.click
+  - actions.formBuilder.fillInputForAnEntity
+  - actions.clickByName
+  line_count: 9
+- name: selectcolumninTableSetting
+  params: JSONObject data, String apipath, String subTabName
+  locators_used:
+  - AssetLocators.Listview.COLUMN_CHOOSER_ARROW
+  - AssetLocators.Listview.IS_COLUMN_SELECTED
+  - AssetLocators.Listview.SEARCH_INPUT_IN_COLUMN_CHOOSER
+  - AssetLocators.Listview.SELECT_COLUMN_NAME
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.type
+  - actions.getAttribute
+  - actions.click
+  - actions.clickByNameInput
+  line_count: 11
+- name: createTaskLayoutAPI
+  params: TestCaseData testCase
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes:
+  - taskLayoutId
+  - taskLayoutName
+  action_chain: []
+  line_count: 5
+- name: navigateTo
+  params: String productType, String tableViewName, String listviewFilter, String entityID, String subTab
+  locators_used:
+  - ClientFrameworkLocators.ListViewLocators.BTN_ALL_FILTER
+  - ProblemLocators.Listview.ICN_LISTVIEW
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.validate.textContent
+  - actions.listView.selectFilter
+  - actions.click
+  - actions.navigate.toDetailsPageUsingRecordId
+  - actions.navigate.toSubTabInDetailsPage
+  line_count: 12
+- name: modifyStateinDetailPage
+  params: String assetState, String currentusername
+  locators_used:
+  - AssetLocators.Detailview.ASSET_STATE_HISTORY_COMMENTS_DETAILS
+  - AssetLocators.Detailview.ASSET_STATE_IN_DETAILS
+  - AssetLocators.Detailview.ASSET_STATE_RHS
+  - AssetLocators.Detailview.STATE_HISTORY_COMMENTS
+  - AssetLocators.Listview.ASSET_ACTIONS_TYPE_SELECT_DROPDOWN
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.click
+  - actions.formBuilder.typeAndSelectOption
+  - actions.type
+  - actions.clickByName
+  - actions.waitForAjaxComplete
+  - actions.getText
+  line_count: 16
+- name: createProductFromAssetUI
+  params: boolean isClientFramework, Map<String, FieldDetails> fields, JSONObject productInputData
+  locators_used:
+  - AssetLocators.CommonLocators.TITLE
+  - AssetLocators.Detailview.SAVE_NEW_PRODUCT_FROM_ASSET
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.popUp.formBuilder.fillInputForAnEntity
+  - actions.click
+  line_count: 3
+- name: loadNewAssetCreationForm
+  params: String productTypeDisplayName
+  locators_used:
+  - AssetLocators.Listview.LISTVIEW_BUTTONS
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.click
+  line_count: 3
+- name: getAssetIdUsingName
+  params: String assetName
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain: []
+  line_count: 2
+- name: getSubModuleIdUsingProductTypeName
+  params: String productTypeName
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain: []
+  line_count: 2
+- name: generateNetworkIpAddress
+  params: (none)
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain: []
+  line_count: 1
+- name: importDataAction
+  params: String fileName, String moduleName
+  locators_used:
+  - AssetLocators.Detailview.FILE_INPUT
+  - ReleaseChecklistLocators.IMPORT_SELECT_MODULE.apply
+  - ReleaseChecklistLocators.LINK_COMMON.apply
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.sendKeys
+  - actions.click
+  line_count: 12
+- name: navigateToListView
+  params: String subModuleName
+  locators_used: []
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  line_count: 2
+- name: createCustomFilter
+  params: String subModuleName,JSONObject inputData
+  locators_used:
+  - ClientFrameworkLocators.FormBuilderLocators.CRITERIA_SAVE
+  - ClientFrameworkLocators.FormBuilderLocators.FILTER_NAME
+  - ClientFrameworkLocators.ListViewLocators.NEW_CUSTOM_VIEW
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.waitForAnElementToAppear
+  - actions.click
+  - actions.type
+  - actions.click
+  - actions.validate.successMessageInAlert
+  line_count: 9
+- name: updateCustomFilter
+  params: String subModuleName,String filterName,String filterId, JSONObject inputData
+  locators_used:
+  - ClientFrameworkLocators.FormBuilderLocators.CRITERIA_SAVE
+  - ClientFrameworkLocators.FormBuilderLocators.FILTER_NAME
+  - RequestLocators.Listview.CLICK_LISTVIEW_FILTERS
+  - RequestLocators.Listview.HOVERING_TAG
+  - RequestLocators.Listview.SEARCH_INPUT
+  - SoftwareLocators.Listview.CUSTOM_FILTER_EDIT_ICON
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.navigate.toModule
+  - actions.click
+  - actions.type
+  - actions.hoverElement
+  - actions.click
+  - actions.type
+  - actions.click
+  - actions.validate.successMessageInAlert
+  line_count: 11
+- name: deleteCustomFilter
+  params: String subModuleName,String filterName,String filterId
+  locators_used:
+  - RequestLocators.Listview.CLICK_LISTVIEW_FILTERS
+  - RequestLocators.Listview.HOVERING_TAG
+  - RequestLocators.Listview.SEARCH_INPUT
+  - SoftwareLocators.Listview.CUSTOM_FILTER_DELETE_ICON
+  local_storage_reads: []
+  local_storage_writes: []
+  action_chain:
+  - actions.click
+  - actions.type
+  - actions.hoverElement
+  - actions.click
+  - actions.validate.confirmationBoxTitleAndConfirmationText
+  - actions.clickByNameSpan
+  - actions.validate.successMessageInAlert
+  line_count: 8
+api_util_deep:
+- name: checkAndCreateProduct
+  params: String productType, String productName
+  api_paths: []
+  rest_methods_used:
+  - getDataUsingSearchCriteria
+  - getEntityIDUsingFieldValue
+  local_storage_writes:
+  - productID
+  - productName
+  local_storage_reads: []
+- name: createProductForProductType
+  params: String productType, String productName
+  api_paths: []
+  rest_methods_used:
+  - createAndGetAPIResponse
+  local_storage_writes:
+  - productID
+  - productName
+  local_storage_reads: []
+- name: checkAndCreateVHinVirtualMachine
+  params: String virtualHostname
+  api_paths: []
+  rest_methods_used:
+  - getDataUsingSearchCriteria
+  local_storage_writes: []
+  local_storage_reads: []
+- name: createVirtualHostforVirtualMachine
+  params: String virtualHostname
+  api_paths: []
+  rest_methods_used:
+  - createAndGetAPIResponse
+  local_storage_writes: []
+  local_storage_reads: []
+- name: createProduct
+  params: String productType
+  api_paths: []
+  rest_methods_used:
+  - createAndGetAPIResponse
+  local_storage_writes:
+  - productID
+  - productName
+  local_storage_reads: []
+- name: assignAsset
+  params: String inputData
+  api_paths:
+  - assets/
+  rest_methods_used:
+  - update
+  local_storage_writes: []
+  local_storage_reads:
+  - Asset_id
+- name: addAssetWithDepreciation
+  params: String inputData
+  api_paths:
+  - asset_access_points/
+  - assets/
+  - assets/*/_configure_depreciation
+  rest_methods_used:
+  - create
+  - get
+  local_storage_writes:
+  - currentCost
+  local_storage_reads:
+  - Asset_id
+- name: createAsset
+  params: JSONObject inputData, String producttype
+  api_paths:
+  - assets
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - Asset_Name
+  - Asset_id
+  local_storage_reads: []
+- name: addAssetWithCostFactor
+  params: String inputData, String costFactorName
+  api_paths:
+  - assets/
+  - assets/*/costs
+  - assets/*/costs/cost_factor
+  rest_methods_used:
+  - create
+  - getEntityIdUsingSearchCriteria
+  local_storage_writes:
+  - costFactorName
+  - costFactorId
+  local_storage_reads:
+  - Asset_id
+- name: createAssetFGA
+  params: String productType, User user
+  api_paths:
+  - fine_grained_access
+  rest_methods_used:
+  - create
+  local_storage_writes: []
+  local_storage_reads: []
+- name: getAssetModuleID
+  params: (none)
+  api_paths: []
+  rest_methods_used:
+  - getEntityIDUsingFieldValue
+  local_storage_writes:
+  - assetModuleId
+  local_storage_reads: []
+- name: getProductEntityId
+  params: String productName
+  api_paths: []
+  rest_methods_used:
+  - getEntityIDUsingFieldValue
+  local_storage_writes:
+  - productId
+  local_storage_reads: []
+- name: createMultipleAssets
+  params: String productType, String assetData, int noofAssets
+  api_paths:
+  - assets
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - assetCount
+  - assetName
+  - assetId
+  local_storage_reads: []
+- name: createAssetAudit
+  params: String auditType
+  api_paths:
+  - asset_audits
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - AuditName
+  - AuditId
+  - Description
+  local_storage_reads:
+  - auditId
+- name: getAuditTypeId
+  params: String auditType
+  api_paths:
+  - asset_audits/audit_type
+  rest_methods_used:
+  - getDataUsingSearchCriteria
+  local_storage_writes:
+  - auditId
+  local_storage_reads: []
+- name: editAssetState
+  params: JSONObject data, String entityId, String apiPath, String assetEntityName
+  api_paths: []
+  rest_methods_used:
+  - update
+  local_storage_writes: []
+  local_storage_reads: []
+- name: createCustomFilterAPI
+  params: String customFilterData, String productType
+  api_paths: []
+  rest_methods_used:
+  - createAndGetFullResponse
+  local_storage_writes:
+  - productTypeName
+  - customFilterId
+  - filterName
+  local_storage_reads: []
+- name: getAssetIDUsingName
+  params: String assetName
+  api_paths: []
+  rest_methods_used:
+  - getEntityIDUsingFieldValue
+  local_storage_writes: []
+  local_storage_reads: []
+- name: getAllAssetState
+  params: (none)
+  api_paths: []
+  rest_methods_used:
+  - get
+  local_storage_writes: []
+  local_storage_reads: []
+- name: createProduct
+  params: TestCaseData productdata
+  api_paths:
+  - products
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - productid
+  - productname
+  local_storage_reads: []
+- name: createAsset
+  params: JSONObject assetJson
+  api_paths: []
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - assetid
+  - assetname
+  local_storage_reads:
+  - asset
+- name: createAssetAPI
+  params: JSONObject assetData, String product
+  api_paths: []
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - assetid
+  - assetname
+  local_storage_reads:
+  - asset
+- name: addSoftwareToComputer
+  params: String assetId, String softwareId
+  api_paths:
+  - asset_computers/*/software
+  rest_methods_used:
+  - create
+  local_storage_writes:
+  - softwareInstallationId
+  local_storage_reads: []
+preprocess_deep:
+- group: edit_asset
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 1
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_virtualhosts
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_multiple_virtualhosts
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls: []
+  rest_direct_calls:
+  - createAndGetResponse
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - asset_virtual_host
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_virtualmachine
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_multiple_virtualmachine
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - AssetAPIUtil.checkAndCreateProduct
+  - AssetAPIUtil.checkAndCreateVHinVirtualMachine
+  rest_direct_calls:
+  - createAndGetResponse
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - asset_virtual_machine
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_mulitple_assets
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_asset_with_siteanddepartment
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls:
+  - getDataUsingSearchCriteria
+  local_storage_stores:
+  - key: customerID
+    source_type: computed
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_asset_and_modify_product
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: AssetName
+    source_type: computed
+  - key: AssetProductName
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - product
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_virtualhost_with_accesspoints_product
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - AssetAPIUtil.checkAndCreateProduct
+  rest_direct_calls:
+  - create
+  - createAndGetResponse
+  local_storage_stores:
+  - key: virtual_host_asset_display_name
+    source_type: computed
+  - key: virtual_host_entityid
+    source_type: api_response_field
+  - key: virtual_host_name
+    source_type: api_response_field
+  - key: AssetName
+    source_type: computed
+  - key: AssetProductName
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - asset_virtual_host
+  - product
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_virutalmachine_with_accesspoints_product
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - AssetAPIUtil.checkAndCreateProduct
+  - AssetAPIUtil.checkAndCreateVHinVirtualMachine
+  rest_direct_calls:
+  - create
+  - createAndGetResponse
+  local_storage_stores:
+  - key: virtual_machine_entity_id
+    source_type: api_response_field
+  - key: virtual_machine_name
+    source_type: api_response_field
+  - key: AssetName
+    source_type: computed
+  - key: AssetProductName
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - virtual_machine
+  - product
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_credential_library
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: credentialdisplayname
+    source_type: computed
+  - key: entityId_for_credential_library_asset
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - snmp_v3_credential
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_credential_library_in_virtualhosts
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: credentialdisplayname
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - snmp_v3_credential
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_credential_library_in_virtualmachine
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls:
+  - createAndGetResponse
+  local_storage_stores:
+  - key: credentialdisplayname
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - snmp_v3_credential
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_two_assets
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_asset_and_vendor
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls:
+  - PurchaseAPIUtil.createApiVendor
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Purchase.ApiVendor
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_virtualmachine_asset_and_vendor
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls:
+  - PurchaseAPIUtil.createApiVendor
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Purchase.ApiVendor
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_virtualhost_asset_and_vendor
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls:
+  - PurchaseAPIUtil.createApiVendor
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Purchase.ApiVendor
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_asset_and_product
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - AssetAPIUtil.createProduct
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Asset.Product
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_virtualmachine_asset_and_product
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - AssetAPIUtil.createProduct
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Asset.Product
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_virtualhost_asset_and_product
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  dataids_count: 1
+  api_util_calls:
+  - AssetAPIUtil.createProduct
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Asset.Product
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_multipleloanable_asset
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_mulitple_virtual_host_using_three_different_type_of_VmPlatform
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_accesspoint_and_keyboard_asset_for_components
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls:
+  - create
+  - createAndGetResponse
+  local_storage_stores:
+  - key: product
+    source_type: computed
+  - key: assetName
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - product
+  - getName
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_virtualhost_and_accesspoint_asset
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_virtualmachine_and_accesspoint_asset
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: asset_associated_with_change
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 1
+  - 2
+  dataids_count: 2
+  api_util_calls: []
+  rest_direct_calls:
+  - createAndGetFullResponse
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - changes
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_server_and_virtualHost_asset
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 3
+  dataids_count: 3
+  api_util_calls:
+  - AssetAPIUtil.checkAndCreateProduct
+  rest_direct_calls:
+  - createAndGetResponse
+  local_storage_stores:
+  - key: virtual_host_asset_display_name
+    source_type: computed
+  - key: virtual_host_entityid
+    source_type: api_response_field
+  - key: virtual_host_name
+    source_type: api_response_field
+  - key: createdVmWareVmPlatform
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - virtual_host
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_virtualhost_and_virtualmachine
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_smartphone
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - AssetAPIUtil.checkAndCreateProduct
+  rest_direct_calls:
+  - create
+  local_storage_stores:
+  - key: name
+    source_type: hardcoded
+  - key: mac_address
+    source_type: hardcoded
+  - key: network
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - mobile
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: createDepartwithUser
+  source_file: AssetBase.java
+  dataids_consumed: []
+  dataids_count: 0
+  api_util_calls: []
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: customfilterAPI
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - AssetAPIUtil.createCustomFilterAPI
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created:
+  - Asset.CustomFilterAPI
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: customfilterAPIWithRegion
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - AssetAPIUtil.createCustomFilterAPI
+  - ServiceCategoryAPIUtil.createMultipleServiceCategoryViaAPI
+  rest_direct_calls:
+  - createAndGetFullResponse
+  local_storage_stores:
+  - key: regionName
+    source_type: computed
+  - key: tempId
+    source_type: computed
+  - key: Template_Name
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - request_templates
+  - Asset.CustomFilterAPI
+  - ServiceCategory.MultipleServiceCategoryViaAPI
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_smartphone_with_life_cycle
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - AssetAPIUtil.checkAndCreateProduct
+  rest_direct_calls:
+  - create
+  - update
+  local_storage_stores:
+  - key: name
+    source_type: computed
+  local_storage_reads: []
+  entities_created:
+  - ModuleConstants
+  - mobile
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_product
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  dataids_count: 2
+  api_util_calls:
+  - AssetAPIUtil.checkAndCreateProduct
+  rest_direct_calls: []
+  local_storage_stores: []
+  local_storage_reads: []
+  entities_created: []
+  creates_user: false
+  user_role: null
+  calls_super: false
+- group: create_computer
+  source_file: AssetBase.java
+  dataids_consumed:
+  - 0
+  - 1
+  - 2
+  dataids_count: 3
+  api_util_calls:
+  - AssetAPIUtil.checkAndCreateProduct
+  - AssetAPIUtil.createAsset
+  rest_direct_calls: []
+  local_storage_stores:
+  - key: asset
+    source_type: computed
+  - key: service_tag_computer
+    source_type: hardcoded
+  - key: service_pack_computer
+    source_type: hardcoded
+  local_storage_reads: []
+  entities_created:
+  - Asset.Asset
+  creates_user: false
+  user_role: null
+  calls_super: false
