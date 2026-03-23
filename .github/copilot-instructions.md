@@ -505,6 +505,12 @@ find $PROJECT_NAME/src -path "*modules/<module>/<entity>*" -name "*.java"
 > XLSX/XLS files are auto-converted to CSV by the test-generator agent before processing.
 > These contain manual test case IDs used directly as `@AutomaterScenario(id)`.
 > Template: `docs/templates/usecase_template.csv`
+>
+> **Feature documents** (`feature_*.md`) can also be placed in `$PROJECT_NAME/Testcase/` alongside
+> the use-case CSV. These provide product knowledge (UI flows, API endpoints, business rules,
+> edge cases) that the test-generator loads as context before generating code — leading to
+> significantly more accurate tests on the first pass.
+> Template: `docs/templates/feature_document_template.md`
 
 #### Use-Case Document Column Definitions
 

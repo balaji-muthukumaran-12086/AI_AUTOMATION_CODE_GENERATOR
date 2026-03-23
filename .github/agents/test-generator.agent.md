@@ -157,6 +157,18 @@ fi
 USECASE_COUNT=$(find "$PROJECT/Testcase" -maxdepth 1 -type f \( -name "*.csv" -o -name "*.xls" -o -name "*.xlsx" -o -name "*.md" -o -name "*.txt" \) 2>/dev/null | wc -l)
 echo "Use-case documents in Testcase/: $USECASE_COUNT"
 ls "$PROJECT/Testcase/"*.{csv,xls,xlsx,md,txt} 2>/dev/null | head -20
+
+# Detect feature documents (naming convention: feature_*.md)
+FEATURE_DOCS=$(find "$PROJECT/Testcase" -maxdepth 1 -type f -name "feature_*.md" 2>/dev/null)
+FEATURE_DOC_COUNT=$(echo "$FEATURE_DOCS" | grep -c . 2>/dev/null || echo 0)
+if [ "$FEATURE_DOC_COUNT" -gt 0 ]; then
+  echo "📖 Feature documents found: $FEATURE_DOC_COUNT"
+  echo "$FEATURE_DOCS" | while read f; do echo "  $(basename "$f")"; done
+else
+  echo "📖 No feature documents found (feature_*.md). Generation will proceed without product context."
+  echo "   Tip: Add a feature_*.md file to Testcase/ for better generation quality."
+  echo "   Template: docs/templates/feature_document_template.md"
+fi
 ```
 
 **Step 2 — Check input sources IN PRIORITY ORDER (first match wins):**
@@ -239,7 +251,7 @@ You also did not attach a document or type a specific scenario description.
 
 I cannot generate tests without input. Please do ONE of the following:
 
-1. **Upload a CSV** (recommended) — Place your use-case document in:
+1. **Upload a Use-Case CSV** (recommended) — Place your use-case document in:
    📁 `{TARGET_PROJECT}/Testcase/`
    Then re-invoke `@test-generator`.
 
@@ -248,6 +260,14 @@ I cannot generate tests without input. Please do ONE of the following:
 
    The use case can be in **any sheet** in the workbook — all sheets are processed.
    Only rows with `UI To-be-automated = Yes` are picked for automation.
+
+   📎 **Also upload a Feature Document** (strongly recommended) — Place a `feature_*.md` file
+   alongside the CSV in the same `Testcase/` folder. This gives me **product knowledge** about
+   the feature's UI flows, API endpoints, business rules, and edge cases — leading to significantly
+   better test code on the first pass.
+
+   Feature doc template: `docs/templates/feature_document_template.md`
+   Naming convention: `feature_<descriptive_name>.md` (e.g., `feature_linking_changes.md`)
 
 2. **Attach a file** — Drag a `.csv`, `.xlsx`, `.md`, or `.txt` file directly into this chat.
 
@@ -323,7 +343,47 @@ except Exception as e:
 
 If the file is already `.csv`, skip conversion and read it directly — a single `.csv` = one sheet.
 
-**After conversion, run use-case analysis** to understand the requirement inventory before generating:
+#### Step A0.5 — Load Feature Documents as Product Context (STRONGLY RECOMMENDED)
+
+Feature documents (`feature_*.md` files in `{TARGET_PROJECT}/Testcase/`) provide **product knowledge**
+that dramatically improves generation quality — accurate locators, correct API paths, valid business
+rules, and real UI flows instead of invented ones.
+
+**Scan for feature docs and load them into working context:**
+
+```bash
+PROJECT=$(.venv/bin/python -c "from config.project_config import PROJECT_NAME; print(PROJECT_NAME)")
+FEATURE_DOCS=$(find "$PROJECT/Testcase" -maxdepth 1 -type f -name "feature_*.md" 2>/dev/null)
+if [ -n "$FEATURE_DOCS" ]; then
+  echo "📖 Loading feature documents as product context..."
+  echo "$FEATURE_DOCS" | while read f; do echo "  ✓ $(basename "$f")"; done
+else
+  echo "📖 No feature documents found (feature_*.md in Testcase/)."
+  echo "   Generation will proceed, but may invent API paths or locators."
+  echo "   For better quality, add: feature_<name>.md (template: docs/templates/feature_document_template.md)"
+fi
+```
+
+**If feature docs are found, READ each one** using `read_file`. Extract and retain:
+1. **API Endpoints** → Use in `preProcess` groups and `*APIUtil.java` methods (prevents inventing API paths)
+2. **UI Flow steps** → Use in test method bodies and `*ActionsUtil.java` methods (correct click sequences)
+3. **Business Rules & Constraints** → Use for assertion logic and RBAC group setup
+4. **UI Elements / Locators** → Use in `*Locators.java` (real selectors, not guessed XPaths)
+5. **Edge Cases** → Inform which validation scenarios to generate
+
+> **This step prevents the #1 generation failure mode**: inventing API paths, locators, and UI flows
+> that don't exist in the product. With a feature doc, the generator has verified product knowledge.
+
+> **Feature docs are NOT use-case input** — they don't replace the CSV. They are **supplementary
+> product knowledge** that makes the CSV-driven generation more accurate. The CSV still controls
+> WHAT to generate; the feature doc controls HOW to generate it correctly.
+
+**Naming convention**: `feature_<descriptive_name>.md` (e.g., `feature_linking_changes.md`,
+`feature_solution_approval.md`). Template: `docs/templates/feature_document_template.md`
+
+---
+
+**After conversion (and feature doc loading), run use-case analysis** to understand the requirement inventory before generating:
 ```bash
 .venv/bin/python generate_batch_summary.py --mode usecase-analysis
 ```
