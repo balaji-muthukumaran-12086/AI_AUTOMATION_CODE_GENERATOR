@@ -11,6 +11,13 @@ instructions:
   # OPTIMIZATION: framework_rules.md (~29K tokens) and framework_knowledge.md (~25K tokens)
   # are NOT pre-loaded. Step 0 reads ONLY the chunks needed via framework_file_index.yaml.
   # This saves ~54K tokens — leaving ~125K for conversation instead of ~71K.
+  #
+  # SKILLS (loaded on-demand when VS Code detects relevant task context):
+  # - .github/skills/preprocess-patterns/SKILL.md — preProcess group patterns + examples
+  # - .github/skills/data-layer/SKILL.md — JSON format, loading methods, placeholders
+  # - .github/skills/locator-patterns/SKILL.md — XPath, Select2, popup locators
+  # - .github/skills/rbac-testing/SKILL.md — role-based access control test lifecycle
+  # - .github/skills/assertion-patterns/SKILL.md — anti-false-positive, report methods
 
 # ── VS Code 1.111: Agent Permissions ──
 # Controls what this agent can do without asking for confirmation.
@@ -1191,6 +1198,24 @@ ls -la "$BACKUP_DIR/src/" "$BACKUP_DIR/resources/" 2>/dev/null
 
 ## Code Generation Rules
 
+> **Prompt Templates Available**: Use these templates as structural guides when generating code.
+> They encode the framework's exact patterns and prevent common violations.
+>
+> | Template | Use when generating... |
+> |----------|------------------------|
+> | `#generate-scenario` | New `@AutomaterScenario` test method (annotation + method body) |
+> | `#generate-preprocess-group` | New `else-if` block in `preProcess()` |
+> | `#generate-data-entry` | New entry in `*_data.json` |
+> | `#generate-actionsutil-method` | New `public static` method in `*ActionsUtil.java` |
+> | `#generate-locator` | New locator constant in `*Locators.java` |
+> | `#generate-rbac-scenario` | RBAC test (role user creation + session switch + test) |
+>
+> **Skills Auto-Loaded**: VS Code loads relevant SKILL.md files based on task context.
+> These provide few-shot examples from REAL production code (Change, Solution modules).
+> If generating preProcess code → `preprocess-patterns` skill provides correct/incorrect examples.
+> If generating data entries → `data-layer` skill shows JSON format with real data.
+> If generating RBAC tests → `rbac-testing` skill shows the full 3-phase lifecycle.
+
 ### @AutomaterScenario — Always Include All 9 Fields
 
 The `owner` field uses `{OWNER}` resolved in **Step 0.1** (before generation starts).
@@ -1296,6 +1321,42 @@ Replace `<module>`, `<entity>`, `<Entity>` with the actual values for the genera
 Also include any other files you edited (DataConstants, ActionsUtil, APIUtil, etc.).
 
 If compile **fails**: show the errors, fix them, and recompile before proceeding.
+
+### Step P1.4 — Self-Verification Checklist (Semantic Review)
+
+> **Purpose**: Catch SEMANTIC rule violations that regex/static analysis cannot detect.
+> Review your own generated code against this checklist. For ANY failure, fix and re-check.
+
+**Run this mental checklist against EVERY generated file BEFORE proceeding:**
+
+**Annotation rules:**
+- [ ] All 9 `@AutomaterScenario` fields present? (`id`, `group`, `priority`, `dataIds`, `tags`, `description`, `owner`, `runType`, `switchOn`)
+- [ ] `runType = ScenarioRunType.USER_BASED` explicitly set? (default PORTAL_BASED is wrong 95% of the time)
+- [ ] `group` value matches an EXISTING preProcess group? (verified against Step 1.5 inventory)
+- [ ] `group` is the MINIMAL group for this method's data needs? (D2 — not heavier than needed)
+
+**Data layer rules:**
+- [ ] All data loaded from `*_data.json`? (no `new JSONObject().put(...)` chains for entity creation)
+- [ ] Test method uses `getTestCaseData(DataConstants.X)` — not raw string?
+- [ ] preProcess uses `getTestCaseDataUsingCaseId(dataIds[N])` — not DataUtil.getTestCaseDataUsingFilePath?
+- [ ] New `*_data.json` entries use `{"data": {...}}` wrapper?
+- [ ] Lookup fields use `{"name": "Value"}` format — not flat strings?
+
+**Test method rules:**
+- [ ] ZERO `restAPI.*` or `*APIUtil.*` calls in test method body? (API = preProcess only)
+- [ ] All multi-step UI actions delegate to ActionsUtil methods? (no inline `actions.click` sequences)
+- [ ] Every negative assertion (`!isElementPresent`) preceded by a positive anchor? (D23)
+- [ ] `report.startMethodFlowInStepsToReproduce` / `endMethodFlowInStepsToReproduce` wrapping present?
+
+**preProcess rules:**
+- [ ] `catch` blocks use `addFailureReport()` — not silent `return false`? (D16)
+- [ ] No new `else-if` block when an existing group already creates the same entity? (D3)
+
+**Locator rules:**
+- [ ] All locators defined in `*Locators.java` — none hardcoded in Base files? (D18)
+- [ ] Exact-match buttons use `normalize-space(text())='X'` — not `contains(text(),'X')`?
+
+**If any item fails**: fix the generated code immediately, then re-run this checklist. Do NOT proceed to P1.5 with known violations.
 
 ### Step P1.5 — Validate Generated Code Quality (Static Review)
 

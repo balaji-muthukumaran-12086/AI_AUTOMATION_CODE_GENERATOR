@@ -6,6 +6,10 @@ argument-hint: "Describe the test failure (e.g., 'SDPOD_AUTO_CH_LV_001 fails wit
 instructions:
   - config/critical_rules_digest.md
   - .github/instructions/java-test-conventions.instructions.md
+  # SKILLS (loaded on-demand by VS Code):
+  # - .github/skills/locator-patterns/SKILL.md — XPath fixes, Select2, popup locators
+  # - .github/skills/assertion-patterns/SKILL.md — anti-false-positive, report methods
+  # - .github/skills/data-layer/SKILL.md — JSON format, loading context rules
 
 # ── VS Code 1.111: Agent Permissions ──
 # Debugger needs browser access (MCP) and file edits for locator fixes.
