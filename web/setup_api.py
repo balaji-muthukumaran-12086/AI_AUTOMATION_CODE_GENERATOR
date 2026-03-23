@@ -386,6 +386,30 @@ def _execute_setup(setup_id: str, req: SetupRequest):
             else:
                 _log(setup_id, "Use-case analysis complete", "success")
 
+        # ── Step 3d: Feature document upload (optional — always prompt) ─
+        # Always prompt user to optionally upload feature docs for product knowledge
+        if mode != "reconfigure":
+            feat_doc_dir = project_dir / "Testcase" / "Feature_Document"
+            feat_doc_dir.mkdir(parents=True, exist_ok=True)
+
+            state = _setups[setup_id]
+            state["featuredoc_upload_resolved"] = threading.Event()
+            state["featuredoc_files"] = []
+
+            _push(setup_id, "featuredoc_upload_prompt", {
+                "project_name": project_name,
+            })
+
+            _log(setup_id, "Waiting for optional feature document upload...", "info")
+            resolved = state["featuredoc_upload_resolved"].wait(timeout=300)
+            if resolved and state.get("featuredoc_files"):
+                uploaded = state["featuredoc_files"]
+                _log(setup_id, f"Feature doc(s) uploaded: {', '.join(uploaded)}", "success")
+            elif resolved and state.get("featuredoc_skipped"):
+                _log(setup_id, "Feature document upload skipped", "info")
+            else:
+                _log(setup_id, "Feature document upload timed out — continuing", "info")
+
         # ── Step 4: Owner selection ──────────────────────────────────────
         hg_username = req.hg_username or ""
         auto_owner = _auto_resolve_owner(hg_username) if hg_username else None
@@ -877,6 +901,60 @@ async def skip_usecase_upload(data: dict):
 
     state["usecase_skipped"] = True
     evt = state.get("usecase_upload_resolved")
+    if evt:
+        evt.set()
+    return {"ok": True}
+
+
+@router.post("/upload-featuredoc")
+async def upload_featuredoc(
+    setup_id: str = Form(...),
+    project_name: str = Form(...),
+    files: list[UploadFile] = File(...),
+):
+    """Receive feature document uploads, save to Testcase/Feature_Document/."""
+    # Validate project_name — prevent path traversal
+    safe_name = re.sub(r'[^a-zA-Z0-9_\-]', '', project_name)
+    if safe_name != project_name:
+        raise HTTPException(400, "Invalid project name")
+
+    feat_doc_dir = WORKSPACE_DIR / project_name / "Testcase" / "Feature_Document"
+    feat_doc_dir.mkdir(parents=True, exist_ok=True)
+
+    allowed_exts = {".pdf", ".docx", ".doc", ".md", ".txt"}
+    saved_files = []
+
+    for f in files:
+        ext = Path(f.filename).suffix.lower()
+        if ext not in allowed_exts:
+            continue
+        safe_filename = re.sub(r'[^a-zA-Z0-9_\-\.]', '_', f.filename)
+        dest = feat_doc_dir / safe_filename
+        content = await f.read()
+        dest.write_bytes(content)
+        saved_files.append(safe_filename)
+
+    # Signal the setup thread that files are uploaded
+    state = _setups.get(setup_id)
+    if state:
+        state["featuredoc_files"] = saved_files
+        evt = state.get("featuredoc_upload_resolved")
+        if evt:
+            evt.set()
+
+    return {"ok": True, "files": saved_files}
+
+
+@router.post("/skip-featuredoc-upload")
+async def skip_featuredoc_upload(data: dict):
+    """User chose to skip feature doc upload — unblock the setup thread."""
+    setup_id = data.get("setup_id", "")
+    state = _setups.get(setup_id)
+    if not state:
+        raise HTTPException(404, "Setup not found")
+
+    state["featuredoc_skipped"] = True
+    evt = state.get("featuredoc_upload_resolved")
     if evt:
         evt.set()
     return {"ok": True}

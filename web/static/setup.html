@@ -456,6 +456,35 @@
       </div>
     </div>
   </div>
+
+  <!-- ── Feature Document Upload Modal ────────────────────── -->
+  <div class="modal-overlay" id="featuredoc-upload-modal">
+    <div class="modal" style="width:520px;">
+      <h3>📖 Upload Feature Document (Optional)</h3>
+      <p style="color:var(--text-dim);font-size:13px;margin-bottom:14px;">
+        Upload a feature document with product knowledge — UI flows, API endpoints,
+        business rules. This helps the AI generate more accurate test code.<br>
+        Placed in <code style="color:var(--yellow);">Testcase/Feature_Document/</code>
+      </p>
+      <div class="dropzone" id="featuredoc-dropzone"
+           onclick="document.getElementById('featuredoc-file-input').click()"
+           ondragover="event.preventDefault(); this.classList.add('dragover')"
+           ondragleave="this.classList.remove('dragover')"
+           ondrop="handleFeaturedocDrop(event)">
+        <div class="dz-icon">📖</div>
+        <div class="dz-text"><strong>Click to browse</strong> or drag & drop a feature document</div>
+        <div class="dz-text" style="font-size:11px;margin-top:4px;">Accepted: .pdf, .docx, .doc, .md, .txt</div>
+      </div>
+      <input type="file" id="featuredoc-file-input" accept=".pdf,.docx,.doc,.md,.txt" style="display:none"
+             onchange="handleFeaturedocFileSelect(this.files)" />
+      <div class="file-list" id="featuredoc-file-list"></div>
+      <div id="featuredoc-upload-err" style="color:var(--red);font-size:12px;margin-top:8px;display:none;"></div>
+      <div style="margin-top:14px;display:flex;gap:10px;">
+        <button class="btn btn-primary" id="featuredoc-upload-btn" onclick="submitFeaturedocUpload()">📤 Upload</button>
+        <button class="btn btn-secondary" onclick="skipFeaturedocUpload()">Skip</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -467,6 +496,7 @@ let allOwners = [];
 let setupStreamId = null;
 let usecaseProjectName = null;
 let usecaseFiles = [];  // File objects staged for upload
+let featuredocFiles = [];  // Feature doc File objects staged for upload
 
 // ── Password show/hide toggle ──────────────────────────────
 function togglePw(fieldId, btn) {
@@ -702,6 +732,9 @@ function streamSetupLogs(setupId) {
       showUsecaseUploadModal();
     } else if (msg.type === 'usecase_analysis_report') {
       showAnalysisReport(msg.data.filename, msg.data.content);
+    } else if (msg.type === 'featuredoc_upload_prompt') {
+      usecaseProjectName = msg.data.project_name;
+      showFeaturedocUploadModal();
     } else if (msg.type === 'hg_prompt') {
       appendLog('⚠️ Hg clone requires authentication.', 'info');
     }
@@ -987,6 +1020,94 @@ async function skipUsecaseUpload() {
   appendLog('Use-case upload skipped', 'info');
   try {
     await fetch('/api/setup/skip-usecase-upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ setup_id: setupStreamId }),
+    });
+  } catch (e) { /* non-fatal */ }
+}
+
+// ── Feature Document Upload Modal ──────────────────────────
+function showFeaturedocUploadModal() {
+  featuredocFiles = [];
+  renderFeaturedocFileList();
+  document.getElementById('featuredoc-file-input').value = '';
+  document.getElementById('featuredoc-upload-err').style.display = 'none';
+  document.getElementById('featuredoc-upload-modal').classList.add('visible');
+}
+
+function handleFeaturedocDrop(event) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('dragover');
+  if (event.dataTransfer.files) addFeaturedocFiles(event.dataTransfer.files);
+}
+
+function handleFeaturedocFileSelect(fileList) { addFeaturedocFiles(fileList); }
+
+function addFeaturedocFiles(fileList) {
+  const allowed = ['.pdf', '.docx', '.doc', '.md', '.txt'];
+  for (const f of fileList) {
+    const ext = f.name.substring(f.name.lastIndexOf('.')).toLowerCase();
+    if (allowed.includes(ext) && !featuredocFiles.some(ff => ff.name === f.name)) {
+      featuredocFiles.push(f);
+    }
+  }
+  renderFeaturedocFileList();
+}
+
+function removeFeaturedocFile(index) {
+  featuredocFiles.splice(index, 1);
+  renderFeaturedocFileList();
+}
+
+function renderFeaturedocFileList() {
+  const list = document.getElementById('featuredoc-file-list');
+  if (featuredocFiles.length === 0) { list.innerHTML = ''; return; }
+  list.innerHTML = featuredocFiles.map((f, i) =>
+    `<div class="file-item">
+       <span>📖 ${f.name} <span style="color:var(--text-dim)">(${(f.size / 1024).toFixed(1)} KB)</span></span>
+       <button class="remove-file" onclick="removeFeaturedocFile(${i})" title="Remove">✕</button>
+     </div>`
+  ).join('');
+}
+
+async function submitFeaturedocUpload() {
+  const errEl = document.getElementById('featuredoc-upload-err');
+  errEl.style.display = 'none';
+  if (featuredocFiles.length === 0) {
+    errEl.textContent = 'Please select at least one file';
+    errEl.style.display = 'block';
+    return;
+  }
+  const btn = document.getElementById('featuredoc-upload-btn');
+  btn.disabled = true; btn.textContent = '⏳ Uploading...';
+  const formData = new FormData();
+  formData.append('setup_id', setupStreamId);
+  formData.append('project_name', usecaseProjectName);
+  for (const f of featuredocFiles) formData.append('files', f);
+  try {
+    const resp = await fetch('/api/setup/upload-featuredoc', { method: 'POST', body: formData });
+    const data = await resp.json();
+    if (resp.ok && data.ok) {
+      document.getElementById('featuredoc-upload-modal').classList.remove('visible');
+      appendLog(`Uploaded ${data.files.length} feature doc(s): ${data.files.join(', ')}`, 'success');
+    } else {
+      errEl.textContent = data.detail || 'Upload failed';
+      errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Network error: ' + e.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = '📤 Upload';
+  }
+}
+
+async function skipFeaturedocUpload() {
+  document.getElementById('featuredoc-upload-modal').classList.remove('visible');
+  appendLog('Feature document upload skipped', 'info');
+  try {
+    await fetch('/api/setup/skip-featuredoc-upload', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ setup_id: setupStreamId }),
