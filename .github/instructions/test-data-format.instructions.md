@@ -46,6 +46,24 @@ Before creating any new entry:
 3. Check `*DataConstants.java` for declared `TestCaseData` constants
 4. **Reuse** an existing entry if it covers the same payload — only create new when field combination is genuinely different
 
+> **⚠️ `$(unique_string)` makes each load unique — NEVER create N near-identical entries for N entities.**
+> When preProcess needs to create multiple entities of the same type (e.g. 3 changes for linking tests),
+> call the same data entry N times with different LocalStorage key names — NOT N separate data entries.
+> `$(unique_string)` resolves to a new millisecond timestamp on every `getTestCaseDataUsingCaseId()` call,
+> guaranteeing unique titles/names automatically. Only the LocalStorage keys need to differ.
+>
+> ```java
+> // ✅ CORRECT — one data entry, called 3 times with different storage keys:
+> createChangeGetResponse(dataIds[0]);
+> createAndStoreChangeForLinking(dataIds[0], "parent_id", "parent_name", "parent_displayId");
+> createAndStoreChangeForLinking(dataIds[0], "child_id", "child_name", "child_displayId");
+>
+> // ❌ WRONG — 3 identical data entries differing only in title prefix:
+> // "api_create_first_change": { "data": { "title": "First $(unique_string)", ... } }
+> // "api_create_second_change": { "data": { "title": "Second $(unique_string)", ... } }
+> // "api_create_third_change": { "data": { "title": "Third $(unique_string)", ... } }
+> ```
+
 ## LocalStorage Pre-Seed (Preferred over Duplication)
 
 If a JSON entry has `$(custom_KEY)` placeholders, pre-seed `LocalStorage` before calling `getTestCaseData()`:

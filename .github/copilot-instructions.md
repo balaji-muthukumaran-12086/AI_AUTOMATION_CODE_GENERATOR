@@ -1027,6 +1027,14 @@ Before creating any new `*_data.json` entry or `DataConstants` constant:
 
 **Reuse** an existing entry if it covers the same entity creation payload. Only create new entries when the field combination is genuinely different.
 
+> **⚠️ `$(unique_string)` makes each load unique — NEVER create N near-identical entries for N entities.**
+> When preProcess needs to create multiple entities of the same type (e.g. 3 changes for linking),
+> call `getTestCaseDataUsingCaseId(dataIds[0])` or the APIUtil method N times with different
+> LocalStorage key names — NOT N separate data entries with trivially different titles.
+> `$(unique_string)` resolves to a new millisecond timestamp on every load call, guaranteeing
+> unique titles automatically. Only the storage keys need to differ between calls.
+> Similarly, `dataIds = {...}` in `@AutomaterScenario` only needs ONE entry — not N copies of the same key.
+
 ### ⭐ LocalStorage pre-seed — customize existing JSON entries without duplicating them
 
 If a `*_data.json` entry has `$(custom_KEY)` placeholders, you can provide specific values
