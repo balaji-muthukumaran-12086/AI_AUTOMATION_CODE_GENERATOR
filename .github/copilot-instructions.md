@@ -22,27 +22,57 @@ This file provides the primary overview. For deeper coverage, **read these files
 
 ---
 
-## Agent Routing — NEVER delegate MCP-dependent agents to subagents
+## Agent Routing — Subagent Delegation Rules (Updated for VS Code 1.113)
 
-> **Critical platform limitation**: `runSubagent()` creates a sandboxed child context that
-> **cannot use MCP tools** (Playwright, etc.). MCP permissions are per-session and not inherited.
+> **VS Code 1.113 enables nested subagents** (`chat.subagents.allowInvocationsFromSubagents`).
+> Subagents can now invoke other subagents for multi-step workflows (e.g. `test-generator`
+> delegates to `Explore`, which could potentially chain further).
+>
+> **However, `runSubagent()` still creates a sandboxed child context that
+> cannot use MCP tools** (Playwright, etc.). MCP permissions are per-session and not inherited.
+> The nested subagent feature does NOT change this MCP limitation.
 >
 > When the user asks to run tests (`@test-runner`, "run batch", "run all tests"), **execute
 > the test-runner workflow DIRECTLY in the current chat session** — never via `runSubagent()`.
 > The current session has working MCP access; subagents do not.
 >
-> **Affected agents** (require MCP tools — must run inline):
+> **Affected agents** (require MCP tools — must run inline, NEVER via subagent):
 > - `test-runner` — needs Playwright MCP for UI diagnosis
 > - `test-debugger` — needs Playwright MCP for locator inspection
+> - `product-discovery` — needs Playwright MCP for live UI exploration
 >
-> **Safe to delegate via `runSubagent()`** (no MCP dependency):
-> - `test-generator` — only generates code, no browser needed
+> **Safe to delegate via `runSubagent()`** (no MCP dependency — may use nested subagents):
+> - `test-generator` — only generates code, no browser needed. Can chain to `Explore`.
 > - `setup-project` — hg clone and config, no browser needed
 > - `Explore` — read-only codebase search, no browser needed
+> - `context-optimizer` — token budget analysis, no browser needed
 
 When executing the test-runner workflow inline, follow the full workflow documented in
 `.github/agents/test-runner.agent.md` — resolve paths, bootstrap Playwright, compile,
 run each test, diagnose failures with `browser_snapshot`, fix, recompile, re-run.
+
+### Session Forking (VS Code 1.113)
+
+> Use **session forking** to branch conversations when exploring different debugging
+> strategies or generation approaches. Instead of starting a new chat:
+> - Fork from the current point to try an alternative fix while preserving context
+> - Fork before a risky self-healing attempt so you can return to the pre-fix state
+> - Fork a `@test-generator` session to try a different preProcess strategy
+>
+> Forking is supported in Copilot CLI (`github.copilot.chat.cli.forkSessions.enabled`)
+> and Claude agent sessions.
+
+### Thinking Effort Guidelines (VS Code 1.113)
+
+> The model picker now shows a **Thinking Effort** submenu (Low / Medium / High) for
+> reasoning models. Use this to balance speed vs. depth:
+>
+> | Task type | Recommended effort | Why |
+> |---|---|---|
+> | Quick codebase search, simple fixes | **Low** | Fast turnaround, minimal reasoning needed |
+> | Standard test generation, compilation | **Medium** | Good balance of speed and accuracy |
+> | Complex debugging, multi-entity preProcess, RBAC flows | **High** | Needs deep reasoning for correctness |
+> | Batch generation from CSV (many scenarios) | **Medium** | High would be too slow per scenario |
 
 ---
 

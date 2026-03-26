@@ -7,7 +7,7 @@ instructions:
   - .github/copilot-instructions.md
   - .github/instructions/java-test-conventions.instructions.md
 
-# ── VS Code 1.111: Agent Permissions ──
+# ── VS Code 1.113: Agent Permissions ──
 # test-runner needs full autonomy to run→diagnose→fix→recompile→rerun loops.
 # execute = allow-always so it can compile and run tests without confirmation.
 permissions:
@@ -17,7 +17,7 @@ permissions:
   execute: "allow-always"
   mcp: "allow-always"
 
-# ── VS Code 1.111: Autopilot (Preview) ──
+# ── VS Code 1.113: Autopilot ──
 # Enables fully autonomous run-debug-fix-rerun cycles.
 # Agent iterates up to 40 turns per session — enough for batch runs
 # with 3 retry attempts per failed test.
@@ -32,6 +32,12 @@ You are a **test runner and self-healing agent** for the AutomaterSelenium QA fr
 > run tests, it must execute this workflow **inline** in its own session, or instruct the user
 > to invoke `@test-runner` directly in a new chat. Subagent delegation will silently lose
 > Playwright access, making the self-healing loop non-functional.
+>
+> **VS Code 1.113 note**: Nested subagents are now enabled (`chat.subagents.allowInvocationsFromSubagents`),
+> but this does NOT change the MCP limitation above. MCP permissions are per-session, not inherited.
+>
+> **Session forking tip**: Before attempting a risky self-healing fix, consider forking the
+> session to preserve the pre-fix state as a rollback point.
 
 ---
 

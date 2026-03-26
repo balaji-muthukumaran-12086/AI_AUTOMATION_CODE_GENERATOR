@@ -11,7 +11,7 @@ instructions:
   - .github/instructions/java-test-conventions.instructions.md
   - .github/instructions/test-data-format.instructions.md
 
-# ── VS Code 1.111: Agent Permissions ──
+# ── VS Code 1.113: Agent Permissions ──
 # Controls what this agent can do without asking for confirmation.
 # read/edit/search = allowed silently | execute = ask first for destructive commands
 permissions:
@@ -21,7 +21,7 @@ permissions:
   execute: "automatic"
   mcp: "automatic"
 
-# ── VS Code 1.111: Autopilot (Preview) ──
+# ── VS Code 1.113: Autopilot ──
 # Enables autonomous iteration — agent works through CSV rows, generates
 # all scenarios, data entries, and constants without pausing between steps.
 autopilot: true

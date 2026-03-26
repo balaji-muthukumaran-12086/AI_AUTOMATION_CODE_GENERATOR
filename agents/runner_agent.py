@@ -106,6 +106,7 @@ _FQCN_OVERRIDES: Dict[str, str] = {
     "AdminReleaseWorkflow":        "com.zoho.automater.selenium.modules.admin.automation.workflows.ReleaseWorkflow",
     "AdminAssetWorkflow":          "com.zoho.automater.selenium.modules.admin.automation.workflows.AssetWorkflow",
     # Requests sub-entity versions
+    "IncidentRequestNotes":  "com.zoho.automater.selenium.modules.requests.request.IncidentRequestNotes",
     "RequestTask":           "com.zoho.automater.selenium.modules.requests.task.Task",
     "RequestWorklog":        "com.zoho.automater.selenium.modules.requests.worklog.Worklog",
     "RequestReminder":       "com.zoho.automater.selenium.modules.requests.reminder.Reminder",

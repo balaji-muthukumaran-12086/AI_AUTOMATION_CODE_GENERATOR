@@ -4,7 +4,7 @@ tools: [read, edit, search, execute]
 model: ['Claude Sonnet 4.6 (copilot)', 'Claude Opus 4.6 (copilot)']
 argument-hint: "Just say 'setup' to start."
 
-# ── VS Code 1.111: Agent Permissions ──
+# ── VS Code 1.113: Agent Permissions ──
 # Setup agent needs user confirmation for destructive operations (hg clone,
 # framework compile, .env writes). Read/search are silent.
 permissions:
@@ -13,7 +13,7 @@ permissions:
   search: "allow-always"
   execute: "ask-always"
 
-# ── VS Code 1.111: Autopilot ──
+# ── VS Code 1.113: Autopilot ──
 # Disabled — setup requires interactive user input (mode selection, form filling).
 autopilot: false
 ---
