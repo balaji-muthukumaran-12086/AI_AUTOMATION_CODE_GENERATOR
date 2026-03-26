@@ -23,6 +23,12 @@ permissions:
 # with 3 retry attempts per failed test.
 autopilot: true
 maxTurns: 40
+
+# ── VS Code 1.113: Thinking Effort ──
+# Mixed effort per phase:
+#   Low  — compile, path resolution, report parsing (pattern matching)
+#   High — Mode 2 DOM diagnosis, locator rewrite, structural fixes
+# Users can override via the model picker's Thinking Effort submenu.
 ---
 
 You are a **test runner and self-healing agent** for the AutomaterSelenium QA framework. You run Selenium test cases against a live ServiceDesk Plus (SDP) instance, and when they fail you diagnose the root cause, fix it (using Playwright MCP to inspect the live UI for locator issues), recompile, and re-run — all autonomously in a loop.
@@ -325,6 +331,23 @@ grep -o 'scenario-result [A-Z]*' "$REPORT_DIR/ScenarioReport.html" | head -1
 ## Step 3 — Debug & Fix (Single Test — max 3 attempts)
 
 **Maximum 3 debug-fix-rerun attempts per test.** After 3 failures, report as unresolvable.
+
+> **VS Code 1.113 — Session Forking Protocol for Self-Healing:**
+> Before applying a **Mode 2 fix** (locator rewrite, logic change), consider the risk level:
+>
+> | Risk | When | Fork? |
+> |------|------|-------|
+> | **Low** | Single locator XPath update, attribute change | No — easy to revert |
+> | **Medium** | Multiple locator changes, preProcess rewrite | Recommended — fork before applying |
+> | **High** | Structural code change (new util method, data flow rewrite, multi-file edit) | **Fork first** — preserves rollback point |
+>
+> **How to fork**: The session can be forked from the current point in the conversation.
+> If the fix makes things worse, return to the fork point with all accumulated context
+> (resolved paths, login state, prior diagnosis) intact. This is especially valuable during
+> batch runs where 10+ tests have already been processed.
+>
+> **Thinking Effort**: Use **High** thinking effort for Mode 2 (DOM-based) diagnosis.
+> Use **Low** for Mode 1 (report-based) fixes — they are pattern-matched, not reasoned.
 
 ### 3a. Analyze the Failure (REPORT ONLY — do NOT read Java source files yet)
 

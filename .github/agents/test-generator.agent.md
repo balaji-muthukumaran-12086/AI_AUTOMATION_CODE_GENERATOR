@@ -26,6 +26,11 @@ permissions:
 # all scenarios, data entries, and constants without pausing between steps.
 autopilot: true
 maxTurns: 30
+
+# ── VS Code 1.113: Thinking Effort ──
+# Recommended: Medium for standard batch generation (speed vs accuracy).
+#              High for complex preProcess designs or multi-entity RBAC flows.
+# Users can override via the model picker's Thinking Effort submenu.
 ---
 
 You are a **test generation specialist** for the AutomaterSelenium QA framework. You generate Java test scenarios for ServiceDesk Plus (SDP) following strict framework conventions.
@@ -719,6 +724,30 @@ Then list the util files:
 find "$PROJECT/src/com/zoho/automater/selenium/modules/<module>/<entity>/utils/" -name "*.java" | sort
 ```
 List every `public static` method in `*ActionsUtil.java` and `*APIUtil.java`.
+
+> **VS Code 1.113 optimization — Delegate to `Explore` subagent for deep codebase analysis:**
+> When the module has many existing files (10+ Java files, complex preProcess chains, or
+> unfamiliar entity structure), delegate the discovery phase to the `Explore` agent instead
+> of doing sequential file reads yourself. This frees your context budget for code generation.
+>
+> ```
+> Use Explore subagent when:
+> - The entity has 5+ util methods to catalog (ActionsUtil + APIUtil combined)
+> - You need to read preProcess() chains across parent + multiple subclasses
+> - You need to discover existing data entries, locators, AND field configs simultaneously
+>
+> Prompt template for Explore delegation:
+> "Thoroughly analyze the <entity> entity in <module> module:
+>  1. List ALL public static methods in *ActionsUtil.java and *APIUtil.java (name, params, purpose)
+>  2. List ALL preProcess groups in the parent class and any subclass overrides
+>  3. List ALL existing *_data.json keys with a one-line description
+>  4. List ALL DataConstants and AnnotationConstants entries
+>  5. Report which locator files exist and their approximate size
+>  Return a structured summary I can use for test generation planning."
+> ```
+>
+> **Do NOT delegate to Explore for simple entities** with <5 files — direct reads are faster.
+> **Explore can chain to other subagents** (nested subagents enabled) for even deeper analysis.
 
 ### Step 2.5 — (Optional) Scout Live UI via Playwright MCP
 

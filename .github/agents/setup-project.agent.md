@@ -16,6 +16,10 @@ permissions:
 # ── VS Code 1.113: Autopilot ──
 # Disabled — setup requires interactive user input (mode selection, form filling).
 autopilot: false
+
+# ── VS Code 1.113: Thinking Effort ──
+# Recommended: Low — setup is interactive form-filling + scripted commands.
+# No complex reasoning needed. Fast turnaround is preferred.
 ---
 
 ## YOUR FIRST AND ONLY ACTION — SHOW THIS GREETING
